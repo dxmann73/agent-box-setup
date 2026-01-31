@@ -40,6 +40,7 @@ sudo apt update && sudo apt upgrade -y
 
 To allow running apt without password prompts (useful when Claude or other tools need to install packages):
 
+**Step 1: Create sudoers rule**
 ```bash
 sudo visudo -f /etc/sudoers.d/apt-nopasswd
 ```
@@ -50,6 +51,17 @@ dave ALL=(ALL) NOPASSWD: /usr/bin/apt, /usr/bin/apt-get
 ```
 
 Save and exit. Now `sudo apt` won't require a password.
+
+**Step 2: Add aliases to skip typing sudo**
+
+Add to your `~/.bashrc`:
+```bash
+# Passwordless apt (requires sudoers NOPASSWD rule for apt)
+alias apt='sudo apt'
+alias apt-get='sudo apt-get'
+```
+
+Now you can just type `apt update` instead of `sudo apt update`.
 
 ### Linux (Fedora/RHEL)
 
