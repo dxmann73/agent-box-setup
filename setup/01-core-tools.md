@@ -36,6 +36,21 @@ scoop --version
 sudo apt update && sudo apt upgrade -y
 ```
 
+#### Optional: Passwordless apt (for automation/AI agents)
+
+To allow running apt without password prompts (useful when Claude or other tools need to install packages):
+
+```bash
+sudo visudo -f /etc/sudoers.d/apt-nopasswd
+```
+
+Add this line (replace `dave` with your username):
+```
+dave ALL=(ALL) NOPASSWD: /usr/bin/apt, /usr/bin/apt-get
+```
+
+Save and exit. Now `sudo apt` won't require a password.
+
 ### Linux (Fedora/RHEL)
 
 ```bash
