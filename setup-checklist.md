@@ -9,6 +9,7 @@ Master verification checklist for new machine setup. Follow the numbered guides 
 - [ ] Git identity configured (`git config --global --list`)
 - [ ] Terminal configured (Windows Terminal / iTerm2)
 - [ ] SSH key generated (`ls ~/.ssh/id_ed25519.pub`)
+- [ ] GitHub CLI installed and authenticated (`gh auth status`)
 
 ## 02 - Development Environment
 

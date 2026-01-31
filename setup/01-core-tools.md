@@ -167,11 +167,43 @@ clip < ~/.ssh/id_ed25519.pub
 
 ---
 
+## 6. GitHub CLI
+
+GitHub CLI (`gh`) enables GitHub operations from the terminal.
+
+### Windows
+
+```powershell
+winget install GitHub.cli
+```
+
+### Linux (Debian/Ubuntu)
+
+```bash
+sudo apt install gh -y
+```
+
+**Authenticate:**
+```bash
+gh auth login
+```
+
+Follow the prompts to authenticate via browser or token.
+
+**Verify:**
+```bash
+gh --version
+gh auth status
+```
+
+---
+
 ## Verification Checklist
 
 - [ ] Package manager working (`winget`/`brew`/`apt`)
 - [ ] Git installed and configured
 - [ ] Terminal configured
 - [ ] SSH key generated
+- [ ] GitHub CLI installed and authenticated (`gh auth status`)
 
 **Next:** Continue to `02-dev-environment.md`
