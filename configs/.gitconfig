@@ -1,0 +1,40 @@
+[user]
+    name = Your Name
+    email = your.email@example.com
+
+[core]
+    autocrlf = input
+    editor = code --wait
+    pager = less -F -X
+
+[init]
+    defaultBranch = main
+
+[pull]
+    rebase = true
+
+[push]
+    default = current
+    autoSetupRemote = true
+
+[fetch]
+    prune = true
+
+[diff]
+    colorMoved = default
+
+[merge]
+    conflictstyle = diff3
+
+[alias]
+    st = status
+    co = checkout
+    br = branch
+    ci = commit
+    lg = log --oneline --graph --decorate
+    last = log -1 HEAD
+    unstage = reset HEAD --
+    amend = commit --amend --no-edit
+
+[credential]
+    helper = store
