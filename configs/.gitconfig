@@ -1,6 +1,6 @@
 [user]
-    name = Your Name
-    email = your.email@example.com
+    name = David Mann
+    email = dxmann73@gmail.com
 
 [core]
     autocrlf = input
@@ -8,7 +8,7 @@
     pager = less -F -X
 
 [init]
-    defaultBranch = main
+    defaultBranch = develop
 
 [pull]
     rebase = true
