@@ -3,17 +3,22 @@ alias pr="cd /home/dave/dev/mhb/prima"
 alias bl="cd /home/dave/dev/blocks"
 alias be="cd /home/dave/dev/blocks/blocks-be"
 alias fe="cd /home/dave/dev/blocks/blocks-fe"
-alias docs="cd /home/dave/dev/blocks/blocks-docs" 
+alias docs="cd /home/dave/dev/blocks/blocks-docs"
 
 # General aliases
 alias e="explorer.exe ."
-alias ll="ls -l"
+alias ll="ls -alF"
 alias la="ls -al"
 alias lt="ls -tlr"
+alias l="ls -CF"
 
 # Navigation aliases
 alias ..='cd ..'
 alias ...='cd ../..'
+
+# Passwordless apt (requires sudoers NOPASSWD rule for apt)
+alias apt='sudo apt'
+alias apt-get='sudo apt-get'
 
 # Git aliases (shell level)
 alias gs='git status'
@@ -57,4 +62,3 @@ alias dcstop="docker-compose stop"
 
 # Kubernetes
 alias k=kubectl
-

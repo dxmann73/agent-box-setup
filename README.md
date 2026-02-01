@@ -1,13 +1,16 @@
 # Dave Box Setup
 
-Markdown-based setup documentation for configuring new development machines. Designed to be followed by both humans and AI agents (like Claude).
+Markdown-based setup documentation for configuring new coding agent VMs / machines.
 
-## Quick Start
+## Why
 
-1. Clone this repo to your new machine
-2. Follow the numbered guides in `setup/` directory
-3. Copy/symlink configs from `configs/` directory
-4. Verify with `setup-checklist.md`
+1. To unlock the power of coding agents, they need to run in YOLO mode.
+2. To reduce the blast radius, agents will need to run fully isolated in a sandbox.
+3. To automate the setup itself, and also sync changes to the current setup to existing machines, we need a repo that holds both the configuration as well as the instructions to synchronize it.
+
+## Usage
+
+This repo is designed to work with coding agents. Just tell them to "Set up this machine using the dave-box-setup repo".
 
 ## What's Included
 
@@ -26,21 +29,12 @@ Markdown-based setup documentation for configuring new development machines. Des
 
 Ready-to-use configuration files for common tools.
 
-## Using with Claude
+## Setting up for the first time
 
-This repo is designed to work with Claude Code. Just tell Claude:
+1. This repo has been cloned to /home/dave/projects/dave-box-setup
+2. Follow the numbered guides in the `setup/` directory, see the section in "What's Included" below
+3. copy/symlink the configs from the `configs/` directory to the appropriate destinations
+4. verify with `setup-checklist.md` and generate a report.
 
-> "Set up this machine using the dave-box-setup repo"
+## Synchronizing settings
 
-Claude will read `CLAUDE.md` for instructions and follow the setup guides.
-
-## Platform Support
-
-Instructions include variants for:
-- **Windows** - Using winget, scoop, or manual installers
-- **Linux** - apt, dnf, or other package managers
-- **macOS** - Homebrew
-
-## Customizing
-
-Fork this repo and modify for your own preferences. The markdown format makes it easy to add, remove, or reorder steps.

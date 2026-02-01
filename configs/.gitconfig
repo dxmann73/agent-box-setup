@@ -4,11 +4,11 @@
 
 [core]
     autocrlf = input
-    editor = code --wait
+    editor = cursor --wait
     pager = less -F -X
 
 [init]
-    defaultBranch = develop
+    defaultBranch = main
 
 [pull]
     rebase = true
@@ -31,6 +31,7 @@
     co = checkout
     br = branch
     ci = commit
+    pf = push --force
     lg = log --oneline --graph --decorate
     last = log -1 HEAD
     unstage = reset HEAD --
