@@ -12,44 +12,26 @@ Code.
 
 ## 1. Install Cursor IDE
 
-### Download and Install
+### Manual Installation Steps
 
-```bash
-# Download the latest Cursor AppImage
-wget https://download.cursor.sh/linux/appimage/Cursor-latest.AppImage -O ~/Downloads/Cursor.AppImage
-
-# Make it executable
-chmod +x ~/Downloads/Cursor.AppImage
-
-# Move to a permanent location
-sudo mkdir -p /opt/cursor
-sudo mv ~/Downloads/Cursor.AppImage /opt/cursor/Cursor.AppImage
-
-# Create a symlink for easy CLI access
-sudo ln -s /opt/cursor/Cursor.AppImage /usr/local/bin/cursor
-```
+1. Open your web browser and go to https://cursor.com/
+2. Click on the download button and select Linux
+3. Download the `.deb` package (it will save to your Downloads folder)
+4. Navigate to your Downloads folder in the file manager
+5. Right-click on the `cursor_*.deb` file
+6. Select "Open With Software Install" or "Install with GDebi"
+7. Click "Install" and enter your password when prompted
+8. Wait for the installation to complete
 
 **Verify:**
+
+Open a new terminal and run:
 
 ```bash
 cursor --version
 ```
 
-### Create Desktop Entry (Optional)
-
-```bash
-cat > ~/.local/share/applications/cursor.desktop <<EOF
-[Desktop Entry]
-Name=Cursor
-Exec=/opt/cursor/Cursor.AppImage
-Terminal=false
-Type=Application
-Icon=/opt/cursor/cursor-icon.png
-StartupWMClass=Cursor
-Comment=AI-powered code editor
-Categories=Development;IDE;
-EOF
-```
+The Cursor application should also appear in your applications menu.
 
 ---
 
