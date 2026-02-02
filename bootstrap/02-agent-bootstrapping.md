@@ -19,13 +19,11 @@ Ran `claude` and followed the authentication prompts
 Cloned the box setup repo
 
 ```bash
-mkdir ~/projects
-cd ~/projects && git clone https://github.com/dxmann73/dave-box-setup
+mkdir ~/projects && cd ~/projects && git clone https://github.com/dxmann73/dave-box-setup
 ```
 
 => **Let the agent take over from here!**
 
 ```bash
-cd dave-box-setup
-claude
+cd dave-box-setup && claude --yolo
 ```

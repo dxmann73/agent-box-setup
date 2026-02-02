@@ -11,7 +11,7 @@ User settings need to go to `~/.claude/settings.json`
 We are using the following settings:
 
 - [opusplan model](https://code.claude.com/docs/en/model-config#opusplan-model-setting)
-- 
+- TODO add the other settings
 
 ### [Rules](https://code.claude.com/docs/en/memory#modular-rules-with-claude%2Frules%2F)
 
