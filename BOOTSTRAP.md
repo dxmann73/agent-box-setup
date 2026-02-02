@@ -2,6 +2,11 @@
 
 These steps will have already been done when any coding agents hit this repo. This file is kept here purely to keep track of the process.
 
+## Manual Steps Required
+
+- **Passwordless apt**: Configure sudoers for automation (see One-time steps section below)
+- **SSH Keys**: Generate SSH keypair and add to GitHub (see One-time steps section below)
+
 ## VMWare Workstation Pro
 
 Get [VMWare Workstation Pro](https://www.vmware.com/products/desktop-hypervisor/workstation-and-fusion)
@@ -37,6 +42,20 @@ Power > Power saving > Screen blank > Never
 System > Enable automatic login
 
 ### One-time steps
+
+Set up passwordless apt for automation/AI agents:
+
+```bash
+sudo visudo -f /etc/sudoers.d/apt-nopasswd
+```
+
+Add this line (replace `dave` with your username):
+
+```
+dave ALL=(ALL) NOPASSWD: /usr/bin/apt, /usr/bin/apt-get
+```
+
+Save and exit. Now `sudo apt` won't require a password.
 
 Generate a keypair and put it into GitHub:
 
