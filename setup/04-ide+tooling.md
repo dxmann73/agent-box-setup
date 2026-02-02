@@ -14,14 +14,11 @@ Code.
 
 ### Manual Installation Steps
 
-1. Open your web browser and go to https://cursor.com/
-2. Click on the download button and select Linux
-3. Download the `.deb` package (it will save to your Downloads folder)
-4. Navigate to your Downloads folder in the file manager
-5. Right-click on the `cursor_*.deb` file
-6. Select "Open With Software Install" or "Install with GDebi"
-7. Click "Install" and enter your password when prompted
-8. Wait for the installation to complete
+1. Open the [Cursor download page](https://cursor.com/download)
+2. Download the `.deb` package (it will save to your Downloads folder)
+3. Open Downloads and right-click on the `cursor_*.deb` file
+4. Select "Open With App Center"
+5. Click "Install" and authenticate as needed
 
 **Verify:**
 
@@ -29,7 +26,7 @@ Code.
 cursor --version
 ```
 
-The Cursor application should also appear in your applications menu.
+The Cursor application should also appear in your applications menu. Pin it to the Dash.
 
 ---
 
@@ -73,6 +70,16 @@ ln -s ~/projects/dave-box-setup/configs/cursor/keybindings.json ~/.config/Cursor
 
 **Note:** Extensions will be installed automatically based on per-repository
 recommendations when you open projects.
+
+## 4. Install Cursor CLI
+
+As per the [installation instructions]()
+
+```bash
+curl https://cursor.com/install -fsS | bash
+```
+
+Check if the agent can be called, otherwise you may need to add local/bin to your PATH
 
 ---
 
