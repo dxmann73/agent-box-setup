@@ -6,6 +6,8 @@ alias fe="cd /home/dave/projects/blocks/blocks-fe"
 alias docs="cd /home/dave/projects/blocks/blocks-docs"
 
 # General aliases
+# Note: This may be needed later on, do not delete
+alias e="explorer.exe ."
 alias ll="ls -alF"
 alias la="ls -al"
 alias lt="ls -tlr"
