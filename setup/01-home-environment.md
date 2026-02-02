@@ -16,28 +16,49 @@ The `configs/user-home-directory/` contains dotfiles and configuration that shou
 
 - `.bashrc` - Bash shell configuration
 - `.bash_aliases` - Custom command aliases
+- `.bash_secrets.CHANGE-ME` - Template for API tokens/secrets (copy and customize)
 - `.profile` - User profile settings
 - `.gitconfig` - Git configuration
 - `dave-cursor-default.code-profile` - Cursor IDE profile
 
 ---
 
-## 2. Copy Configuration Files
+## 2. Symlink Configuration Files
 
 ```bash
 # Navigate to repo root
 cd ~/projects/dave-box-setup
 
-# Copy all dotfiles
-cp configs/user-home-directory/.bashrc ~/
-cp configs/user-home-directory/.bash_aliases ~/
-cp configs/user-home-directory/.profile ~/
-cp configs/user-home-directory/.gitconfig ~/
+# Symlink all dotfiles
+ln -sf ~/projects/dave-box-setup/configs/user-home-directory/.bashrc ~/.bashrc
+ln -sf ~/projects/dave-box-setup/configs/user-home-directory/.bash_aliases ~/.bash_aliases
+ln -sf ~/projects/dave-box-setup/configs/user-home-directory/.profile ~/.profile
+ln -sf ~/projects/dave-box-setup/configs/user-home-directory/.gitconfig ~/.gitconfig
+ln -sf ~/projects/dave-box-setup/configs/user-home-directory/.testcontainers.properties ~/.testcontainers.properties
 ```
 
 ---
 
-## 3. Reload Shell Configuration
+## 3. Set Up Secrets File
+
+The `.bash_secrets` file stores API tokens and credentials. It is sourced by `.bashrc` but never checked into version control (via `.gitignore`).
+
+```bash
+# Copy the template to create your secrets file (in the repo)
+cp configs/user-home-directory/.bash_secrets.CHANGE-ME configs/user-home-directory/.bash_secrets
+
+# Edit and add your actual tokens
+nano configs/user-home-directory/.bash_secrets
+
+# Symlink to home directory
+ln -sf ~/projects/dave-box-setup/configs/user-home-directory/.bash_secrets ~/.bash_secrets
+```
+
+Update the placeholder values with your real tokens (e.g., `HF_TOKEN` for Hugging Face).
+
+---
+
+## 4. Reload Shell Configuration
 
 Apply the new configuration:
 
@@ -47,7 +68,7 @@ source ~/.bashrc
 
 ---
 
-## 4. Verify
+## 5. Verify
 
 Check that aliases and configuration are loaded:
 
@@ -57,15 +78,20 @@ alias
 
 # Verify git config
 git config --global --list
+
+# Verify secrets are loaded
+echo $HF_TOKEN
 ```
 
 ---
 
 ## Verification Checklist
 
-- [ ] Configuration files copied to home directory
+- [ ] Configuration files symlinked to home directory
+- [ ] Secrets file created from template (`~/.bash_secrets`)
 - [ ] Shell configuration reloaded
 - [ ] Aliases working (test with `alias` command)
 - [ ] Git config loaded (`git config --global --list`)
+- [ ] Secrets loaded (e.g., `echo $HF_TOKEN` shows your token)
 
 **Next:** Continue to `02-core-tools.md`
