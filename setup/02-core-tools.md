@@ -15,7 +15,7 @@ Essential tools that everything else depends on.
 sudo apt update && sudo apt upgrade -y
 ```
 
-#### Optional: Passwordless apt (for automation/AI agents)
+### Optional: Passwordless apt (for automation/AI agents)
 
 To allow running apt without password prompts (useful when Claude or other tools need to install packages):
 
@@ -36,6 +36,7 @@ Save and exit. Now `sudo apt` won't require a password.
 **Step 2: Add aliases to skip typing sudo**
 
 Add to your `~/.bashrc`:
+
 ```bash
 # Passwordless apt (requires sudoers NOPASSWD rule for apt)
 alias apt='sudo apt'
@@ -53,6 +54,7 @@ sudo apt install git -y
 ```
 
 **Verify:**
+
 ```bash
 git --version
 ```
@@ -67,6 +69,7 @@ git config --global user.email "your.email@example.com"
 ```
 
 **Verify:**
+
 ```bash
 git config --global --list
 ```
@@ -89,6 +92,7 @@ ssh-add ~/.ssh/id_ed25519
 ```
 
 **Copy public key for GitHub/GitLab:**
+
 ```bash
 cat ~/.ssh/id_ed25519.pub
 ```
@@ -104,6 +108,7 @@ sudo apt install gh -y
 ```
 
 **Authenticate:**
+
 ```bash
 gh auth login
 ```
@@ -111,6 +116,7 @@ gh auth login
 Follow the prompts to authenticate via browser or token.
 
 **Verify:**
+
 ```bash
 gh --version
 gh auth status

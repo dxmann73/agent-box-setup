@@ -109,8 +109,7 @@ Some text
 ```bash
 code here
 ```
-More text
-```
+
 <!-- markdownlint-enable MD031 -->
 
 **Good:**
@@ -120,9 +119,6 @@ Some text
 
 ```bash
 code here
-```
-
-More text
 ```
 
 ### MD032 - Lists Surrounded by Blank Lines

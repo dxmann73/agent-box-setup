@@ -32,6 +32,7 @@ source ~/.bashrc
 ### Option B: Talon Voice
 
 More advanced option with programming-specific features:
+
 - Download from: https://talonvoice.com/
 
 ---

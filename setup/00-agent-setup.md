@@ -16,7 +16,7 @@ cp configs/agents/claude/settings.json ~/.claude/settings.json
 Settings configured:
 
 | Setting | Value | Description |
-|---------|-------|-------------|
+| ------- | ----- | ----------- |
 | `model` | `opusplan` | Uses Opus for planning, Sonnet for execution |
 | `permissions.defaultMode` | `bypassPermissions` | YOLO mode - no confirmation prompts |
 | `spinnerVerbs` | `["Working"]` | Simplified spinner text |
