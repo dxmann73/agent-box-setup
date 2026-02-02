@@ -25,5 +25,5 @@ mkdir ~/projects && cd ~/projects && git clone https://github.com/dxmann73/dave-
 => **Let the agent take over from here!**
 
 ```bash
-cd dave-box-setup && claude --yolo
+cd dave-box-setup && claude --dangerously-skip-permissions
 ```
