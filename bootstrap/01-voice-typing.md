@@ -1,5 +1,7 @@
 # Install voice typing using faster-whisper
 
+NOTE: **This has already been done by the user already. It is here for future reference**
+
 [Voice typing](https://alterflow.ai/blog/offline-voice-typing-on-ubuntu)
 
 ## Step 1: Install System Dependencies

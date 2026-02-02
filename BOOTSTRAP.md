@@ -52,7 +52,6 @@ Install git via `sudo apt install -y git`
 
 Install [Voice typing](./bootstrap/01-voice-typing.md)
 
-
 [Set up at least one coding agent](./bootstrap/02-agent-setup.md)
 
-Activate YOLO mode and follow instructions in [README.md](./README.md)
+Follow instructions in [README.md](./README.md)
