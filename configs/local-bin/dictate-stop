@@ -1,0 +1,40 @@
+#!/bin/bash
+DICTATION_DIR="$HOME/faster-whisper-dictation"
+VENV="$DICTATION_DIR/venv/bin/python"
+AUDIO_FILE="/tmp/dictation_recording.wav"
+PID_FILE="/tmp/dictation.pid"
+
+if [ ! -f "$PID_FILE" ]; then
+    notify-send "Dictation" "Not recording"
+    exit 0
+fi
+
+# allow for recording to finish
+sleep 0.1
+
+# kill the recording process
+kill -INT $(cat "$PID_FILE") 2>/dev/null
+rm -f "$PID_FILE"
+sleep 0.1
+
+notify-send "Dictation" "⏳ Transcribing..."
+
+TEXT=$($VENV << 'PYTHON'
+from faster_whisper import WhisperModel
+model = WhisperModel("small", device="cpu", compute_type="int8")
+segments, _ = model.transcribe("/tmp/dictation_recording.wav", beam_size=5)
+print(" ".join([seg.text.strip() for seg in segments]))
+PYTHON
+)
+
+if [ -n "$TEXT" ]; then
+    # insert via clipboard
+    printf "%s" "$TEXT" | wl-copy
+    ydotool key ctrl+shift+insert
+
+    notify-send "Dictation" "✅ Done"
+else
+    notify-send "Dictation" "❌ No speech detected"
+fi
+
+rm -f "$AUDIO_FILE"

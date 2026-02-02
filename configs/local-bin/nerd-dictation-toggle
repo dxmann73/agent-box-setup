@@ -1,0 +1,9 @@
+#!/bin/bash
+# Toggle nerd-dictation on/off
+# Useful for binding to a keyboard shortcut
+
+if pgrep -x "nerd-dictation" > /dev/null; then
+    nerd-dictation end
+else
+    nerd-dictation begin
+fi

@@ -33,18 +33,9 @@ groups | grep input
 ## Step 3: Set Up ydotool Daemon (Optional)
 
 ```bash
-# Create a systemd user service:
-
-mkdir -p ~/.config/systemd/user && cat > ~/.config/systemd/user/ydotool.service << 'EOF'
-[Unit]
-Description=ydotool daemon
-
-[Service]
-ExecStart=/usr/bin/ydotoold
-
-[Install]
-WantedBy=default.target
-EOF
+# Create systemd user directory and symlink the service file
+mkdir -p ~/.config/systemd/user
+ln -sf "$(pwd)/configs/systemd-user/ydotool.service" ~/.config/systemd/user/ydotool.service
 
 # Enable and start it:
 systemctl --user daemon-reload && systemctl --user enable ydotool && systemctl --user start ydotool
@@ -79,104 +70,23 @@ pip install faster-whisper pyaudio pynput transitions soundfile sounddevice nump
 deactivate
 ```
 
-### Step 5: Create the Dictation Scripts
+### Step 5: Symlink the Dictation Scripts
 
-Create the scripts directory:
+Symlink the scripts from this repo to `~/.local/bin`:
 
 ```bash
 mkdir -p ~/.local/bin
+
+# Symlink all dictation scripts
+ln -sf "$(pwd)/configs/local-bin/dictate-start" ~/.local/bin/dictate-start
+ln -sf "$(pwd)/configs/local-bin/dictate-stop" ~/.local/bin/dictate-stop
+ln -sf "$(pwd)/configs/local-bin/dictate-toggle" ~/.local/bin/dictate-toggle
+
+# Make them executable
+chmod +x ~/.local/bin/dictate-*
 ```
 
-NOTE: Replace user `dave` as appropriate in the following scripts
-
-Create the start script:
-
-```bash
-cat > ~/.local/bin/dictate-start << 'EOF'
-#!/bin/bash
-DICTATION_DIR="/home/dave/faster-whisper-dictation"
-VENV="$DICTATION_DIR/venv/bin/python"
-AUDIO_FILE="/tmp/dictation_recording.wav"
-PID_FILE="/tmp/dictation.pid"
-
-# Check if already recording
-if [ -f "$PID_FILE" ]; then
-    notify-send "Dictation" "Already recording... tap again to stop"
-    exit 0
-fi
-
-notify-send "Dictation" "🎤 Recording... Press hotkey again to stop"
-
-# Start recording with PulseAudio
-parecord --channels=1 --rate=16000 --format=s16le --latency-msec=10 "$AUDIO_FILE" &
-echo $! > "$PID_FILE"
-EOF
-chmod +x ~/.local/bin/dictate-start
-```
-
-Create the stop script:
-
-```bash
-cat > ~/.local/bin/dictate-stop << 'ENDSCRIPT'
-#!/bin/bash
-DICTATION_DIR="/home/dave/faster-whisper-dictation"
-VENV="$DICTATION_DIR/venv/bin/python"
-AUDIO_FILE="/tmp/dictation_recording.wav"
-PID_FILE="/tmp/dictation.pid"
-
-if [ ! -f "$PID_FILE" ]; then
-    notify-send "Dictation" "Not recording"
-    exit 0
-fi
-
-# allow for recording to finish
-sleep 0.1
-
-# kill the recording process
-kill -INT $(cat "$PID_FILE") 2>/dev/null
-rm -f "$PID_FILE"
-sleep 0.1
-
-notify-send "Dictation" "⏳ Transcribing..."
-
-TEXT=$($VENV << 'PYTHON'
-from faster_whisper import WhisperModel
-model = WhisperModel("small", device="cpu", compute_type="int8")
-segments, _ = model.transcribe("/tmp/dictation_recording.wav", beam_size=5)
-print(" ".join([seg.text.strip() for seg in segments]))
-PYTHON
-)
-
-if [ -n "$TEXT" ]; then
-    # insert via clipboard
-    printf "%s" "$TEXT" | wl-copy
-    ydotool key ctrl+shift+insert
-
-    notify-send "Dictation" "✅ Done"
-else
-    notify-send "Dictation" "❌ No speech detected"
-fi
-
-rm -f "$AUDIO_FILE"
-ENDSCRIPT
-chmod +x ~/.local/bin/dictate-stop
-```
-
-Create the toggle script:
-
-```bash
-cat > ~/.local/bin/dictate-toggle << 'ENDSCRIPT'
-#!/bin/bash
-PID_FILE="/tmp/dictation.pid"
-
-if [ -f "$PID_FILE" ]; then
-    /home/dave/.local/bin/dictate-stop
-else
-    /home/dave/.local/bin/dictate-start
-fi
-ENDSCRIPT
-chmod +x ~/.local/bin/dictate-toggle
-```
+The scripts are located in `configs/local-bin/` and use `$HOME` for paths, so they work for any user.
 
 ### Step 6: Test Manually
 
@@ -214,11 +124,9 @@ gsettings set org.gnome.settings-daemon.plugins.media-keys custom-keybindings "[
 
 # Configure the dictation shortcut
 gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/ name 'Dictation Toggle'
-gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/ command '/home/dave/.local/bin/dictate-toggle'
+gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/ command "$HOME/.local/bin/dictate-toggle"
 gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/ binding '<Ctrl>space'
 ```
-
-Replace YOUR_USERNAME with your actual username.
 
 ## Troubleshooting
 
@@ -231,7 +139,7 @@ This is just a notice, not an error. ydotool still works, just with a small dela
 
 The first transcription after a reboot will be slower (model loading). Subsequent transcriptions are faster. You can also try using the "base" model instead of "small" for faster (but less accurate) results:
 
-Change WhisperModel("small") to WhisperModel("base") in `~/.local/bin/dictate-stop`.
+Change WhisperModel("small") to WhisperModel("base") in `configs/local-bin/dictate-stop`.
 
 ### No speech detected
 

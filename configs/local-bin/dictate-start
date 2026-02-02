@@ -1,0 +1,17 @@
+#!/bin/bash
+DICTATION_DIR="$HOME/faster-whisper-dictation"
+VENV="$DICTATION_DIR/venv/bin/python"
+AUDIO_FILE="/tmp/dictation_recording.wav"
+PID_FILE="/tmp/dictation.pid"
+
+# Check if already recording
+if [ -f "$PID_FILE" ]; then
+    notify-send "Dictation" "Already recording... tap again to stop"
+    exit 0
+fi
+
+notify-send "Dictation" "🎤 Recording... Press hotkey again to stop"
+
+# Start recording with PulseAudio
+parecord --channels=1 --rate=16000 --format=s16le --latency-msec=10 "$AUDIO_FILE" &
+echo $! > "$PID_FILE"

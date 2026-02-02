@@ -51,41 +51,39 @@ Stop dictation:
 nerd-dictation end
 ```
 
+### Install Voice Scripts
+
+Symlink the helper scripts from this repo:
+
+```bash
+# Toggle script for keyboard shortcuts
+ln -sf "$(pwd)/configs/local-bin/nerd-dictation-toggle" ~/.local/bin/nerd-dictation-toggle
+chmod +x ~/.local/bin/nerd-dictation-toggle
+```
+
 ### Setup Keyboard Shortcuts
 
-Create a hotkey to toggle dictation. In your desktop environment's keyboard settings, bind:
-- Start: `nerd-dictation begin`
-- Stop: `nerd-dictation end`
+Create a hotkey to toggle dictation. In your desktop environment's keyboard settings, bind a key to:
 
-Or use a single toggle command:
 ```bash
-nerd-dictation toggle
+~/.local/bin/nerd-dictation-toggle
 ```
 
-### Recommended: Run as a Service
+This script toggles dictation on/off with a single keypress.
 
-Create a systemd user service for persistent operation:
+### Optional: Run as a Service
+
+For persistent operation, symlink and enable the systemd user service:
 
 ```bash
+# Create systemd user directory if needed
 mkdir -p ~/.config/systemd/user
-```
 
-Create `~/.config/systemd/user/nerd-dictation.service`:
-```ini
-[Unit]
-Description=Nerd Dictation Voice Input
+# Symlink the service file
+ln -sf "$(pwd)/configs/systemd-user/nerd-dictation.service" ~/.config/systemd/user/nerd-dictation.service
 
-[Service]
-Type=simple
-ExecStart=/home/%u/.local/bin/nerd-dictation begin
-Restart=on-failure
-
-[Install]
-WantedBy=default.target
-```
-
-Enable and start:
-```bash
+# Enable and start
+systemctl --user daemon-reload
 systemctl --user enable nerd-dictation
 systemctl --user start nerd-dictation
 ```
@@ -112,6 +110,7 @@ Tips:
 
 - [ ] Voice input tool installed (nerd-dictation or Talon)
 - [ ] Microphone working and configured
+- [ ] Toggle script symlinked to `~/.local/bin/`
 - [ ] Hotkey configured for activation
 - [ ] Test dictation in a text editor
 - [ ] Test dictation in terminal with Claude

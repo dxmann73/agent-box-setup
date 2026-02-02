@@ -1,0 +1,8 @@
+#!/bin/bash
+PID_FILE="/tmp/dictation.pid"
+
+if [ -f "$PID_FILE" ]; then
+    ~/.local/bin/dictate-stop
+else
+    ~/.local/bin/dictate-start
+fi

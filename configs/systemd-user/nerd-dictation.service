@@ -1,0 +1,10 @@
+[Unit]
+Description=Nerd Dictation Voice Input
+
+[Service]
+Type=simple
+ExecStart=%h/.local/bin/nerd-dictation begin
+Restart=on-failure
+
+[Install]
+WantedBy=default.target
