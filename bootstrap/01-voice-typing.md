@@ -116,9 +116,47 @@ gsettings set org.freedesktop.ibus.general.hotkey triggers "[]"
 
 ### Step 8: Set Up Keyboard Shortcut
 
-Set up Ctrl+Space as the toggle hotkey:
+#### Option A: Push-to-Talk (Recommended)
+
+Hold Ctrl+Space to record, release to stop. This requires a background daemon that monitors key press/release events.
 
 ```bash
+# Install evdev
+sudo apt install -y python3-evdev
+
+# Symlink the push-to-talk script and service
+ln -sf "$(pwd)/configs/local-bin/dictate-ptt" ~/.local/bin/dictate-ptt
+ln -sf "$(pwd)/configs/systemd-user/dictate-ptt.service" ~/.config/systemd/user/dictate-ptt.service
+chmod +x ~/.local/bin/dictate-ptt
+
+# Your user needs access to input devices
+sudo usermod -aG input $USER
+# Log out and back in for group change to take effect
+
+# Enable and start the daemon
+systemctl --user daemon-reload
+systemctl --user enable dictate-ptt
+systemctl --user start dictate-ptt
+
+# Check status
+systemctl --user status dictate-ptt
+```
+
+To test manually first: `~/.local/bin/dictate-ptt`
+
+If auto-detection fails, list devices and specify one:
+```bash
+~/.local/bin/dictate-ptt --list-devices
+~/.local/bin/dictate-ptt --device /dev/input/event3
+```
+
+#### Option B: Toggle Shortcut
+
+Use Ctrl+Space to toggle recording on/off (press once to start, press again to stop):
+
+```bash
+# Disable IBus Ctrl+Space shortcut first (see Step 7)
+
 # Add to custom keybindings (preserves existing ones like Flameshot)
 gsettings set org.gnome.settings-daemon.plugins.media-keys custom-keybindings "['/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/']"
 
@@ -129,6 +167,25 @@ gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/or
 ```
 
 ## Troubleshooting
+
+### Push-to-talk daemon not working
+
+Check if it's running:
+```bash
+systemctl --user status dictate-ptt
+journalctl --user -u dictate-ptt -f
+```
+
+If you get "Permission denied" on input devices, ensure you're in the `input` group and have logged out/in:
+```bash
+groups | grep input
+```
+
+If keyboard isn't detected, list devices and specify manually in the service file:
+```bash
+~/.local/bin/dictate-ptt --list-devices
+# Then edit the service to add --device flag
+```
 
 ### ydotool backend unavailable
 

@@ -1,0 +1,99 @@
+#!/usr/bin/env python3
+"""
+Push-to-talk dictation daemon.
+Hold Ctrl+Space to record, release to transcribe.
+
+Usage: dictate-ptt [--device /dev/input/eventX]
+
+If no device specified, tries to auto-detect keyboard.
+"""
+
+import subprocess
+import sys
+import os
+import argparse
+from pathlib import Path
+
+try:
+    import evdev
+    from evdev import ecodes
+except ImportError:
+    print("Error: python3-evdev not installed. Run: sudo apt install python3-evdev")
+    sys.exit(1)
+
+
+def find_keyboard():
+    """Find a keyboard device."""
+    devices = [evdev.InputDevice(path) for path in evdev.list_devices()]
+    for device in devices:
+        caps = device.capabilities()
+        # Look for devices with key events that have common keyboard keys
+        if ecodes.EV_KEY in caps:
+            keys = caps[ecodes.EV_KEY]
+            # Check for common keyboard keys (space, ctrl, letters)
+            if ecodes.KEY_SPACE in keys and ecodes.KEY_LEFTCTRL in keys:
+                return device
+    return None
+
+
+def main():
+    parser = argparse.ArgumentParser(description='Push-to-talk dictation daemon')
+    parser.add_argument('--device', help='Input device path (e.g., /dev/input/event3)')
+    parser.add_argument('--list-devices', action='store_true', help='List available input devices')
+    args = parser.parse_args()
+
+    if args.list_devices:
+        devices = [evdev.InputDevice(path) for path in evdev.list_devices()]
+        for dev in devices:
+            print(f"{dev.path}: {dev.name}")
+        return
+
+    if args.device:
+        device = evdev.InputDevice(args.device)
+    else:
+        device = find_keyboard()
+        if not device:
+            print("Error: Could not find keyboard. Use --device to specify or --list-devices to see options.")
+            sys.exit(1)
+
+    print(f"Using device: {device.path} ({device.name})")
+    print("Push-to-talk ready. Hold Ctrl+Space to record, release to stop.")
+
+    ctrl_pressed = False
+    recording = False
+    home = Path.home()
+    start_script = home / ".local/bin/dictate-start"
+    stop_script = home / ".local/bin/dictate-stop"
+
+    try:
+        for event in device.read_loop():
+            if event.type != ecodes.EV_KEY:
+                continue
+
+            # Track Ctrl key state
+            if event.code in (ecodes.KEY_LEFTCTRL, ecodes.KEY_RIGHTCTRL):
+                ctrl_pressed = event.value in (1, 2)  # 1=press, 2=hold
+
+            # Handle Space key with Ctrl held
+            if event.code == ecodes.KEY_SPACE:
+                if event.value == 1 and ctrl_pressed and not recording:
+                    # Key press: start recording
+                    recording = True
+                    subprocess.Popen([str(start_script)])
+                elif event.value == 0 and recording:
+                    # Key release: stop recording
+                    recording = False
+                    subprocess.Popen([str(stop_script)])
+
+            # Also stop if Ctrl is released while recording
+            if event.code in (ecodes.KEY_LEFTCTRL, ecodes.KEY_RIGHTCTRL):
+                if event.value == 0 and recording:
+                    recording = False
+                    subprocess.Popen([str(stop_script)])
+
+    except KeyboardInterrupt:
+        print("\nStopping push-to-talk daemon.")
+
+
+if __name__ == "__main__":
+    main()
