@@ -21,8 +21,13 @@ Get [Ubuntu ISO](https://ubuntu.com/download/desktop)
 
 ### Initial installation
 
-Run a complete update `sudo apt update && sudo apt upgrade`, pin Terminal (Ctrl Alt T)
-App Center > Manage > Update
+Run a complete update:
+
+```bash
+sudo apt update && sudo apt upgrade
+```
+
+Pin Terminal (Ctrl Alt T), then go to App Center > Manage > Update
 
 ### Settings
 
@@ -33,7 +38,11 @@ System > Enable automatic login
 
 ### One-time steps
 
-Generate a keypair with `ssh-keygen -t ed25519 -C "dave GH key"` and put it into GitHub.
+Generate a keypair and put it into GitHub:
+
+```bash
+ssh-keygen -t ed25519 -C "dave GH key"
+```
 
 Create a [Hugging Face access token](https://huggingface.co/settings/tokens), Click New token, Choose Read access (enough for downloads)
 
@@ -50,7 +59,11 @@ Install [Voice typing](./bootstrap/01-voice-typing.md)
 - Download, open folder, "Open With App Center"
 - Dock: Unpin Firefox, pin Chrome
 
-Install git and curl via `sudo apt install -y git curl`
+Install git and curl:
+
+```bash
+sudo apt install -y git curl
+```
 
 [Set up at least one coding agent](./bootstrap/02-agent-bootstrapping.md)
 

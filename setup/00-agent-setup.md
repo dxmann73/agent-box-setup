@@ -34,6 +34,7 @@ cp configs/agents/user-rules/*.md ~/.claude/rules/
 ```
 
 Current rules:
+
 - `new-projects.md` - Standards for setting up new projects with agent config files
 
 ### Verification

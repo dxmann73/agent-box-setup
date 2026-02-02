@@ -22,6 +22,7 @@ sudo apt install code -y
 Or download from https://code.visualstudio.com/
 
 **Verify:**
+
 ```bash
 code --version
 ```
@@ -82,6 +83,7 @@ cp configs/vscode/keybindings.json ~/.config/Code/User/keybindings.json
 The `code` command should be automatically added to PATH with apt installation.
 
 **Verify:**
+
 ```bash
 code --version
 ```

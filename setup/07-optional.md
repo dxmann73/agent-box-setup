@@ -17,6 +17,7 @@ sudo usermod -aG docker $USER
 ```
 
 **Verify:**
+
 ```bash
 docker --version
 docker run hello-world
@@ -35,6 +36,7 @@ sudo ./aws/install
 ```
 
 **Configure:**
+
 ```bash
 aws configure
 ```
@@ -46,6 +48,7 @@ curl https://sdk.cloud.google.com | bash
 ```
 
 **Configure:**
+
 ```bash
 gcloud init
 ```
@@ -57,6 +60,7 @@ curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
 ```
 
 **Configure:**
+
 ```bash
 az login
 ```

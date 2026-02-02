@@ -12,6 +12,7 @@ Programming languages and runtimes.
 ## 1. Node.js
 
 **Using nvm (Recommended)**
+
 ```bash
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.0/install.sh | bash
 # Restart terminal or source profile
@@ -21,12 +22,14 @@ nvm use --lts
 ```
 
 **Alternative: Using apt (simpler but less flexible)**
+
 ```bash
 curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
 sudo apt install nodejs -y
 ```
 
 **Verify:**
+
 ```bash
 node --version
 npm --version
@@ -42,6 +45,7 @@ sudo apt install python3 python3-pip python3-venv -y
 ```
 
 **Verify:**
+
 ```bash
 python3 --version
 pip3 --version
@@ -60,6 +64,7 @@ npm install -g pnpm
 ```
 
 **Verify:**
+
 ```bash
 tsc --version
 pnpm --version
@@ -79,6 +84,7 @@ pipx install ruff
 ```
 
 **Verify:**
+
 ```bash
 poetry --version
 ```

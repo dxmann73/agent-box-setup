@@ -20,11 +20,13 @@ sudo apt update && sudo apt upgrade -y
 To allow running apt without password prompts (useful when Claude or other tools need to install packages):
 
 **Step 1: Create sudoers rule**
+
 ```bash
 sudo visudo -f /etc/sudoers.d/apt-nopasswd
 ```
 
 Add this line (replace `dave` with your username):
+
 ```
 dave ALL=(ALL) NOPASSWD: /usr/bin/apt, /usr/bin/apt-get
 ```

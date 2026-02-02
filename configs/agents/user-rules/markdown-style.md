@@ -103,22 +103,24 @@ Fenced code blocks should be surrounded by blank lines.
 
 **Bad:**
 
+<!-- markdownlint-disable MD031 -->
 ```markdown
 Some text
-\`\`\`bash
+```bash
 code here
-\`\`\`
+```
 More text
 ```
+<!-- markdownlint-enable MD031 -->
 
 **Good:**
 
 ```markdown
 Some text
 
-\`\`\`bash
+```bash
 code here
-\`\`\`
+```
 
 More text
 ```
@@ -196,15 +198,17 @@ Always specify a language for fenced code blocks.
 
 **Bad:**
 
-\`\`\`
+<!-- markdownlint-disable MD040 -->
+```
 code here
-\`\`\`
+```
+<!-- markdownlint-enable MD040 -->
 
 **Good:**
 
-\`\`\`bash
+```bash
 code here
-\`\`\`
+```
 
 Common languages: `bash`, `javascript`, `python`, `json`, `yaml`, `markdown`, `typescript`, `jsx`, `tsx`
 
