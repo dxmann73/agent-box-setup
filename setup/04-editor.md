@@ -1,11 +1,11 @@
-# 03 - Editor Setup
+# 04 - Editor Setup
 
 VS Code is the primary editor. Adapt for other editors as needed.
 
 ## Prerequisites
 
-- Completed `01-core-tools.md`
-- Completed `02-dev-environment.md`
+- Completed `02-core-tools.md`
+- Completed `03-dev-environment.md`
 
 ---
 
@@ -95,4 +95,4 @@ code --version
 - [ ] Essential extensions installed
 - [ ] Settings applied
 
-**Next:** Continue to `04-claude-setup.md`
+**Next:** Continue to `06-voice-tools.md`

@@ -43,4 +43,4 @@ cat ~/.claude/settings.json
 ls ~/.claude/rules/
 ```
 
-**Next:** Continue to `01-core-tools.md`
+**Next:** Continue to `01-home-environment.md`

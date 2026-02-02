@@ -1,10 +1,10 @@
-# 05 - Voice Tools
+# 06 - Voice Tools
 
 Set up voice input for Ubuntu.
 
 ## Prerequisites
 
-- Completed core setup (01-04)
+- Completed core setup (01-04, skipping 05)
 - Microphone connected and working
 
 ---
@@ -115,4 +115,4 @@ Tips:
 - [ ] Test dictation in a text editor
 - [ ] Test dictation in terminal with Claude
 
-**Next:** Continue to `06-optional.md`
+**Next:** Continue to `07-optional.md`

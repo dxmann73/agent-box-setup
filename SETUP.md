@@ -8,7 +8,14 @@ Master verification checklist for new machine setup. Follow the numbered guides 
 - [ ] Settings copied to `~/.claude/settings.json`
 - [ ] Rules copied to `~/.claude/rules/`
 
-## 01 - Core Tools
+## 01 - Home Environment
+
+- [ ] Shell config files copied to home directory
+- [ ] Git identity personalized in `~/.gitconfig`
+- [ ] Shell configuration reloaded
+- [ ] Aliases working
+
+## 02 - Core Tools
 
 - [ ] apt package manager working
 - [ ] Git installed (`git --version`)
@@ -16,7 +23,7 @@ Master verification checklist for new machine setup. Follow the numbered guides 
 - [ ] SSH key generated (`ls ~/.ssh/id_ed25519.pub`)
 - [ ] GitHub CLI installed and authenticated (`gh auth status`)
 
-## 02 - Development Environment
+## 03 - Development Environment
 
 - [ ] Node.js installed (`node --version`)
 - [ ] npm working (`npm --version`)
@@ -24,27 +31,21 @@ Master verification checklist for new machine setup. Follow the numbered guides 
 - [ ] pip working (`pip3 --version`)
 - [ ] Build tools available (if needed)
 
-## 03 - Editor
+## 04 - Editor
 
 - [ ] VS Code installed (`code --version`)
 - [ ] `code` command works from terminal
 - [ ] Essential extensions installed
 - [ ] Settings applied from configs/
 
-## 04 - Claude Code
+## 06 - Voice Tools
 
-- [ ] Claude CLI installed (`claude --version`)
-- [ ] Authentication complete
-- [ ] VS Code extension working (optional)
-
-## 05 - Voice Tools
-
-- [ ] Wispr Flow installed and running
+- [ ] Voice input tool installed (nerd-dictation or Talon)
 - [ ] Microphone working
 - [ ] Hotkey configured
 - [ ] Test dictation working
 
-## 06 - Optional (check what's installed)
+## 07 - Optional (check what's installed)
 
 - [ ] Docker (`docker --version`)
 - [ ] AWS CLI (`aws --version`)

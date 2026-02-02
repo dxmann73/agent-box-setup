@@ -1,10 +1,10 @@
-# 06 - Optional Tools
+# 07 - Optional Tools
 
 Additional tools based on your needs. Install only what you'll use.
 
 ## Prerequisites
 
-- Completed core setup (01-05)
+- Completed core setup (01-04, 06)
 
 ---
 

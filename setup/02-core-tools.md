@@ -1,4 +1,4 @@
-# 01 - Core Tools
+# 02 - Core Tools
 
 Essential tools that everything else depends on.
 
@@ -123,4 +123,4 @@ gh auth status
 - [ ] SSH key generated
 - [ ] GitHub CLI installed and authenticated (`gh auth status`)
 
-**Next:** Continue to `02-dev-environment.md`
+**Next:** Continue to `03-dev-environment.md`

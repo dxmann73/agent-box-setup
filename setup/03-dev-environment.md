@@ -1,10 +1,10 @@
-# 02 - Development Environment
+# 03 - Development Environment
 
 Programming languages and runtimes.
 
 ## Prerequisites
 
-- Completed `01-core-tools.md`
+- Completed `02-core-tools.md`
 - Package manager available
 
 ---
@@ -103,4 +103,4 @@ sudo apt install build-essential -y
 - [ ] pip working (`pip3 --version`)
 - [ ] Build tools available (if needed)
 
-**Next:** Continue to `03-editor.md`
+**Next:** Continue to `04-editor.md`

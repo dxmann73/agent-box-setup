@@ -10,12 +10,12 @@ This repository contains instructions for setting up a new Ubuntu development ma
 
 ## Setup Order
 
-1. `setup/01-core-tools.md` - Package manager, Git, terminal basics
-2. `setup/02-dev-environment.md` - Node.js, Python, development runtimes
-3. `setup/03-editor.md` - VS Code and extensions
-4. `setup/04-claude-setup.md` - Claude Code CLI and configuration
-5. `setup/05-voice-tools.md` - Wispr Flow and voice input
-6. `setup/06-optional.md` - Docker, cloud CLIs, extras
+1. `setup/01-home-environment.md` - Shell configuration and dotfiles
+2. `setup/02-core-tools.md` - Package manager, Git, terminal basics
+3. `setup/03-dev-environment.md` - Node.js, Python, development runtimes
+4. `setup/04-editor.md` - VS Code and extensions
+5. `setup/06-voice-tools.md` - Voice input tools
+6. `setup/07-optional.md` - Docker, cloud CLIs, extras
 
 ## Important Notes
 
