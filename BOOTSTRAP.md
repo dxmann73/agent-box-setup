@@ -43,6 +43,8 @@ System > Enable automatic login
 
 ### One-time steps
 
+#### Passwordless apt
+
 Set up passwordless apt for automation/AI agents:
 
 ```bash
@@ -51,17 +53,17 @@ sudo visudo -f /etc/sudoers.d/apt-nopasswd
 
 Add this line (replace `dave` with your username):
 
-```
+```text
 dave ALL=(ALL) NOPASSWD: /usr/bin/apt, /usr/bin/apt-get
 ```
 
 Save and exit. Now `sudo apt` won't require a password.
 
-Generate a keypair and put it into GitHub:
+#### SSH keys
 
-```bash
-ssh-keygen -t ed25519 -C "dave GH key"
-```
+Generate a keypair and copy it to the `~/.ssh` directory
+
+#### HF token
 
 Create a [Hugging Face access token](https://huggingface.co/settings/tokens), Click New token, Choose Read access (enough for downloads)
 
@@ -87,3 +89,33 @@ sudo apt install -y git curl
 [Set up at least one coding agent](./bootstrap/02-agent-bootstrapping.md)
 
 Follow instructions in [README.md](./README.md)
+
+## Mount VM directory
+
+In VMWare Pro under Settings > Options > Shared Folders
+Always enabled, name vm-shares
+
+On host os (should already be there!)
+
+```bash
+sudo apt install open-vm-tools open-vm-tools-desktop
+sudo reboot
+```
+
+Mount the directories in fstab
+
+```bash
+sudo nano /etc/fstab
+
+# add
+#.host:/   /mnt/hgfs   fuse.vmhgfs-fuse   allow_other,uid=1000,gid=1000   0   0
+
+# test it safely
+sudo mount -a
+```
+
+Link to home directory
+
+```bash
+ln -s /mnt/hgfs/vm-shares ~/vm-shares
+```
