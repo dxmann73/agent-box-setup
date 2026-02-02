@@ -37,11 +37,29 @@ Current rules:
 
 - `new-projects.md` - Standards for setting up new projects with agent config files
 
+### Agent Configuration Files
+
+Copy the main agent configuration to home directory and create symlink for compatibility.
+
+Source: `configs/agents/AGENTS.md`
+Destination: `~/AGENTS.md` (with `~/CLAUDE.md` symlink)
+
+```bash
+cp configs/agents/AGENTS.md ~/AGENTS.md
+ln -sf ~/AGENTS.md ~/CLAUDE.md
+```
+
+This creates:
+
+- `~/AGENTS.md` - Primary agent configuration file
+- `~/CLAUDE.md` - Symlink to AGENTS.md for compatibility
+
 ### Verification
 
 ```bash
 cat ~/.claude/settings.json
 ls ~/.claude/rules/
+ls -l ~/AGENTS.md ~/CLAUDE.md
 ```
 
 **Next:** Continue to `01-home-environment.md`
