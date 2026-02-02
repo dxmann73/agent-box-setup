@@ -20,6 +20,4 @@ We are using the following settings:
 - are stored in the `configs/agents/user-rules` directory
 - need to go to the `~/.claude/rules/` directory
 
-TODO Activate YOLO mode 
-
 **Next:** Continue to `01-core-tools.md`
