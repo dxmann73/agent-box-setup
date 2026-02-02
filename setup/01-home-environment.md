@@ -17,7 +17,7 @@ The `configs/user-home-directory/` contains dotfiles and configuration that shou
 - `.bashrc` - Bash shell configuration
 - `.bash_aliases` - Custom command aliases
 - `.profile` - User profile settings
-- `.gitconfig` - Git configuration (personalize email/name)
+- `.gitconfig` - Git configuration
 - `dave-cursor-default.code-profile` - Cursor IDE profile
 
 ---
@@ -37,30 +37,7 @@ cp configs/user-home-directory/.gitconfig ~/
 
 ---
 
-## 3. Personalize Git Configuration
-
-Edit `~/.gitconfig` to update with your information:
-
-```bash
-nano ~/.gitconfig
-```
-
-Update these lines:
-```
-[user]
-    name = Your Name
-    email = your.email@example.com
-```
-
-Or use git commands:
-```bash
-git config --global user.name "Your Name"
-git config --global user.email "your.email@example.com"
-```
-
----
-
-## 4. Reload Shell Configuration
+## 3. Reload Shell Configuration
 
 Apply the new configuration:
 
@@ -70,7 +47,7 @@ source ~/.bashrc
 
 ---
 
-## 5. Verify
+## 4. Verify
 
 Check that aliases and configuration are loaded:
 
@@ -87,8 +64,8 @@ git config --global --list
 ## Verification Checklist
 
 - [ ] Configuration files copied to home directory
-- [ ] Git identity personalized
 - [ ] Shell configuration reloaded
 - [ ] Aliases working (test with `alias` command)
+- [ ] Git config loaded (`git config --global --list`)
 
 **Next:** Continue to `02-core-tools.md`
