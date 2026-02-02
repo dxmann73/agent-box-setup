@@ -265,11 +265,13 @@ Or open Settings → Keyboard → Input Sources and remove any extra input metho
 
 You can change the Whisper model based on your needs:
 
-Model	Size	RAM Needed	Accuracy	Speed
-tiny	75 MB	~1 GB	Lower	Fastest
-base	142 MB	~1 GB	Good	Fast
-small	466 MB	~2 GB	Better	Medium
-medium	1.5 GB	~5 GB	Great	Slower
-large-v3	3 GB	~10 GB	Best	Slowest
+| Model | Size | RAM Needed | Accuracy | Speed |
+|-------|------|------------|----------|-------|
+| tiny | 75 MB | ~1 GB | Lower | Fastest |
+| base | 142 MB | ~1 GB | Good | Fast |
+| small | 466 MB | ~2 GB | Better | Medium |
+| medium | 1.5 GB | ~5 GB | Great | Slower |
+| large-v3 | 3 GB | ~10 GB | Best | Slowest |
 
-For CPU-only systems, I recommend "small" as the best balance of accuracy and speed.
+For CPU-only systems, I recommend "small" as the best balance of accuracy
+and speed.

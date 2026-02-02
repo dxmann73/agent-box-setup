@@ -52,6 +52,6 @@ Install [Voice typing](./bootstrap/01-voice-typing.md)
 
 Install git and curl via `sudo apt install -y git curl`
 
-[Set up at least one coding agent](./bootstrap/02-agent-setup.md)
+[Set up at least one coding agent](./bootstrap/02-agent-bootstrapping.md)
 
 Follow instructions in [README.md](./README.md)
