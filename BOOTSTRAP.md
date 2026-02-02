@@ -43,14 +43,14 @@ export HF_TOKEN=hf_your_token_here
 
 ### Installations
 
+Install [Voice typing](./bootstrap/01-voice-typing.md)
+
 [Google Chrome](https://www.google.com/intl/de_de/chrome/)
 
 - Download, open folder, "Open With App Center"
 - Dock: Unpin Firefox, pin Chrome
 
-Install git via `sudo apt install -y git`
-
-Install [Voice typing](./bootstrap/01-voice-typing.md)
+Install git and curl via `sudo apt install -y git curl`
 
 [Set up at least one coding agent](./bootstrap/02-agent-setup.md)
 
