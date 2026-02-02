@@ -10,30 +10,10 @@ Additional tools based on your needs. Install only what you'll use.
 
 ## 1. Docker
 
-### Windows
-
-```powershell
-winget install Docker.DockerDesktop
-```
-
-Requires WSL2. If not already enabled:
-```powershell
-wsl --install
-```
-
-### Linux
-
 ```bash
-# Debian/Ubuntu
 sudo apt install docker.io docker-compose -y
 sudo usermod -aG docker $USER
 # Log out and back in for group changes
-```
-
-### macOS
-
-```bash
-brew install --cask docker
 ```
 
 **Verify:**
@@ -49,16 +29,9 @@ docker run hello-world
 ### AWS CLI
 
 ```bash
-# Windows
-winget install Amazon.AWSCLI
-
-# Linux
 curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
 unzip awscliv2.zip
 sudo ./aws/install
-
-# macOS
-brew install awscli
 ```
 
 **Configure:**
@@ -69,14 +42,7 @@ aws configure
 ### Google Cloud CLI
 
 ```bash
-# Windows
-winget install Google.CloudSDK
-
-# Linux
 curl https://sdk.cloud.google.com | bash
-
-# macOS
-brew install --cask google-cloud-sdk
 ```
 
 **Configure:**
@@ -87,14 +53,7 @@ gcloud init
 ### Azure CLI
 
 ```bash
-# Windows
-winget install Microsoft.AzureCLI
-
-# Linux
 curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
-
-# macOS
-brew install azure-cli
 ```
 
 **Configure:**
@@ -109,27 +68,13 @@ az login
 ### PostgreSQL Client
 
 ```bash
-# Windows
-winget install PostgreSQL.psql
-
-# Linux
 sudo apt install postgresql-client -y
-
-# macOS
-brew install postgresql
 ```
 
 ### DBeaver (GUI)
 
 ```bash
-# Windows
-winget install dbeaver.dbeaver
-
-# Linux
 sudo snap install dbeaver-ce
-
-# macOS
-brew install --cask dbeaver-community
 ```
 
 ---
@@ -139,11 +84,7 @@ brew install --cask dbeaver-community
 ### Postman
 
 ```bash
-# Windows
-winget install Postman.Postman
-
-# macOS
-brew install --cask postman
+sudo snap install postman
 ```
 
 ### HTTPie (CLI alternative)
@@ -159,53 +100,25 @@ pip3 install httpie
 ### jq (JSON processor)
 
 ```bash
-# Windows
-winget install jqlang.jq
-
-# Linux
 sudo apt install jq -y
-
-# macOS
-brew install jq
 ```
 
 ### ripgrep (fast search)
 
 ```bash
-# Windows
-winget install BurntSushi.ripgrep.MSVC
-
-# Linux
 sudo apt install ripgrep -y
-
-# macOS
-brew install ripgrep
 ```
 
 ### fzf (fuzzy finder)
 
 ```bash
-# Windows
-scoop install fzf
-
-# Linux
 sudo apt install fzf -y
-
-# macOS
-brew install fzf
 ```
 
 ### bat (better cat)
 
 ```bash
-# Windows
-winget install sharkdp.bat
-
-# Linux
 sudo apt install bat -y
-
-# macOS
-brew install bat
 ```
 
 ---
@@ -215,13 +128,13 @@ brew install bat
 ### Programming Fonts
 
 ```bash
-# Windows - via Scoop
-scoop bucket add nerd-fonts
-scoop install JetBrainsMono-NF
-
-# macOS
-brew tap homebrew/cask-fonts
-brew install --cask font-jetbrains-mono-nerd-font
+# Install JetBrains Mono Nerd Font
+mkdir -p ~/.local/share/fonts
+cd ~/.local/share/fonts
+wget https://github.com/ryanoasis/nerd-fonts/releases/download/v3.1.1/JetBrainsMono.zip
+unzip JetBrainsMono.zip
+rm JetBrainsMono.zip
+fc-cache -fv
 ```
 
 ---

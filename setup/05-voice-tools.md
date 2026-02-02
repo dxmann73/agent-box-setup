@@ -1,6 +1,6 @@
 # 05 - Voice Tools
 
-Set up Wispr Flow for voice input.
+Set up voice input for Ubuntu.
 
 ## Prerequisites
 
@@ -9,87 +9,109 @@ Set up Wispr Flow for voice input.
 
 ---
 
-## 1. Install Wispr Flow
+## 1. Voice Input Options for Linux
 
-### Windows
+Wispr Flow is not available for Linux. Alternative options:
 
-Download from: https://wispr.com/flow
+### Option A: Nerd Dictation (Recommended)
 
-Or via winget (if available):
-```powershell
-winget install Wispr.Flow
-```
-
-### macOS
+Offline voice dictation using Vosk:
 
 ```bash
-brew install --cask wispr-flow
+# Install dependencies
+sudo apt install python3-pip portaudio19-dev -y
+
+# Install nerd-dictation
+pip3 install --user nerd-dictation
+
+# Add to PATH if needed
+echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
+source ~/.bashrc
 ```
 
-Or download from: https://wispr.com/flow
+### Option B: Talon Voice
 
-### Linux
-
-Wispr Flow may not be available for Linux. Alternatives:
-- **Talon Voice** - https://talonvoice.com/
-- **Nerd Dictation** - https://github.com/ideasman42/nerd-dictation
+More advanced option with programming-specific features:
+- Download from: https://talonvoice.com/
 
 ---
 
-## 2. Initial Setup
+## 2. Nerd Dictation Setup
 
-1. Launch Wispr Flow
-2. Grant microphone permissions when prompted
-3. Complete the onboarding tutorial
-4. Set your preferred activation hotkey
+### Basic Usage
+
+Start dictation:
+```bash
+nerd-dictation begin
+```
+
+Stop dictation:
+```bash
+nerd-dictation end
+```
+
+### Setup Keyboard Shortcuts
+
+Create a hotkey to toggle dictation. In your desktop environment's keyboard settings, bind:
+- Start: `nerd-dictation begin`
+- Stop: `nerd-dictation end`
+
+Or use a single toggle command:
+```bash
+nerd-dictation toggle
+```
+
+### Recommended: Run as a Service
+
+Create a systemd user service for persistent operation:
+
+```bash
+mkdir -p ~/.config/systemd/user
+```
+
+Create `~/.config/systemd/user/nerd-dictation.service`:
+```ini
+[Unit]
+Description=Nerd Dictation Voice Input
+
+[Service]
+Type=simple
+ExecStart=/home/%u/.local/bin/nerd-dictation begin
+Restart=on-failure
+
+[Install]
+WantedBy=default.target
+```
+
+Enable and start:
+```bash
+systemctl --user enable nerd-dictation
+systemctl --user start nerd-dictation
+```
 
 ---
 
-## 3. Recommended Settings
+## 3. Integration with Claude
 
-### Activation Mode
-- **Push-to-talk** is recommended for coding to avoid accidental dictation
-- Set a comfortable hotkey (e.g., `Ctrl+Shift+Space` or a mouse button)
-
-### Language Model
-- Enable the enhanced/cloud model for better accuracy if available
-
-### Application-Specific Settings
-- Enable in VS Code
-- Enable in terminal applications
-- Consider disabling in password fields
-
----
-
-## 4. Integration with Claude
-
-Wispr Flow works seamlessly with Claude Code:
+Voice dictation works seamlessly with Claude Code:
 
 1. Have Claude running in terminal
-2. Use voice to dictate your requests
-3. Wispr transcribes directly into the terminal
+2. Activate voice dictation (via hotkey)
+3. Speak your requests
+4. Text appears directly in the terminal
 
 Tips:
-- Speak naturally, including punctuation ("period", "comma", "new line")
-- Use "scratch that" to undo
-- Say command names clearly
-
----
-
-## 5. Custom Commands (Optional)
-
-Wispr Flow supports custom voice commands. Consider adding:
-- "run tests" → `npm test`
-- "git status" → `git status`
-- "commit changes" → Opens commit dialog
+- Speak naturally and clearly
+- Pause between commands
+- Test dictation accuracy before heavy use
 
 ---
 
 ## Verification Checklist
 
-- [ ] Wispr Flow installed and running
-- [ ] Microphone working
-- [ ] Hotkey configured
+- [ ] Voice input tool installed (nerd-dictation or Talon)
+- [ ] Microphone working and configured
+- [ ] Hotkey configured for activation
 - [ ] Test dictation in a text editor
 - [ ] Test dictation in terminal with Claude
 

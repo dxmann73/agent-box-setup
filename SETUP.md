@@ -10,10 +10,9 @@ Master verification checklist for new machine setup. Follow the numbered guides 
 
 ## 01 - Core Tools
 
-- [ ] Package manager working (winget/brew/apt)
+- [ ] apt package manager working
 - [ ] Git installed (`git --version`)
 - [ ] Git identity configured (`git config --global --list`)
-- [ ] Terminal configured (Windows Terminal / iTerm2)
 - [ ] SSH key generated (`ls ~/.ssh/id_ed25519.pub`)
 - [ ] GitHub CLI installed and authenticated (`gh auth status`)
 

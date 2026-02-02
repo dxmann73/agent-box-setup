@@ -1,14 +1,12 @@
 # Claude Instructions for Dave Box Setup
 
-This repository contains instructions for setting up a new development machine. You (Claude) can use these docs to configure Windows, Linux, or VM environments.
+This repository contains instructions for setting up a new Ubuntu development machine.
 
 ## How to Use This Repo
 
-1. **Determine the target platform** - Ask the user what OS they're setting up (Windows, Linux distro, or VM)
-2. **Follow the numbered setup files in order** - Each file in `setup/` is numbered for sequential execution
-3. **Adapt commands to the platform** - Instructions include platform-specific variants where needed
-4. **Verify each step** - Run the verification command after each installation before proceeding
-5. **Copy configs** - Use files from `configs/` directory as templates
+1. **Follow the numbered setup files in order** - Each file in `setup/` is numbered for sequential execution
+2. **Verify each step** - Run the verification command after each installation before proceeding
+3. **Copy configs** - Use files from `configs/` directory as templates
 
 ## Setup Order
 

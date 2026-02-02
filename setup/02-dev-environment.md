@@ -11,23 +11,6 @@ Programming languages and runtimes.
 
 ## 1. Node.js
 
-### Windows
-
-**Option A: winget**
-```powershell
-winget install OpenJS.NodeJS.LTS
-```
-
-**Option B: nvm-windows (for version management)**
-```powershell
-winget install CoreyButler.NVMforWindows
-# Restart terminal, then:
-nvm install lts
-nvm use lts
-```
-
-### Linux
-
 **Using nvm (Recommended)**
 ```bash
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.0/install.sh | bash
@@ -37,19 +20,10 @@ nvm install --lts
 nvm use --lts
 ```
 
-**Using apt (simpler but less flexible)**
+**Alternative: Using apt (simpler but less flexible)**
 ```bash
 curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
 sudo apt install nodejs -y
-```
-
-### macOS
-
-```bash
-brew install node
-# Or with nvm:
-brew install nvm
-nvm install --lts
 ```
 
 **Verify:**
@@ -62,23 +36,9 @@ npm --version
 
 ## 2. Python
 
-### Windows
-
-```powershell
-winget install Python.Python.3.12
-```
-
-### Linux
-
 ```bash
 # Usually pre-installed, but ensure latest
 sudo apt install python3 python3-pip python3-venv -y
-```
-
-### macOS
-
-```bash
-brew install python
 ```
 
 **Verify:**
@@ -129,23 +89,8 @@ poetry --version
 
 Some packages require native compilation.
 
-### Windows
-
-```powershell
-# Install Visual Studio Build Tools
-winget install Microsoft.VisualStudio.2022.BuildTools
-```
-
-### Linux
-
 ```bash
 sudo apt install build-essential -y
-```
-
-### macOS
-
-```bash
-xcode-select --install
 ```
 
 ---
