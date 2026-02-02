@@ -3,7 +3,10 @@
     "permissions": {
         "defaultMode": "bypassPermissions"
     },
-    "attribution": "",
+    "attribution": {
+         "commit": "",
+         "pr": ""
+    },
     "spinnerVerbs": {
         "mode": "replace",
         "verbs": [

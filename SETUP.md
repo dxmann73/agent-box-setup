@@ -4,8 +4,9 @@ Master verification checklist for new machine setup. Follow the numbered guides 
 
 ## 00 - Agent setup
 
-- [ ] AGENTS.md is in home directory and symlinked as CLAUDE.md
-- [ ] Claude settings are in `~/.claude/settings.json`
+- [ ] Claude Code CLI installed (`claude --version`)
+- [ ] Settings copied to `~/.claude/settings.json`
+- [ ] Rules copied to `~/.claude/rules/`
 
 ## 01 - Core Tools
 
