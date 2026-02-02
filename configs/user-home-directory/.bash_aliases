@@ -1,12 +1,11 @@
 # Project navigation aliases
-alias pr="cd /home/dave/dev/mhb/prima"
-alias bl="cd /home/dave/dev/blocks"
-alias be="cd /home/dave/dev/blocks/blocks-be"
-alias fe="cd /home/dave/dev/blocks/blocks-fe"
-alias docs="cd /home/dave/dev/blocks/blocks-docs"
+alias pr="cd /home/dave/projects/mhb/prima"
+alias bl="cd /home/dave/projects/blocks"
+alias be="cd /home/dave/projects/blocks/blocks-be"
+alias fe="cd /home/dave/projects/blocks/blocks-fe"
+alias docs="cd /home/dave/projects/blocks/blocks-docs"
 
 # General aliases
-alias e="explorer.exe ."
 alias ll="ls -alF"
 alias la="ls -al"
 alias lt="ls -tlr"
