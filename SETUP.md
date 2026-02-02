@@ -2,6 +2,11 @@
 
 Master verification checklist for new machine setup. Follow the numbered guides in `setup/` directory, then verify here.
 
+## 00 - Agent setup
+
+- [ ] AGENTS.md is in home directory and symlinked as CLAUDE.md
+- [ ] Claude settings are in `~/.claude/settings.json`
+
 ## 01 - Core Tools
 
 - [ ] Package manager working (winget/brew/apt)
@@ -50,7 +55,5 @@ Master verification checklist for new machine setup. Follow the numbered guides 
 
 ## Final Verification
 
-- [ ] Can clone a repo via SSH
-- [ ] Can run `claude` and get a response
-- [ ] Can dictate text with Wispr Flow
-- [ ] VS Code opens with correct settings
+- [ ] Show Claude agents setup with `claude config list`
+- [ ] Make sure MCP Servers are disabled using `/mcp`

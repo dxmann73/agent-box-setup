@@ -1,0 +1,13 @@
+{
+    "model": "opusplan",
+    "permissions": {
+        "defaultMode": "bypassPermissions"
+    },
+    "attribution": "",
+    "spinnerVerbs": {
+        "mode": "replace",
+        "verbs": [
+            "Working"
+        ]
+    }
+}

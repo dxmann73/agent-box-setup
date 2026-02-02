@@ -273,5 +273,3 @@ medium	1.5 GB	~5 GB	Great	Slower
 large-v3	3 GB	~10 GB	Best	Slowest
 
 For CPU-only systems, I recommend "small" as the best balance of accuracy and speed.
-Which one is it?
-Or is this the other one?What the fuck is going on?

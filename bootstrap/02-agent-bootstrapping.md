@@ -12,10 +12,20 @@ Installed [Claude](https://code.claude.com/docs/en/setup)
 curl -fsSL https://claude.ai/install.sh | bash
 ```
 
-Ran Claude and followed the authentication prompts:
+Ran `claude` and followed the authentication prompts
+
+## Bootstrap repo
+
+Cloned the box setup repo
 
 ```bash
-claude
+mkdir ~/projects
+cd ~/projects && git clone https://github.com/dxmann73/dave-box-setup
 ```
 
 => **Let the agent take over from here!**
+
+```bash
+cd dave-box-setup
+claude
+```

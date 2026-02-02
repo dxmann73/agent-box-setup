@@ -18,6 +18,7 @@ This repo is designed to work with coding agents. Just tell them to "Set up this
 
 | File | Description |
 |------|-------------|
+| `00-agent-setup.md` | Coding agent setup |
 | `01-core-tools.md` | Git, terminal, package manager |
 | `02-dev-environment.md` | Node.js, Python, development runtimes |
 | `03-editor.md` | VS Code setup and extensions |
@@ -33,8 +34,9 @@ Ready-to-use configuration files for common tools.
 
 1. This repo has been cloned to /home/dave/projects/dave-box-setup
 2. Follow the numbered guides in the `setup/` directory, see the section in "What's Included" below
-3. copy/symlink the configs from the `configs/` directory to the appropriate destinations
-4. verify with `setup-checklist.md` and generate a report.
+3. Copy/symlink the configs from the `configs/` directory to the appropriate destinations
+4. Verify with `SETUP.md` and generate a report.
 
 ## Synchronizing settings
 
+TBD, we need a way to sync settings from / to machines
