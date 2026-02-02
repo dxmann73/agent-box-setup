@@ -24,20 +24,6 @@ The `configs/user-home-directory/` contains dotfiles and configuration that shou
 
 ## 2. Copy Configuration Files
 
-### Backup Existing Files (Optional)
-
-If you have existing configurations you want to preserve:
-
-```bash
-mkdir -p ~/config-backup
-cp ~/.bashrc ~/config-backup/.bashrc.bak 2>/dev/null || true
-cp ~/.bash_aliases ~/config-backup/.bash_aliases.bak 2>/dev/null || true
-cp ~/.profile ~/config-backup/.profile.bak 2>/dev/null || true
-cp ~/.gitconfig ~/config-backup/.gitconfig.bak 2>/dev/null || true
-```
-
-### Copy Files to Home Directory
-
 ```bash
 # Navigate to repo root
 cd ~/projects/dave-box-setup
