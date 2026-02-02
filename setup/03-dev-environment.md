@@ -11,26 +11,28 @@ Programming languages and runtimes.
 
 ## 1. Node.js
 
-**Using nvm (Recommended)**
+Install Node.js using nvm for version management (recommended).
+
+### Install nvm
 
 ```bash
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.4/install.sh | bash
-# Restart terminal or source profile
 source ~/.bashrc
 nvm install --lts
 nvm use --lts
+nvm alias default lts/*
 ```
 
-**Verify:**
+### Verify
 
 ```bash
 node --version
 npm --version
 ```
 
-## 3. Common Global npm Packages
+## 2. Global npm Packages
 
-These are useful across projects:
+Install commonly used tools across all projects.
 
 ```bash
 npm install -g typescript
@@ -38,17 +40,25 @@ npm install -g ts-node
 npm install -g pnpm
 ```
 
-**Verify:**
+### Verify
 
 ```bash
 tsc --version
+ts-node --version
 pnpm --version
 ```
 
 ## Verification Checklist
 
-- [ ] Node.js installed (`node --version`)
-- [ ] npm working (`npm --version`)
-- [ ] pnpm working (`pnpm --version`)
+Confirm all tools are working:
 
-**Next:** Continue to `04-editor.md`
+- [ ] Node.js installed: `node --version`
+- [ ] npm available: `npm --version`
+- [ ] nvm can switch versions: `nvm list`
+- [ ] TypeScript compiler: `tsc --version`
+- [ ] ts-node runtime: `ts-node --version`
+- [ ] pnpm package manager: `pnpm --version`
+
+## Next Steps
+
+Continue to `04-editor.md` to set up your code editor.

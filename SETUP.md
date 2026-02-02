@@ -27,9 +27,9 @@ Master verification checklist for new machine setup. Follow the numbered guides 
 
 - [ ] Node.js installed (`node --version`)
 - [ ] npm working (`npm --version`)
-- [ ] Python installed (`python3 --version`)
-- [ ] pip working (`pip3 --version`)
-- [ ] Build tools available (if needed)
+- [ ] nvm can switch versions (`nvm list`)
+- [ ] TypeScript compiler (`tsc --version`)
+- [ ] pnpm package manager (`pnpm --version`)
 
 ## 04 - Editor
 

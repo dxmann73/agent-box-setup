@@ -20,7 +20,7 @@ This repo is designed to work with coding agents. Just tell them to "Set up this
 |------|-------------|
 | `00-agent-setup.md` | Coding agent setup |
 | `01-core-tools.md` | Git, terminal, package manager |
-| `02-dev-environment.md` | Node.js, Python, development runtimes |
+| `02-dev-environment.md` | Node.js and development tools |
 | `03-editor.md` | VS Code setup and extensions |
 | `04-claude-setup.md` | Claude Code CLI installation |
 | `05-voice-tools.md` | Wispr Flow voice input |
