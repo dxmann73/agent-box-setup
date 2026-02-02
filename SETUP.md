@@ -11,9 +11,9 @@ Master verification checklist for new machine setup. Follow the numbered guides 
 ## 01 - Home Environment
 
 - [ ] Shell config files copied to home directory
-- [ ] Git identity personalized in `~/.gitconfig`
 - [ ] Shell configuration reloaded
 - [ ] Aliases working
+- [ ] Git config loaded (`git config --global --list`)
 
 ## 02 - Core Tools
 
