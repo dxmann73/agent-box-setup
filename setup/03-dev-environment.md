@@ -23,13 +23,6 @@ nvm use --lts
 nvm alias default lts/*
 ```
 
-### Verify
-
-```bash
-node --version
-npm --version
-```
-
 ## 2. Global npm Packages
 
 Install commonly used tools across all projects.
@@ -43,6 +36,8 @@ npm install -g pnpm
 ### Verify
 
 ```bash
+node --version
+npm --version
 tsc --version
 ts-node --version
 pnpm --version

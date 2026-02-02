@@ -1,0 +1,2 @@
+# Secrets - never check in actual tokens
+configs/user-home-directory/.bash_secrets

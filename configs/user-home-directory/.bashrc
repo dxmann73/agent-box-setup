@@ -95,6 +95,11 @@ if [ -f ~/.bash_aliases ]; then
     . ~/.bash_aliases
 fi
 
+# Load secrets file if it exists (API tokens, etc.)
+if [ -f ~/.bash_secrets ]; then
+    . ~/.bash_secrets
+fi
+
 # enable programmable completion features (you don't need to enable
 # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
 # sources /etc/bash.bashrc).
@@ -121,9 +126,6 @@ export PATH="$HOME/.local/bin:$PATH"
 # Editor
 export EDITOR="cursor --wait"
 export VISUAL="cursor --wait"
-
-# Hugging Face token
-export HF_TOKEN=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
 
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="$HOME/.sdkman"
