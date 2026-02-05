@@ -41,7 +41,7 @@ The VM should be able to run all these coding agents, so Claude, Codex and Curso
 
 I want, of course, all the when I set up a project, right? So I will check out certain projects (maybe always all of them) into the projects folder, and then I will need to install Cursor and install all the extensions. I would like to automate this so I don't have to do this over and over and over again.
 
-- [x] MarkdownLint styling rules - Created `configs/agents/user-rules/markdown-style.md` with comprehensive markdownlint rules
+- [x] MarkdownLint styling rules - Created `configs/agents/user-rules/markdown-style.mdc` with comprehensive markdownlint rules
 
 Bottom line is there should be skills and guidelines to actually make the agent work better with all this stuff.
 

@@ -47,7 +47,7 @@ Destination: `~/.claude/rules/`
 
 ```bash
 mkdir -p ~/.claude/rules
-ln -sf ~/projects/dave-box-setup/configs/agents/user-rules/*.md ~/.claude/rules/
+ln -sf ~/projects/dave-box-setup/configs/agents/user-rules/*.mdc ~/.claude/rules/
 ```
 
 ### Cursor CLI user-level rules
@@ -56,7 +56,7 @@ TODO read and apply the documentation
 
 ```bash
 mkdir -p ~/.cursor/rules
-ln -sf ~/projects/dave-box-setup/configs/agents/user-rules/*.md ~/.cursor/rules/
+ln -sf ~/projects/dave-box-setup/configs/agents/user-rules/*.mdc ~/.cursor/rules/
 ```
 
 **Next:** Continue to `01-home-environment.md`
