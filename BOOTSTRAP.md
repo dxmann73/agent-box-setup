@@ -1,6 +1,6 @@
 # Steps for bootstrapping a Ubuntu VM
 
-These steps will have already been done when any coding agents hit this repo. This file is kept here purely to keep track of the process.
+These steps will have already been done when any coding agents hit this repo. This file is here purely to keep track of the process.
 
 ## Manual Steps Required
 
@@ -32,7 +32,7 @@ Run a complete update:
 sudo apt update && sudo apt upgrade
 ```
 
-Pin Terminal (Ctrl Alt T), then go to App Center > Manage > Update
+Pin Terminal (Ctrl Alt T) to Dash, then go to App Center > Manage > Update
 
 ### Settings
 

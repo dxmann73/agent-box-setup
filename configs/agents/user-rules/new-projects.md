@@ -14,4 +14,3 @@ When starting a new project:
 ## Instructions
 
 - create an `AGENT.md` file and symlink it to `CLAUDE.md`
-- TODO depending on Claude / Codex / Cursor, these will need to go in different directories

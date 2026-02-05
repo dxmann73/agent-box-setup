@@ -7,5 +7,5 @@
 
 ## Markdown
 
-- adhere to Markdown formatting best practices
+- adhere to Markdown formatting best practices as outlined in the appropriate rule for markdowns
 - inline single-line code blocks

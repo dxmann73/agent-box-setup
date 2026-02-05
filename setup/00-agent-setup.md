@@ -1,65 +1,62 @@
 # 00 - Agent setup
 
-## Claude Code
+## Global Agent Rule File
 
-- Claude Code CLI should already be installed
-- Verify with `claude --version`
+Both Claude Code and Cursor read `~/AGENTS.md` automatically. Claude Code also needs `~/CLAUDE.md`.
 
-### [User Settings](https://code.claude.com/docs/en/settings#settings-files)
-
-User settings need to go to `~/.claude/settings.json`
+Source: `configs/agents/AGENTS.md`
+Destination: `~/AGENTS.md` (with `~/CLAUDE.md` symlink)
 
 ```bash
-cp configs/agents/claude/settings.json ~/.claude/settings.json
+ln -sf ~/projects/dave-box-setup/configs/agents/AGENTS.md ~/AGENTS.md
+ln -sf ~/AGENTS.md ~/CLAUDE.md
 ```
 
-Settings configured:
+## Agent-specific settings files
+
+### Claude Code Settings
+
+Current settings:
 
 | Setting | Value | Description |
 | ------- | ----- | ----------- |
-| `model` | `opusplan` | Uses Opus for planning, Sonnet for execution |
-| `permissions.defaultMode` | `bypassPermissions` | YOLO mode - no confirmation prompts |
+| `model` | `opusplan` | Opus for planning, Sonnet for execution |
+| `permissions.defaultMode` | `bypassPermissions` | YOLO mode - (no confirmation prompts) |
 | `spinnerVerbs` | `["Working"]` | Simplified spinner text |
 
-### [Rules](https://code.claude.com/docs/en/memory#modular-rules-with-claude%2Frules%2F)
+```bash
+ln -sf ~/projects/dave-box-setup/configs/agents/claude/settings.json ~/.claude/settings.json
+```
 
-[User level rules](https://code.claude.com/docs/en/memory#user-level-rules) provide persistent instructions across all projects.
+### Cursor CLI Settings
+
+Cursor settings are stored in `~/.config/Cursor/User/settings.json`. The provided `configs/agents/cursor/settings.json` contains recommended settings to merge manually.
+
+## User-Level Rules
+
+User-Level Rules are a way to destructure the AGENTS.md file into smaller pieces and let the agent decide which rules need to be included in the context, instead of always including the whole AGENTS file. They provide persistent instructions across all projects.
+
+All agents support user-level rules.
+
+### Claude user-level rules
+
+For reference, here the documentation about [Rules in Claude](https://code.claude.com/docs/en/memory#modular-rules-with-claude%2Frules%2F) as well as [User level rules](https://code.claude.com/docs/en/memory#user-level-rules) .
 
 Source: `configs/agents/user-rules/`
 Destination: `~/.claude/rules/`
 
 ```bash
 mkdir -p ~/.claude/rules
-cp configs/agents/user-rules/*.md ~/.claude/rules/
+ln -sf ~/projects/dave-box-setup/configs/agents/user-rules/*.md ~/.claude/rules/
 ```
 
-Current rules:
+### Cursor CLI user-level rules
 
-- `new-projects.md` - Standards for setting up new projects with agent config files
-
-### Agent Configuration Files
-
-Copy the main agent configuration to home directory and create symlink for compatibility.
-
-Source: `configs/agents/AGENTS.md`
-Destination: `~/AGENTS.md` (with `~/CLAUDE.md` symlink)
+TODO read and apply the documentation
 
 ```bash
-cp configs/agents/AGENTS.md ~/AGENTS.md
-ln -sf ~/AGENTS.md ~/CLAUDE.md
-```
-
-This creates:
-
-- `~/AGENTS.md` - Primary agent configuration file
-- `~/CLAUDE.md` - Symlink to AGENTS.md for compatibility
-
-### Verification
-
-```bash
-cat ~/.claude/settings.json
-ls ~/.claude/rules/
-ls -l ~/AGENTS.md ~/CLAUDE.md
+mkdir -p ~/.cursor/rules
+ln -sf ~/projects/dave-box-setup/configs/agents/user-rules/*.md ~/.cursor/rules/
 ```
 
 **Next:** Continue to `01-home-environment.md`
