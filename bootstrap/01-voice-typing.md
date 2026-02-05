@@ -145,6 +145,7 @@ systemctl --user status dictate-ptt
 To test manually first: `~/.local/bin/dictate-ptt`
 
 If auto-detection fails, list devices and specify one:
+
 ```bash
 ~/.local/bin/dictate-ptt --list-devices
 ~/.local/bin/dictate-ptt --device /dev/input/event3
@@ -171,17 +172,22 @@ gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/or
 ### Push-to-talk daemon not working
 
 Check if it's running:
+
 ```bash
 systemctl --user status dictate-ptt
 journalctl --user -u dictate-ptt -f
 ```
 
-If you get "Permission denied" on input devices, ensure you're in the `input` group and have logged out/in:
+If you get "Permission denied" on input devices, ensure you're in the
+`input` group and have logged out/in:
+
 ```bash
 groups | grep input
 ```
 
-If keyboard isn't detected, list devices and specify manually in the service file:
+If keyboard isn't detected, list devices and specify manually in the service
+file:
+
 ```bash
 ~/.local/bin/dictate-ptt --list-devices
 # Then edit the service to add --device flag
@@ -231,12 +237,11 @@ Or open Settings → Keyboard → Input Sources and remove any extra input metho
 You can change the Whisper model based on your needs:
 
 | Model | Size | RAM Needed | Accuracy | Speed |
-|-------|------|------------|----------|-------|
+| ----- | ---- | ---------- | -------- | ----- |
 | tiny | 75 MB | ~1 GB | Lower | Fastest |
 | base | 142 MB | ~1 GB | Good | Fast |
 | small | 466 MB | ~2 GB | Better | Medium |
 | medium | 1.5 GB | ~5 GB | Great | Slower |
 | large-v3 | 3 GB | ~10 GB | Best | Slowest |
 
-For CPU-only systems, I recommend "small" as the best balance of accuracy
-and speed.
+For CPU-only systems, I recommend "small" as the best balance of accuracy and speed.

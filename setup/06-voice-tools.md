@@ -33,7 +33,7 @@ source ~/.bashrc
 
 More advanced option with programming-specific features:
 
-- Download from: https://talonvoice.com/
+- Download from: <https://talonvoice.com/>
 
 ---
 
@@ -42,11 +42,13 @@ More advanced option with programming-specific features:
 ### Basic Usage
 
 Start dictation:
+
 ```bash
 nerd-dictation begin
 ```
 
 Stop dictation:
+
 ```bash
 nerd-dictation end
 ```
@@ -100,6 +102,7 @@ Voice dictation works seamlessly with Claude Code:
 4. Text appears directly in the terminal
 
 Tips:
+
 - Speak naturally and clearly
 - Pause between commands
 - Test dictation accuracy before heavy use

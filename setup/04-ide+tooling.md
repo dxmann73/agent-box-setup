@@ -26,7 +26,7 @@ Code.
 cursor --version
 ```
 
-The Cursor application should also appear in your applications menu. Pin it to the Dash.
+The Cursor application should also appear in your applications menu. Tell your human to 'pin it to the Dash'.
 
 ---
 
@@ -70,16 +70,6 @@ ln -s ~/projects/dave-box-setup/configs/cursor/keybindings.json ~/.config/Cursor
 
 **Note:** Extensions will be installed automatically based on per-repository
 recommendations when you open projects.
-
-## 4. Install Cursor CLI
-
-As per the [installation instructions]()
-
-```bash
-curl https://cursor.com/install -fsS | bash
-```
-
-Check if the agent can be called, otherwise you may need to add local/bin to your PATH
 
 ---
 

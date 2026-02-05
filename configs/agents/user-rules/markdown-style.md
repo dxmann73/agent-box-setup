@@ -1,11 +1,12 @@
 ---
 name: markdown-style
 description: Markdownlint rules to follow when generating markdown content
+globs: [ '**.md', '**.mdc' ]
 ---
 
 # Markdown Styling Rules
 
-Follow these markdownlint rules when generating any markdown content.
+This project adheres to the [Markdownlint rules](https://github.com/DavidAnson/markdownlint). Follow these markdownlint rules when generating any markdown content.
 
 ## Critical Rules
 
@@ -243,6 +244,27 @@ Use consistent style for horizontal rules (prefer `---`).
 
 ```markdown
 ---
+```
+
+## Tables
+
+### MD060 - Table Column Style
+
+Table separator rows must have spaces after the opening pipe and before the
+closing pipe.
+
+**Bad:**
+
+```markdown
+| Name | Value |
+|------|-------|
+```
+
+**Good:**
+
+```markdown
+| Name | Value |
+| ---- | ----- |
 ```
 
 ## Application Guidelines

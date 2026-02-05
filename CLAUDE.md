@@ -27,6 +27,7 @@ This repository contains instructions for setting up a new Ubuntu development ma
 ## Config Files
 
 The `configs/` directory contains actual configuration files:
+
 - `.gitconfig` - Git configuration (update email/name as needed)
 - `.bashrc` - Shell customizations
 - `vscode/settings.json` - VS Code settings

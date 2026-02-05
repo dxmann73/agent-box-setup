@@ -17,7 +17,7 @@ This repo is designed to work with coding agents. Just tell them to "Set up this
 ### Setup Guides (`setup/`)
 
 | File | Description |
-|------|-------------|
+| ---- | ----------- |
 | `00-agent-setup.md` | Coding agent setup |
 | `01-core-tools.md` | Git, terminal, package manager |
 | `02-dev-environment.md` | Node.js and development tools |
