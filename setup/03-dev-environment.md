@@ -43,6 +43,20 @@ ts-node --version
 pnpm --version
 ```
 
+## 3. Helm
+
+Install Helm (Kubernetes package manager) via the [official install script](https://helm.sh/docs/intro/install/#from-script).
+
+```bash
+curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-4 | bash
+```
+
+### Verify
+
+```bash
+helm version
+```
+
 ## Verification Checklist
 
 Confirm all tools are working:
@@ -53,6 +67,7 @@ Confirm all tools are working:
 - [ ] TypeScript compiler: `tsc --version`
 - [ ] ts-node runtime: `ts-node --version`
 - [ ] pnpm package manager: `pnpm --version`
+- [ ] Helm installed: `helm version`
 
 ## Next Steps
 
