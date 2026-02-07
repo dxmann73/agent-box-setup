@@ -73,8 +73,6 @@ export HF_TOKEN=hf_your_token_here
 
 ### Installations
 
-Install [Voice typing](./bootstrap/01-voice-typing.md)
-
 [Google Chrome](https://www.google.com/intl/de_de/chrome/)
 
 - Download, open folder, "Open With App Center"
@@ -86,11 +84,13 @@ Install git and curl:
 sudo apt install -y git curl
 ```
 
-[Set up at least one coding agent](./bootstrap/02-agent-bootstrapping.md)
+Set up at least [one coding agent](./bootstrap/01-agent-bootstrapping.md)
 
-Follow instructions in [README.md](./README.md)
+Then follow the instructions in the [README.md](./README.md)
 
 ## Mount VM directory
+
+As an info for the user: What they need to do to map local directories into the VM.
 
 In VMWare Pro under Settings > Options > Shared Folders
 Always enabled, name vm-shares

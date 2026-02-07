@@ -11,11 +11,7 @@ Set up voice input for Ubuntu.
 
 ## 1. Voice Input Options for Linux
 
-Wispr Flow is not available for Linux. Alternative options:
-
-### Option A: Nerd Dictation (Recommended)
-
-Offline voice dictation using Vosk:
+Wispr Flow is not available for Linux. Alternative optionis offline voice dictation using Vosk:
 
 ```bash
 # Install dependencies
@@ -28,14 +24,6 @@ pip3 install --user nerd-dictation
 echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
 source ~/.bashrc
 ```
-
-### Option B: Talon Voice
-
-More advanced option with programming-specific features:
-
-- Download from: <https://talonvoice.com/>
-
----
 
 ## 2. Nerd Dictation Setup
 
