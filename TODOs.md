@@ -5,7 +5,7 @@
 - Get a proper terminal (Ghostty)
 - try browser automation in all agents
 - put docs in condensed form into [AGENTS.md](https://vercel.com/blog/agents-md-outperforms-skills-in-our-agent-evals)
-- Consolidate setup instructions already in the blocks-docs project
+- ~~Consolidate setup instructions already in the blocks-docs project~~ DONE
 - Claude [status line](https://code.claude.com/docs/en/statusline)
 
 <https://www.youtube.com/watch?v=I9-tdhxiH7w>

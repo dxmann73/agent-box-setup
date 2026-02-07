@@ -24,6 +24,32 @@ helm version
 
 ---
 
+## 2. Minikube and kubectl
+
+For local Kubernetes development (needed for backend projects):
+
+```bash
+# Install kubectl
+sudo apt install -y kubectl
+
+# Install Minikube
+curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+sudo install minikube-linux-amd64 /usr/local/bin/minikube
+rm minikube-linux-amd64
+
+# Start cluster
+minikube start --memory=4096 --cpus=2
+
+# Verify
+kubectl get nodes
+```
+
+The `k=kubectl` alias is already defined in `.bash_aliases`.
+
+---
+
 ## Verification Checklist
 
 - [ ] Helm installed (if needed): `helm version`
+- [ ] Minikube installed (if needed): `minikube version`
+- [ ] kubectl installed (if needed): `kubectl version --client`

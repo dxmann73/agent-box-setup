@@ -2,26 +2,29 @@
 
 Master verification checklist for new machine setup. Follow the numbered guides in `setup/` directory, then verify here.
 
-## 00 - Agent setup
+## 00 - Home Environment
 
-- [ ] Claude Code CLI installed (`claude --version`)
-- [ ] Settings copied to `~/.claude/settings.json`
-- [ ] Rules copied to `~/.claude/rules/`
-
-## 01 - Home Environment
-
-- [ ] Shell config files copied to home directory
+- [ ] Shell config files symlinked to home directory
+- [ ] Secrets file created from template (`~/.bash_secrets`)
 - [ ] Shell configuration reloaded
 - [ ] Aliases working
 - [ ] Git config loaded (`git config --global --list`)
+- [ ] (WSL) Git credential helper configured
+
+## 01 - Agent Setup
+
+- [ ] Claude Code CLI installed (`claude --version`)
+- [ ] Cursor CLI installed (`agent --version`)
+- [ ] Codex installed (if needed)
+- [ ] `~/AGENTS.md` and `~/CLAUDE.md` symlinked
+- [ ] Claude settings symlinked to `~/.claude/settings.json`
+- [ ] User-level rules symlinked (`~/.claude/rules/`, `~/.cursor/rules/`)
 
 ## 02 - Core Tools
 
-- [ ] apt package manager working
-- [ ] Git installed (`git --version`)
-- [ ] Git identity configured (`git config --global --list`)
-- [ ] SSH key generated (`ls ~/.ssh/id_ed25519.pub`)
 - [ ] GitHub CLI installed and authenticated (`gh auth status`)
+- [ ] jq installed (`jq --version`)
+- [ ] Docker installed (`docker --version`)
 
 ## 03 - Development Environment
 
@@ -30,29 +33,32 @@ Master verification checklist for new machine setup. Follow the numbered guides 
 - [ ] nvm can switch versions (`nvm list`)
 - [ ] TypeScript compiler (`tsc --version`)
 - [ ] pnpm package manager (`pnpm --version`)
+- [ ] SDKMAN installed (`sdk version`)
+- [ ] SDKMAN auto-env enabled
+- [ ] Java installed (`java --version`)
+- [ ] Quarkus installed (`quarkus --version`)
+- [ ] Maven installed (`mvn --version`)
 
-## 04 - Editor
+## 04 - Editor (Cursor IDE)
 
-- [ ] VS Code installed (`code --version`)
-- [ ] `code` command works from terminal
-- [ ] Essential extensions installed
-- [ ] Settings applied from configs/
+- [ ] Cursor IDE installed (`cursor --version`)
+- [ ] `cursor` command works from terminal
+- [ ] Keybindings customized
+- [ ] Java extensions installed (if applicable)
+- [ ] Settings profile exported
 
-## 06 - Voice Tools
+## 05 - Voice Tools
 
 - [ ] Voice input tool installed (nerd-dictation or Talon)
 - [ ] Microphone working
 - [ ] Hotkey configured
 - [ ] Test dictation working
 
-## 07 - Optional (check what's installed)
+## 06 - Optional (check what's installed)
 
-- [ ] Docker (`docker --version`)
-- [ ] AWS CLI (`aws --version`)
-- [ ] GCloud CLI (`gcloud --version`)
-- [ ] Azure CLI (`az --version`)
-- [ ] jq (`jq --version`)
-- [ ] ripgrep (`rg --version`)
+- [ ] Helm (`helm version`)
+- [ ] Minikube (`minikube version`)
+- [ ] kubectl (`kubectl version --client`)
 
 ## Final Verification
 

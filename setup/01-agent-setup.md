@@ -56,6 +56,18 @@ ln -sf ~/projects/dave-box-setup/configs/agents/claude/settings.json ~/.claude/s
 
 As per the [documentation for Cursor CLI](https://cursor.com/docs/cli/reference/configuration), settings are stored in `~/.cursor/cli-config.json`. We don't touch these settings for now, as the CLI adds many of its own props to it.
 
+### Codex
+
+Install [Codex](https://openai.com/de-DE/codex/) as per the [WSL setup guide](https://developers.openai.com/codex/windows#windows-subsystem-for-linux).
+
+- [Sample config](https://developers.openai.com/codex/config-sample)
+- Use gpt-5.2-codex high
+- [Security defaults](https://developers.openai.com/codex/security)
+- Codex uses [AGENTS.md](https://developers.openai.com/codex/guides/agents-md) for rules (no separate rules system)
+- [Skills](https://developers.openai.com/codex/skills#where-to-save-skills)
+
+---
+
 ## Rules, Skills, MCP, Hooks
 
 Leerob video [Agent Skills, Rules, Subagents: Explained!](https://www.youtube.com/watch?v=L_p5GxGSB_I)
