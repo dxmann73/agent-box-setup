@@ -1,4 +1,4 @@
-# ~/.bashrc - Shell customizations for Dave Box
+# ~/.bashrc - Shell customizations for Agent Box
 
 # If not running interactively, don't do anything
 case $- in

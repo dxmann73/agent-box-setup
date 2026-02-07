@@ -34,7 +34,7 @@ Ready-to-use configuration files for common tools.
 
 ## Setting up for the first time
 
-1. This repo has been cloned to /home/dave/projects/agent-box-setup
+1. This repo has been cloned to `~/projects/agent-box-setup`
 2. Follow the numbered guides in the `setup/` directory, see the section in "What's Included" below
 3. Copy/symlink the configs from the `configs/` directory to the appropriate destinations
 4. Verify with `SETUP.md` and generate a report.

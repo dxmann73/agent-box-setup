@@ -44,10 +44,10 @@ Set up passwordless apt for automation/AI agents:
 sudo visudo -f /etc/sudoers.d/apt-nopasswd
 ```
 
-Add this line (replace `dave` with your username):
+Add this line (replace `YOUR_USER_NAME` with your username):
 
 ```text
-dave ALL=(ALL) NOPASSWD: /usr/bin/apt, /usr/bin/apt-get
+YOUR_USER_NAME ALL=(ALL) NOPASSWD: /usr/bin/apt, /usr/bin/apt-get
 ```
 
 Save and exit. Now `sudo apt` won't require a password.

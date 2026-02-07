@@ -3,14 +3,14 @@
     "permissions": {
         "defaultMode": "bypassPermissions"
     },
-    "attribution": {
-         "commit": "",
-         "pr": ""
-    },
-    "spinnerVerbs": {
-        "mode": "replace",
-        "verbs": [
-            "Working"
-        ]
-    }
+  "attribution": {
+    "commit": "",
+    "pr": ""
+  },
+  "spinnerVerbs": {
+    "mode": "replace",
+    "verbs": [
+      "Working"
+    ]
+  }
 }

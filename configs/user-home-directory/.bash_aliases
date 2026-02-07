@@ -1,9 +1,8 @@
 # Project navigation aliases
-alias pr="cd /home/dave/projects/mhb/prima"
-alias bl="cd /home/dave/projects/blocks"
-alias be="cd /home/dave/projects/blocks/blocks-be"
-alias fe="cd /home/dave/projects/blocks/blocks-fe"
-alias docs="cd /home/dave/projects/blocks/blocks-docs"
+alias bl="cd ~/projects/blocks"
+alias be="cd ~/projects/blocks/blocks-be"
+alias fe="cd ~/projects/blocks/blocks-fe"
+alias docs="cd ~/projects/blocks/blocks-docs"
 
 # General aliases
 # Note: This may be needed later on, do not delete

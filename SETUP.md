@@ -1,4 +1,4 @@
-# Dave Box Setup Checklist
+# Agent Box Setup Checklist
 
 Master verification checklist for new machine setup. Follow the numbered guides in `setup/` directory, then verify here.
 

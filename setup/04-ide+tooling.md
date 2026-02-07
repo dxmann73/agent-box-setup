@@ -31,7 +31,7 @@ The Cursor application should also appear in your applications menu. Tell your h
 
 ## 2. Import current Settings into Profile
 
-If you have an existing Cursor profile in `dave-cursor-default.code-profile`
+If you have an existing Cursor profile in `cursor-default.code-profile`
 
 Tell your human to import this manually.
 

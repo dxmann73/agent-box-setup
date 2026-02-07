@@ -29,7 +29,7 @@ The `configs/user-home-directory/` contains dotfiles and configuration that shou
 - `.bash_secrets.CHANGE-ME` - Template for API tokens/secrets (copy and customize)
 - `.profile` - User profile settings
 - `.gitconfig` - Git configuration
-- `dave-cursor-default.code-profile` - Cursor IDE profile
+- `cursor-default.code-profile` - Cursor IDE profile
 
 ---
 
