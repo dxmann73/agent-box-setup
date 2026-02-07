@@ -25,7 +25,7 @@ gh auth login
 
 Follow the prompts to authenticate via browser or token.
 
-**Verify:**
+Verify:
 
 ```bash
 gh --version
@@ -34,8 +34,23 @@ gh auth status
 
 ---
 
+## 2. jq (JSON processor)
+
+```bash
+sudo apt install jq -y
+```
+
+Verify:
+
+```bash
+jq --version
+```
+
+---
+
 ## Verification Checklist
 
 - [ ] GitHub CLI installed and authenticated (`gh auth status`)
+- [ ] jq installed (`jq --version`)
 
 **Next:** Continue to `03-dev-environment.md`

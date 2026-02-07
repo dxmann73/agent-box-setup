@@ -99,7 +99,8 @@ On host os (should already be there!)
 
 ```bash
 sudo apt install open-vm-tools open-vm-tools-desktop
-sudo reboot
+
+# if anything was installed, trigger a `sudo reboot`
 ```
 
 Mount the directories in fstab

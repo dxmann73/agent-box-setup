@@ -23,6 +23,13 @@ nvm use --lts
 nvm alias default lts/*
 ```
 
+Verify:
+
+```bash
+node --version
+npm --version
+```
+
 ## 2. Global npm Packages
 
 Install commonly used tools across all projects.
@@ -33,11 +40,9 @@ npm install -g ts-node
 npm install -g pnpm
 ```
 
-### Verify
+Verify:
 
 ```bash
-node --version
-npm --version
 tsc --version
 ts-node --version
 pnpm --version
@@ -51,10 +56,25 @@ Install Helm (Kubernetes package manager) via the [official install script](http
 curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-4 | bash
 ```
 
-### Verify
+Verify:
 
 ```bash
 helm version
+```
+
+## 4. Docker
+
+```bash
+sudo apt install docker.io docker-compose -y
+sudo usermod -aG docker $USER
+# Log out and back in for group changes
+```
+
+Verify:
+
+```bash
+docker --version
+docker run hello-world
 ```
 
 ## Verification Checklist
@@ -68,6 +88,7 @@ Confirm all tools are working:
 - [ ] ts-node runtime: `ts-node --version`
 - [ ] pnpm package manager: `pnpm --version`
 - [ ] Helm installed: `helm version`
+- [ ] Docker installed: `docker --version`
 
 ## Next Steps
 
