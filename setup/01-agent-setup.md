@@ -32,7 +32,7 @@ Source: `configs/agents/AGENTS.md`
 Destination: `~/AGENTS.md` (with `~/CLAUDE.md` symlink)
 
 ```bash
-ln -sf ~/projects/dave-box-setup/configs/agents/AGENTS.md ~/AGENTS.md
+ln -sf ~/projects/agent-box-setup/configs/agents/AGENTS.md ~/AGENTS.md
 ln -sf ~/AGENTS.md ~/CLAUDE.md
 ```
 
@@ -49,7 +49,7 @@ Current settings:
 | `spinnerVerbs` | `["Working"]` | Simplified spinner text |
 
 ```bash
-ln -sf ~/projects/dave-box-setup/configs/agents/claude/settings.json ~/.claude/settings.json
+ln -sf ~/projects/agent-box-setup/configs/agents/claude/settings.json ~/.claude/settings.json
 ```
 
 ### Cursor CLI Settings
@@ -87,8 +87,8 @@ Destination: `~/.claude/rules/`
 
 ```bash
 mkdir -p ~/.claude/rules
-ln -sf ~/projects/dave-box-setup/configs/agents/user-rules/*.mdc ~/.claude/rules/
-ln -sf ~/projects/dave-box-setup/configs/agents/user-rules/*.md ~/.claude/rules/
+ln -sf ~/projects/agent-box-setup/configs/agents/user-rules/*.mdc ~/.claude/rules/
+ln -sf ~/projects/agent-box-setup/configs/agents/user-rules/*.md ~/.claude/rules/
 ```
 
 ### Cursor CLI user-level rules
@@ -99,7 +99,7 @@ As per the [documentation](https://cursor.com/docs/context/rules#rule-file-forma
 
 ```bash
 mkdir -p ~/.cursor/rules
-ln -sf ~/projects/dave-box-setup/configs/agents/user-rules/*.mdc ~/.cursor/rules/
+ln -sf ~/projects/agent-box-setup/configs/agents/user-rules/*.mdc ~/.cursor/rules/
 ```
 
 ## LATER: Skills / Tools

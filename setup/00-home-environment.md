@@ -37,14 +37,14 @@ The `configs/user-home-directory/` contains dotfiles and configuration that shou
 
 ```bash
 # Navigate to repo root
-cd ~/projects/dave-box-setup
+cd ~/projects/agent-box-setup
 
 # Symlink all dotfiles
-ln -sf ~/projects/dave-box-setup/configs/user-home-directory/.bashrc ~/.bashrc
-ln -sf ~/projects/dave-box-setup/configs/user-home-directory/.bash_aliases ~/.bash_aliases
-ln -sf ~/projects/dave-box-setup/configs/user-home-directory/.profile ~/.profile
-ln -sf ~/projects/dave-box-setup/configs/user-home-directory/.gitconfig ~/.gitconfig
-ln -sf ~/projects/dave-box-setup/configs/user-home-directory/.testcontainers.properties ~/.testcontainers.properties
+ln -sf ~/projects/agent-box-setup/configs/user-home-directory/.bashrc ~/.bashrc
+ln -sf ~/projects/agent-box-setup/configs/user-home-directory/.bash_aliases ~/.bash_aliases
+ln -sf ~/projects/agent-box-setup/configs/user-home-directory/.profile ~/.profile
+ln -sf ~/projects/agent-box-setup/configs/user-home-directory/.gitconfig ~/.gitconfig
+ln -sf ~/projects/agent-box-setup/configs/user-home-directory/.testcontainers.properties ~/.testcontainers.properties
 ```
 
 ---
@@ -61,7 +61,7 @@ cp configs/user-home-directory/.bash_secrets.CHANGE-ME configs/user-home-directo
 nano configs/user-home-directory/.bash_secrets
 
 # Symlink to home directory
-ln -sf ~/projects/dave-box-setup/configs/user-home-directory/.bash_secrets ~/.bash_secrets
+ln -sf ~/projects/agent-box-setup/configs/user-home-directory/.bash_secrets ~/.bash_secrets
 ```
 
 Update the placeholder values with your real tokens (e.g., `HF_TOKEN` for Hugging Face).

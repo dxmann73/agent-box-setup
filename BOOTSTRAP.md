@@ -90,13 +90,13 @@ Set up at least [one coding agent](./set/01-agent-setup.md)
 Clone the agent-box-setup repo to the machine you're setting up
 
 ```bash
-mkdir ~/projects && cd ~/projects && git clone https://github.com/dxmann73/dave-box-setup
+mkdir ~/projects && cd ~/projects && git clone https://github.com/dxmann73/agent-box-setup
 ```
 
 => **Let the agent take over from here!**
 
 ```bash
-cd dave-box-setup && claude --dangerously-skip-permissions
+cd agent-box-setup && claude --dangerously-skip-permissions
 ```
 
 Tell the agent to follow the instructions in the [README.md](./README.md)

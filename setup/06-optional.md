@@ -44,8 +44,6 @@ minikube start --memory=4096 --cpus=2
 kubectl get nodes
 ```
 
-The `k=kubectl` alias is already defined in `.bash_aliases`.
-
 ---
 
 ## Verification Checklist
