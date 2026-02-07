@@ -1,5 +1,27 @@
 # 00 - Agent setup
 
+## Agent Installation
+
+### Claude
+
+Claude should already be installed. If not, install [Claude](https://code.claude.com/docs/en/setup)
+
+```bash
+curl -fsSL https://claude.ai/install.sh | bash
+```
+
+Run `claude` and followed the authentication prompts.
+
+### Cursor CLI
+
+As per the [installation instructions](https://cursor.com/docs/cli/installation)
+
+```bash
+curl https://cursor.com/install -fsS | bash
+```
+
+Check if the agent can be called using `agent`, otherwise you may need to add `.local/bin` to your PATH.
+
 ## Global Agent Rule File
 
 Both Claude Code and Cursor read `~/AGENTS.md` automatically. Claude Code also needs `~/CLAUDE.md`.
@@ -30,7 +52,11 @@ ln -sf ~/projects/dave-box-setup/configs/agents/claude/settings.json ~/.claude/s
 
 ### Cursor CLI Settings
 
-Cursor settings are stored in `~/.config/Cursor/User/settings.json`. The provided `configs/agents/cursor/settings.json` contains recommended settings to merge manually.
+As per the [documentation for Cursor CLI](https://cursor.com/docs/cli/reference/configuration), settings are stored in `~/.cursor/cli-config.json`. We don't touch these settings for now, as the CLI adds many of its own props to it.
+
+## Rules, Skills, MCP, Hooks
+
+Leerob video [Agent Skills, Rules, Subagents: Explained!](https://www.youtube.com/watch?v=L_p5GxGSB_I)
 
 ## User-Level Rules
 
@@ -48,15 +74,35 @@ Destination: `~/.claude/rules/`
 ```bash
 mkdir -p ~/.claude/rules
 ln -sf ~/projects/dave-box-setup/configs/agents/user-rules/*.mdc ~/.claude/rules/
+ln -sf ~/projects/dave-box-setup/configs/agents/user-rules/*.md ~/.claude/rules/
 ```
 
 ### Cursor CLI user-level rules
 
-TODO read and apply the documentation
+Rules as a means to manage context are [described here](https://cursor.com/blog/agent-best-practices#rules-static-context-for-your-project)
+
+As per the [documentation](https://cursor.com/docs/context/rules#rule-file-format), rules should be in the home dir of the user in the `.cursor/rules` directory.
 
 ```bash
 mkdir -p ~/.cursor/rules
 ln -sf ~/projects/dave-box-setup/configs/agents/user-rules/*.mdc ~/.cursor/rules/
 ```
+
+## LATER: Skills / Tools
+
+Read the [official documentation](https://agentskills.io/what-are-skills) first.
+
+Then check [skills.sh](https://skills.sh/)
+
+Vercel is saying [skills don't really work, yet](https://vercel.com/blog/agents-md-outperforms-skills-in-our-agent-evals)
+
+For Claude, read the [documentation here](https://code.claude.com/docs/en/skills)
+For Cursor, read the [documentation here](https://agentskills.io/what-are-skills)
+
+[React rules](https://vercel.com/blog/introducing-react-best-practices)
+=> npx add-skill vercel-labs/agent-skills
+=> try in frontend
+
+Codex take on [skills/evals](https://developers.openai.com/blog/eval-skills)
 
 **Next:** Continue to `01-home-environment.md`

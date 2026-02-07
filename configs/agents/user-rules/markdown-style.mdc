@@ -1,9 +1,8 @@
 ---
-name: markdown-style
 description: Markdownlint rules to follow when generating markdown content
-globs: [ '**.md', '**.mdc' ]
+globs: *.md,*.mdc
+alwaysApply: true
 ---
-
 # Markdown Styling Rules
 
 This project adheres to the [Markdownlint rules](https://github.com/DavidAnson/markdownlint). Follow these markdownlint rules when generating any markdown content.
