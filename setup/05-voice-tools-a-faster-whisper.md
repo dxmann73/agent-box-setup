@@ -1,4 +1,4 @@
-# Install voice typing using faster-whisper
+# 05a - Voice Tools: faster-whisper
 
 NOTE: **This has already been done by the user already. It is here for future reference**
 

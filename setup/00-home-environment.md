@@ -1,4 +1,4 @@
-# 01 - Home Environment Setup
+# 00 - Home Environment Setup
 
 Set up shell environment and user configuration files.
 
@@ -94,4 +94,4 @@ echo $HF_TOKEN
 - [ ] Git config loaded (`git config --global --list`)
 - [ ] Secrets loaded (e.g., `echo $HF_TOKEN` shows your token)
 
-**Next:** Continue to `02-core-tools.md`
+**Next:** Continue to `01-agent-setup.md`

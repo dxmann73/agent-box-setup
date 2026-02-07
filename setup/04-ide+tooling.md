@@ -6,7 +6,6 @@ Code.
 ## Prerequisites
 
 - Completed `02-core-tools.md`
-- Completed `03-dev-environment.md`
 
 ---
 
@@ -46,4 +45,4 @@ recommendations when you open projects.
 - [ ] Cursor IDE installed
 - [ ] `cursor` command works from terminal
 
-**Next:** Continue to `06-voice-tools.md`
+**Next:** Continue to `05-voice-tools-a-faster-whisper.md`

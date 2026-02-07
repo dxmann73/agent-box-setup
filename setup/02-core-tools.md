@@ -4,7 +4,7 @@ Essential tools that everything else depends on.
 
 ## Prerequisites
 
-- Fresh Ubuntu installation or clean environment
+- Completed `00-home-environment.md` and `01-agent-setup.md`
 - sudo access
 
 ---
@@ -48,9 +48,27 @@ jq --version
 
 ---
 
+## 3. Docker
+
+```bash
+sudo apt install docker.io docker-compose -y
+sudo usermod -aG docker $USER
+# Log out and back in for group changes
+```
+
+Verify:
+
+```bash
+docker --version
+docker run hello-world
+```
+
+---
+
 ## Verification Checklist
 
 - [ ] GitHub CLI installed and authenticated (`gh auth status`)
 - [ ] jq installed (`jq --version`)
+- [ ] Docker installed (`docker --version`)
 
 **Next:** Continue to `03-dev-environment.md`

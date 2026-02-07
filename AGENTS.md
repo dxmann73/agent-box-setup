@@ -1,6 +1,6 @@
-# Claude Instructions for Dave Box Setup
+# Instructions for setting up an Agent Box
 
-This repository contains instructions for setting up a new Ubuntu development machine.
+This repository contains instructions for setting up a new Ubuntu development machine to use to run agents in YOLO mode.
 
 ## How to Use This Repo
 
@@ -10,18 +10,20 @@ This repository contains instructions for setting up a new Ubuntu development ma
 
 ## Setup Order
 
-1. `setup/01-home-environment.md` - Shell configuration and dotfiles
-2. `setup/02-core-tools.md` - Package manager, Git, terminal basics
-3. `setup/03-dev-environment.md` - Node.js and development tools
-4. `setup/04-editor.md` - VS Code and extensions
-5. `setup/06-voice-tools.md` - Voice input tools
-6. `setup/07-optional.md` - Docker, cloud CLIs, extras
+1. `setup/00-home-environment.md` - Shell configuration and dotfiles
+2. `setup/01-agent-setup.md` - Claude Code, Cursor CLI, agent rules
+3. `setup/02-core-tools.md` - GitHub CLI, jq, Docker
+4. `setup/03-dev-environment.md` - Node.js and development tools
+5. `setup/04-ide+tooling.md` - Cursor IDE
+6. `setup/05-voice-tools-a-faster-whisper.md` - Voice input (faster-whisper)
+7. `setup/05-voice-tools-b-nerd-dictation.md` - Voice input (nerd-dictation alternative)
+8. `setup/06-optional.md` - Helm, cloud CLIs, extras
 
 ## Important Notes
 
 - **Don't run everything blindly** - Ask the user before installing optional tools
 - **Check existing installations** - Many tools may already be installed; verify first
-- **Respect user preferences** - These are Dave's defaults; the user may want variations
+- **Respect user preferences** - These are defaults; the user may want variations
 - **Handle errors gracefully** - If a step fails, diagnose before continuing
 
 ## Config Files

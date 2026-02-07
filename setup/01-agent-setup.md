@@ -1,4 +1,4 @@
-# 00 - Agent setup
+# 01 - Agent Setup
 
 ## Agent Installation
 
@@ -9,6 +9,8 @@ Claude should already be installed. If not, install [Claude](https://code.claude
 ```bash
 curl -fsSL https://claude.ai/install.sh | bash
 ```
+
+Configure [privacy settings](https://claude.ai/settings/data-privacy-controls) to disallow chat / prompt usage.
 
 Run `claude` and followed the authentication prompts.
 
@@ -105,4 +107,4 @@ For Cursor, read the [documentation here](https://agentskills.io/what-are-skills
 
 Codex take on [skills/evals](https://developers.openai.com/blog/eval-skills)
 
-**Next:** Continue to `01-home-environment.md`
+**Next:** Continue to `02-core-tools.md`

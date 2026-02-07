@@ -2,12 +2,7 @@
 
 These steps will have already been done when any coding agents hit this repo. This file is here purely to keep track of the process.
 
-## Manual Steps Required
-
-- **Passwordless apt**: Configure sudoers for automation (see One-time steps section below)
-- **SSH Keys**: Generate SSH keypair and add to GitHub (see One-time steps section below)
-
-## VMWare Workstation Pro
+## Install VMWare Workstation Pro
 
 Get [VMWare Workstation Pro](https://www.vmware.com/products/desktop-hypervisor/workstation-and-fusion)
 
@@ -22,7 +17,7 @@ Notes:
 
 Get [Ubuntu ISO](https://ubuntu.com/download/desktop)
 
-## Ubuntu setup
+## Install and set up Ubuntu guest OS
 
 ### Initial installation
 
@@ -41,9 +36,7 @@ Change Ubuntu Settings (top right)
 Power > Power saving > Screen blank > Never
 System > Enable automatic login
 
-### One-time steps
-
-#### Passwordless apt
+### Passwordless apt
 
 Set up passwordless apt for automation/AI agents:
 
@@ -59,11 +52,11 @@ dave ALL=(ALL) NOPASSWD: /usr/bin/apt, /usr/bin/apt-get
 
 Save and exit. Now `sudo apt` won't require a password.
 
-#### SSH keys
+### SSH keys
 
 Generate a keypair and copy it to the `~/.ssh` directory
 
-#### HF token
+### HF token
 
 Create a [Hugging Face access token](https://huggingface.co/settings/tokens), Click New token, Choose Read access (enough for downloads)
 
@@ -71,12 +64,16 @@ Create a [Hugging Face access token](https://huggingface.co/settings/tokens), Cl
 export HF_TOKEN=hf_your_token_here
 ```
 
-### Installations
+### Tool / App installations
+
+#### Chrome
 
 [Google Chrome](https://www.google.com/intl/de_de/chrome/)
 
 - Download, open folder, "Open With App Center"
 - Dock: Unpin Firefox, pin Chrome
+
+#### git and curl
 
 Install git and curl:
 
@@ -84,11 +81,31 @@ Install git and curl:
 sudo apt install -y git curl
 ```
 
-Set up at least [one coding agent](./bootstrap/01-agent-bootstrapping.md)
+#### Coding agent for bootstrapping
 
-Then follow the instructions in the [README.md](./README.md)
+Set up at least [one coding agent](./set/01-agent-setup.md)
 
-## Mount VM directory
+#### Bootstrap setup repo
+
+Clone the agent-box-setup repo to the machine you're setting up
+
+```bash
+mkdir ~/projects && cd ~/projects && git clone https://github.com/dxmann73/dave-box-setup
+```
+
+=> **Let the agent take over from here!**
+
+```bash
+cd dave-box-setup && claude --dangerously-skip-permissions
+```
+
+Tell the agent to follow the instructions in the [README.md](./README.md)
+
+## Further steps
+
+After everything is set up, there may be other steps, e.g. when cloning VMs.
+
+### Mounting a VM directory
 
 As an info for the user: What they need to do to map local directories into the VM.
 

@@ -48,35 +48,6 @@ ts-node --version
 pnpm --version
 ```
 
-## 3. Helm
-
-Install Helm (Kubernetes package manager) via the [official install script](https://helm.sh/docs/intro/install/#from-script).
-
-```bash
-curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-4 | bash
-```
-
-Verify:
-
-```bash
-helm version
-```
-
-## 4. Docker
-
-```bash
-sudo apt install docker.io docker-compose -y
-sudo usermod -aG docker $USER
-# Log out and back in for group changes
-```
-
-Verify:
-
-```bash
-docker --version
-docker run hello-world
-```
-
 ## Verification Checklist
 
 Confirm all tools are working:
@@ -87,9 +58,5 @@ Confirm all tools are working:
 - [ ] TypeScript compiler: `tsc --version`
 - [ ] ts-node runtime: `ts-node --version`
 - [ ] pnpm package manager: `pnpm --version`
-- [ ] Helm installed: `helm version`
-- [ ] Docker installed: `docker --version`
 
-## Next Steps
-
-Continue to `04-editor.md` to set up your code editor.
+**Next:** Continue to `04-ide+tooling.md`

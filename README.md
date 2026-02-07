@@ -2,6 +2,8 @@
 
 Markdown-based setup documentation for configuring new coding agent VMs / machines.
 
+The steps outlined here will assume you have already done the [bootstrapping](./BOOTSTRAP.md)!
+
 ## Why
 
 1. To unlock the power of coding agents, they need to run in YOLO mode.
