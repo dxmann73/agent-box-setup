@@ -33,7 +33,7 @@ The Cursor application should also appear in your applications menu. Tell your h
 
 If you have an existing Cursor profile in `cursor-default.code-profile`
 
-Tell your human to import this manually.
+Tell your human to import this manually via Strg-Shift-P > Open Profiles (UI).
 
 **Note:** Extensions will be installed automatically based on per-repository
 recommendations when you open projects.
@@ -45,19 +45,22 @@ recommendations when you open projects.
 ### Keybindings (Strg-M Strg-S, then "record keys")
 
 - Remove the default `Strg-Shift-K` keybind, then reassign `Strg-Shift-K` to "Delete Line"
-- Format document: add `Strg-Alt-L` binding
+- Format document: Strg-Shift-P, Open keyboard Shortcuts, "format doc", add Strg-Alt-L
 - Java: Go to test: `Strg-Shift-T`
 
 ### Settings
 
 - Always show usage limits: Strg-Shift-J > Cursor Settings > Agents > Usage summary > "always"
 - Markdown theme: Strg-, > Workbench > Appearance > set to "Dark Modern"
+- Open terminal `Strg-ö`, choose Ubuntu WSL als default via the DDLB
 - Terminal scrollback: Settings > @feature:terminal scroll > Integrated scrollback > 9999
 - Send keybindings to shell: enable `terminal.integrated.sendKeybindingsToShell`
 
 ### Keyboard shortcuts reference
 
-```
+See also [Cursor keyboard shortcuts](https://cursor.com/docs/configuration/kbd#tab)
+
+```text
 Strg-I / Strg-L     Side Panel
 Strg-E               Agent Mode
 Strg-.               Mode (Agent, Plan, Ask)
@@ -66,19 +69,24 @@ Strg-K / Strg-L      Inline edit / add to agent
 Strg-Alt-B           AI Window
 ```
 
+Since Cursor is based on VS Code, check the [VS Code keyboard shortcuts](./vs-code.md#keybinds)
+
 ---
 
 ## 4. Java Extensions
 
 If working with Java/Quarkus projects:
 
-- Install the **Spring Boot Extension Pack**
+- Install the **Spring Boot Extension** and the **Spring Boot Extension Pack**
 - Install the [Quarkus extension](https://marketplace.cursorapi.com/items/?itemName=redhat.vscode-quarkus)
 - Add Quarkus docs to Cursor @docs: Type @Docs > Add new doc > paste [https://quarkus.io/guides](https://quarkus.io/guides)
 
 ### Java settings
 
-Add to workspace or user settings:
+- Set Cursor to download sources: Open VS Code settings, search for `cursor://settings/java.maven.downloadSources`
+- [Exclude warnings from generated-sources](https://stackoverflow.com/questions/57215534/java-ignore-warnings-on-directory-package-level/79781667#79781667)
+
+This is accomplished by adding the following to workspace or user settings:
 
 ```json
 {
@@ -94,6 +102,24 @@ Add to workspace or user settings:
   "java.compile.nullAnalysis.mode": "automatic"
 }
 ```
+
+### IntelliJ sync
+
+- Export IntelliJ settings into xml in user home
+- add to Users/dave/.cursor/settings.json
+
+  ```json
+    "settings": {
+      "java.completion.importOrder": [
+        "*",
+        "java",
+        "javax"
+      ],
+        "java.format.settings.url": "file:///Users/dave/.cursor/MHB-IntelliJ-Codestyle.xml",
+        "java.format.settings.profile": "IntelliJ IDEA",
+        "java.compile.nullAnalysis.mode": "automatic"
+    }
+  ```
 
 ---
 

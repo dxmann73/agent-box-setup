@@ -1,12 +1,11 @@
 # TODOs
 
-- We need to create a plan for all these in the proper order
-- Change repo name to agent-box-tooling and delete the old repo
 - Get a proper terminal (Ghostty)
 - try browser automation in all agents
 - put docs in condensed form into [AGENTS.md](https://vercel.com/blog/agents-md-outperforms-skills-in-our-agent-evals)
-- ~~Consolidate setup instructions already in the blocks-docs project~~ DONE
 - Claude [status line](https://code.claude.com/docs/en/statusline)
+- [Github and Bugbot integration](https://cursor.com/docs/integrations/github)
+- Try composer-1 model
 
 <https://www.youtube.com/watch?v=I9-tdhxiH7w>
 <https://www.youtube.com/watch?v=rcRS8-7OgBo>
@@ -15,7 +14,9 @@
 [More skills](https://code.claude.com/docs/en/skills) and [https://simonwillison.net/2025/Oct/16/claude-skills/](https://simonwillison.net/2025/Oct/16/claude-skills/)
 [LSP / Code intelligence plugins](https://code.claude.com/docs/en/discover-plugins#code-intelligence)
 
-#### etc
+- there should be rules/skills for quarkus, tanstack start, scripts for playwright etc.
+
+## etc
 
 [Subagents](https://code.claude.com/docs/en/sub-agents)
 [Check workflow here](https://code.claude.com/docs/en/costs#work-efficiently-on-complex-tasks)

@@ -76,6 +76,16 @@ sdk version
 # cd into a dir with .sdkmanrc and confirm it prints e.g. "Using java version 21.0.8-oracle in this shell."
 ```
 
+### Manually trigger an SDKMAN environment reload (if needed)
+
+If you don't see the environment updating on `cd`, you can force a reload with:
+
+```bash
+sdk env
+```
+
+This should activate the SDKs as defined in `.sdkmanrc` and print the versions being used.
+
 ---
 
 ## 4. Java (via SDKMAN)
