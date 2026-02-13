@@ -13,6 +13,7 @@
 - If unsure, read more code; if still stuck, ask w/ short options.
 - Unrecognized changes: assume another agent is working in parallel; keep going; focus your changes. If it causes issues, stop + ask user.
 - Don’t delete/rename unexpected stuff; stop + ask.
+- When in plan mode, ask clarifying questions if you're not sure what to do. Try to provide alternative approaches.
 
 ## Markdown
 
