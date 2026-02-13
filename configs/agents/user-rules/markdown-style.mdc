@@ -51,11 +51,9 @@ Heading 1
 
 Do not add trailing spaces at the end of lines, except for hard line breaks (2 spaces).
 
-### MD013 - Line Length
+### ~~MD013 - Line Length~~ (disabled)
 
-Keep lines under 80 characters when possible. URLs and table rows are exempt.
-
-**Exception:** Lines containing URLs, long code examples, or tables may exceed this limit.
+This rule is disabled project-wide via `.markdownlint.json`.
 
 ### MD018 - Space After Hash
 
@@ -273,11 +271,10 @@ When generating markdown:
 1. Always use ATX-style headings (`#`, `##`, `###`)
 2. Add blank lines before and after headings, lists, and code blocks
 3. Specify language for all code blocks
-4. Keep lines under 80 characters when practical
-5. Use consistent list markers (prefer `-`)
-6. Always add space after `#` in headings
-7. End files with a single newline
-8. No trailing whitespace on lines
+4. Use consistent list markers (prefer `-`)
+5. Always add space after `#` in headings
+6. End files with a single newline
+7. No trailing whitespace on lines
 
 ## When to Apply
 
