@@ -91,6 +91,14 @@ ln -sf ~/projects/agent-box-setup/configs/agents/user-rules/*.mdc ~/.claude/rule
 ln -sf ~/projects/agent-box-setup/configs/agents/user-rules/*.md ~/.claude/rules/
 ```
 
+Rules in subdirectories (e.g. `typescript/`) need to be linked individually:
+
+```bash
+for f in ~/projects/agent-box-setup/configs/agents/user-rules/**/*.md; do
+  ln -sf "$f" ~/.claude/rules/
+done
+```
+
 ### Cursor CLI user-level rules
 
 Rules as a means to manage context are [described here](https://cursor.com/blog/agent-best-practices#rules-static-context-for-your-project)
@@ -102,21 +110,42 @@ mkdir -p ~/.cursor/rules
 ln -sf ~/projects/agent-box-setup/configs/agents/user-rules/*.mdc ~/.cursor/rules/
 ```
 
-## LATER: Skills / Tools
+Subdirectory rules:
 
-Read the [official documentation](https://agentskills.io/what-are-skills) first.
+```bash
+for f in ~/projects/agent-box-setup/configs/agents/user-rules/**/*.md; do
+  ln -sf "$f" ~/.cursor/rules/
+done
+```
 
-Then check [skills.sh](https://skills.sh/)
+## Skills
 
-Vercel is saying [skills don't really work, yet](https://vercel.com/blog/agents-md-outperforms-skills-in-our-agent-evals)
+[official documentation](https://agentskills.io/what-are-skills). Although [skills don't really work, yet](https://vercel.com/blog/agents-md-outperforms-skills-in-our-agent-evals), we are preparing to use skills.
 
-For Claude, read the [documentation here](https://code.claude.com/docs/en/skills)
-For Cursor, read the [documentation here](https://agentskills.io/what-are-skills)
+Skills are taken from:
 
-[React rules](https://vercel.com/blog/introducing-react-best-practices)
-=> npx add-skill vercel-labs/agent-skills
-=> try in frontend
+- [skills.sh](https://skills.sh/)
+- [OpenAI](http://github.com/openai/skills) - already included in skills.sh
 
-Codex take on [skills/evals](https://developers.openai.com/blog/eval-skills)
+To make skills available, they need to be mapped to certain directories
+
+- Agent agnostic should go to `~/.agents/skills/<skill-name>`
+- For Claude this should go to `~/.claude/skills/<skill-name>`, check [the docs](https://code.claude.com/docs/en/skills)
+- For Cursor this should go to `~/.cursor/skills/<skill-name>`, check [the docs](https://agentskills.io/what-are-skills)
+
+For further reading, here is also the Codex take on [skills/evals](https://developers.openai.com/blog/eval-skills).
+
+Source: `configs/agents/skills/`
+
+```bash
+mkdir -p ~/.claude/skills ~/.cursor/skills ~/.agents/skills
+
+for skill in ~/projects/agent-box-setup/configs/agents/skills/*/; do
+  name=$(basename "$skill")
+  ln -sf "$skill" ~/.claude/skills/"$name"
+  ln -sf "$skill" ~/.cursor/skills/"$name"
+  ln -sf "$skill" ~/.agents/skills/"$name"
+done
+```
 
 **Next:** Continue to `02-core-tools.md`
