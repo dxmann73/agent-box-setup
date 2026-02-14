@@ -36,6 +36,8 @@ Change Ubuntu Settings (top right)
 Power > Power saving > Screen blank > Never
 System > Enable automatic login
 
+Install `Gnome Tweaks` and set proper font scaling under "Appearance"
+
 ### Passwordless apt
 
 Set up passwordless apt for automation/AI agents:
