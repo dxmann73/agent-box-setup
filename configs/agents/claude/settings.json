@@ -1,16 +1,17 @@
 {
-    "model": "opusplan",
-    "permissions": {
-        "defaultMode": "bypassPermissions"
-    },
   "attribution": {
     "commit": "",
     "pr": ""
   },
+  "permissions": {
+    "defaultMode": "bypassPermissions"
+  },
+  "model": "opusplan",
   "spinnerVerbs": {
     "mode": "replace",
     "verbs": [
       "Working"
     ]
-  }
+  },
+  "skipDangerousModePermissionPrompt": true
 }
