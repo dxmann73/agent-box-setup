@@ -9,7 +9,6 @@ Master verification checklist for new machine setup. Follow the numbered guides 
 - [ ] Shell configuration reloaded
 - [ ] Aliases working
 - [ ] Git config loaded (`git config --global --list`)
-- [ ] (WSL) Git credential helper configured
 
 ## 01 - Agent Setup
 

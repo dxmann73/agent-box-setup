@@ -12,12 +12,6 @@ Set up shell environment and user configuration files.
 
 If running on WSL, keep your projects on the WSL filesystem (`\\wsl$\<distro>\home\<user>\`) for a ~10x build speed improvement over the Windows filesystem.
 
-Set up Git credential sharing with Windows:
-
-```bash
-git config --global credential.helper "/mnt/c/Program\ Files/Git/mingw64/bin/git-credential-manager.exe"
-```
-
 ---
 
 ## 1. Overview
