@@ -8,6 +8,10 @@ echo "  Agent Box Setup Verification"
 echo "========================================="
 echo ""
 
+# Load nvm and SDKMAN in this non-interactive script when present.
+[ -s "$HOME/.nvm/nvm.sh" ] && . "$HOME/.nvm/nvm.sh"
+[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ] && . "$HOME/.sdkman/bin/sdkman-init.sh"
+
 # Agent Binaries
 echo "=== Agent Binaries ==="
 claude --version 2>/dev/null && echo "✓ Claude Code installed" || echo "✗ Claude Code missing"
@@ -60,9 +64,15 @@ echo ""
 echo "=== Development Environment ==="
 nvm --version >/dev/null 2>&1 && echo "✓ nvm installed" || echo "✗ nvm missing"
 node --version 2>/dev/null && echo "✓ Node.js installed: $(node --version)" || echo "✗ Node.js missing"
-npm --version >/dev/null 2>&1 && echo "✓ npm installed" || echo "✗ npm missing"
+command npm --version >/dev/null 2>&1 && echo "✓ npm installed" || echo "✗ npm missing"
 tsc --version >/dev/null 2>&1 && echo "✓ TypeScript installed" || echo "✗ TypeScript missing"
-pnpm --version >/dev/null 2>&1 && echo "✓ pnpm installed" || echo "✗ pnpm missing"
+if pnpm --version >/dev/null 2>&1; then
+    echo "✓ pnpm installed"
+elif corepack pnpm --version >/dev/null 2>&1; then
+    echo "⊗ pnpm shim missing (run: corepack enable)"
+else
+    echo "✗ pnpm missing"
+fi
 sdk version >/dev/null 2>&1 && echo "✓ SDKMAN installed" || echo "✗ SDKMAN missing"
 java --version >/dev/null 2>&1 && echo "✓ Java installed" || echo "✗ Java missing"
 mvn --version >/dev/null 2>&1 && echo "✓ Maven installed" || echo "✗ Maven missing"

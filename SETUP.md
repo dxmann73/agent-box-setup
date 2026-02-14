@@ -28,7 +28,7 @@ Master verification checklist for new machine setup. Follow the numbered guides 
 ## 03 - Development Environment
 
 - [ ] Node.js installed (`node --version`)
-- [ ] npm working (`npm --version`)
+- [ ] npm working (`command npm --version`)
 - [ ] nvm can switch versions (`nvm list`)
 - [ ] TypeScript compiler (`tsc --version`)
 - [ ] pnpm package manager (`pnpm --version`)

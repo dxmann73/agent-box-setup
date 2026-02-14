@@ -28,19 +28,22 @@ nvm alias default lts/*
 ```bash
 nvm --version
 node --version
-npm --version
+command npm --version
 ```
 
 Expected output: Version numbers for nvm, node (v22.x or similar), and npm
 
 ---
 
-## 2. Global npm Packages
+## 2. Package Managers and Global JS Tools
 
-Install commonly used tools across all projects.
+Bootstrap `pnpm` using Corepack first, then install global JS tools with the real `npm` binary.
 
 ```bash
-npm install -g typescript ts-node pnpm
+corepack enable
+corepack prepare pnpm@latest --activate
+pnpm --version
+command npm install -g typescript ts-node
 ```
 
 **Verify installation:**
@@ -143,7 +146,7 @@ Run all verification commands:
 echo "=== Node.js & npm ===" && \
 nvm --version && \
 node --version && \
-npm --version && \
+command npm --version && \
 echo -e "\n=== Global npm packages ===" && \
 tsc --version && \
 ts-node --version && \
@@ -164,7 +167,7 @@ All commands should complete successfully and show version numbers.
 Confirm all tools are working:
 
 - [ ] Node.js installed: `node --version` shows v22.x or similar
-- [ ] npm available: `npm --version` shows version
+- [ ] npm available: `command npm --version` shows version
 - [ ] nvm can switch versions: `nvm list` shows installed versions
 - [ ] TypeScript compiler: `tsc --version` shows version
 - [ ] ts-node runtime: `ts-node --version` shows version
