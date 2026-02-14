@@ -5,7 +5,8 @@
 - reply in a concise style, avoid unnecessary repetition or filler language
 - avoid emphasis, icons and symbols if not needed for understanding
 - Before writing code, first explore the project structure
-- Workspace: `~/projects`, Github `https://github.com/dxmann73`.
+- My Workspace: `~/projects`
+- My Github `https://github.com/dxmann73`
 - “Make a note” => edit AGENTS.md (shortcut; not a blocker). Ignore `CLAUDE.md`.
 - Editor: `cursor <path>`.
 - Web: search early; prefer 2025–2026 sources; use Firecrawl skill
@@ -17,8 +18,7 @@
 
 ## Markdown
 
-- adhere to Markdown formatting best practices as outlined in @markdown-style.mdc
-- inline single-line code blocks
+- when creating or changing markdown files, follow the rules in `markdown-style.mdc`
 
 ## git / github
 
