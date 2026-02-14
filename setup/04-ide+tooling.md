@@ -19,13 +19,15 @@ Code.
 4. Select "Open With App Center"
 5. Click "Install" and authenticate as needed
 
-Verify:
+**Verify installation:**
 
 ```bash
 cursor --version
 ```
 
-The Cursor application should also appear in your applications menu. Tell your human to 'pin it to the Dash'.
+Expected output: Version number like `2.x.x` along with commit hash
+
+**Note:** The Cursor application should also appear in your applications menu. Tell your human to 'pin it to the Dash'.
 
 ---
 
@@ -129,12 +131,26 @@ Export and save settings profile: Ctrl+Shift+P > "Preferences: Open Profiles (UI
 
 ---
 
+---
+
+## Complete Verification
+
+Run verification command:
+
+```bash
+echo "=== Cursor IDE ===" && \
+cursor --version && \
+echo -e "\nCursor binary location: $(which cursor)" && \
+echo "Cursor app installed: $(test -d /opt/Cursor && echo "✓ Yes" || echo "✗ No")"
+```
+
 ## Verification Checklist
 
-- [ ] Cursor IDE installed
-- [ ] `cursor` command works from terminal
-- [ ] Keybindings customized
-- [ ] Java extensions installed (if applicable)
-- [ ] Settings profile exported
+- [ ] Cursor IDE installed: `cursor --version` shows version
+- [ ] `cursor` command works from terminal at `/usr/bin/cursor` or similar
+- [ ] Cursor application appears in applications menu
+- [ ] Keybindings customized (manual step)
+- [ ] Java extensions installed if applicable (manual step)
+- [ ] Settings profile exported (manual step)
 
 **Next:** Continue to `05-voice-tools-a-faster-whisper.md`

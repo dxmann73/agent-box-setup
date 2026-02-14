@@ -2,7 +2,7 @@
 
 ## Agent Installation
 
-### Claude
+### Claude Code
 
 Claude should already be installed. If not, install [Claude](https://code.claude.com/docs/en/setup)
 
@@ -10,11 +10,21 @@ Claude should already be installed. If not, install [Claude](https://code.claude
 curl -fsSL https://claude.ai/install.sh | bash
 ```
 
+**Verify installation:**
+
+```bash
+claude --version
+```
+
+Expected output: `2.x.x (Claude Code)` or similar
+
+**Configure and authenticate:**
+
 Configure [privacy settings](https://claude.ai/settings/data-privacy-controls) to disallow chat / prompt usage.
 
-Run `claude` and followed the authentication prompts.
+Run `claude` and follow the authentication prompts.
 
-### Cursor CLI
+### Cursor CLI Agent
 
 As per the [installation instructions](https://cursor.com/docs/cli/installation)
 
@@ -22,7 +32,19 @@ As per the [installation instructions](https://cursor.com/docs/cli/installation)
 curl https://cursor.com/install -fsS | bash
 ```
 
-Check if the agent can be called using `agent`, otherwise you may need to add `.local/bin` to your PATH.
+**Verify installation:**
+
+```bash
+agent --version
+```
+
+Expected output: `2026.xx.xx-xxxxxxx` or similar
+
+**Troubleshooting:** If `agent` command is not found, ensure `~/.local/bin` is in your PATH:
+
+```bash
+echo $PATH | grep -q "$HOME/.local/bin" && echo "✓ PATH is configured" || echo "✗ Add ~/.local/bin to PATH"
+```
 
 ## Global Agent Rule File
 
@@ -35,6 +57,14 @@ Destination: `~/AGENTS.md` (with `~/CLAUDE.md` symlink)
 ln -sf ~/projects/agent-box-setup/configs/agents/AGENTS.md ~/AGENTS.md
 ln -sf ~/AGENTS.md ~/CLAUDE.md
 ```
+
+**Verify symlinks:**
+
+```bash
+ls -l ~/AGENTS.md ~/CLAUDE.md
+```
+
+Both should point to `~/projects/agent-box-setup/configs/agents/AGENTS.md`
 
 ## Agent-specific settings files
 
@@ -51,6 +81,14 @@ Current settings:
 ```bash
 ln -sf ~/projects/agent-box-setup/configs/agents/claude/settings.json ~/.claude/settings.json
 ```
+
+**Verify settings:**
+
+```bash
+ls -l ~/.claude/settings.json && cat ~/.claude/settings.json | jq -r '.model, .permissions.defaultMode'
+```
+
+Expected output: `opusplan` and `bypassPermissions`
 
 ### Cursor CLI Settings
 
@@ -99,6 +137,14 @@ for f in ~/projects/agent-box-setup/configs/agents/user-rules/**/*.md; do
 done
 ```
 
+**Verify rules:**
+
+```bash
+ls -la ~/.claude/rules/ | wc -l
+```
+
+Expected: 5+ rules files linked
+
 ### Cursor CLI user-level rules
 
 Rules as a means to manage context are [described here](https://cursor.com/blog/agent-best-practices#rules-static-context-for-your-project)
@@ -117,6 +163,14 @@ for f in ~/projects/agent-box-setup/configs/agents/user-rules/**/*.md; do
   ln -sf "$f" ~/.cursor/rules/
 done
 ```
+
+**Verify rules:**
+
+```bash
+ls -la ~/.cursor/rules/ | wc -l
+```
+
+Expected: 5+ rules files linked
 
 ## Skills
 
@@ -146,6 +200,38 @@ for skill in ~/projects/agent-box-setup/configs/agents/skills/*/; do
   ln -sf "$skill" ~/.cursor/skills/"$name"
   ln -sf "$skill" ~/.agents/skills/"$name"
 done
+```
+
+**Verify skills:**
+
+```bash
+echo "Claude skills:" && ls ~/.claude/skills/ | wc -l
+echo "Cursor skills:" && ls ~/.cursor/skills/ | wc -l
+echo "Agent skills:" && ls ~/.agents/skills/ | wc -l
+```
+
+Expected: Same count for all three (should match number of skill directories)
+
+---
+
+## Complete Verification
+
+Run all verification commands to ensure setup is complete:
+
+```bash
+echo "=== Agent Binaries ===" && \
+claude --version && \
+agent --version && \
+echo -e "\n=== Config Files ===" && \
+ls -l ~/AGENTS.md ~/CLAUDE.md && \
+echo -e "\n=== Settings ===" && \
+ls -l ~/.claude/settings.json && \
+echo -e "\n=== Rules Count ===" && \
+echo "Claude rules: $(ls ~/.claude/rules/ 2>/dev/null | wc -l)" && \
+echo "Cursor rules: $(ls ~/.cursor/rules/ 2>/dev/null | wc -l)" && \
+echo -e "\n=== Skills Count ===" && \
+echo "Claude skills: $(ls ~/.claude/skills/ 2>/dev/null | wc -l)" && \
+echo "Cursor skills: $(ls ~/.cursor/skills/ 2>/dev/null | wc -l)"
 ```
 
 **Next:** Continue to `02-core-tools.md`

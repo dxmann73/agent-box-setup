@@ -5,8 +5,26 @@ This repository contains instructions for setting up a new Ubuntu development ma
 ## How to Use This Repo
 
 1. **Follow the numbered setup files in order** - Each file in `setup/` is numbered for sequential execution
-2. **Verify each step** - Run the verification command after each installation before proceeding
-3. **Copy configs** - Use files from `configs/` directory as templates
+2. **Verify each step** - Each setup file now includes verification commands after installation steps
+3. **Run complete verification** - Use `./verify-setup.sh` to check all installations at once
+4. **Copy configs** - Use files from `configs/` directory as templates
+
+## Quick Verification
+
+After setup or at any time, run the verification script to check all components:
+
+```bash
+cd ~/projects/agent-box-setup
+./verify-setup.sh
+```
+
+This will verify:
+- Agent binaries (Claude Code, Cursor CLI Agent, Cursor IDE)
+- Configuration files and symlinks
+- Rules and skills setup
+- Core tools (GitHub CLI, Docker, jq)
+- Development environment (Node.js, Java, etc.)
+- Optional tools (if installed)
 
 ## Setup Order
 
@@ -38,6 +56,7 @@ Copy these to the appropriate locations, or symlink them for easier updates.
 
 ## Structure
 
-- `setup/` - Numbered setup guides (follow in order)
+- `setup/` - Numbered setup guides (follow in order, each includes verification steps)
 - `configs/` - Configuration files to copy/symlink
-- `setup-checklist.md` - Master verification checklist
+- `verify-setup.sh` - Automated verification script (run this to check everything)
+- `setup-checklist.md` - Detailed verification checklist with troubleshooting

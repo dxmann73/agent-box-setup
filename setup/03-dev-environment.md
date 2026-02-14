@@ -23,12 +23,15 @@ nvm use --lts
 nvm alias default lts/*
 ```
 
-Verify:
+**Verify installation:**
 
 ```bash
+nvm --version
 node --version
 npm --version
 ```
+
+Expected output: Version numbers for nvm, node (v22.x or similar), and npm
 
 ---
 
@@ -37,18 +40,18 @@ npm --version
 Install commonly used tools across all projects.
 
 ```bash
-npm install -g typescript
-npm install -g ts-node
-npm install -g pnpm
+npm install -g typescript ts-node pnpm
 ```
 
-Verify:
+**Verify installation:**
 
 ```bash
 tsc --version
 ts-node --version
 pnpm --version
 ```
+
+Expected output: Version numbers for all three tools
 
 ---
 
@@ -65,16 +68,24 @@ source "$HOME/.sdkman/bin/sdkman-init.sh"
 Enable auto-env so SDKMAN auto-loads SDK versions from `.sdkmanrc` on `cd`:
 
 ```bash
-nano ~/.sdkman/etc/config
-# Set: sdkman_auto_env=true
+sed -i 's/sdkman_auto_env=false/sdkman_auto_env=true/' ~/.sdkman/etc/config
 ```
 
-Verify:
+**Verify SDKMAN installation:**
 
 ```bash
 sdk version
-# cd into a dir with .sdkmanrc and confirm it prints e.g. "Using java version 21.0.8-oracle in this shell."
 ```
+
+Expected output: `SDKMAN x.x.x` or similar
+
+**Verify auto-env is enabled:**
+
+```bash
+grep sdkman_auto_env ~/.sdkman/etc/config
+```
+
+Expected output: `sdkman_auto_env=true`
 
 ### Manually trigger an SDKMAN environment reload (if needed)
 
@@ -94,11 +105,13 @@ This should activate the SDKs as defined in `.sdkmanrc` and print the versions b
 sdk install java 21.0.8-oracle
 ```
 
-Verify:
+**Verify installation:**
 
 ```bash
 java --version
 ```
+
+Expected output: `java 21.0.8` or similar
 
 ---
 
@@ -109,29 +122,57 @@ sdk install quarkus
 sdk install maven
 ```
 
-Verify:
+**Verify installation:**
 
 ```bash
 quarkus --version
 mvn --version
 ```
 
+Expected output: Version numbers for both Quarkus CLI and Maven
+
 ---
+
+---
+
+## Complete Verification
+
+Run all verification commands:
+
+```bash
+echo "=== Node.js & npm ===" && \
+nvm --version && \
+node --version && \
+npm --version && \
+echo -e "\n=== Global npm packages ===" && \
+tsc --version && \
+ts-node --version && \
+pnpm --version && \
+echo -e "\n=== SDKMAN ===" && \
+sdk version && \
+echo "Auto-env: $(grep sdkman_auto_env ~/.sdkman/etc/config)" && \
+echo -e "\n=== Java Development ===" && \
+java --version && \
+quarkus --version && \
+mvn --version | head -1
+```
+
+All commands should complete successfully and show version numbers.
 
 ## Verification Checklist
 
 Confirm all tools are working:
 
-- [ ] Node.js installed: `node --version`
-- [ ] npm available: `npm --version`
-- [ ] nvm can switch versions: `nvm list`
-- [ ] TypeScript compiler: `tsc --version`
-- [ ] ts-node runtime: `ts-node --version`
-- [ ] pnpm package manager: `pnpm --version`
-- [ ] SDKMAN installed: `sdk version`
-- [ ] SDKMAN auto-env enabled
-- [ ] Java installed: `java --version`
-- [ ] Quarkus installed: `quarkus --version`
-- [ ] Maven installed: `mvn --version`
+- [ ] Node.js installed: `node --version` shows v22.x or similar
+- [ ] npm available: `npm --version` shows version
+- [ ] nvm can switch versions: `nvm list` shows installed versions
+- [ ] TypeScript compiler: `tsc --version` shows version
+- [ ] ts-node runtime: `ts-node --version` shows version
+- [ ] pnpm package manager: `pnpm --version` shows version
+- [ ] SDKMAN installed: `sdk version` shows version
+- [ ] SDKMAN auto-env enabled: config shows `sdkman_auto_env=true`
+- [ ] Java installed: `java --version` shows 21.x
+- [ ] Quarkus installed: `quarkus --version` shows version
+- [ ] Maven installed: `mvn --version` shows version
 
 **Next:** Continue to `04-ide+tooling.md`

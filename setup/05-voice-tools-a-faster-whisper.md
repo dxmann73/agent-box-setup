@@ -245,3 +245,37 @@ You can change the Whisper model based on your needs:
 | large-v3 | 3 GB | ~10 GB | Best | Slowest |
 
 For CPU-only systems, I recommend "small" as the best balance of accuracy and speed.
+
+---
+
+## Complete Verification
+
+Run verification commands:
+
+```bash
+echo "=== Dependencies ===" && \
+which ydotool && \
+which xdotool && \
+echo -e "\n=== Input group ===" && \
+groups | grep -q input && echo "✓ User in input group" || echo "✗ Not in input group - log out/in required" && \
+echo -e "\n=== Dictation scripts ===" && \
+ls -l ~/.local/bin/dictate-* && \
+echo -e "\n=== faster-whisper ===" && \
+test -d ~/faster-whisper-dictation && echo "✓ Repository cloned" || echo "✗ Repository missing" && \
+echo -e "\n=== ydotool service ===" && \
+systemctl --user is-active ydotool 2>/dev/null || echo "Service not running (optional)" && \
+echo -e "\n=== Push-to-talk service ===" && \
+systemctl --user is-active dictate-ptt 2>/dev/null || echo "Service not running (use toggle mode or not configured)"
+```
+
+## Verification Checklist
+
+- [ ] System dependencies installed (ydotool, xdotool, etc.)
+- [ ] User is in `input` group: `groups | grep input`
+- [ ] Python 3.11 installed: `python3.11 --version`
+- [ ] faster-whisper repository cloned at `~/faster-whisper-dictation`
+- [ ] Virtual environment created with dependencies
+- [ ] Dictation scripts symlinked in `~/.local/bin`
+- [ ] Manual test successful: `~/.local/bin/dictate-start` and `dictate-stop`
+- [ ] Keyboard shortcut configured (Option A or B)
+- [ ] IBus Ctrl+Space disabled if using that shortcut
