@@ -11,6 +11,7 @@
 - Editor: `cursor <path>`.
 - Web: search early; prefer 2025–2026 sources; use Firecrawl skill
 - Always try to fix root cause (no band-aids).
+- Before adding any new dependency, run a GitHub health check and report the results to the user. The report must include number of contributors, recent contribution activity, commit frequency, open issues, latest release date, and license status.
 - If unsure, read more code; if still stuck, ask w/ short options.
 - Unrecognized changes: assume another agent is working in parallel; keep going; focus your changes. If it causes issues, stop + ask user.
 - Don’t delete/rename unexpected stuff; stop + ask.
