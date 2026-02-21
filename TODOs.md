@@ -16,6 +16,10 @@
 
 - there should be rules/skills for quarkus, tanstack start, scripts for playwright etc.
 
+## project setup
+
+Some of the steps in here are actually only relevant for certain types of projects, e.g. you only need sdkman if you are working on a JAVA project. Break out these parts as well as the relevant skills / tools / rules into packages.
+
 ## etc
 
 [Subagents](https://code.claude.com/docs/en/sub-agents)

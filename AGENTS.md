@@ -19,6 +19,7 @@ cd ~/projects/agent-box-setup
 ```
 
 This will verify:
+
 - Agent binaries (Claude Code, Cursor CLI Agent, Cursor IDE)
 - Configuration files and symlinks
 - Rules and skills setup
