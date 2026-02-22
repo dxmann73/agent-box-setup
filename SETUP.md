@@ -33,6 +33,8 @@ Master verification checklist for new machine setup. Follow the numbered guides 
 - [ ] nvm can switch versions (`nvm list`)
 - [ ] TypeScript compiler (`tsc --version`)
 - [ ] pnpm package manager (`pnpm --version`)
+- [ ] Playwright Chromium installed for frontend browser tests (`pnpm exec playwright install chromium` in frontend repo)
+- [ ] Linux/WSL Playwright system deps installed (`pnpm exec playwright install-deps chromium` in frontend repo)
 - [ ] SDKMAN installed (`sdk version`)
 - [ ] SDKMAN auto-env enabled
 - [ ] Java installed (`java --version`)
