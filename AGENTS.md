@@ -46,6 +46,12 @@ This will verify:
 - **Respect user preferences** - These are defaults; the user may want variations
 - **Handle errors gracefully** - If a step fails, diagnose before continuing
 
+## Project Rules
+
+- Treat `configs/agents/skills/` as the single source of truth for installed skills.
+- Keep setup docs/scripts in sync with that directory (`setup/01-agent-setup.md`, `verify-setup.sh`, `SETUP.md`).
+- Verification must be directory-driven (derive expected skills from `configs/agents/skills/`), not hardcoded skill-name lists.
+
 ## Config Files
 
 The `configs/` directory contains actual configuration files:

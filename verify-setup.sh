@@ -41,14 +41,37 @@ echo ""
 
 # Skills
 echo "=== Skills ==="
+skills_source_dir="$(dirname "$0")/configs/agents/skills"
+expected_skills=()
+for skill_path in "$skills_source_dir"/*/; do
+    [ -d "$skill_path" ] || continue
+    expected_skills+=("$(basename "$skill_path")")
+done
+expected_skill_count=${#expected_skills[@]}
 claude_skills=$(ls ~/.claude/skills/ 2>/dev/null | wc -l)
 cursor_skills=$(ls ~/.cursor/skills/ 2>/dev/null | wc -l)
+agent_skills=$(ls ~/.agents/skills/ 2>/dev/null | wc -l)
+echo "Expected skills from source: $expected_skill_count directories"
 echo "Claude skills: $claude_skills directories"
 echo "Cursor skills: $cursor_skills directories"
-if [ "$claude_skills" -gt 0 ] && [ "$cursor_skills" -gt 0 ]; then
-    echo "✓ Skills configured"
+echo "Agent skills: $agent_skills directories"
+
+skills_missing=0
+for target_dir in ~/.claude/skills ~/.cursor/skills ~/.agents/skills; do
+    for skill in "${expected_skills[@]}"; do
+        if [ ! -e "$target_dir/$skill" ]; then
+            echo "✗ Missing skill '$skill' in $target_dir"
+            skills_missing=1
+        fi
+    done
+done
+
+if [ "$expected_skill_count" -eq 0 ]; then
+    echo "✗ No source skills found in $skills_source_dir"
+elif [ "$skills_missing" -eq 0 ]; then
+    echo "✓ Skills configured and synced to source"
 else
-    echo "✗ Skills missing or incomplete"
+    echo "✗ Skills missing or incomplete vs source"
 fi
 echo ""
 

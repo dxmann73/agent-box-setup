@@ -197,9 +197,9 @@ mkdir -p ~/.claude/skills ~/.cursor/skills ~/.agents/skills
 
 for skill in ~/projects/agent-box-setup/configs/agents/skills/*/; do
   name=$(basename "$skill")
-  ln -sf "$skill" ~/.claude/skills/"$name"
-  ln -sf "$skill" ~/.cursor/skills/"$name"
-  ln -sf "$skill" ~/.agents/skills/"$name"
+  ln -sfn "$skill" ~/.claude/skills/"$name"
+  ln -sfn "$skill" ~/.cursor/skills/"$name"
+  ln -sfn "$skill" ~/.agents/skills/"$name"
 done
 ```
 
@@ -212,6 +212,26 @@ echo "Agent skills:" && ls ~/.agents/skills/ | wc -l
 ```
 
 Expected: Same count for all three (should match number of skill directories)
+
+**Verify linked skills against `configs/agents/skills/`:**
+
+```bash
+SOURCE_DIR=~/projects/agent-box-setup/configs/agents/skills
+
+for dir in ~/.claude/skills ~/.cursor/skills ~/.agents/skills; do
+  echo "[$dir]"
+  for skill_path in "$SOURCE_DIR"/*/; do
+    skill=$(basename "$skill_path")
+    if [ -L "$dir/$skill" ] || [ -d "$dir/$skill" ]; then
+      echo "  ✓ $skill"
+    else
+      echo "  ✗ $skill"
+    fi
+  done
+done
+```
+
+Expected: every skill directory under `configs/agents/skills/` shows `✓` for all three link targets.
 
 ---
 
