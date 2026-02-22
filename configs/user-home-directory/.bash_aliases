@@ -37,11 +37,7 @@ alias mcit="mvn clean install -DskipITs=false $@"
 alias mcd="mvn clean install -DskipTests $@"
 export MAVEN_OPTS=-Xmx1024m
 
-# Node/npm/pnpm
-# Keep npm usable during bootstrap. Only remap npm when pnpm exists.
-if command -v pnpm >/dev/null 2>&1; then
-  alias npm=pnpm
-fi
+# Node/pnpm
 alias ns="pnpm start"
 alias ni="pnpm install"
 alias nrs="pnpm run start"

@@ -107,7 +107,7 @@ echo ""
 echo "=== Development Environment ==="
 nvm --version >/dev/null 2>&1 && echo "✓ nvm installed" || echo "✗ nvm missing"
 node --version 2>/dev/null && echo "✓ Node.js installed: $(node --version)" || echo "✗ Node.js missing"
-command npm --version >/dev/null 2>&1 && echo "✓ npm installed" || echo "✗ npm missing"
+npm --version >/dev/null 2>&1 && echo "✓ npm installed" || echo "✗ npm missing"
 tsc --version >/dev/null 2>&1 && echo "✓ TypeScript installed" || echo "✗ TypeScript missing"
 if pnpm --version >/dev/null 2>&1; then
     echo "✓ pnpm installed"
