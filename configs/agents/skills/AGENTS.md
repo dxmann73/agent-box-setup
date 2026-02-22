@@ -13,7 +13,10 @@ We are currently using the following skills:
 - https://skills.sh/wshobson/agents/bash-defensive-patterns
 - https://skills.sh/wshobson/agents/visual-design-foundations
 - https://skills.sh/wshobson/agents/react-state-management
-- https://skills.sh/jezweb/claude-skills/tanstack-query
+- https://github.com/DeckardGer/tanstack-agent-skills/tree/main/skills/tanstack-query
+- https://github.com/DeckardGer/tanstack-agent-skills/tree/main/skills/tanstack-router
+- https://github.com/DeckardGer/tanstack-agent-skills/tree/main/skills/tanstack-start
+- https://github.com/DeckardGer/tanstack-agent-skills/tree/main/skills/tanstack-integration
 - https://skills.sh/firecrawl/cli/firecrawl
 - https://skills.sh/wshobson/agents/error-handling-patterns
 - https://skills.sh/antfu/skills/pnpm

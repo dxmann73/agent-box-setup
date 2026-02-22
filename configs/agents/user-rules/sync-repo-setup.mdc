@@ -1,0 +1,10 @@
+---
+name: sync repo setup
+description: Steps to synchronize a repo wrt/ agent and tooling setup
+---
+
+# New project setup
+
+- make sure the project has everything set up according to agent-box-setup
+- determine the tool stack and include the relevant skills in the repos AGENTS.md
+- make sure the skills / rules are installed and visible from the project

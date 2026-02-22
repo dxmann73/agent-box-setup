@@ -180,6 +180,7 @@ Skills are taken from:
 
 - [skills.sh](https://skills.sh/)
 - [OpenAI](http://github.com/openai/skills) - already included in skills.sh
+- [DeckardGer/tanstack-agent-skills](https://github.com/DeckardGer/tanstack-agent-skills) - includes TanStack Query/Router/Start/Integration skills
 
 To make skills available, they need to be mapped to certain directories
 
