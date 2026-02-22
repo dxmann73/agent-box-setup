@@ -154,6 +154,23 @@ mvn --version
 
 Expected output: Version numbers for both Quarkus CLI and Maven
 
+### Enable Quarkus Build Analytics
+
+Opt in to anonymous build analytics so the Quarkus community can track adoption ([details](https://quarkus.io/usage/)). This prevents the interactive prompt that blocks non-interactive dev runs.
+
+```bash
+mkdir -p ~/.redhat
+echo '{"disabled":false}' > ~/.redhat/io.quarkus.analytics.localconfig
+```
+
+**Verify:**
+
+```bash
+cat ~/.redhat/io.quarkus.analytics.localconfig
+```
+
+Expected output: `{"disabled":false}`
+
 ---
 
 ---

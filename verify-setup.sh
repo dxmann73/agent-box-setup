@@ -120,6 +120,15 @@ sdk version >/dev/null 2>&1 && echo "✓ SDKMAN installed" || echo "✗ SDKMAN m
 java --version >/dev/null 2>&1 && echo "✓ Java installed" || echo "✗ Java missing"
 mvn --version >/dev/null 2>&1 && echo "✓ Maven installed" || echo "✗ Maven missing"
 quarkus --version >/dev/null 2>&1 && echo "✓ Quarkus installed" || echo "✗ Quarkus missing"
+if [ -f ~/.redhat/io.quarkus.analytics.localconfig ]; then
+    if grep -q '"disabled":false' ~/.redhat/io.quarkus.analytics.localconfig 2>/dev/null; then
+        echo "✓ Quarkus build analytics enabled"
+    else
+        echo "✗ Quarkus build analytics disabled (enable: echo '{\"disabled\":false}' > ~/.redhat/io.quarkus.analytics.localconfig)"
+    fi
+else
+    echo "✗ Quarkus build analytics not configured (will prompt interactively)"
+fi
 echo ""
 
 # Optional Tools
