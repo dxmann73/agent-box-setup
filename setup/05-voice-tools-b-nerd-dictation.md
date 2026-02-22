@@ -2,6 +2,8 @@
 
 Set up voice input for Ubuntu.
 
+Use this guide only if you picked nerd-dictation as your primary Linux voice stack.
+
 ## Prerequisites
 
 - Completed core setup (00-04)
@@ -9,9 +11,25 @@ Set up voice input for Ubuntu.
 
 ---
 
+## 0. Detect Existing Voice Tooling First
+
+From the repo root:
+
+```bash
+./scripts/detect-voice-tooling.sh
+```
+
+Decision rules:
+
+- If nerd-dictation is already detected, validate and reuse it. Do not reinstall.
+- If another stack is already detected (for example faster-whisper, Talon, or host `whisperFlow` on WSL), keep that setup unless you explicitly want to migrate.
+- If running in WSL and host `whisperFlow` is detected under `/mnt/c/Users/*/AppData/Local`, prefer reusing host tooling to avoid conflicts.
+
+---
+
 ## 1. Voice Input Options for Linux
 
-Wispr Flow is not available for Linux. Alternative optionis offline voice dictation using Vosk:
+Wispr Flow is generally not available as a native Linux app. A practical Linux alternative is offline dictation with nerd-dictation (Vosk backend):
 
 ```bash
 # Install dependencies
@@ -99,6 +117,8 @@ Tips:
 
 ## Verification Checklist
 
+- [ ] Preflight complete: `./scripts/detect-voice-tooling.sh`
+- [ ] Exactly one primary voice stack selected
 - [ ] Voice input tool installed (nerd-dictation or Talon)
 - [ ] Microphone working and configured
 - [ ] Toggle script symlinked to `~/.local/bin/`

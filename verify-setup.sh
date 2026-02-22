@@ -88,9 +88,15 @@ echo ""
 
 # Voice Tools
 echo "=== Voice Tools ==="
-test -d ~/faster-whisper-dictation && echo "✓ faster-whisper cloned" || echo "⊗ faster-whisper not installed (optional)"
-test -f ~/.local/bin/dictate-start && echo "✓ Dictation scripts installed" || echo "⊗ Dictation scripts not installed (optional)"
-groups | grep -q input && echo "✓ User in input group" || echo "⊗ Not in input group (needed for voice)"
+if [ -x "$(dirname "$0")/scripts/detect-voice-tooling.sh" ]; then
+    "$(dirname "$0")/scripts/detect-voice-tooling.sh"
+else
+    echo "⊗ Voice detector script missing"
+fi
+test -x ~/.local/bin/dictate-start && echo "✓ dictate-start installed" || echo "⊗ dictate-start missing (optional)"
+command -v nerd-dictation >/dev/null 2>&1 && echo "✓ nerd-dictation installed" || echo "⊗ nerd-dictation missing (optional)"
+command -v talon >/dev/null 2>&1 && echo "✓ Talon installed" || echo "⊗ Talon not detected (optional)"
+groups | grep -q input && echo "✓ User in input group (needed for faster-whisper hotkeys)" || echo "⊗ Not in input group (needed for faster-whisper hotkeys)"
 echo ""
 
 echo "========================================="
@@ -102,4 +108,4 @@ echo "  ✓ = Installed and configured"
 echo "  ✗ = Missing (required)"
 echo "  ⊗ = Not installed (optional)"
 echo ""
-echo "To fix missing components, see setup-checklist.md"
+echo "To fix missing components, see SETUP.md and setup/*.md"

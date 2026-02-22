@@ -1,8 +1,22 @@
 # 05a - Voice Tools: faster-whisper
 
-NOTE: **This has already been done by the user already. It is here for future reference**
-
 [Voice typing](https://alterflow.ai/blog/offline-voice-typing-on-ubuntu)
+
+Use this guide only if you picked faster-whisper as your primary Linux voice stack.
+
+## Step 0: Detect existing voice tooling first
+
+From the repo root:
+
+```bash
+./scripts/detect-voice-tooling.sh
+```
+
+Decision rules:
+
+- If faster-whisper is already detected, validate and reuse it. Do not reinstall.
+- If another stack is already detected (for example nerd-dictation, Talon, or host `whisperFlow` on WSL), keep that setup unless you explicitly want to migrate.
+- If multiple stacks are detected, choose one primary stack before changing shortcuts or services.
 
 ## Step 1: Install System Dependencies
 
@@ -253,6 +267,7 @@ For CPU-only systems, I recommend "small" as the best balance of accuracy and sp
 Run verification commands:
 
 ```bash
+./scripts/detect-voice-tooling.sh && \
 echo "=== Dependencies ===" && \
 which ydotool && \
 which xdotool && \
@@ -270,6 +285,8 @@ systemctl --user is-active dictate-ptt 2>/dev/null || echo "Service not running 
 
 ## Verification Checklist
 
+- [ ] Preflight complete: `./scripts/detect-voice-tooling.sh`
+- [ ] Exactly one primary voice stack selected
 - [ ] System dependencies installed (ydotool, xdotool, etc.)
 - [ ] User is in `input` group: `groups | grep input`
 - [ ] Python 3.11 installed: `python3.11 --version`
