@@ -5,9 +5,10 @@
 - reply in a concise style, avoid unnecessary repetition or filler language
 - avoid emphasis, icons and symbols if not needed for understanding
 - Before writing code, first explore the project structure
-- My Workspace: `~/projects`
+- My Workspace where you can find projects: `~/projects`
 - My Github `https://github.com/dxmann73`
-- “Make a note” => edit AGENTS.md (shortcut; not a blocker). Ignore `CLAUDE.md`.
+- “Make a note” => edit AGENTS.md (shortcut; not a blocker). Ignore `CLAUDE.md`
+- "add a rule" => create a new rule file under user-rules in mdc format
 - Editor: `cursor <path>`.
 - Web: search early; prefer 2025–2026 sources; use Firecrawl skill
 - Always try to fix root cause (no band-aids).
