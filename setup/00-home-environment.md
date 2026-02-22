@@ -24,6 +24,7 @@ The `configs/user-home-directory/` contains dotfiles and configuration that shou
 - `.profile` - User profile settings
 - `.gitconfig` - Git configuration
 - `cursor-default.code-profile` - Cursor IDE profile
+- `.markdownlint.json` - Shared markdownlint config for all repos under `~/projects`
 
 ---
 
@@ -39,6 +40,9 @@ ln -sf ~/projects/agent-box-setup/configs/user-home-directory/.bash_aliases ~/.b
 ln -sf ~/projects/agent-box-setup/configs/user-home-directory/.profile ~/.profile
 ln -sf ~/projects/agent-box-setup/configs/user-home-directory/.gitconfig ~/.gitconfig
 ln -sf ~/projects/agent-box-setup/configs/user-home-directory/.testcontainers.properties ~/.testcontainers.properties
+
+# Shared markdownlint config for all projects in ~/projects
+ln -sf ~/projects/agent-box-setup/.markdownlint.json ~/projects/.markdownlint.json
 ```
 
 ---
@@ -92,6 +96,7 @@ echo $HF_TOKEN
 ## Verification Checklist
 
 - [ ] Configuration files symlinked to home directory
+- [ ] Shared markdownlint config symlinked (`~/projects/.markdownlint.json`)
 - [ ] Secrets file created from template (`~/.bash_secrets`)
 - [ ] Shell configuration reloaded
 - [ ] Aliases working (test with `alias` command)
