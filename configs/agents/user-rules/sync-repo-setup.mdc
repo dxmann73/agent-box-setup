@@ -1,10 +1,12 @@
 ---
 name: sync repo setup
-description: Steps to synchronize a repo wrt/ agent and tooling setup
+description: Steps to synchronize repo-level agent and tooling setup
 ---
 
-# New project setup
+# Repo sync setup
 
-- make sure the project has everything set up according to agent-box-setup
-- determine the tool stack and include the relevant skills in the repos AGENTS.md
-- make sure the skills / rules are installed and visible from the project
+- Synchronize only repo-level files (for example `AGENTS.md`, `CLAUDE.md`, project docs, and local conventions).
+- Keep synchronization focused on repo content and project conventions.
+- Determine the current tool stack and keep `AGENTS.md` aligned with the relevant skills and rules.
+- Preserve existing project structure and preferences; avoid destructive overwrites.
+- If sync inputs conflict, ask for direction before changing policy-level files.

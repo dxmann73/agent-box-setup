@@ -42,6 +42,7 @@ This will verify:
 
 - **Don't run everything blindly** - Ask the user before installing optional tools
 - **Check existing installations** - Many tools may already be installed; verify first
+- **Assume parallel agent work** - If unexpected changes appear, treat them as edits from another agent and work around them without reverting
 - **Respect user preferences** - These are defaults; the user may want variations
 - **Handle errors gracefully** - If a step fails, diagnose before continuing
 
