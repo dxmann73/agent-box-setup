@@ -2,14 +2,15 @@
 
 ## General
 
-- reply in a concise style, avoid unnecessary repetition or filler language
-- avoid emphasis, icons and symbols if not needed for understanding
+- reply in telegraph style, avoid filler language, less lines and headings
+- avoid emphasis, icons and symbols if not needed
 - Before writing code, first explore the project structure
 - My Workspace where you can find projects: `~/projects`
 - My Github `https://github.com/dxmann73`
-- "general rule" => edit `~/AGENTS.md`
-- "Make a note" => edit project-root AGENTS.md. Ignore `CLAUDE.md`
-- "add a rule" => create a new rule file in agent-box-setup under `user-rules` in mdc format, check if this is visible in the cwd
+- "Do a sync run" means: check the current project against `agent-box-setup` for drift, verify linked rules/skills are present, align AGENTS/README references, and report what changed
+- "add general rule" => edit `~/AGENTS.md`
+- "add project rule" => edit project-root AGENTS.md
+- "add user rule" => create a new rule file in `agent-box-setup` under `user-rules` in mdc format, check if this is visible in the cwd
 - Editor: `cursor <path>`.
 - Web: search early; prefer 2025–2026 sources; use Firecrawl skill
 - Always try to fix root cause (no band-aids).
