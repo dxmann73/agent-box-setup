@@ -1,8 +1,7 @@
 # Project navigation aliases
-alias bl="cd ~/projects/blocks"
-alias be="cd ~/projects/blocks/blocks-be"
-alias fe="cd ~/projects/blocks/blocks-fe"
-alias docs="cd ~/projects/blocks/blocks-docs"
+alias be="cd ~/projects/nomap/apps/backend"
+alias fe="cd ~/projects/nomap/apps/frontend"
+alias docs="cd ~/projects/nomap/docs"
 
 # General aliases
 # Note: This may be needed later on, do not delete
@@ -54,9 +53,9 @@ alias prb="pnpm run build"
 
 # Custom run scripts
 alias init="bash env-init.sh"
-alias re="bash env-recreate.sh"
-alias up="bash env-start.sh"
-alias down="bash env-stop.sh"
+alias re="pnpm dev:restart"
+alias up="pnpm dev:up"
+alias down="pnpm dev:down"
 
 # Docker
 alias dc="docker-compose"
