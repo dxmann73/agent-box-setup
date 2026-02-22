@@ -24,7 +24,10 @@ The `configs/user-home-directory/` contains dotfiles and configuration that shou
 - `.profile` - User profile settings
 - `.gitconfig` - Git configuration
 - `cursor-default.code-profile` - Cursor IDE profile
-- `.markdownlint.json` - Shared markdownlint config for all repos under `~/projects`
+
+The repo root also contains:
+
+- `.markdownlint.json` - Shared markdownlint config, symlinked to `~/projects/.markdownlint.json`
 
 ---
 
@@ -39,8 +42,6 @@ ln -sf ~/projects/agent-box-setup/configs/user-home-directory/.bashrc ~/.bashrc
 ln -sf ~/projects/agent-box-setup/configs/user-home-directory/.bash_aliases ~/.bash_aliases
 ln -sf ~/projects/agent-box-setup/configs/user-home-directory/.profile ~/.profile
 ln -sf ~/projects/agent-box-setup/configs/user-home-directory/.gitconfig ~/.gitconfig
-ln -sf ~/projects/agent-box-setup/configs/user-home-directory/.testcontainers.properties ~/.testcontainers.properties
-
 # Shared markdownlint config for all projects in ~/projects
 ln -sf ~/projects/agent-box-setup/.markdownlint.json ~/projects/.markdownlint.json
 ```
@@ -78,9 +79,20 @@ source ~/.bashrc
 
 ## 5. Verify
 
-Check that aliases and configuration are loaded:
+Run the project-wide verification script (covers this step and all others):
 
 ```bash
+cd ~/projects/agent-box-setup
+./verify-setup.sh
+```
+
+Or check manually:
+
+```bash
+# All dotfiles should be symlinks, not regular files
+ls -la ~/.bashrc ~/.bash_aliases ~/.profile ~/.gitconfig ~/.bash_secrets
+ls -la ~/projects/.markdownlint.json
+
 # Test an alias (if defined in .bash_aliases)
 alias
 
@@ -95,10 +107,13 @@ echo $HF_TOKEN
 
 ## Verification Checklist
 
-- [ ] Configuration files symlinked to home directory
+- [ ] `.bashrc` symlinked (not a regular file)
+- [ ] `.bash_aliases` symlinked (not a regular file)
+- [ ] `.profile` symlinked (not a regular file)
+- [ ] `.gitconfig` symlinked (not a regular file)
+- [ ] Secrets file created from template and symlinked (`~/.bash_secrets`)
 - [ ] Shared markdownlint config symlinked (`~/projects/.markdownlint.json`)
-- [ ] Secrets file created from template (`~/.bash_secrets`)
-- [ ] Shell configuration reloaded
+- [ ] Shell configuration reloaded (`source ~/.bashrc`)
 - [ ] Aliases working (test with `alias` command)
 - [ ] Git config loaded (`git config --global --list`)
 - [ ] Secrets loaded (e.g., `echo $HF_TOKEN` shows your token)

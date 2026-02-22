@@ -21,7 +21,8 @@ cd ~/projects/agent-box-setup
 This will verify:
 
 - Agent binaries (Claude Code, Cursor CLI Agent, Cursor IDE)
-- Configuration files and symlinks
+- Home directory symlinks (`.bashrc`, `.bash_aliases`, `.profile`, `.gitconfig`, `.bash_secrets`, `.markdownlint.json`)
+- Agent configuration and symlinks
 - Rules and skills setup
 - Core tools (GitHub CLI, Docker, jq)
 - Development environment (Node.js, Java, etc.)
@@ -34,8 +35,8 @@ This will verify:
 3. [setup/02-core-tools.md](setup/02-core-tools.md) - GitHub CLI, jq, Docker
 4. [setup/03-dev-environment.md](setup/03-dev-environment.md) - Node.js and development tools
 5. [setup/04-ide+tooling.md](setup/04-ide+tooling.md) - Cursor IDE
-6. [setup/05-voice-tools-a-faster-whisper.md](setup/05-voice-tools-a-faster-whisper.md) - Voice input (faster-whisper)
-7. [setup/05-voice-tools-b-nerd-dictation.md](setup/05-voice-tools-b-nerd-dictation.md) - Voice input (nerd-dictation alternative)
+6. [setup/05-voice-tools-a-faster-whisper.md](setup/05-voice-tools-a-faster-whisper.md) - Voice input (faster-whisper) — skip if Wispr Flow is already available
+7. [setup/05-voice-tools-b-nerd-dictation.md](setup/05-voice-tools-b-nerd-dictation.md) - Voice input (nerd-dictation alternative) — skip if Wispr Flow is already available
 8. [setup/06-optional.md](setup/06-optional.md) - Helm, cloud CLIs, extras
 
 ## Important Notes
@@ -54,13 +55,17 @@ This will verify:
 
 ## Config Files
 
-The `configs/` directory contains actual configuration files:
+The `configs/user-home-directory/` contains dotfiles that must be **symlinked** (not copied) to `~`:
 
-- `.gitconfig` - Git configuration (update email/name as needed)
-- `.bashrc` - Shell customizations
-- `vscode/settings.json` - VS Code settings
+- `.bashrc` - Bash shell configuration
+- `.bash_aliases` - Custom command aliases
+- `.bash_secrets` - API tokens/secrets (created from `.bash_secrets.CHANGE-ME` template)
+- `.profile` - User profile settings
+- `.gitconfig` - Git configuration
 
-Copy these to the appropriate locations, or symlink them for easier updates.
+The repo root `.markdownlint.json` is symlinked to `~/projects/.markdownlint.json`.
+
+See `setup/00-home-environment.md` for the full symlink commands.
 
 ## Structure
 

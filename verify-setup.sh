@@ -19,6 +19,26 @@ agent --version 2>/dev/null && echo "✓ Cursor CLI Agent installed" || echo "�
 cursor --version 2>/dev/null | head -1 && echo "✓ Cursor IDE installed" || echo "✗ Cursor IDE missing"
 echo ""
 
+# Home Directory Symlinks
+echo "=== Home Directory Symlinks ==="
+for dotfile in .bashrc .bash_aliases .profile .gitconfig .bash_secrets; do
+    if [ -L ~/"$dotfile" ]; then
+        echo "✓ ~/$dotfile symlinked"
+    elif [ -f ~/"$dotfile" ]; then
+        echo "✗ ~/$dotfile exists but is NOT a symlink"
+    else
+        echo "✗ ~/$dotfile missing"
+    fi
+done
+if [ -L ~/projects/.markdownlint.json ]; then
+    echo "✓ ~/projects/.markdownlint.json symlinked"
+elif [ -f ~/projects/.markdownlint.json ]; then
+    echo "✗ ~/projects/.markdownlint.json exists but is NOT a symlink"
+else
+    echo "✗ ~/projects/.markdownlint.json missing"
+fi
+echo ""
+
 # Agent Configuration
 echo "=== Agent Configuration ==="
 test -L ~/AGENTS.md && echo "✓ ~/AGENTS.md symlink exists" || echo "✗ ~/AGENTS.md missing"
@@ -111,15 +131,25 @@ echo ""
 
 # Voice Tools
 echo "=== Voice Tools ==="
-if [ -x "$(dirname "$0")/scripts/detect-voice-tooling.sh" ]; then
-    "$(dirname "$0")/scripts/detect-voice-tooling.sh"
+voice_detect_script="$(dirname "$0")/scripts/detect-voice-tooling.sh"
+wispr_detected=0
+if [ -x "$voice_detect_script" ]; then
+    voice_output="$("$voice_detect_script")"
+    echo "$voice_output"
+    if echo "$voice_output" | grep -qi "wispr.*detected\|whisper.*flow.*detected"; then
+        wispr_detected=1
+    fi
 else
     echo "⊗ Voice detector script missing"
 fi
-test -x ~/.local/bin/dictate-start && echo "✓ dictate-start installed" || echo "⊗ dictate-start missing (optional)"
-command -v nerd-dictation >/dev/null 2>&1 && echo "✓ nerd-dictation installed" || echo "⊗ nerd-dictation missing (optional)"
-command -v talon >/dev/null 2>&1 && echo "✓ Talon installed" || echo "⊗ Talon not detected (optional)"
-groups | grep -q input && echo "✓ User in input group (needed for faster-whisper hotkeys)" || echo "⊗ Not in input group (needed for faster-whisper hotkeys)"
+if [ "$wispr_detected" -eq 1 ]; then
+    echo "✓ Wispr Flow detected — no additional Linux voice tools needed"
+else
+    test -x ~/.local/bin/dictate-start && echo "✓ dictate-start installed" || echo "⊗ dictate-start missing (optional)"
+    command -v nerd-dictation >/dev/null 2>&1 && echo "✓ nerd-dictation installed" || echo "⊗ nerd-dictation missing (optional)"
+    command -v talon >/dev/null 2>&1 && echo "✓ Talon installed" || echo "⊗ Talon not detected (optional)"
+    groups | grep -q input && echo "✓ User in input group (needed for faster-whisper hotkeys)" || echo "⊗ Not in input group (needed for faster-whisper hotkeys)"
+fi
 echo ""
 
 echo "========================================="

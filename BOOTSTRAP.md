@@ -85,7 +85,7 @@ sudo apt install -y git curl
 
 #### Coding agent for bootstrapping
 
-Set up at least [one coding agent](./set/01-agent-setup.md)
+Set up at least [one coding agent](./setup/01-agent-setup.md)
 
 #### Bootstrap setup repo
 
