@@ -40,12 +40,16 @@ export MAVEN_OPTS=-Xmx1024m
 # Node/pnpm
 alias ns="pnpm start"
 alias ni="pnpm install"
+alias nd="pnpm run dev"
 alias nrs="pnpm run start"
+alias nrd="pnpm run dev"
 alias nrb="pnpm run build"
 alias nrt="pnpm run test"
 
 alias prs="pnpm run start"
+alias prd="pnpm run dev"
 alias prb="pnpm run build"
+alias prt="pnpm run test"
 
 # Custom run scripts
 alias init="bash env-init.sh"
