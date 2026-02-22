@@ -54,7 +54,7 @@ alias prt="pnpm run test"
 # Custom run scripts
 alias init="bash env-init.sh"
 alias re="pnpm dev:restart"
-alias up="pnpm dev:up"
+alias up='pnpm dev:up && tail -f .dev/fullstack.log'
 alias down="pnpm dev:down"
 
 # Docker
