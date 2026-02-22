@@ -1,16 +1,10 @@
 ---
 name: new-project-skill
-description: What needs to be done when setting up new projects
+description: Steps for creating new projects / repos in github
 ---
 
 # New project setup
 
-When starting a new project:
-
-## When to Use
-
-- Use this skill when setting up new projects so they are in line with current agent tooling / setup
-
-## Instructions
-
+- make sure the project has everything set up according to agent-box-setup
 - create an `AGENT.md` file and symlink it to `CLAUDE.md`
+- make the github repository private by default

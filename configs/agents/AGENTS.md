@@ -23,6 +23,7 @@
 
 ## git / github
 
+- Keep new repos private by default
 - PRs: use `gh pr view/diff` (no URLs).
 - Commits: Conventional Commits (`feat|fix|refactor|build|ci|chore|docs|style|perf|test`).
 - CI: `gh run list/view` (rerun/fix til green).
