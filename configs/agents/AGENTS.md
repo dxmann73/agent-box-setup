@@ -7,8 +7,9 @@
 - Before writing code, first explore the project structure
 - My Workspace where you can find projects: `~/projects`
 - My Github `https://github.com/dxmann73`
-- “Make a note” => edit AGENTS.md (shortcut; not a blocker). Ignore `CLAUDE.md`
-- "add a rule" => create a new rule file under user-rules in mdc format
+- "general rule" => edit `~/AGENTS.md`
+- "Make a note" => edit project-root AGENTS.md. Ignore `CLAUDE.md`
+- "add a rule" => create a new rule file in agent-box-setup under `user-rules` in mdc format, check if this is visible in the cwd
 - Editor: `cursor <path>`.
 - Web: search early; prefer 2025–2026 sources; use Firecrawl skill
 - Always try to fix root cause (no band-aids).
