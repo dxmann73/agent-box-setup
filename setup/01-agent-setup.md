@@ -96,13 +96,72 @@ As per the [documentation for Cursor CLI](https://cursor.com/docs/cli/reference/
 
 ### Codex
 
-Install [Codex](https://openai.com/de-DE/codex/) as per the [WSL setup guide](https://developers.openai.com/codex/windows#windows-subsystem-for-linux).
+[Codex CLI](https://developers.openai.com/codex/cli) is OpenAI's terminal-based coding agent. Run it in WSL as per the [WSL setup guide](https://developers.openai.com/codex/windows#windows-subsystem-for-linux).
 
-- [Sample config](https://developers.openai.com/codex/config-sample)
-- Use gpt-5.2-codex high
-- [Security defaults](https://developers.openai.com/codex/security)
-- Codex uses [AGENTS.md](https://developers.openai.com/codex/guides/agents-md) for rules (no separate rules system)
-- [Skills](https://developers.openai.com/codex/skills#where-to-save-skills)
+**Prerequisites:** ChatGPT Plus, Pro, Business, Edu, or Enterprise plan. Node.js 22+ via nvm.
+
+**Install:**
+
+```bash
+npm i -g @openai/codex
+```
+
+**Verify installation:**
+
+```bash
+codex --version
+```
+
+**Run (first launch authenticates via ChatGPT account or API key):**
+
+```bash
+codex
+```
+
+**Upgrade:**
+
+```bash
+npm i -g @openai/codex@latest
+```
+
+**Configuration:**
+
+Config lives at `~/.codex/config.toml` (user-level) or `.codex/config.toml` (project-level). See [sample config](https://developers.openai.com/codex/config-sample) and [config reference](https://developers.openai.com/codex/config-reference).
+
+Source: `configs/agents/codex/config.toml`
+
+```bash
+mkdir -p ~/.codex
+ln -sf ~/projects/agent-box-setup/configs/agents/codex/config.toml ~/.codex/config.toml
+```
+
+**Verify symlink:**
+
+```bash
+ls -l ~/.codex/config.toml
+```
+
+Config contents:
+
+```toml
+model = "gpt-5.3-codex"
+model_reasoning_effort = "high"
+approval_policy = "never"
+sandbox_mode = "workspace-write"
+
+[sandbox_workspace_write]
+network_access = true
+```
+
+Key settings: `approval_policy = "never"` is YOLO mode (no prompts), `model_reasoning_effort = "high"` sets reasoning effort. See [security defaults](https://developers.openai.com/codex/security). Protected paths (`.git`, `.agents`, `.codex`) stay read-only even in writable modes.
+
+**Rules:**
+
+Codex uses [AGENTS.md](https://developers.openai.com/codex/guides/agents-md) — the global `~/AGENTS.md` already covers this, no separate rules system needed.
+
+**Skills:**
+
+See [skills documentation](https://developers.openai.com/codex/skills#where-to-save-skills) for skill placement.
 
 ---
 
@@ -243,10 +302,12 @@ Run all verification commands to ensure setup is complete:
 echo "=== Agent Binaries ===" && \
 claude --version && \
 agent --version && \
+codex --version && \
 echo -e "\n=== Config Files ===" && \
 ls -l ~/AGENTS.md ~/CLAUDE.md && \
 echo -e "\n=== Settings ===" && \
 ls -l ~/.claude/settings.json && \
+ls -l ~/.codex/config.toml && \
 echo -e "\n=== Rules Count ===" && \
 echo "Claude rules: $(ls ~/.claude/rules/ 2>/dev/null | wc -l)" && \
 echo "Cursor rules: $(ls ~/.cursor/rules/ 2>/dev/null | wc -l)" && \
