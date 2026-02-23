@@ -2,3 +2,4 @@
 configs/user-home-directory/.bash_secrets
 CLAUDE.md
 .quarkus/
+.firecrawl/

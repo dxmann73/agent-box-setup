@@ -116,6 +116,19 @@ elif corepack pnpm --version >/dev/null 2>&1; then
 else
     echo "✗ pnpm missing"
 fi
+if firecrawl --version >/dev/null 2>&1; then
+    echo "✓ Firecrawl CLI installed"
+    firecrawl_status="$(firecrawl --status 2>/dev/null || true)"
+    if echo "$firecrawl_status" | grep -qi "not authenticated"; then
+        echo "✗ Firecrawl CLI not authenticated (run: firecrawl login --browser)"
+    elif echo "$firecrawl_status" | grep -qi "authenticated"; then
+        echo "✓ Firecrawl CLI authenticated"
+    else
+        echo "✗ Firecrawl auth status unclear (run: firecrawl --status)"
+    fi
+else
+    echo "✗ Firecrawl CLI missing"
+fi
 sdk version >/dev/null 2>&1 && echo "✓ SDKMAN installed" || echo "✗ SDKMAN missing"
 java --version >/dev/null 2>&1 && echo "✓ Java installed" || echo "✗ Java missing"
 mvn --version >/dev/null 2>&1 && echo "✓ Maven installed" || echo "✗ Maven missing"

@@ -7,6 +7,10 @@
     "defaultMode": "bypassPermissions"
   },
   "model": "opusplan",
+  "statusLine": {
+    "type": "command",
+    "command": "bash ~/.claude/statusline-command.sh"
+  },
   "enabledPlugins": {
     "frontend-design@claude-plugins-official": true,
     "superpowers@claude-plugins-official": true,
@@ -14,7 +18,8 @@
     "code-simplifier@claude-plugins-official": true,
     "ralph-loop@claude-plugins-official": true,
     "typescript-lsp@claude-plugins-official": true,
-    "playwright@claude-plugins-official": true
+    "playwright@claude-plugins-official": true,
+    "firecrawl@claude-plugins-official": true
   },
   "spinnerVerbs": {
     "mode": "replace",
@@ -22,9 +27,5 @@
       "Working"
     ]
   },
-  "skipDangerousModePermissionPrompt": true,
-  "statusLine": {
-    "type": "command",
-    "command": "bash ~/.claude/statusline-command.sh"
-  }
+  "skipDangerousModePermissionPrompt": true
 }

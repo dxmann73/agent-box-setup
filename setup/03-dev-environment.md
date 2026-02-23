@@ -58,7 +58,30 @@ Expected output: Version numbers for all three tools
 
 ---
 
-## 3. Playwright Browser Runtime (for frontend browser tests)
+## 3. Firecrawl CLI
+
+Install Firecrawl CLI globally. This is required for the `firecrawl` skill used by agents.
+
+```bash
+npm install -g firecrawl-cli
+```
+
+**Verify installation and authentication status:**
+
+```bash
+firecrawl --status
+```
+
+Expected output should include:
+
+- CLI version
+- `Authenticated` status
+
+If authentication is missing, tell the user to set up FIRECRAWL_API_KEY in ~/.bash_secrets
+
+---
+
+## 4. Playwright Browser Runtime (for frontend browser tests)
 
 Some frontend test suites run in a real browser through Playwright. Install Chromium once so those tests do not fail at startup.
 
@@ -78,7 +101,7 @@ If system packages are already installed, `install-deps` is effectively a no-op.
 
 ---
 
-## 4. SDKMAN
+## 5. SDKMAN
 
 [SDKMAN](https://sdkman.io/) manages different versions of Java, Maven, Quarkus, etc. It supports auto-switching SDKs when you `cd` into a directory with a `.sdkmanrc`.
 
@@ -122,7 +145,7 @@ This should activate the SDKs as defined in `.sdkmanrc` and print the versions b
 
 ---
 
-## 5. Java (via SDKMAN)
+## 6. Java (via SDKMAN)
 
 ```bash
 sdk install java 21.0.8-oracle
@@ -138,7 +161,7 @@ Expected output: `java 21.0.8` or similar
 
 ---
 
-## 6. Quarkus and Maven (via SDKMAN)
+## 7. Quarkus and Maven (via SDKMAN)
 
 ```bash
 sdk install quarkus
@@ -188,6 +211,8 @@ echo -e "\n=== Global JS tools ===" && \
 tsc --version && \
 ts-node --version && \
 pnpm --version && \
+echo -e "\n=== Firecrawl ===" && \
+firecrawl --status && \
 echo -e "\n=== SDKMAN ===" && \
 sdk version && \
 echo "Auto-env: $(grep sdkman_auto_env ~/.sdkman/etc/config)" && \
@@ -211,6 +236,7 @@ Confirm all tools are working:
 - [ ] TypeScript compiler: `tsc --version` shows version
 - [ ] ts-node runtime: `ts-node --version` shows version
 - [ ] pnpm package manager: `pnpm --version` shows version
+- [ ] Firecrawl CLI installed and authenticated: `firecrawl --status` shows `Authenticated`
 - [ ] Playwright Chromium installed for frontend browser tests
 - [ ] SDKMAN installed: `sdk version` shows version
 - [ ] SDKMAN auto-env enabled: config shows `sdkman_auto_env=true`

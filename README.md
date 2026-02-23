@@ -23,7 +23,7 @@ This repo is designed to work with coding agents. Just tell them to "Set up this
 | `00-home-environment.md` | Shell config, dotfiles, WSL notes |
 | `01-agent-setup.md` | Claude, Cursor CLI, Codex, rules/skills |
 | `02-core-tools.md` | GitHub CLI, jq, Docker |
-| `03-dev-environment.md` | Node.js/nvm, SDKMAN, Java, Quarkus, Maven |
+| `03-dev-environment.md` | Node.js/nvm, pnpm, Firecrawl CLI, SDKMAN, Java, Quarkus, Maven |
 | `04-ide+tooling.md` | Cursor IDE, keybindings, Java extensions |
 | `05-voice-tools-*.md` | Voice input (Faster Whisper, nerd-dictation) |
 | `06-optional.md` | Helm, Minikube, kubectl |

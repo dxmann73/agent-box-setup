@@ -141,7 +141,6 @@ ln -sf ~/projects/agent-box-setup/configs/agents/codex/config.toml ~/.codex/conf
 ls -l ~/.codex/config.toml
 ```
 
-
 Key settings: `approval_policy = "never"` is YOLO mode (no prompts), `model_reasoning_effort = "high"` sets reasoning effort, and `tui.status_line` shows model, token/context usage, and rate-limit windows in the footer. See [security defaults](https://developers.openai.com/codex/security). Protected paths (`.git`, `.agents`, `.codex`) stay read-only even in writable modes.
 
 **Rules:**
@@ -239,6 +238,8 @@ To make skills available, they need to be mapped to certain directories
 For further reading, here is also the Codex take on [skills/evals](https://developers.openai.com/blog/eval-skills).
 
 Source: `configs/agents/skills/`
+
+Note: the `firecrawl` skill depends on Firecrawl CLI being installed and authenticated in `setup/03-dev-environment.md` (`firecrawl --status`).
 
 ```bash
 mkdir -p ~/.claude/skills ~/.cursor/skills ~/.agents/skills
