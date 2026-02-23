@@ -2,6 +2,18 @@ model = "gpt-5.3-codex"
 model_reasoning_effort = "high"
 approval_policy = "never"
 sandbox_mode = "workspace-write"
+personality = "pragmatic"
 
 [sandbox_workspace_write]
 network_access = true
+
+[tui]
+status_line = [
+  "current-dir",
+  "model-with-reasoning",
+  "context-window-size",
+  "used-tokens",
+  "context-remaining",
+  "five-hour-limit",
+  "weekly-limit",
+]

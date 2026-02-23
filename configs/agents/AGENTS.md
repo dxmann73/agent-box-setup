@@ -8,9 +8,9 @@
 - My Workspace where you can find projects: `~/projects`
 - My Github `https://github.com/dxmann73`
 - "Do a sync run" means: check the current project against `agent-box-setup` for drift, verify linked rules/skills are present, align AGENTS/README references, and report what changed
-- "add general rule" => edit `~/AGENTS.md`
-- "add project rule" => edit project-root AGENTS.md
-- "add user rule" => create a new rule file in `agent-box-setup` under `user-rules` in mdc format, check if this is visible in the cwd
+- "add general rule" means edit `~/AGENTS.md`
+- "add project rule" means edit project-root AGENTS.md
+- "add user rule" means create a new rule file in `agent-box-setup` under `user-rules` in mdc format, check if this is visible in the cwd
 - Editor: `cursor <path>`.
 - Web: search early; prefer 2025–2026 sources; use Firecrawl skill
 - Always try to fix root cause (no band-aids).
@@ -18,7 +18,7 @@
 - If unsure, read more code; if still stuck, ask w/ short options.
 - If you hit unexpected concurrent changes: assume another agent is working in parallel; keep going and keep your edits focused. Stop and ask user only if there is a direct conflict/blocker.
 - Don’t delete/rename unexpected stuff; stop + ask.
-- If user says "gg", treat it as explicit instruction to commit and push.
+- gg means commit and push.
 - Shell aliases must always be added/updated in `~/.bash_aliases`, never in `~/.bashrc`.
 - When in plan mode, ask clarifying questions if you're not sure what to do. Try to provide alternative approaches.
 

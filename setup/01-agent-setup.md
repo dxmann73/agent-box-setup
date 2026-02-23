@@ -141,19 +141,8 @@ ln -sf ~/projects/agent-box-setup/configs/agents/codex/config.toml ~/.codex/conf
 ls -l ~/.codex/config.toml
 ```
 
-Config contents:
 
-```toml
-model = "gpt-5.3-codex"
-model_reasoning_effort = "high"
-approval_policy = "never"
-sandbox_mode = "workspace-write"
-
-[sandbox_workspace_write]
-network_access = true
-```
-
-Key settings: `approval_policy = "never"` is YOLO mode (no prompts), `model_reasoning_effort = "high"` sets reasoning effort. See [security defaults](https://developers.openai.com/codex/security). Protected paths (`.git`, `.agents`, `.codex`) stay read-only even in writable modes.
+Key settings: `approval_policy = "never"` is YOLO mode (no prompts), `model_reasoning_effort = "high"` sets reasoning effort, and `tui.status_line` shows model, token/context usage, and rate-limit windows in the footer. See [security defaults](https://developers.openai.com/codex/security). Protected paths (`.git`, `.agents`, `.codex`) stay read-only even in writable modes.
 
 **Rules:**
 
