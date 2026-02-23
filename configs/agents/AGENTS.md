@@ -16,7 +16,7 @@
 - Always try to fix root cause (no band-aids).
 - Before adding any new dependency, run a GitHub health check and report the results to the user. The report must include number of contributors, recent contribution activity, commit frequency, open issues, latest release date, and license status.
 - If unsure, read more code; if still stuck, ask w/ short options.
-- Unrecognized changes: assume another agent is working in parallel; keep going; focus your changes. If it causes issues, stop + ask user.
+- If you hit unexpected concurrent changes: assume another agent is working in parallel; keep going and keep your edits focused. Stop and ask user only if there is a direct conflict/blocker.
 - Don’t delete/rename unexpected stuff; stop + ask.
 - If user says "gg", treat it as explicit instruction to commit and push.
 - Shell aliases must always be added/updated in `~/.bash_aliases`, never in `~/.bashrc`.
