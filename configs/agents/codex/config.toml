@@ -6,6 +6,7 @@ personality = "pragmatic"
 
 [sandbox_workspace_write]
 network_access = true
+writable_roots = ["/home/dave"]
 
 [tui]
 status_line = [
