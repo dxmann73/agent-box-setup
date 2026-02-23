@@ -12,6 +12,11 @@ echo ""
 [ -s "$HOME/.nvm/nvm.sh" ] && . "$HOME/.nvm/nvm.sh"
 [ -s "$HOME/.sdkman/bin/sdkman-init.sh" ] && . "$HOME/.sdkman/bin/sdkman-init.sh"
 
+# Count top-level entries while excluding known metadata files.
+count_entries() {
+    find "$1" -mindepth 1 -maxdepth 1 ! -name 'AGENTS.md' 2>/dev/null | wc -l
+}
+
 # Agent Binaries
 echo "=== Agent Binaries ==="
 claude --version 2>/dev/null && echo "✓ Claude Code installed" || echo "✗ Claude Code missing"
@@ -52,16 +57,48 @@ echo "=== Agent Configuration ==="
 test -L ~/AGENTS.md && echo "✓ ~/AGENTS.md symlink exists" || echo "✗ ~/AGENTS.md missing"
 test -L ~/CLAUDE.md && echo "✓ ~/CLAUDE.md symlink exists" || echo "✗ ~/CLAUDE.md missing"
 test -L ~/.claude/settings.json && echo "✓ Claude settings linked" || echo "✗ Claude settings missing"
+if [ -L ~/.agents ]; then
+    echo "✓ ~/.agents symlinked"
+elif [ -d ~/.agents ]; then
+    echo "✗ ~/.agents exists but is NOT a symlink"
+else
+    echo "✗ ~/.agents missing"
+fi
 echo ""
 
 # Rules
 echo "=== Rules ==="
-claude_rules=$(ls ~/.claude/rules/ 2>/dev/null | wc -l)
-cursor_rules=$(ls ~/.cursor/rules/ 2>/dev/null | wc -l)
+rules_source_dir="$(dirname "$0")/configs/agents/user-rules"
+expected_rules=()
+while IFS= read -r -d '' rule_path; do
+    expected_rules+=("$(basename "$rule_path")")
+done < <(find "$rules_source_dir" -type f \( -name '*.md' -o -name '*.mdc' \) -print0)
+expected_rule_count=${#expected_rules[@]}
+claude_rules=$(find ~/.claude/rules -mindepth 1 -maxdepth 1 2>/dev/null | wc -l)
+cursor_rules=$(find ~/.cursor/rules -mindepth 1 -maxdepth 1 2>/dev/null | wc -l)
+echo "Expected rules from source: $expected_rule_count files"
 echo "Claude rules: $claude_rules files"
 echo "Cursor rules: $cursor_rules files"
-if [ "$claude_rules" -gt 0 ] && [ "$cursor_rules" -gt 0 ]; then
-    echo "✓ Rules configured"
+
+rules_missing=0
+for target_dir in ~/.claude/rules ~/.cursor/rules; do
+    for rule in "${expected_rules[@]}"; do
+        if [ ! -e "$target_dir/$rule" ]; then
+            echo "✗ Missing rule '$rule' in $target_dir"
+            rules_missing=1
+        fi
+    done
+    while IFS= read -r broken_link; do
+        [ -n "$broken_link" ] || continue
+        echo "✗ Broken rule link '$(basename "$broken_link")' in $target_dir"
+        rules_missing=1
+    done < <(find "$target_dir" -maxdepth 1 -xtype l 2>/dev/null)
+done
+
+if [ "$expected_rule_count" -eq 0 ]; then
+    echo "✗ No source rules found in $rules_source_dir"
+elif [ "$rules_missing" -eq 0 ]; then
+    echo "✓ Rules configured and synced to source"
 else
     echo "✗ Rules missing or incomplete"
 fi
@@ -76,9 +113,9 @@ for skill_path in "$skills_source_dir"/*/; do
     expected_skills+=("$(basename "$skill_path")")
 done
 expected_skill_count=${#expected_skills[@]}
-claude_skills=$(ls ~/.claude/skills/ 2>/dev/null | wc -l)
-cursor_skills=$(ls ~/.cursor/skills/ 2>/dev/null | wc -l)
-agent_skills=$(ls ~/.agents/skills/ 2>/dev/null | wc -l)
+claude_skills=$(count_entries ~/.claude/skills)
+cursor_skills=$(count_entries ~/.cursor/skills)
+agent_skills=$(count_entries ~/.agents/skills)
 echo "Expected skills from source: $expected_skill_count directories"
 echo "Claude skills: $claude_skills directories"
 echo "Cursor skills: $cursor_skills directories"
@@ -92,6 +129,11 @@ for target_dir in ~/.claude/skills ~/.cursor/skills ~/.agents/skills; do
             skills_missing=1
         fi
     done
+    while IFS= read -r broken_link; do
+        [ -n "$broken_link" ] || continue
+        echo "✗ Broken skill link '$(basename "$broken_link")' in $target_dir"
+        skills_missing=1
+    done < <(find "$target_dir" -maxdepth 1 -xtype l 2>/dev/null)
 done
 
 if [ "$expected_skill_count" -eq 0 ]; then

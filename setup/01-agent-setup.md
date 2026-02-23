@@ -171,16 +171,10 @@ Source: `configs/agents/user-rules/`
 Destination: `~/.claude/rules/`
 
 ```bash
+SOURCE_RULES=~/projects/agent-box-setup/configs/agents/user-rules
 mkdir -p ~/.claude/rules
-ln -sf ~/projects/agent-box-setup/configs/agents/user-rules/*.mdc ~/.claude/rules/
-ln -sf ~/projects/agent-box-setup/configs/agents/user-rules/*.md ~/.claude/rules/
-```
-
-Rules in subdirectories (e.g. `typescript/`) need to be linked individually:
-
-```bash
-for f in ~/projects/agent-box-setup/configs/agents/user-rules/**/*.md; do
-  ln -sf "$f" ~/.claude/rules/
+find "$SOURCE_RULES" -type f \( -name '*.md' -o -name '*.mdc' \) -print0 | while IFS= read -r -d '' f; do
+  ln -sfn "$f" ~/.claude/rules/"$(basename "$f")"
 done
 ```
 
@@ -199,15 +193,10 @@ Rules as a means to manage context are [described here](https://cursor.com/blog/
 As per the [documentation](https://cursor.com/docs/context/rules#rule-file-format), rules should be in the home dir of the user in the `.cursor/rules` directory.
 
 ```bash
+SOURCE_RULES=~/projects/agent-box-setup/configs/agents/user-rules
 mkdir -p ~/.cursor/rules
-ln -sf ~/projects/agent-box-setup/configs/agents/user-rules/*.mdc ~/.cursor/rules/
-```
-
-Subdirectory rules:
-
-```bash
-for f in ~/projects/agent-box-setup/configs/agents/user-rules/**/*.md; do
-  ln -sf "$f" ~/.cursor/rules/
+find "$SOURCE_RULES" -type f \( -name '*.md' -o -name '*.mdc' \) -print0 | while IFS= read -r -d '' f; do
+  ln -sfn "$f" ~/.cursor/rules/"$(basename "$f")"
 done
 ```
 
@@ -232,6 +221,7 @@ Skills are taken from:
 To make skills available, they need to be mapped to certain directories
 
 - Agent agnostic should go to `~/.agents/skills/<skill-name>`
+- `~/.agents` should be symlinked to `~/projects/agent-box-setup/configs/agents` (optional convenience: `~/agents`)
 - For Claude this should go to `~/.claude/skills/<skill-name>`, check [the docs](https://code.claude.com/docs/en/skills)
 - For Cursor this should go to `~/.cursor/skills/<skill-name>`, check [the docs](https://agentskills.io/what-are-skills)
 
@@ -242,22 +232,24 @@ Source: `configs/agents/skills/`
 Note: the `firecrawl` skill depends on Firecrawl CLI being installed and authenticated in `setup/03-dev-environment.md` (`firecrawl --status`).
 
 ```bash
-mkdir -p ~/.claude/skills ~/.cursor/skills ~/.agents/skills
+ln -sfn ~/projects/agent-box-setup/configs/agents ~/.agents
+ln -sfn ~/projects/agent-box-setup/configs/agents ~/agents
+mkdir -p ~/.claude/skills ~/.cursor/skills
 
 for skill in ~/projects/agent-box-setup/configs/agents/skills/*/; do
   name=$(basename "$skill")
   ln -sfn "$skill" ~/.claude/skills/"$name"
   ln -sfn "$skill" ~/.cursor/skills/"$name"
-  ln -sfn "$skill" ~/.agents/skills/"$name"
 done
 ```
 
 **Verify skills:**
 
 ```bash
-echo "Claude skills:" && ls ~/.claude/skills/ | wc -l
-echo "Cursor skills:" && ls ~/.cursor/skills/ | wc -l
-echo "Agent skills:" && ls ~/.agents/skills/ | wc -l
+count_entries() { find "$1" -mindepth 1 -maxdepth 1 ! -name 'AGENTS.md' 2>/dev/null | wc -l; }
+echo "Claude skills: $(count_entries ~/.claude/skills)"
+echo "Cursor skills: $(count_entries ~/.cursor/skills)"
+echo "Agent skills: $(count_entries ~/.agents/skills)"
 ```
 
 Expected: Same count for all three (should match number of skill directories)
@@ -301,9 +293,13 @@ ls -l ~/.codex/config.toml && \
 echo -e "\n=== Rules Count ===" && \
 echo "Claude rules: $(ls ~/.claude/rules/ 2>/dev/null | wc -l)" && \
 echo "Cursor rules: $(ls ~/.cursor/rules/ 2>/dev/null | wc -l)" && \
+echo -e "\n=== Agent Config Links ===" && \
+ls -ld ~/.agents ~/agents && \
 echo -e "\n=== Skills Count ===" && \
-echo "Claude skills: $(ls ~/.claude/skills/ 2>/dev/null | wc -l)" && \
-echo "Cursor skills: $(ls ~/.cursor/skills/ 2>/dev/null | wc -l)"
+count_entries() { find "$1" -mindepth 1 -maxdepth 1 ! -name 'AGENTS.md' 2>/dev/null | wc -l; } && \
+echo "Claude skills: $(count_entries ~/.claude/skills)" && \
+echo "Cursor skills: $(count_entries ~/.cursor/skills)" && \
+echo "Agent skills: $(count_entries ~/.agents/skills)"
 ```
 
 **Next:** Continue to `02-core-tools.md`

@@ -18,6 +18,7 @@ Master verification checklist for new machine setup. Follow the numbered guides 
 - [ ] `~/AGENTS.md` and `~/CLAUDE.md` symlinked
 - [ ] Claude settings symlinked to `~/.claude/settings.json`
 - [ ] User-level rules symlinked (`~/.claude/rules/`, `~/.cursor/rules/`)
+- [ ] `~/.agents` symlinked to repo config (`~/projects/agent-box-setup/configs/agents`)
 - [ ] Skills symlinked (`~/.claude/skills/`, `~/.cursor/skills/`, `~/.agents/skills/`) and verified against `configs/agents/skills/`
 
 ## 02 - Core Tools
