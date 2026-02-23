@@ -72,4 +72,4 @@ See `setup/00-home-environment.md` for the full symlink commands.
 - `setup/` - Numbered setup guides (follow in order, each includes verification steps)
 - `configs/` - Configuration files to copy/symlink
 - `verify-setup.sh` - Automated verification script (run this to check everything)
-- `setup-checklist.md` - Detailed verification checklist with troubleshooting
+- `SETUP.md` - Detailed verification checklist with troubleshooting

@@ -1,3 +1,9 @@
+---
+name: typescript-build-test
+description: General rules for working on TypeScript projects - commands, code style, and workflow
+globs: **/*.ts,**/*.tsx,tsconfig*.json
+---
+
 # General rules when working on a typescript
 
 ## Commands

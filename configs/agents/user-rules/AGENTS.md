@@ -16,7 +16,7 @@ globs: Optional globs for files, gitignore-style, commma-separated
 
 ## File extension
 
-Make sure file type is `mdc` so the links in @00-agent-setup.md work
+Make sure file type is `mdc` so the links in @01-agent-setup.md work
 
 ## Project-specific rules
 

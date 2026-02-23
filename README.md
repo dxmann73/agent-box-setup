@@ -27,6 +27,7 @@ This repo is designed to work with coding agents. Just tell them to "Set up this
 | `04-ide+tooling.md` | Cursor IDE, keybindings, Java extensions |
 | `05-voice-tools-*.md` | Voice input (Faster Whisper, nerd-dictation) |
 | `06-optional.md` | Helm, Minikube, kubectl |
+| `08-local-whisper.md` | Reference notes: Windows Whisper setup (not a setup step) |
 
 ### Config Files (`configs/`)
 

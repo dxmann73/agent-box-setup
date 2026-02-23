@@ -52,7 +52,7 @@ Master verification checklist for new machine setup. Follow the numbered guides 
 
 ## 05 - Voice Tools
 
-- [ ] Voice input tool installed (nerd-dictation or Talon)
+- [ ] Voice input tool installed (faster-whisper / nerd-dictation)
 - [ ] Microphone working
 - [ ] Hotkey configured
 - [ ] Test dictation working

@@ -24,10 +24,8 @@ We are currently using the following skills:
   => Instead of the [Stitch variant](https://skills.sh/google-labs-code/stitch-skills/shadcn-ui)
 - https://skills.sh/anthropics/skills/webapp-testing
 - https://skills.sh/obra/superpowers/using-git-worktrees
+- https://skills.sh/obra/superpowers/verification-before-completion
 - https://skills.sh/wshobson/agents/tailwind-design-system
-
-Tentative:
-[npx skills add https://github.com/obra/superpowers --skill verification-before-completion](https://skills.sh/obra/superpowers/verification-before-completion)
 
 On demand:
 - https://skills.sh/wshobson/agents/typescript-advanced-types

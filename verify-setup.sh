@@ -17,6 +17,14 @@ echo "=== Agent Binaries ==="
 claude --version 2>/dev/null && echo "✓ Claude Code installed" || echo "✗ Claude Code missing"
 agent --version 2>/dev/null && echo "✓ Cursor CLI Agent installed" || echo "✗ Cursor CLI Agent missing"
 cursor --version 2>/dev/null | head -1 && echo "✓ Cursor IDE installed" || echo "✗ Cursor IDE missing"
+codex --version 2>/dev/null && echo "✓ Codex installed" || echo "✗ Codex missing"
+if [ -L ~/.codex/config.toml ]; then
+    echo "✓ ~/.codex/config.toml symlinked"
+elif [ -f ~/.codex/config.toml ]; then
+    echo "✗ ~/.codex/config.toml exists but is NOT a symlink"
+else
+    echo "✗ ~/.codex/config.toml missing"
+fi
 echo ""
 
 # Home Directory Symlinks
@@ -129,7 +137,17 @@ if firecrawl --version >/dev/null 2>&1; then
 else
     echo "✗ Firecrawl CLI missing"
 fi
+if npx --yes playwright --version >/dev/null 2>&1; then
+    echo "✓ Playwright installed"
+else
+    echo "✗ Playwright missing (run: pnpm exec playwright install chromium)"
+fi
 sdk version >/dev/null 2>&1 && echo "✓ SDKMAN installed" || echo "✗ SDKMAN missing"
+if grep -q "sdkman_auto_env=true" ~/.sdkman/etc/config 2>/dev/null; then
+    echo "✓ SDKMAN auto-env enabled"
+else
+    echo "✗ SDKMAN auto-env disabled (set sdkman_auto_env=true in ~/.sdkman/etc/config)"
+fi
 java --version >/dev/null 2>&1 && echo "✓ Java installed" || echo "✗ Java missing"
 mvn --version >/dev/null 2>&1 && echo "✓ Maven installed" || echo "✗ Maven missing"
 quarkus --version >/dev/null 2>&1 && echo "✓ Quarkus installed" || echo "✗ Quarkus missing"
