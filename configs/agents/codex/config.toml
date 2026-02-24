@@ -12,7 +12,6 @@ writable_roots = ["/home/dave"]
 status_line = [
   "current-dir",
   "context-used",
-  "context-remaining",
   "five-hour-limit",
   "weekly-limit",
   "model-with-reasoning",
