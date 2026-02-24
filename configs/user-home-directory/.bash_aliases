@@ -2,6 +2,7 @@
 alias be="cd ~/projects/nomap/apps/backend"
 alias fe="cd ~/projects/nomap/apps/frontend"
 alias docs="cd ~/projects/nomap/docs"
+alias nom="cd ~/projects/nomap"
 
 # General aliases
 # Note: This may be needed later on, do not delete
