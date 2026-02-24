@@ -11,10 +11,12 @@ writable_roots = ["/home/dave"]
 [tui]
 status_line = [
   "current-dir",
-  "model-with-reasoning",
-  "context-window-size",
-  "used-tokens",
+  "context-used",
   "context-remaining",
   "five-hour-limit",
   "weekly-limit",
+  "model-with-reasoning",
+  "used-tokens",  
+  "total-input-tokens",
+  "total-output-tokens",
 ]
