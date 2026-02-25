@@ -22,6 +22,15 @@
 - Shell aliases must always be added/updated in `~/.bash_aliases`, never in `~/.bashrc`.
 - When in plan mode, ask clarifying questions if you're not sure what to do. Try to provide alternative approaches.
 
+## Planning Artifacts
+
+- When creating or updating implementation/design plans, store them in `<repo-root>/.plans/`.
+- Plan filenames must be date-prefixed: `YYYY-MM-DD-<topic>-plan.md`.
+- Do not store plan artifacts in personal or ad-hoc folders outside the repository.
+- If a plan includes UX changes, include or update corresponding user-facing documentation references
+  in the same plan.
+- If `.plans/` does not exist, create it in the repository root.
+
 ## Markdown
 
 - when creating or changing markdown files, follow the rules in `markdown-style.mdc`
