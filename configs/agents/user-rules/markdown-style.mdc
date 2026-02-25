@@ -51,9 +51,13 @@ Heading 1
 
 Do not add trailing spaces at the end of lines, except for hard line breaks (2 spaces).
 
-### ~~MD013 - Line Length~~ (disabled)
+### MD013 - Line Length
 
-This rule is disabled project-wide via `.markdownlint.json`.
+Line length is configured in `.markdownlint.json`.
+Current default is 100 characters (`line_length: 100`).
+
+- Keep normal prose readable and let configured limit drive wrapping.
+- Code blocks and tables are excluded from this check in config.
 
 ### MD018 - Space After Hash
 
@@ -275,6 +279,7 @@ When generating markdown:
 5. Always add space after `#` in headings
 6. End files with a single newline
 7. No trailing whitespace on lines
+8. Follow `MD013` from `.markdownlint.json` (do not force 80-char wraps)
 
 ## When to Apply
 
