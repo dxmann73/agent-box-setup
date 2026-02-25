@@ -33,7 +33,7 @@
 
 ## Markdown
 
-- when creating or changing markdown files, follow the rules in `markdown-style.mdc`
+- when creating or changing markdown files, use the `markdownlint` skill
 
 ## git / github
 
