@@ -19,7 +19,7 @@ This is the single source of truth for Markdown formatting behavior.
 2. Ignore behavior: `.markdownlintignore`
 
 For `MD013` line length, always read `.markdownlint.json` and follow that value.
-Do not assume fixed widths from old docs (for example `140` or `80`).
+Lines should wrap according to the value configured in .markdownlint.json
 
 ## Core Rules
 

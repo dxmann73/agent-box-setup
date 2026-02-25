@@ -8,11 +8,13 @@
 - My Workspace where you can find projects: `~/projects`
 - My Github `https://github.com/dxmann73`
 - "Do a sync run" means: check the current project against `agent-box-setup` for drift, verify linked rules/skills are present, align AGENTS/README references, and report what changed
-- "add general rule" means edit `~/AGENTS.md`
+- "add general rule" or "add global rule" means edit `~/AGENTS.md`
 - "add project rule" means edit project-root AGENTS.md
 - "add user rule" means create a new rule file in `agent-box-setup` under `user-rules` in mdc format, check if this is visible in the cwd
 - Editor: `cursor <path>`.
 - Web: search early; prefer 2025–2026 sources; use Firecrawl skill
+- For any web search/research task, first check whether Firecrawl can be used and use it when
+  available.
 - Always try to fix root cause (no band-aids).
 - Before adding any new dependency, run a GitHub health check and report the results to the user. The report must include number of contributors, recent contribution activity, commit frequency, open issues, latest release date, and license status.
 - If unsure, read more code; if still stuck, ask w/ short options.
