@@ -8,26 +8,28 @@ The steps outlined here will assume you have already done the [bootstrapping](./
 
 1. To unlock the power of coding agents, they need to run in YOLO mode.
 2. To reduce the blast radius, agents will need to run fully isolated in a sandbox.
-3. To automate the setup itself, and also sync changes to the current setup to existing machines, we need a repo that holds both the configuration as well as the instructions to synchronize it.
+3. To automate the setup itself, and also sync changes to the current setup to existing machines, we
+   need a repo that holds both the configuration as well as the instructions to synchronize it.
 
 ## Usage
 
-This repo is designed to work with coding agents. Just tell them to "Set up this machine using the agent-box-setup repo".
+This repo is designed to work with coding agents. Just tell them to "Set up this machine using the
+agent-box-setup repo".
 
 ## What's Included
 
 ### Setup Guides (`setup/`)
 
-| File | Description |
-| ---- | ----------- |
-| `00-home-environment.md` | Shell config, dotfiles, WSL notes |
-| `01-agent-setup.md` | Claude, Cursor CLI, Codex, rules/skills |
-| `02-core-tools.md` | GitHub CLI, jq, Docker |
-| `03-dev-environment.md` | Node.js/nvm, pnpm, Firecrawl CLI, SDKMAN, Java, Quarkus, Maven |
-| `04-ide+tooling.md` | Cursor IDE, keybindings, Java extensions |
-| `05-voice-tools-*.md` | Voice input (Faster Whisper, nerd-dictation) |
-| `06-optional.md` | Helm, Minikube, kubectl |
-| `08-local-whisper.md` | Reference notes: Windows Whisper setup (not a setup step) |
+| File                     | Description                                                    |
+| ------------------------ | -------------------------------------------------------------- |
+| `00-home-environment.md` | Shell config, dotfiles, WSL notes                              |
+| `01-agent-setup.md`      | Claude, Cursor CLI, Codex, rules/skills                        |
+| `02-core-tools.md`       | GitHub CLI, jq, Docker                                         |
+| `03-dev-environment.md`  | Node.js/nvm, pnpm, Firecrawl CLI, SDKMAN, Java, Quarkus, Maven |
+| `04-ide+tooling.md`      | Cursor IDE, keybindings, Java extensions                       |
+| `05-voice-tools-*.md`    | Voice input (Faster Whisper, nerd-dictation)                   |
+| `06-optional.md`         | Helm, Minikube, kubectl                                        |
+| `08-local-whisper.md`    | Reference notes: Windows Whisper setup (not a setup step)      |
 
 ### Config Files (`configs/`)
 

@@ -45,11 +45,12 @@
 ## Markdown
 
 - when creating or changing markdown files, use the `markdownlint` skill
-- line length is 100 per default, reflow lines at that length
+- line length is 120 per default. Reflow lines at that length if not given in `.markdownlint.json`
 
 ## git / github
 
 - Keep new repos private by default
 - Commits: Conventional Commits (`feat|fix|refactor|build|ci|chore|docs|style|perf|test`).
 - Safe by default: `git status/diff/log`. Push only when user asks.
-- Destructive operations and commands are forbidden unless explicitly allowed (`reset --hard`, `clean`, `restore`, `rm`, …).
+- Destructive operations and commands are forbidden unless explicitly allowed
+  e.g. `reset --hard`, `clean`, `restore`, `rm`

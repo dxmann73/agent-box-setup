@@ -19,7 +19,8 @@ This is the single source of truth for Markdown formatting behavior.
 2. Ignore behavior: `.markdownlintignore`
 
 For `MD013` line length, always read `.markdownlint.json` and follow that value.
-Lines should wrap according to the value configured in .markdownlint.json
+Lines should wrap according to the value configured in `.markdownlint.json`.
+If no line length is configured, `prettier-wrap.sh` falls back to `120`.
 
 ## Core Rules
 
@@ -42,25 +43,29 @@ Apply these rules when writing or editing Markdown:
 
 ## Workflow
 
-1. Read active line length before broad edits:
+1. Make Markdown edits following the core rules above.
+1. Wrap/reflow prose with Prettier (line width is read from `.markdownlint.json`):
 
 ```bash
-jq -r '.MD013.line_length // "unset"' .markdownlint.json
+bash configs/agents/skills/markdownlint/scripts/prettier-wrap.sh
 ```
 
-1. Make Markdown edits following the core rules above.
 1. Lint with ignore-path support:
 
 ```bash
-npx --yes markdownlint-cli --ignore-path .markdownlintignore "**/*.md" "**/*.mdc"
+bash configs/agents/skills/markdownlint/scripts/lint-fix.sh
 ```
 
-1. If requested, run auto-fix and then lint again:
+1. For check-only lint (no `--fix`), run:
 
 ```bash
-npx --yes markdownlint-cli --ignore-path .markdownlintignore --fix "**/*.md" "**/*.mdc"
-npx --yes markdownlint-cli --ignore-path .markdownlintignore "**/*.md" "**/*.mdc"
+npx --yes markdownlint-cli --config .markdownlint.json --ignore-path .markdownlintignore \
+  "**/*.md" "**/*.mdc"
 ```
+
+Both scripts accept optional file/directory/glob targets.
+If no targets are passed, they default to `"**/*.md"` and `"**/*.mdc"` while honoring
+`.markdownlintignore`.
 
 ## Guardrails
 
