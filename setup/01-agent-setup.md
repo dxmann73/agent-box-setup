@@ -90,6 +90,38 @@ ls -l ~/.claude/settings.json && cat ~/.claude/settings.json | jq -r '.model, .p
 
 Expected output: `opusplan` and `bypassPermissions`
 
+### Claude Code Statusline
+
+The statusline script renders a two-line footer in Claude Code sessions:
+
+- **Line 1:** `user@host:/path (branch)` — colored, live from git
+- **Line 2:** `[Model] ▓▓▓▓░░░░░░ 42% | $0.03 session / $8.34 today / block 3h41m left` — context bar
+  + cached cost/block data from `ccusage`
+
+The context bar is color-coded: green (<50%), yellow (<80%), red (≥80%).
+Cost/block data is fetched via `npx ccusage@latest` and cached in `/tmp` for ~10s to keep
+the statusline fast.
+
+Source: `configs/agents/claude/statusline-command.sh`
+
+```bash
+ln -sf ~/projects/agent-box-setup/configs/agents/claude/statusline-command.sh ~/.claude/statusline-command.sh
+```
+
+**Verify:**
+
+```bash
+ls -l ~/.claude/statusline-command.sh
+```
+
+**Re-sync after changes** (or on a new machine after pulling the repo):
+
+```bash
+ln -sf ~/projects/agent-box-setup/configs/agents/claude/statusline-command.sh ~/.claude/statusline-command.sh
+```
+
+The `settings.json` already points to `bash ~/.claude/statusline-command.sh` — no further config needed.
+
 ### Cursor CLI Settings
 
 As per the [documentation for Cursor CLI](https://cursor.com/docs/cli/reference/configuration), settings are stored in `~/.cursor/cli-config.json`. We don't touch these settings for now, as the CLI adds many of its own props to it.
@@ -289,6 +321,7 @@ echo -e "\n=== Config Files ===" && \
 ls -l ~/AGENTS.md ~/CLAUDE.md && \
 echo -e "\n=== Settings ===" && \
 ls -l ~/.claude/settings.json && \
+ls -l ~/.claude/statusline-command.sh && \
 ls -l ~/.codex/config.toml && \
 echo -e "\n=== Rules Count ===" && \
 echo "Claude rules: $(ls ~/.claude/rules/ 2>/dev/null | wc -l)" && \
