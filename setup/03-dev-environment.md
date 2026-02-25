@@ -83,7 +83,8 @@ If authentication is missing, tell the user to set up FIRECRAWL_API_KEY in ~/.ba
 
 ## 4. Playwright Browser Runtime (for frontend browser tests)
 
-Some frontend test suites run in a real browser through Playwright. Install Chromium once so those tests do not fail at startup.
+Some frontend test suites run in a real browser through Playwright. Install Chromium once so those tests do not fail at
+startup.
 
 From a project that includes Playwright in dependencies (for example `apps/frontend` in `nomap`):
 
@@ -103,7 +104,8 @@ If system packages are already installed, `install-deps` is effectively a no-op.
 
 ## 5. SDKMAN
 
-[SDKMAN](https://sdkman.io/) manages different versions of Java, Maven, Quarkus, etc. It supports auto-switching SDKs when you `cd` into a directory with a `.sdkmanrc`.
+[SDKMAN](https://sdkman.io/) manages different versions of Java, Maven, Quarkus, etc. It supports auto-switching SDKs
+when you `cd` into a directory with a `.sdkmanrc`.
 
 ```bash
 cd ~
@@ -179,7 +181,8 @@ Expected output: Version numbers for both Quarkus CLI and Maven
 
 ### Enable Quarkus Build Analytics
 
-Opt in to anonymous build analytics so the Quarkus community can track adoption ([details](https://quarkus.io/usage/)). This prevents the interactive prompt that blocks non-interactive dev runs.
+Opt in to anonymous build analytics so the Quarkus community can track adoption ([details](https://quarkus.io/usage/)).
+This prevents the interactive prompt that blocks non-interactive dev runs.
 
 ```bash
 mkdir -p ~/.redhat

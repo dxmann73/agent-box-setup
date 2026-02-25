@@ -22,14 +22,17 @@ From the repo root:
 Decision rules:
 
 - If nerd-dictation is already detected, validate and reuse it. Do not reinstall.
-- If another stack is already detected (for example faster-whisper, Talon, or host `whisperFlow` on WSL), keep that setup unless you explicitly want to migrate.
-- If running in WSL and host `whisperFlow` is detected under `/mnt/c/Users/*/AppData/Local`, prefer reusing host tooling to avoid conflicts.
+- If another stack is already detected (for example faster-whisper, Talon, or host `whisperFlow` on WSL), keep that
+  setup unless you explicitly want to migrate.
+- If running in WSL and host `whisperFlow` is detected under `/mnt/c/Users/*/AppData/Local`, prefer reusing host tooling
+  to avoid conflicts.
 
 ---
 
 ## 1. Voice Input Options for Linux
 
-Wispr Flow is generally not available as a native Linux app. A practical Linux alternative is offline dictation with nerd-dictation (Vosk backend):
+Wispr Flow is generally not available as a native Linux app. A practical Linux alternative is offline dictation with
+nerd-dictation (Vosk backend):
 
 ```bash
 # Install dependencies

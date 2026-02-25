@@ -13,8 +13,8 @@ Online services:
 
 Locally installed version:
 
-[Sally Howto](https://www.sally.io/blog/installing-whisper-a-step-by-step-guide)
-Installiert mit Python 3.14. FFMpeg herunter geladen und ins virtual environment nach `C:\Users\dave\whisper-env\Scripts` kopiert.
+[Sally Howto](https://www.sally.io/blog/installing-whisper-a-step-by-step-guide) Installiert mit Python 3.14. FFMpeg
+herunter geladen und ins virtual environment nach `C:\Users\dave\whisper-env\Scripts` kopiert.
 
 Usage (Windows), see also the [Whisper GitHub page](https://github.com/openai/whisper)
 

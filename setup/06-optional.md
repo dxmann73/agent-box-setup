@@ -10,7 +10,8 @@ Tools that are useful but not required for every setup.
 
 ## 1. Helm
 
-Install Helm (Kubernetes package manager) via the [official install script](https://helm.sh/docs/intro/install/#from-script).
+Install Helm (Kubernetes package manager) via the
+[official install script](https://helm.sh/docs/intro/install/#from-script).
 
 ```bash
 curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-4 | bash

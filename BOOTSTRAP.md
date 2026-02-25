@@ -1,6 +1,7 @@
 # Steps for bootstrapping a Ubuntu VM
 
-These steps will have already been done when any coding agents hit this repo. This file is here purely to keep track of the process.
+These steps will have already been done when any coding agents hit this repo. This file is here purely to keep track of
+the process.
 
 ## Install VMWare Workstation Pro
 
@@ -33,8 +34,7 @@ Pin Terminal (Ctrl Alt T) to Dash, then go to App Center > Manage > Update
 
 Change Ubuntu Settings (top right)
 
-Power > Power saving > Screen blank > Never
-System > Enable automatic login
+Power > Power saving > Screen blank > Never System > Enable automatic login
 
 Install `Gnome Tweaks` and set proper font scaling under "Appearance"
 
@@ -60,7 +60,8 @@ Generate a keypair and copy it to the `~/.ssh` directory
 
 ### HF token
 
-Create a [Hugging Face access token](https://huggingface.co/settings/tokens), Click New token, Choose Read access (enough for downloads)
+Create a [Hugging Face access token](https://huggingface.co/settings/tokens), Click New token, Choose Read access
+(enough for downloads)
 
 ```bash
 export HF_TOKEN=hf_your_token_here
@@ -111,8 +112,7 @@ After everything is set up, there may be other steps, e.g. when cloning VMs.
 
 As an info for the user: What they need to do to map local directories into the VM.
 
-In VMWare Pro under Settings > Options > Shared Folders
-Always enabled, name vm-shares
+In VMWare Pro under Settings > Options > Shared Folders Always enabled, name vm-shares
 
 On host os (should already be there!)
 

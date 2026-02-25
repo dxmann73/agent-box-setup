@@ -8,13 +8,13 @@ The steps outlined here will assume you have already done the [bootstrapping](./
 
 1. To unlock the power of coding agents, they need to run in YOLO mode.
 2. To reduce the blast radius, agents will need to run fully isolated in a sandbox.
-3. To automate the setup itself, and also sync changes to the current setup to existing machines, we
-   need a repo that holds both the configuration as well as the instructions to synchronize it.
+3. To automate the setup itself, and also sync changes to the current setup to existing machines, we need a repo that
+   holds both the configuration as well as the instructions to synchronize it.
 
 ## Usage
 
-This repo is designed to work with coding agents. Just tell them to "Set up this machine using the
-agent-box-setup repo".
+This repo is designed to work with coding agents. Just tell them to "Set up this machine using the agent-box-setup
+repo".
 
 ## What's Included
 

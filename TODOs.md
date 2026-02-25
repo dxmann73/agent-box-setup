@@ -7,18 +7,19 @@
 - [Github and Bugbot integration](https://cursor.com/docs/integrations/github)
 - Try composer-1 model
 
-<https://www.youtube.com/watch?v=I9-tdhxiH7w>
-<https://www.youtube.com/watch?v=rcRS8-7OgBo>
+<https://www.youtube.com/watch?v=I9-tdhxiH7w> <https://www.youtube.com/watch?v=rcRS8-7OgBo>
 <https://www.youtube.com/watch?v=P60LqQg1RH8>
 
-[More skills](https://code.claude.com/docs/en/skills) and [https://simonwillison.net/2025/Oct/16/claude-skills/](https://simonwillison.net/2025/Oct/16/claude-skills/)
+[More skills](https://code.claude.com/docs/en/skills) and
+[https://simonwillison.net/2025/Oct/16/claude-skills/](https://simonwillison.net/2025/Oct/16/claude-skills/)
 [LSP / Code intelligence plugins](https://code.claude.com/docs/en/discover-plugins#code-intelligence)
 
 - there should be rules/skills for quarkus, tanstack start, scripts for playwright etc.
 
 ## project setup
 
-Some of the steps in here are actually only relevant for certain types of projects, e.g. you only need sdkman if you are working on a JAVA project. Break out these parts as well as the relevant skills / tools / rules into packages.
+Some of the steps in here are actually only relevant for certain types of projects, e.g. you only need sdkman if you are
+working on a JAVA project. Break out these parts as well as the relevant skills / tools / rules into packages.
 
 ## etc
 

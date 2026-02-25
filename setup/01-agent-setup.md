@@ -50,8 +50,7 @@ echo $PATH | grep -q "$HOME/.local/bin" && echo "✓ PATH is configured" || echo
 
 Both Claude Code and Cursor read `~/AGENTS.md` automatically. Claude Code also needs `~/CLAUDE.md`.
 
-Source: `configs/agents/AGENTS.md`
-Destination: `~/AGENTS.md` (with `~/CLAUDE.md` symlink)
+Source: `configs/agents/AGENTS.md` Destination: `~/AGENTS.md` (with `~/CLAUDE.md` symlink)
 
 ```bash
 ln -sf ~/projects/agent-box-setup/configs/agents/AGENTS.md ~/AGENTS.md
@@ -72,11 +71,11 @@ Both should point to `~/projects/agent-box-setup/configs/agents/AGENTS.md`
 
 Current settings:
 
-| Setting | Value | Description |
-| ------- | ----- | ----------- |
-| `model` | `opusplan` | Opus for planning, Sonnet for execution |
-| `permissions.defaultMode` | `bypassPermissions` | YOLO mode - (no confirmation prompts) |
-| `spinnerVerbs` | `["Working"]` | Simplified spinner text |
+| Setting                   | Value               | Description                             |
+| ------------------------- | ------------------- | --------------------------------------- |
+| `model`                   | `opusplan`          | Opus for planning, Sonnet for execution |
+| `permissions.defaultMode` | `bypassPermissions` | YOLO mode - (no confirmation prompts)   |
+| `spinnerVerbs`            | `["Working"]`       | Simplified spinner text                 |
 
 ```bash
 ln -sf ~/projects/agent-box-setup/configs/agents/claude/settings.json ~/.claude/settings.json
@@ -96,11 +95,10 @@ The statusline script renders a two-line footer in Claude Code sessions:
 
 - **Line 1:** `user@host:/path (branch)` — colored, live from git
 - **Line 2:** `[Model] ▓▓▓▓░░░░░░ 42% | $0.03 session / $8.34 today / block 3h41m left` — context bar
-  + cached cost/block data from `ccusage`
+  - cached cost/block data from `ccusage`
 
-The context bar is color-coded: green (<50%), yellow (<80%), red (≥80%).
-Cost/block data is fetched via `npx ccusage@latest` and cached in `/tmp` for ~10s to keep
-the statusline fast.
+The context bar is color-coded: green (<50%), yellow (<80%), red (≥80%). Cost/block data is fetched via
+`npx ccusage@latest` and cached in `/tmp` for ~10s to keep the statusline fast.
 
 Source: `configs/agents/claude/statusline-command.sh`
 
@@ -124,11 +122,13 @@ The `settings.json` already points to `bash ~/.claude/statusline-command.sh` —
 
 ### Cursor CLI Settings
 
-As per the [documentation for Cursor CLI](https://cursor.com/docs/cli/reference/configuration), settings are stored in `~/.cursor/cli-config.json`. We don't touch these settings for now, as the CLI adds many of its own props to it.
+As per the [documentation for Cursor CLI](https://cursor.com/docs/cli/reference/configuration), settings are stored in
+`~/.cursor/cli-config.json`. We don't touch these settings for now, as the CLI adds many of its own props to it.
 
 ### Codex
 
-[Codex CLI](https://developers.openai.com/codex/cli) is OpenAI's terminal-based coding agent. Run it in WSL as per the [WSL setup guide](https://developers.openai.com/codex/windows#windows-subsystem-for-linux).
+[Codex CLI](https://developers.openai.com/codex/cli) is OpenAI's terminal-based coding agent. Run it in WSL as per the
+[WSL setup guide](https://developers.openai.com/codex/windows#windows-subsystem-for-linux).
 
 **Prerequisites:** ChatGPT Plus, Pro, Business, Edu, or Enterprise plan. Node.js 22+ via nvm.
 
@@ -158,7 +158,9 @@ npm i -g @openai/codex@latest
 
 **Configuration:**
 
-Config lives at `~/.codex/config.toml` (user-level) or `.codex/config.toml` (project-level). See [sample config](https://developers.openai.com/codex/config-sample) and [config reference](https://developers.openai.com/codex/config-reference).
+Config lives at `~/.codex/config.toml` (user-level) or `.codex/config.toml` (project-level).
+See [sample config](https://developers.openai.com/codex/config-sample)
+and [config reference](https://developers.openai.com/codex/config-reference).
 
 Source: `configs/agents/codex/config.toml`
 
@@ -173,11 +175,15 @@ ln -sf ~/projects/agent-box-setup/configs/agents/codex/config.toml ~/.codex/conf
 ls -l ~/.codex/config.toml
 ```
 
-Key settings: `approval_policy = "never"` is YOLO mode (no prompts), `model_reasoning_effort = "high"` sets reasoning effort, and `tui.status_line` shows model, token/context usage, and rate-limit windows in the footer. See [security defaults](https://developers.openai.com/codex/security). Protected paths (`.git`, `.agents`, `.codex`) stay read-only even in writable modes.
+Key settings: `approval_policy = "never"` is YOLO mode (no prompts), `model_reasoning_effort = "high"` sets reasoning
+effort, and `tui.status_line` shows model, token/context usage, and rate-limit windows in the footer.
+See [security defaults](https://developers.openai.com/codex/security).
+Protected paths (`.git`, `.agents`, `.codex`) stay read-only even in writable modes.
 
 **Rules:**
 
-Codex uses [AGENTS.md](https://developers.openai.com/codex/guides/agents-md) — the global `~/AGENTS.md` already covers this, no separate rules system needed.
+Codex uses [AGENTS.md](https://developers.openai.com/codex/guides/agents-md) — the global `~/AGENTS.md` already covers
+this, no separate rules system needed.
 
 **Skills:**
 
@@ -191,16 +197,19 @@ Leerob video [Agent Skills, Rules, Subagents: Explained!](https://www.youtube.co
 
 ## User-Level Rules
 
-User-Level Rules are a way to destructure the AGENTS.md file into smaller pieces and let the agent decide which rules need to be included in the context, instead of always including the whole AGENTS file. They provide persistent instructions across all projects.
+User-Level Rules are a way to destructure the AGENTS.md file into smaller pieces and let the agent decide which rules
+need to be included in the context, instead of always including the whole AGENTS file. They provide persistent
+instructions across all projects.
 
 All agents support user-level rules.
 
 ### Claude user-level rules
 
-For reference, here the documentation about [Rules in Claude](https://code.claude.com/docs/en/memory#modular-rules-with-claude%2Frules%2F) as well as [User level rules](https://code.claude.com/docs/en/memory#user-level-rules) .
+For reference, here the documentation about
+[Rules in Claude](https://code.claude.com/docs/en/memory#modular-rules-with-claude%2Frules%2F) as well as
+[User level rules](https://code.claude.com/docs/en/memory#user-level-rules) .
 
-Source: `configs/agents/user-rules/`
-Destination: `~/.claude/rules/`
+Source: `configs/agents/user-rules/` Destination: `~/.claude/rules/`
 
 ```bash
 SOURCE_RULES=~/projects/agent-box-setup/configs/agents/user-rules
@@ -220,9 +229,11 @@ Expected: 5+ rules files linked
 
 ### Cursor CLI user-level rules
 
-Rules as a means to manage context are [described here](https://cursor.com/blog/agent-best-practices#rules-static-context-for-your-project)
+Rules as a means to manage context are
+[described here](https://cursor.com/blog/agent-best-practices#rules-static-context-for-your-project)
 
-As per the [documentation](https://cursor.com/docs/context/rules#rule-file-format), rules should be in the home dir of the user in the `.cursor/rules` directory.
+As per the [documentation](https://cursor.com/docs/context/rules#rule-file-format), rules should be in the home dir of
+the user in the `.cursor/rules` directory.
 
 ```bash
 SOURCE_RULES=~/projects/agent-box-setup/configs/agents/user-rules
@@ -242,13 +253,16 @@ Expected: 5+ rules files linked
 
 ## Skills
 
-[official documentation](https://agentskills.io/what-are-skills). Although [skills don't really work, yet](https://vercel.com/blog/agents-md-outperforms-skills-in-our-agent-evals), we are preparing to use skills.
+[official documentation](https://agentskills.io/what-are-skills). Although
+[skills don't really work, yet](https://vercel.com/blog/agents-md-outperforms-skills-in-our-agent-evals), we are
+preparing to use skills.
 
 Skills are taken from:
 
 - [skills.sh](https://skills.sh/)
 - [OpenAI](http://github.com/openai/skills) - already included in skills.sh
-- [DeckardGer/tanstack-agent-skills](https://github.com/DeckardGer/tanstack-agent-skills) - includes TanStack Query/Router/Start/Integration skills
+- [DeckardGer/tanstack-agent-skills](https://github.com/DeckardGer/tanstack-agent-skills) - includes TanStack
+  Query/Router/Start/Integration skills
 
 To make skills available, they need to be mapped to certain directories
 
@@ -261,7 +275,8 @@ For further reading, here is also the Codex take on [skills/evals](https://devel
 
 Source: `configs/agents/skills/`
 
-Note: the `firecrawl` skill depends on Firecrawl CLI being installed and authenticated in `setup/03-dev-environment.md` (`firecrawl --status`).
+Note: the `firecrawl` skill depends on Firecrawl CLI being installed and authenticated in `setup/03-dev-environment.md`
+(`firecrawl --status`).
 
 ```bash
 ln -sfn ~/projects/agent-box-setup/configs/agents ~/.agents

@@ -1,7 +1,6 @@
 # 04 - Editor Setup
 
-Cursor IDE is the primary editor. It's an AI-powered code editor built on VS
-Code.
+Cursor IDE is the primary editor. It's an AI-powered code editor built on VS Code.
 
 ## Prerequisites
 
@@ -37,8 +36,7 @@ If you have an existing Cursor profile in `cursor-default.code-profile`
 
 Tell your human to import this manually via Strg-Shift-P > Open Profiles (UI).
 
-**Note:** Extensions will be installed automatically based on per-repository
-recommendations when you open projects.
+**Note:** Extensions will be installed automatically based on per-repository recommendations when you open projects.
 
 ---
 
@@ -81,7 +79,8 @@ If working with Java/Quarkus projects:
 
 - Install the **Spring Boot Extension** and the **Spring Boot Extension Pack**
 - Install the [Quarkus extension](https://marketplace.cursorapi.com/items/?itemName=redhat.vscode-quarkus)
-- Add Quarkus docs to Cursor @docs: Type @Docs > Add new doc > paste [https://quarkus.io/guides](https://quarkus.io/guides)
+- Add Quarkus docs to Cursor @docs: Type @Docs > Add new doc > paste
+  [https://quarkus.io/guides](https://quarkus.io/guides)
 
 ### Java settings
 
@@ -93,14 +92,8 @@ This is accomplished by adding the following to workspace or user settings:
 ```json
 {
   "java.maven.downloadSources": true,
-  "java.diagnostic.filter": [
-    "**/target/generated-sources/**/*"
-  ],
-  "java.completion.importOrder": [
-    "*",
-    "java",
-    "javax"
-  ],
+  "java.diagnostic.filter": ["**/target/generated-sources/**/*"],
+  "java.completion.importOrder": ["*", "java", "javax"],
   "java.compile.nullAnalysis.mode": "automatic"
 }
 ```

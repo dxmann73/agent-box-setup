@@ -10,7 +10,8 @@ Set up shell environment and user configuration files.
 
 ## WSL Note
 
-If running on WSL, keep your projects on the WSL filesystem (`\\wsl$\<distro>\home\<user>\`) for a ~10x build speed improvement over the Windows filesystem.
+If running on WSL, keep your projects on the WSL filesystem (`\\wsl$\<distro>\home\<user>\`) for a ~10x build speed
+improvement over the Windows filesystem.
 
 ---
 
@@ -50,7 +51,8 @@ ln -sf ~/projects/agent-box-setup/.markdownlint.json ~/projects/.markdownlint.js
 
 ## 3. Set Up Secrets File
 
-The `.bash_secrets` file stores API tokens and credentials. It is sourced by `.bashrc` but never checked into version control (via `.gitignore`).
+The `.bash_secrets` file stores API tokens and credentials. It is sourced by `.bashrc` but never checked into version
+control (via `.gitignore`).
 
 ```bash
 # Copy the template to create your secrets file (in the repo)

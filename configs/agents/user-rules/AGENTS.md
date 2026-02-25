@@ -20,5 +20,5 @@ Make sure file type is `mdc` so the links in @01-agent-setup.md work
 
 ## Project-specific rules
 
-Each project should have an `AGENTS.md` file that reflects the content and context of the project.
-Each project should have a `CLAUDE.md` symlink to this AGENTS.md file.
+Each project should have an `AGENTS.md` file that reflects the content and context of the project. Each project should
+have a `CLAUDE.md` symlink to this AGENTS.md file.

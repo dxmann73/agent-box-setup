@@ -35,15 +35,18 @@ This will verify:
 3. [setup/02-core-tools.md](setup/02-core-tools.md) - GitHub CLI, jq, Docker
 4. [setup/03-dev-environment.md](setup/03-dev-environment.md) - Node.js and development tools
 5. [setup/04-ide+tooling.md](setup/04-ide+tooling.md) - Cursor IDE
-6. [setup/05-voice-tools-a-faster-whisper.md](setup/05-voice-tools-a-faster-whisper.md) - Voice input (faster-whisper) — skip if Wispr Flow is already available
-7. [setup/05-voice-tools-b-nerd-dictation.md](setup/05-voice-tools-b-nerd-dictation.md) - Voice input (nerd-dictation alternative) — skip if Wispr Flow is already available
+6. [setup/05-voice-tools-a-faster-whisper.md](setup/05-voice-tools-a-faster-whisper.md) - Voice input (faster-whisper) —
+   skip if Wispr Flow is already available
+7. [setup/05-voice-tools-b-nerd-dictation.md](setup/05-voice-tools-b-nerd-dictation.md) - Voice input (nerd-dictation
+   alternative) — skip if Wispr Flow is already available
 8. [setup/06-optional.md](setup/06-optional.md) - Helm, cloud CLIs, extras
 
 ## Important Notes
 
 - **Don't run everything blindly** - Ask the user before installing optional tools
 - **Check existing installations** - Many tools may already be installed; verify first
-- **Assume parallel agent work** - If unexpected changes appear, treat them as edits from another agent and work around them without reverting
+- **Assume parallel agent work** - If unexpected changes appear, treat them as edits from another agent and work around
+  them without reverting
 - **Respect user preferences** - These are defaults; the user may want variations
 - **Handle errors gracefully** - If a step fails, diagnose before continuing
 
@@ -51,7 +54,8 @@ This will verify:
 
 - Treat `configs/agents/skills/` as the single source of truth for installed skills.
 - Keep setup docs/scripts in sync with that directory (`setup/01-agent-setup.md`, `verify-setup.sh`, `SETUP.md`).
-- Verification must be directory-driven (derive expected skills from `configs/agents/skills/`), not hardcoded skill-name lists.
+- Verification must be directory-driven (derive expected skills from `configs/agents/skills/`), not hardcoded skill-name
+  lists.
 
 ## Config Files
 

@@ -15,13 +15,14 @@ From the repo root:
 Decision rules:
 
 - If faster-whisper is already detected, validate and reuse it. Do not reinstall.
-- If another stack is already detected (for example nerd-dictation, Talon, or host `whisperFlow` on WSL), keep that setup unless you explicitly want to migrate.
+- If another stack is already detected (for example nerd-dictation, Talon, or host `whisperFlow` on WSL), keep that
+  setup unless you explicitly want to migrate.
 - If multiple stacks are detected, choose one primary stack before changing shortcuts or services.
 
 ## Step 1: Install System Dependencies
 
 ```bash
-sudo apt update && sudo apt install -y portaudio19-dev python3-venv python3-pip git xdotool ydotool ydotoold pulseaudio-utils pavucontrol wl-clipboard 
+sudo apt update && sudo apt install -y portaudio19-dev python3-venv python3-pip git xdotool ydotool ydotoold pulseaudio-utils pavucontrol wl-clipboard
 ```
 
 ## Step 2: Set Up ydotool for Wayland
@@ -80,7 +81,7 @@ cd faster-whisper-dictation
 python3.11 -m venv venv
 source venv/bin/activate
 pip install --upgrade pip
-pip install faster-whisper pyaudio pynput transitions soundfile sounddevice numpy 
+pip install faster-whisper pyaudio pynput transitions soundfile sounddevice numpy
 deactivate
 ```
 
@@ -116,8 +117,8 @@ Speak something for 5 seconds, then run:
 ~/.local/bin/dictate-stop
 ```
 
-First time this will take long because it will download the model.
-You should see your speech transcribed and typed in the terminal.
+First time this will take long because it will download the model. You should see your speech transcribed and typed in
+the terminal.
 
 ### Step 7: Disable IBus Ctrl+Space Shortcut
 
@@ -192,15 +193,13 @@ systemctl --user status dictate-ptt
 journalctl --user -u dictate-ptt -f
 ```
 
-If you get "Permission denied" on input devices, ensure you're in the
-`input` group and have logged out/in:
+If you get "Permission denied" on input devices, ensure you're in the `input` group and have logged out/in:
 
 ```bash
 groups | grep input
 ```
 
-If keyboard isn't detected, list devices and specify manually in the service
-file:
+If keyboard isn't detected, list devices and specify manually in the service file:
 
 ```bash
 ~/.local/bin/dictate-ptt --list-devices
@@ -209,12 +208,13 @@ file:
 
 ### ydotool backend unavailable
 
-"ydotool: notice: ydotoold backend unavailable"
-This is just a notice, not an error. ydotool still works, just with a small delay.
+"ydotool: notice: ydotoold backend unavailable" This is just a notice, not an error. ydotool still works, just with a
+small delay.
 
 ### Transcription is slow
 
-The first transcription after a reboot will be slower (model loading). Subsequent transcriptions are faster. You can also try using the "base" model instead of "small" for faster (but less accurate) results:
+The first transcription after a reboot will be slower (model loading). Subsequent transcriptions are faster. You can
+also try using the "base" model instead of "small" for faster (but less accurate) results:
 
 Change WhisperModel("small") to WhisperModel("base") in `configs/local-bin/dictate-stop`.
 
@@ -225,38 +225,33 @@ Check `pavucontrol` to see if the correct device is set
 Check your microphone is working:
 
 ```bash
-parecord --channels=1 /tmp/test.wav 
-#then 
+parecord --channels=1 /tmp/test.wav
+#then
 aplay /tmp/test.wav
 ```
 
-Speak louder or closer to the microphone
-Try recording for longer (at least 3 seconds)
+Speak louder or closer to the microphone Try recording for longer (at least 3 seconds)
 
 ### Hotkey doesn't work
 
-Make sure you replaced YOUR_USERNAME with your actual username
-Check if IBus is still capturing Ctrl+Space — run the disable commands in Step 7 again
-Try logging out and back in after changing the shortcut
+Make sure you replaced YOUR_USERNAME with your actual username Check if IBus is still capturing Ctrl+Space — run the
+disable commands in Step 7 again Try logging out and back in after changing the shortcut
 
-Ctrl+Space still switches input method
-If Ctrl+Space is still being captured by IBus, try:
+Ctrl+Space still switches input method If Ctrl+Space is still being captured by IBus, try:
 
-ibus write-cache
-ibus restart
-Or open Settings → Keyboard → Input Sources and remove any extra input methods.
+ibus write-cache ibus restart Or open Settings → Keyboard → Input Sources and remove any extra input methods.
 
 ## Model Options
 
 You can change the Whisper model based on your needs:
 
-| Model | Size | RAM Needed | Accuracy | Speed |
-| ----- | ---- | ---------- | -------- | ----- |
-| tiny | 75 MB | ~1 GB | Lower | Fastest |
-| base | 142 MB | ~1 GB | Good | Fast |
-| small | 466 MB | ~2 GB | Better | Medium |
-| medium | 1.5 GB | ~5 GB | Great | Slower |
-| large-v3 | 3 GB | ~10 GB | Best | Slowest |
+| Model    | Size   | RAM Needed | Accuracy | Speed   |
+| -------- | ------ | ---------- | -------- | ------- |
+| tiny     | 75 MB  | ~1 GB      | Lower    | Fastest |
+| base     | 142 MB | ~1 GB      | Good     | Fast    |
+| small    | 466 MB | ~2 GB      | Better   | Medium  |
+| medium   | 1.5 GB | ~5 GB      | Great    | Slower  |
+| large-v3 | 3 GB   | ~10 GB     | Best     | Slowest |
 
 For CPU-only systems, I recommend "small" as the best balance of accuracy and speed.
 
