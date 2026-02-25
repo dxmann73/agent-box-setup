@@ -32,11 +32,13 @@ firecrawl --status
 Output when ready:
 
 ```
-  🔥 firecrawl cli v1.0.2
+  🔥 firecrawl cli v1.7.0
 
   ● Authenticated via FIRECRAWL_API_KEY
-  Concurrency: 0/100 jobs (parallel scrape limit)
-  Credits: 500,000 remaining
+  Concurrency: 0/2 jobs (parallel scrape limit)
+  Credits: 880 (pay-as-you-go)
+  .firecrawl: not found - no local cache
+  .gitignore: present - .firecrawl ignored: yes
 ```
 
 - **Concurrency**: Max parallel jobs. Run parallel operations close to this limit but not above.
