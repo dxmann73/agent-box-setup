@@ -33,11 +33,11 @@
 
 ## Planning Artifacts
 
-- When creating or updating implementation/design plans, store them in `<repo-root>/.plans/`.
+- When creating or updating implementation/design plans, store them in `<repo-root>/plans/`.
 - Plan filenames must be date-prefixed: `YYYY-MM-DD-<topic>-plan.md`.
 - Do not store plan artifacts in personal or ad-hoc folders outside the repository.
 - If a plan includes UX changes, include or update corresponding user-facing documentation references in the same plan.
-- If `.plans/` does not exist, create it in the repository root.
+- If `plans/` does not exist, create it in the repository root.
 
 ## Markdown
 
