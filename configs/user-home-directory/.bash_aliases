@@ -39,9 +39,7 @@ alias mcd="mvn clean install -DskipTests $@"
 export MAVEN_OPTS=-Xmx1024m
 
 # Node/pnpm
-alias ns="pnpm start"
 alias ni="pnpm install"
-alias nd="pnpm run dev"
 alias nrs="pnpm run start"
 alias nrd="pnpm run dev"
 alias nrb="pnpm run build"
@@ -53,10 +51,8 @@ alias prb="pnpm run build"
 alias prt="pnpm run test"
 
 # Custom run scripts
-alias init="bash env-init.sh"
-alias re="pnpm dev:restart"
-alias up='pnpm dev:up && tail -f .dev/fullstack.log'
-alias down="pnpm dev:down"
+alias up="pnpm run dev"
+alias down="pnpm run dev:down"
 
 # Docker
 alias dc="docker-compose"
