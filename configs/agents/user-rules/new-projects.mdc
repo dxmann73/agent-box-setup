@@ -6,7 +6,7 @@ description: Steps for creating new projects and repos in GitHub
 # New project setup
 
 - Create or update a repo-local `AGENTS.md` with project-specific guidance.
-- For Claude compatibility, provide `CLAUDE.md` as a symlink or copy of `AGENTS.md`.
+- For Claude compatibility, provide `CLAUDE.md` as a symlink to `AGENTS.md`.
 - Keep GitHub repositories private by default unless the user asks for public visibility.
 - Determine the project stack and include only the relevant skills/rules references.
 - Reuse existing project conventions and avoid broad rewrites when bootstrapping.
