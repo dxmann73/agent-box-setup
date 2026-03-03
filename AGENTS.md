@@ -56,6 +56,7 @@ This will verify:
 - Keep setup docs/scripts in sync with that directory (`setup/01-agent-setup.md`, `verify-setup.sh`, `SETUP.md`).
 - Verification must be directory-driven (derive expected skills from `configs/agents/skills/`), not hardcoded skill-name
   lists.
+- Plan artifacts are excluded from markdownlint workflows (`plans/**/*.md`, `**/*-plan.md`).
 
 ## Config Files
 

@@ -71,4 +71,5 @@ If no targets are passed, they default to `"**/*.md"` and `"**/*.mdc"` while hon
 
 - Do not hardcode line length in instructions or decisions; always defer to `.markdownlint.json`.
 - Always respect `.markdownlintignore` during lint runs.
+- Never lint planning artifacts: skip `plans/**/*.md` and `**/*-plan.md` in lint and wrap commands.
 - Do not change `.markdownlint.json` or `.markdownlintignore` unless the user asks.

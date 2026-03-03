@@ -43,6 +43,7 @@
 
 - when creating or changing markdown files, use the `markdownlint` skill
 - line length is 120 per default. Reflow lines at that length if not given in `.markdownlint.json`
+- never lint plan artifacts (`plans/**/*.md`, `**/*-plan.md`); plans are exempt from markdownlint runs
 
 ## git / github
 
