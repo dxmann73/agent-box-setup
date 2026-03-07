@@ -175,8 +175,10 @@ ln -sf ~/projects/agent-box-setup/configs/agents/codex/config.toml ~/.codex/conf
 ls -l ~/.codex/config.toml
 ```
 
-Key settings: `approval_policy = "never"` is YOLO mode (no prompts), `model_reasoning_effort = "high"` sets reasoning
-effort, and `tui.status_line` shows model, token/context usage, and rate-limit windows in the footer.
+Key settings: `approval_policy = "never"` is YOLO mode (no prompts), `model_reasoning_effort = "medium"` sets
+reasoning effort, and `tui.status_line` shows model, context usage percentage, context window size, session token
+counters, and rate-limit windows in the footer. Codex currently does not expose a built-in status item for the raw
+number of tokens in the current context window, only percentage used/remaining plus the total window size.
 See [security defaults](https://developers.openai.com/codex/security).
 Protected paths (`.git`, `.agents`, `.codex`) stay read-only even in writable modes.
 

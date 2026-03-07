@@ -26,6 +26,12 @@ line1="${C_GREEN}$(whoami)@$(hostname -s)${C_RESET}:${C_BLUE}${cwd}${C_YELLOW}${
 
 # Context window (live from JSON)
 used_pct=$(echo "$input" | jq -r '.context_window.used_percentage // empty')
+ctx_tokens=$(echo "$input" | jq -r '
+  .context_window.current_usage as $u |
+  if $u then
+    (($u.input_tokens // 0) + ($u.cache_creation_input_tokens // 0) + ($u.cache_read_input_tokens // 0))
+  else empty end')
+ctx_max=$(echo "$input" | jq -r '.context_window.context_window_size // empty')
 
 ctx_bar_str=""
 ctx_label=""
@@ -47,7 +53,24 @@ if [ -n "$used_pct" ]; then
   for ((i=0; i<empty; i++)); do bar="${bar}░"; done
 
   ctx_bar_str="${bar_color}${bar}${C_RESET}"
+
+  # Format token count: show as Xk/Xk, turn red bold at >= 150k
+  tok_str=""
+  if [ -n "$ctx_tokens" ]; then
+    tok_k=$(( ctx_tokens / 1000 ))
+    if [ -n "$ctx_max" ]; then
+      max_k=$(( ctx_max / 1000 ))
+      tok_str="${tok_k}k/${max_k}k"
+    else
+      tok_str="${tok_k}k"
+    fi
+    if [ "$ctx_tokens" -ge 150000 ]; then
+      tok_str="${C_RED_BOLD}${tok_str}${C_RESET}"
+    fi
+  fi
+
   ctx_label=" ${used_int}%"
+  [ -n "$tok_str" ] && ctx_label="${ctx_label} (${tok_str})"
 fi
 
 # ccusage caching: bucket to nearest 10 seconds

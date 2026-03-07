@@ -1,5 +1,5 @@
-model = "gpt-5.3-codex"
-model_reasoning_effort = "high"
+model = "gpt-5.4"
+model_reasoning_effort = "medium"
 approval_policy = "never"
 sandbox_mode = "workspace-write"
 personality = "pragmatic"
@@ -12,10 +12,16 @@ writable_roots = ["/home/dave"]
 status_line = [
   "current-dir",
   "context-used",
+  # Session-level token counters. Codex currently does not expose
+  # a built-in "current context tokens used" numeric status item.
+  "used-tokens",
+  "context-window-size",
   "five-hour-limit",
   "weekly-limit",
   "model-with-reasoning",
-  "used-tokens",  
   "total-input-tokens",
   "total-output-tokens",
 ]
+
+[tui.model_availability_nux]
+"gpt-5.3-codex-spark" = 1
