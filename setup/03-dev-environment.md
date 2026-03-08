@@ -37,7 +37,7 @@ Expected output: Version numbers for nvm, node (v22.x or similar), and npm
 
 ## 2. Package Managers and Global JS Tools
 
-Bootstrap `pnpm` using Corepack first, then install global JS tools.
+Bootstrap `pnpm` with Corepack and install global JS tools.
 
 ```bash
 corepack enable
@@ -54,11 +54,29 @@ ts-node --version
 pnpm --version
 ```
 
-Expected output: Version numbers for all three tools
+Expected output: Version numbers for TypeScript, ts-node, and pnpm
 
 ---
 
-## 3. Firecrawl CLI
+## 3. Search Tools (ripgrep)
+
+Install `ripgrep` as a dedicated search tool.
+
+```bash
+sudo apt install -y ripgrep
+```
+
+**Verify installation:**
+
+```bash
+rg --version
+```
+
+Expected output: `ripgrep x.x.x` or similar
+
+---
+
+## 4. Firecrawl CLI
 
 Install Firecrawl CLI globally. This is required for the `firecrawl` skill used by agents.
 
@@ -81,7 +99,7 @@ If authentication is missing, tell the user to set up FIRECRAWL_API_KEY in ~/.ba
 
 ---
 
-## 4. Playwright Browser Runtime (for frontend browser tests)
+## 5. Playwright Browser Runtime (for frontend browser tests)
 
 Some frontend test suites run in a real browser through Playwright. Install Chromium once so those tests do not fail at
 startup.
@@ -102,7 +120,7 @@ If system packages are already installed, `install-deps` is effectively a no-op.
 
 ---
 
-## 5. SDKMAN
+## 6. SDKMAN
 
 [SDKMAN](https://sdkman.io/) manages different versions of Java, Maven, Quarkus, etc. It supports auto-switching SDKs
 when you `cd` into a directory with a `.sdkmanrc`.
@@ -147,7 +165,7 @@ This should activate the SDKs as defined in `.sdkmanrc` and print the versions b
 
 ---
 
-## 6. Java (via SDKMAN)
+## 7. Java (via SDKMAN)
 
 ```bash
 sdk install java 21.0.8-oracle
@@ -163,7 +181,7 @@ Expected output: `java 21.0.8` or similar
 
 ---
 
-## 7. Quarkus and Maven (via SDKMAN)
+## 8. Quarkus and Maven (via SDKMAN)
 
 ```bash
 sdk install quarkus
@@ -214,6 +232,8 @@ echo -e "\n=== Global JS tools ===" && \
 tsc --version && \
 ts-node --version && \
 pnpm --version && \
+echo -e "\n=== Search tools ===" && \
+rg --version && \
 echo -e "\n=== Firecrawl ===" && \
 firecrawl --status && \
 echo -e "\n=== SDKMAN ===" && \
@@ -239,6 +259,7 @@ Confirm all tools are working:
 - [ ] TypeScript compiler: `tsc --version` shows version
 - [ ] ts-node runtime: `ts-node --version` shows version
 - [ ] pnpm package manager: `pnpm --version` shows version
+- [ ] ripgrep installed: `rg --version` shows version
 - [ ] Firecrawl CLI installed and authenticated: `firecrawl --status` shows `Authenticated`
 - [ ] Playwright Chromium installed for frontend browser tests
 - [ ] SDKMAN installed: `sdk version` shows version

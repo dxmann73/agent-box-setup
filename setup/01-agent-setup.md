@@ -216,6 +216,8 @@ Source: `configs/agents/user-rules/` Destination: `~/.claude/rules/`
 ```bash
 SOURCE_RULES=~/projects/agent-box-setup/configs/agents/user-rules
 mkdir -p ~/.claude/rules
+# Remove stale/dangling links from removed rules
+find ~/.claude/rules -maxdepth 1 -xtype l -delete
 find "$SOURCE_RULES" -type f \( -name '*.md' -o -name '*.mdc' \) -print0 | while IFS= read -r -d '' f; do
   ln -sfn "$f" ~/.claude/rules/"$(basename "$f")"
 done
@@ -224,10 +226,12 @@ done
 **Verify rules:**
 
 ```bash
-ls -la ~/.claude/rules/ | wc -l
+count_rules() { find "$1" -mindepth 1 -maxdepth 1 2>/dev/null | wc -l; }
+echo "Source rules: $(count_rules ~/projects/agent-box-setup/configs/agents/user-rules)"
+echo "Claude rules: $(count_rules ~/.claude/rules)"
 ```
 
-Expected: 5+ rules files linked
+Expected: `Claude rules` equals `Source rules`
 
 ### Cursor CLI user-level rules
 
@@ -240,6 +244,8 @@ the user in the `.cursor/rules` directory.
 ```bash
 SOURCE_RULES=~/projects/agent-box-setup/configs/agents/user-rules
 mkdir -p ~/.cursor/rules
+# Remove stale/dangling links from removed rules
+find ~/.cursor/rules -maxdepth 1 -xtype l -delete
 find "$SOURCE_RULES" -type f \( -name '*.md' -o -name '*.mdc' \) -print0 | while IFS= read -r -d '' f; do
   ln -sfn "$f" ~/.cursor/rules/"$(basename "$f")"
 done
@@ -248,10 +254,12 @@ done
 **Verify rules:**
 
 ```bash
-ls -la ~/.cursor/rules/ | wc -l
+count_rules() { find "$1" -mindepth 1 -maxdepth 1 2>/dev/null | wc -l; }
+echo "Source rules: $(count_rules ~/projects/agent-box-setup/configs/agents/user-rules)"
+echo "Cursor rules: $(count_rules ~/.cursor/rules)"
 ```
 
-Expected: 5+ rules files linked
+Expected: `Cursor rules` equals `Source rules`
 
 ## Skills
 
@@ -284,6 +292,8 @@ Note: the `firecrawl` skill depends on Firecrawl CLI being installed and authent
 ln -sfn ~/projects/agent-box-setup/configs/agents ~/.agents
 ln -sfn ~/projects/agent-box-setup/configs/agents ~/agents
 mkdir -p ~/.claude/skills ~/.cursor/skills
+# Remove stale/dangling skill links before re-sync.
+find ~/.claude/skills ~/.cursor/skills -maxdepth 1 -xtype l -delete
 
 for skill in ~/projects/agent-box-setup/configs/agents/skills/*/; do
   name=$(basename "$skill")

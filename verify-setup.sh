@@ -158,6 +158,11 @@ jq --version >/dev/null 2>&1 && echo "✓ jq installed" || echo "✗ jq missing"
 docker --version >/dev/null 2>&1 && echo "✓ Docker installed" || echo "✗ Docker missing"
 echo ""
 
+# Search Tools
+echo "=== Search Tools ==="
+rg --version >/dev/null 2>&1 && echo "✓ ripgrep installed" || echo "✗ ripgrep missing"
+echo ""
+
 # Development Environment
 echo "=== Development Environment ==="
 nvm --version >/dev/null 2>&1 && echo "✓ nvm installed" || echo "✗ nvm missing"
@@ -211,7 +216,13 @@ echo ""
 
 # Imaging Tools
 echo "=== Imaging Tools ==="
-command -v magick >/dev/null 2>&1 && echo "✓ ImageMagick" || echo "✗ ImageMagick missing"
+if command -v magick >/dev/null 2>&1; then
+    echo "✓ ImageMagick (magick)"
+elif command -v convert >/dev/null 2>&1 && convert -version 2>/dev/null | grep -qi "ImageMagick"; then
+    echo "✓ ImageMagick (convert)"
+else
+    echo "✗ ImageMagick missing"
+fi
 sharp --help >/dev/null 2>&1 && echo "✓ sharp CLI" || echo "✗ sharp CLI missing"
 npm_root="$(npm root -g 2>/dev/null)"
 if [ -n "$npm_root" ] && NODE_PATH="$npm_root" node -e "require('sharp')" >/dev/null 2>&1; then

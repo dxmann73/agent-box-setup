@@ -35,6 +35,7 @@ Master verification checklist for new machine setup. Follow the numbered guides 
 - [ ] nvm can switch versions (`nvm list`)
 - [ ] TypeScript compiler (`tsc --version`)
 - [ ] pnpm package manager (`pnpm --version`)
+- [ ] ripgrep installed (`rg --version`)
 - [ ] Firecrawl CLI installed and authenticated (`firecrawl --status`)
 - [ ] Playwright Chromium installed for frontend browser tests (`pnpm exec playwright install chromium` in frontend
       repo)
@@ -68,7 +69,7 @@ Master verification checklist for new machine setup. Follow the numbered guides 
 
 ## 07 - Imaging Tools
 
-- [ ] ImageMagick installed (`magick -version`)
+- [ ] ImageMagick installed (`magick -version` or `convert -version`)
 - [ ] sharp CLI installed (`sharp --help`)
 - [ ] sharp module installed (`NODE_PATH="$(npm root -g)" node -e "require('sharp')"`)
 - [ ] resvg JS module installed (`NODE_PATH="$(npm root -g)" node -e "require('@resvg/resvg-js')"`)

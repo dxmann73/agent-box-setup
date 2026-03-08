@@ -11,7 +11,8 @@ CLI and scriptable image tools for icons, screenshots, asset generation, and con
 
 ## 1. ImageMagick (apt)
 
-ImageMagick provides `magick` and legacy `convert` for resizing, cropping, format conversion, and inspection.
+ImageMagick provides CLI image conversion and inspection. On newer releases, the command is usually `magick`; on some
+Ubuntu/WSL installs (ImageMagick 6), `convert` is provided instead.
 
 ```bash
 sudo apt install -y imagemagick
@@ -20,10 +21,14 @@ sudo apt install -y imagemagick
 **Verify:**
 
 ```bash
-magick -version | head -1
+if command -v magick >/dev/null 2>&1; then
+  magick -version | head -1
+else
+  convert -version | head -1
+fi
 ```
 
-Expected output: `Version: ImageMagick 6.x.x` or similar
+Expected output: `ImageMagick 6.x.x` or similar
 
 ---
 
@@ -97,7 +102,13 @@ Or manually:
 
 ```bash
 echo "=== Imaging Tools ==="
-magick -version 2>/dev/null | head -1 || echo "ImageMagick missing"
+if command -v magick >/dev/null 2>&1; then
+  magick -version 2>/dev/null | head -1
+elif command -v convert >/dev/null 2>&1; then
+  convert -version 2>/dev/null | head -1
+else
+  echo "ImageMagick missing"
+fi
 sharp --help 2>/dev/null | head -1 || echo "sharp-cli missing"
 NODE_PATH="$(npm root -g 2>/dev/null)" node -e "require('sharp'); console.log('sharp OK')" 2>/dev/null || echo "sharp module missing"
 NODE_PATH="$(npm root -g 2>/dev/null)" node -e "require('@resvg/resvg-js'); console.log('resvg OK')" 2>/dev/null || echo "resvg missing"
@@ -110,7 +121,7 @@ command -v exiftool >/dev/null && echo "exiftool: $(exiftool -ver)" || echo "exi
 
 ## Verification Checklist
 
-- [ ] ImageMagick: `magick -version` shows version
+- [ ] ImageMagick: `magick -version` or `convert -version` shows version
 - [ ] sharp CLI: `sharp --help` prints help
 - [ ] sharp module: `NODE_PATH="$(npm root -g)" node -e "require('sharp')"` succeeds
 - [ ] resvg module: `NODE_PATH="$(npm root -g)" node -e "require('@resvg/resvg-js')"` succeeds
