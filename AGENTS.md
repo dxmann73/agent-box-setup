@@ -26,6 +26,7 @@ This will verify:
 - Rules and skills setup
 - Core tools (GitHub CLI, Docker, jq)
 - Development environment (Node.js, Java, etc.)
+- Imaging tools (ImageMagick, sharp, resvg)
 - Optional tools (if installed)
 
 ## Setup Order
@@ -40,6 +41,7 @@ This will verify:
 7. [setup/05-voice-tools-b-nerd-dictation.md](setup/05-voice-tools-b-nerd-dictation.md) - Voice input (nerd-dictation
    alternative) — skip if Wispr Flow is already available
 8. [setup/06-optional.md](setup/06-optional.md) - Helm, cloud CLIs, extras
+9. [setup/07-imaging-tools.md](setup/07-imaging-tools.md) - ImageMagick, sharp, resvg, optional image tools
 
 ## Important Notes
 

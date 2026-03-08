@@ -247,4 +247,4 @@ Confirm all tools are working:
 - [ ] Quarkus installed: `quarkus --version` shows version
 - [ ] Maven installed: `mvn --version` shows version
 
-**Next:** Continue to `04-ide+tooling.md`
+**Next:** Continue to `04-ide+tooling.md`. For imaging tools (ImageMagick, sharp, resvg), see `07-imaging-tools.md`.

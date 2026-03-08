@@ -1,5 +1,5 @@
 model = "gpt-5.4"
-model_reasoning_effort = "medium"
+model_reasoning_effort = "high"
 approval_policy = "never"
 sandbox_mode = "workspace-write"
 personality = "pragmatic"
@@ -24,4 +24,4 @@ status_line = [
 ]
 
 [tui.model_availability_nux]
-"gpt-5.3-codex-spark" = 1
+"gpt-5.3-codex-spark" = 3

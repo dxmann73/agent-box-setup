@@ -60,11 +60,22 @@ Master verification checklist for new machine setup. Follow the numbered guides 
 - [ ] Hotkey configured
 - [ ] Test dictation working
 
-## 06 - Optional (check what's installed)
+## 06 - Optional (check what's installed; see `setup/06-optional.md`)
 
 - [ ] Helm (`helm version`)
 - [ ] Minikube (`minikube version`)
 - [ ] kubectl (`kubectl version --client`)
+
+## 07 - Imaging Tools
+
+- [ ] ImageMagick installed (`magick -version`)
+- [ ] sharp CLI installed (`sharp --help`)
+- [ ] sharp module installed (`NODE_PATH="$(npm root -g)" node -e "require('sharp')"`)
+- [ ] resvg JS module installed (`NODE_PATH="$(npm root -g)" node -e "require('@resvg/resvg-js')"`)
+- [ ] ffmpeg installed (`ffmpeg -version`)
+- [ ] inkscape installed (`inkscape --version`)
+- [ ] graphicsmagick installed (`gm version`)
+- [ ] Optional: pngquant, optipng, exiftool if needed
 
 ## Final Verification
 

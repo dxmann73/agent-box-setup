@@ -21,7 +21,12 @@ count_entries() {
 echo "=== Agent Binaries ==="
 claude --version 2>/dev/null && echo "✓ Claude Code installed" || echo "✗ Claude Code missing"
 agent --version 2>/dev/null && echo "✓ Cursor CLI Agent installed" || echo "✗ Cursor CLI Agent missing"
-cursor --version 2>/dev/null | head -1 && echo "✓ Cursor IDE installed" || echo "✗ Cursor IDE missing"
+if cursor --version >/dev/null 2>&1; then
+    cursor --version 2>/dev/null | head -1
+    echo "✓ Cursor IDE installed"
+else
+    echo "✗ Cursor IDE missing"
+fi
 codex --version 2>/dev/null && echo "✓ Codex installed" || echo "✗ Codex missing"
 if [ -L ~/.codex/config.toml ]; then
     echo "✓ ~/.codex/config.toml symlinked"
@@ -202,6 +207,29 @@ if [ -f ~/.redhat/io.quarkus.analytics.localconfig ]; then
 else
     echo "✗ Quarkus build analytics not configured (will prompt interactively)"
 fi
+echo ""
+
+# Imaging Tools
+echo "=== Imaging Tools ==="
+command -v magick >/dev/null 2>&1 && echo "✓ ImageMagick" || echo "✗ ImageMagick missing"
+sharp --help >/dev/null 2>&1 && echo "✓ sharp CLI" || echo "✗ sharp CLI missing"
+npm_root="$(npm root -g 2>/dev/null)"
+if [ -n "$npm_root" ] && NODE_PATH="$npm_root" node -e "require('sharp')" >/dev/null 2>&1; then
+    echo "✓ sharp module"
+else
+    echo "✗ sharp module missing"
+fi
+if [ -n "$npm_root" ] && NODE_PATH="$npm_root" node -e "require('@resvg/resvg-js')" >/dev/null 2>&1; then
+    echo "✓ resvg module"
+else
+    echo "✗ resvg module missing"
+fi
+command -v pngquant >/dev/null 2>&1 && echo "✓ pngquant" || echo "⊗ pngquant (optional)"
+command -v exiftool >/dev/null 2>&1 && echo "✓ exiftool" || echo "⊗ exiftool (optional)"
+command -v optipng >/dev/null 2>&1 && echo "✓ optipng" || echo "⊗ optipng (optional)"
+command -v ffmpeg >/dev/null 2>&1 && echo "✓ ffmpeg" || echo "✗ ffmpeg missing"
+command -v inkscape >/dev/null 2>&1 && echo "✓ inkscape" || echo "✗ inkscape missing"
+command -v gm >/dev/null 2>&1 && echo "✓ graphicsmagick (gm)" || echo "✗ graphicsmagick (gm) missing"
 echo ""
 
 # Optional Tools
