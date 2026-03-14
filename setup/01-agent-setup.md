@@ -123,7 +123,26 @@ The `settings.json` already points to `bash ~/.claude/statusline-command.sh` —
 ### Cursor CLI Settings
 
 As per the [documentation for Cursor CLI](https://cursor.com/docs/cli/reference/configuration), settings are stored in
-`~/.cursor/cli-config.json`. We don't touch these settings for now, as the CLI adds many of its own props to it.
+`~/.cursor/cli-config.json`. Cursor manages this file directly — do not symlink it.
+
+`configs/agents/cursor/cli-config.json` is kept as a reference snapshot (credentials masked) to compare settings across
+machines. On setup, diff and reconcile the two:
+
+```bash
+diff <(jq 'del(.authInfo, .privacyCache)' \
+        ~/projects/agent-box-setup/configs/agents/cursor/cli-config.json) \
+     <(jq 'del(.authInfo, .privacyCache)' \
+        ~/.cursor/cli-config.json)
+```
+
+Copy any desired settings from the reference into `~/.cursor/cli-config.json` manually.
+
+**Key settings:**
+
+- `permissions.allow: ["Shell(*)"]` — auto-approve all shell commands (yolo mode). The `approvalMode` field itself is
+  Cursor-managed; use `--force` / `--yolo` CLI flags to skip approval prompts at invocation time.
+- `sandbox.mode: "disabled"` — no sandboxing.
+- `attribution.attributeCommitsToAgent: true` — commits are attributed to the agent.
 
 ### Codex
 
@@ -158,9 +177,9 @@ npm i -g @openai/codex@latest
 
 **Configuration:**
 
-Config lives at `~/.codex/config.toml` (user-level) or `.codex/config.toml` (project-level).
-See [sample config](https://developers.openai.com/codex/config-sample)
-and [config reference](https://developers.openai.com/codex/config-reference).
+Config lives at `~/.codex/config.toml` (user-level) or `.codex/config.toml` (project-level). See
+[sample config](https://developers.openai.com/codex/config-sample) and
+[config reference](https://developers.openai.com/codex/config-reference).
 
 Source: `configs/agents/codex/config.toml`
 
@@ -175,12 +194,12 @@ ln -sf ~/projects/agent-box-setup/configs/agents/codex/config.toml ~/.codex/conf
 ls -l ~/.codex/config.toml
 ```
 
-Key settings: `approval_policy = "never"` is YOLO mode (no prompts), `model_reasoning_effort = "medium"` sets
-reasoning effort, and `tui.status_line` shows model, context usage percentage, context window size, session token
-counters, and rate-limit windows in the footer. Codex currently does not expose a built-in status item for the raw
-number of tokens in the current context window, only percentage used/remaining plus the total window size.
-See [security defaults](https://developers.openai.com/codex/security).
-Protected paths (`.git`, `.agents`, `.codex`) stay read-only even in writable modes.
+Key settings: `approval_policy = "never"` is YOLO mode (no prompts), `model_reasoning_effort = "medium"` sets reasoning
+effort, and `tui.status_line` shows model, context usage percentage, context window size, session token counters, and
+rate-limit windows in the footer. Codex currently does not expose a built-in status item for the raw number of tokens in
+the current context window, only percentage used/remaining plus the total window size. See
+[security defaults](https://developers.openai.com/codex/security). Protected paths (`.git`, `.agents`, `.codex`) stay
+read-only even in writable modes.
 
 **Rules:**
 

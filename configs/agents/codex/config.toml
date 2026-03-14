@@ -28,3 +28,6 @@ status_line = [
 
 [projects."/home/dave/projects/nomap"]
 trust_level = "trusted"
+
+[projects."/home/dave/.cursor"]
+trust_level = "trusted"
