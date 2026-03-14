@@ -23,7 +23,6 @@ We are currently using the following skills:
 - https://skills.sh/giuseppe-trisciuoglio/developer-kit/shadcn-ui
   => Instead of the [Stitch variant](https://skills.sh/google-labs-code/stitch-skills/shadcn-ui)
 - https://skills.sh/anthropics/skills/webapp-testing
-- https://skills.sh/obra/superpowers/using-git-worktrees
 - https://skills.sh/obra/superpowers/verification-before-completion
 - https://skills.sh/wshobson/agents/tailwind-design-system
 - local: `markdownlint`
