@@ -58,7 +58,28 @@ Expected output: Version numbers for TypeScript, ts-node, and pnpm
 
 ---
 
-## 3. Search Tools (ripgrep)
+## 3. Markdown Tooling
+
+For faster Markdown workflows, install `markdownlint-cli` globally:
+
+```bash
+npm install -g markdownlint-cli
+```
+
+**Verify installation:**
+
+```bash
+markdownlint --version
+```
+
+Expected output: `markdownlint-cli x.x.x` or similar
+
+If you skip the global install, the shared markdownlint skill still works by falling back to
+`npx --yes markdownlint-cli`.
+
+---
+
+## 4. Search Tools (ripgrep)
 
 Install `ripgrep` as a dedicated search tool.
 
@@ -76,7 +97,7 @@ Expected output: `ripgrep x.x.x` or similar
 
 ---
 
-## 4. Firecrawl CLI
+## 5. Firecrawl CLI
 
 Install Firecrawl CLI globally. This is required for the `firecrawl` skill used by agents.
 
@@ -99,10 +120,10 @@ If authentication is missing, tell the user to set up FIRECRAWL_API_KEY in ~/.ba
 
 ---
 
-## 5. Playwright Browser Runtime (for frontend browser tests)
+## 6. Playwright Browser Runtime (for frontend browser tests)
 
-Some frontend test suites run in a real browser through Playwright. Install Chromium once so those tests do not fail at
-startup.
+Some frontend test suites run in a real browser through Playwright. Install Chromium once so those
+tests do not fail at startup.
 
 From a project that includes Playwright in dependencies (for example `apps/frontend` in `nomap`):
 
@@ -120,10 +141,10 @@ If system packages are already installed, `install-deps` is effectively a no-op.
 
 ---
 
-## 6. SDKMAN
+## 7. SDKMAN
 
-[SDKMAN](https://sdkman.io/) manages different versions of Java, Maven, Quarkus, etc. It supports auto-switching SDKs
-when you `cd` into a directory with a `.sdkmanrc`.
+[SDKMAN](https://sdkman.io/) manages different versions of Java, Maven, Quarkus, etc. It supports
+auto-switching SDKs when you `cd` into a directory with a `.sdkmanrc`.
 
 ```bash
 cd ~
@@ -165,7 +186,7 @@ This should activate the SDKs as defined in `.sdkmanrc` and print the versions b
 
 ---
 
-## 7. Java (via SDKMAN)
+## 8. Java (via SDKMAN)
 
 ```bash
 sdk install java 21.0.8-oracle
@@ -181,7 +202,7 @@ Expected output: `java 21.0.8` or similar
 
 ---
 
-## 8. Quarkus and Maven (via SDKMAN)
+## 9. Quarkus and Maven (via SDKMAN)
 
 ```bash
 sdk install quarkus
@@ -199,8 +220,9 @@ Expected output: Version numbers for both Quarkus CLI and Maven
 
 ### Enable Quarkus Build Analytics
 
-Opt in to anonymous build analytics so the Quarkus community can track adoption ([details](https://quarkus.io/usage/)).
-This prevents the interactive prompt that blocks non-interactive dev runs.
+Opt in to anonymous build analytics so the Quarkus community can track adoption
+([details](https://quarkus.io/usage/)). This prevents the interactive prompt that blocks
+non-interactive dev runs.
 
 ```bash
 mkdir -p ~/.redhat
@@ -232,6 +254,8 @@ echo -e "\n=== Global JS tools ===" && \
 tsc --version && \
 ts-node --version && \
 pnpm --version && \
+echo -e "\n=== Markdown tooling ===" && \
+(markdownlint --version || npx --yes markdownlint-cli --version) && \
 echo -e "\n=== Search tools ===" && \
 rg --version && \
 echo -e "\n=== Firecrawl ===" && \
@@ -258,6 +282,7 @@ Confirm all tools are working:
 - [ ] nvm can switch versions: `nvm list` shows installed versions
 - [ ] TypeScript compiler: `tsc --version` shows version
 - [ ] ts-node runtime: `ts-node --version` shows version
+- [ ] Markdown linting available: `markdownlint --version || npx --yes markdownlint-cli --version`
 - [ ] pnpm package manager: `pnpm --version` shows version
 - [ ] ripgrep installed: `rg --version` shows version
 - [ ] Firecrawl CLI installed and authenticated: `firecrawl --status` shows `Authenticated`
@@ -268,4 +293,5 @@ Confirm all tools are working:
 - [ ] Quarkus installed: `quarkus --version` shows version
 - [ ] Maven installed: `mvn --version` shows version
 
-**Next:** Continue to `04-ide+tooling.md`. For imaging tools (ImageMagick, sharp, resvg), see `07-imaging-tools.md`.
+**Next:** Continue to `04-ide+tooling.md`. For imaging tools (ImageMagick, sharp, resvg), see
+`07-imaging-tools.md`.

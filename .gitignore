@@ -4,4 +4,3 @@ CLAUDE.md
 .quarkus/
 .firecrawl/
 configs/agents/.skill-lock.json
-.quarkus/cli/plugins/quarkus-cli-catalog.json

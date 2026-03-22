@@ -1,6 +1,7 @@
 # Agent Box Setup Checklist
 
-Master verification checklist for new machine setup. Follow the numbered guides in `setup/` directory, then verify here.
+Master verification checklist for new machine setup. Follow the numbered guides in `setup/`
+directory, then verify here.
 
 ## 00 - Home Environment
 
@@ -19,8 +20,8 @@ Master verification checklist for new machine setup. Follow the numbered guides 
 - [ ] Claude settings symlinked to `~/.claude/settings.json`
 - [ ] User-level rules symlinked (`~/.claude/rules/`, `~/.cursor/rules/`)
 - [ ] `~/.agents` symlinked to repo config (`~/projects/agent-box-setup/configs/agents`)
-- [ ] Skills symlinked (`~/.claude/skills/`, `~/.cursor/skills/`, `~/.agents/skills/`) and verified against
-      `configs/agents/skills/`
+- [ ] Skills symlinked (`~/.claude/skills/`, `~/.cursor/skills/`, `~/.agents/skills/`) and verified
+      against `configs/agents/skills/`
 
 ## 02 - Core Tools
 
@@ -35,11 +36,13 @@ Master verification checklist for new machine setup. Follow the numbered guides 
 - [ ] nvm can switch versions (`nvm list`)
 - [ ] TypeScript compiler (`tsc --version`)
 - [ ] pnpm package manager (`pnpm --version`)
+- [ ] Markdown linting available (`markdownlint --version || npx --yes markdownlint-cli --version`)
 - [ ] ripgrep installed (`rg --version`)
 - [ ] Firecrawl CLI installed and authenticated (`firecrawl --status`)
-- [ ] Playwright Chromium installed for frontend browser tests (`pnpm exec playwright install chromium` in frontend
-      repo)
-- [ ] Linux/WSL Playwright system deps installed (`pnpm exec playwright install-deps chromium` in frontend repo)
+- [ ] Playwright Chromium installed for frontend browser tests
+      (`pnpm exec playwright install chromium` in frontend repo)
+- [ ] Linux/WSL Playwright system deps installed (`pnpm exec playwright install-deps chromium` in
+      frontend repo)
 - [ ] SDKMAN installed (`sdk version`)
 - [ ] SDKMAN auto-env enabled
 - [ ] Java installed (`java --version`)

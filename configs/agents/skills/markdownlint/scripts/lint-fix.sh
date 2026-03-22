@@ -20,6 +20,11 @@ if command -v markdownlint >/dev/null 2>&1; then
 elif command -v markdownlint-cli >/dev/null 2>&1; then
   markdownlint_cmd=(markdownlint-cli)
 else
+  if ! command -v npx >/dev/null 2>&1; then
+    echo "error: markdownlint is not installed and npx is unavailable" >&2
+    exit 1
+  fi
+  echo "info: markdownlint not found on PATH; using npx --yes markdownlint-cli" >&2
   markdownlint_cmd=(npx --yes markdownlint-cli)
 fi
 

@@ -176,6 +176,13 @@ elif corepack pnpm --version >/dev/null 2>&1; then
 else
     echo "✗ pnpm missing"
 fi
+if markdownlint --version >/dev/null 2>&1; then
+    echo "✓ markdownlint installed"
+elif npx --yes markdownlint-cli --version >/dev/null 2>&1; then
+    echo "⊗ markdownlint not installed globally; npx fallback works"
+else
+    echo "✗ markdownlint unavailable"
+fi
 if firecrawl --version >/dev/null 2>&1; then
     echo "✓ Firecrawl CLI installed"
     firecrawl_status="$(firecrawl --status 2>/dev/null || true)"

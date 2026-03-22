@@ -56,6 +56,10 @@ bash configs/agents/skills/markdownlint/scripts/prettier-wrap.sh
 bash configs/agents/skills/markdownlint/scripts/lint-fix.sh
 ```
 
+The lint script prefers `markdownlint` or `markdownlint-cli` when already installed. If neither is
+available, it falls back to `npx --yes markdownlint-cli` and installs the package on demand for that
+run.
+
 1. For check-only lint (no `--fix`), run:
 
 ```bash
@@ -66,6 +70,12 @@ npx --yes markdownlint-cli --config .markdownlint.json --ignore-path .markdownli
 Both scripts accept optional file/directory/glob targets.
 If no targets are passed, they default to `"**/*.md"` and `"**/*.mdc"` while honoring
 `.markdownlintignore`.
+
+If you want a persistent install instead of on-demand `npx`, install the CLI globally:
+
+```bash
+npm install -g markdownlint-cli
+```
 
 ## Guardrails
 
