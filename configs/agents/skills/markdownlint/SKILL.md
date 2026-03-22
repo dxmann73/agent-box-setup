@@ -43,6 +43,9 @@ Apply these rules when writing or editing Markdown:
 
 ## Workflow
 
+> **Note:** Never apply this workflow to plan artifacts (`plans/**/*.md`, `**/*-plan.md`).
+> Plans are exempt from linting and wrapping.
+
 1. Make Markdown edits following the core rules above.
 1. Wrap/reflow prose with Prettier (line width is read from `.markdownlint.json`):
 
