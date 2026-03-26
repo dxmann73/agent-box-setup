@@ -33,6 +33,11 @@
 - When in plan mode, ask clarifying questions if you're not sure what to do. Try to provide
   alternative approaches.
 
+## Engineering
+
+- When validating or converting data, fail fast: throw and stop as soon as a value is not what you
+  expect; do not substitute silent defaults or empty placeholders that hide bad input until later.
+
 ## Planning Artifacts
 
 - When creating or updating implementation/design plans, store them in `<repo-root>/plans/`.
