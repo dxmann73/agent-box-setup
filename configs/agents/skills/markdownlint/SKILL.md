@@ -20,7 +20,7 @@ This is the single source of truth for Markdown formatting behavior.
 
 For `MD013` line length, always read `.markdownlint.json` and follow that value.
 Lines should wrap according to the value configured in `.markdownlint.json`.
-If no line length is configured, `prettier-wrap.sh` falls back to `120`.
+If no line length is configured, `prettier-wrap.sh` falls back to `100`.
 
 ## Core Rules
 

@@ -15,7 +15,7 @@ if [[ -f ".markdownlint.json" ]]; then
 fi
 
 if [[ -z "$line_width" || ! "$line_width" =~ ^[0-9]+$ ]]; then
-  line_width="120"
+  line_width="100"
 fi
 
 targets=("$@")

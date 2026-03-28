@@ -52,7 +52,7 @@
 - when creating or changing markdown files, use the `markdownlint` skill
 - if `markdownlint` is not on PATH, use the skill scripts or `npx --yes markdownlint-cli`; do not
   block on a missing global install
-- line length is 120 per default. Reflow lines at that length if not given in `.markdownlint.json`
+- line length is 100 per default. Reflow lines at that length if not given in `.markdownlint.json`
 - never lint plan artifacts (`plans/**/*.md`, `**/*-plan.md`); plans are exempt from markdownlint
   runs
 
