@@ -6,7 +6,7 @@ We are currently using the following skills:
 - https://skills.sh/vercel-labs/agent-skills/web-design-guidelines
 - https://skills.sh/anthropics/skills/frontend-design
 - https://skills.sh/vercel-labs/agent-browser/agent-browser
-- https://skills.sh/obra/superpowers/brainstorming
+- local: `brainstorming` (repo-owned; not skills.sh / lockfile)
 - https://skills.sh/anthropics/skills/pdf
 - https://skills.sh/anthropics/skills/xlsx
 - https://skills.sh/anthropics/skills/docx

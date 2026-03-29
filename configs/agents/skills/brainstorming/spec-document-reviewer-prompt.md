@@ -4,9 +4,10 @@ Use this template when dispatching a spec document reviewer subagent.
 
 **Purpose:** Verify the spec is complete, consistent, and ready for implementation planning.
 
-**Dispatch after:** Spec document is written to docs/superpowers/specs/
+**Dispatch after:** Spec or design document is written under the project’s planning path (default:
+repo-root `plans/`, e.g. `plans/YYYY-MM-DD-<topic>-design.md`).
 
-```
+```text
 Task tool (general-purpose):
   description: "Review spec document"
   prompt: |

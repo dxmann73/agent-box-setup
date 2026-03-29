@@ -319,7 +319,7 @@ find ~/.claude/skills ~/.cursor/skills -maxdepth 1 -xtype l -delete
 npx skills add anthropics/skills -g -s docx -s frontend-design -s pdf -s webapp-testing -s xlsx -y
 npx skills add vercel-labs/agent-skills -g -s vercel-react-best-practices -s web-design-guidelines -y
 npx skills add vercel-labs/agent-browser -g -s agent-browser -y
-npx skills add obra/superpowers -g -s brainstorming -s verification-before-completion -y
+npx skills add obra/superpowers -g -s verification-before-completion -y
 npx skills add wshobson/agents \
   -g -s bash-defensive-patterns -s error-handling-patterns \
   -s react-state-management -s tailwind-design-system -s visual-design-foundations -y
@@ -340,16 +340,21 @@ npx skills add elastic/agent-skills -g \
 # observability-* (EDOT instrumentation) deferred — see docs/specs/99-backlog.md
 ```
 
-**Custom skills** (`gg-commit-push`, `markdownlint`, `quarkus`) are not published on skills.sh and
-live only in this repo. Symlink them manually:
+**Custom / repo-owned skills** (`gg-commit-push`, `markdownlint`, `quarkus`, `brainstorming`) are
+not managed by `npx skills add` or `npx skills update` (no lockfile entry). They live only in this
+repo; symlink them manually:
 
 ```bash
 mkdir -p ~/.claude/skills ~/.cursor/skills
-for skill in gg-commit-push markdownlint quarkus; do
+for skill in gg-commit-push markdownlint quarkus brainstorming; do
   ln -sfn ~/projects/agent-box-setup/configs/agents/skills/$skill ~/.claude/skills/$skill
   ln -sfn ~/projects/agent-box-setup/configs/agents/skills/$skill ~/.cursor/skills/$skill
 done
 ```
+
+**Brainstorming** — Originally derived from
+[obra/superpowers](https://github.com/obra/superpowers) (`skills/brainstorming`); content is
+maintained here so upstream changes do not overwrite local edits.
 
 **Note — Quarkus skill**: the upstream `b6k-dev/quarkus-skill` uses a custom directory structure not
 compatible with `npx skills add`. Only `SKILL.md` is vendored here; the full reference tree is
