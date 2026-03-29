@@ -32,6 +32,11 @@ alias gc="git clone"
 alias c='claude'
 alias cc='claude --continue'
 
+# Yolo mode aliases
+alias yco='codex --yolo'
+alias ycc='claude --dangerously-skip-permissions'
+alias yca='cursor-agent --yolo'
+
 # Maven build
 alias mci="mvn clean install $@"
 alias mcit="mvn clean install -DskipITs=false $@"
