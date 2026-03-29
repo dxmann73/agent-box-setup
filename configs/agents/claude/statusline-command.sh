@@ -103,6 +103,31 @@ if [ -f "$CACHE_FILE" ]; then
   fi
 fi
 
+# Weekly spending limit (7-day rate limit from JSON)
+weekly_str=""
+week_pct=$(echo "$input" | jq -r '.rate_limits.seven_day.used_percentage // empty')
+week_resets_at=$(echo "$input" | jq -r '.rate_limits.seven_day.resets_at // empty')
+if [ -n "$week_pct" ]; then
+  week_int=$(printf '%.0f' "$week_pct" 2>/dev/null || echo "0")
+
+  reset_label=""
+  if [ -n "$week_resets_at" ]; then
+    now_epoch=$(date +%s)
+    days_left=$(( (week_resets_at - now_epoch + 86399) / 86400 ))
+    reset_date=$(date -d "@${week_resets_at}" '+%a %b %-d %H:%M' 2>/dev/null \
+      || date -r "$week_resets_at" '+%a %b %-d %H:%M' 2>/dev/null)
+    reset_label="resets in ${days_left}d (${reset_date})"
+  fi
+
+  if [ "$week_int" -ge 80 ]; then
+    weekly_str=" ${C_RED_BOLD}/ used ${week_int}%${reset_label:+, $reset_label}${C_RESET}"
+  elif [ "$week_int" -ge 50 ]; then
+    weekly_str=" ${C_CTX_YELLOW}/ used ${week_int}%${reset_label:+, $reset_label}${C_RESET}"
+  else
+    weekly_str=" / used ${week_int}%${reset_label:+, $reset_label}"
+  fi
+fi
+
 # Rate limit reset: written by post-tool hook when rate limit fires
 rate_reset_str=""
 if [ -f /tmp/claude-rate-reset ]; then
@@ -125,6 +150,6 @@ model_part=""
 cost_part=""
 [ -n "$ccusage_cost" ] && cost_part=" | ${ccusage_cost}"
 
-line2="${model_part}${ctx_bar_str}${ctx_label}${cost_part}${rate_reset_str}"
+line2="${model_part}${ctx_bar_str}${ctx_label}${cost_part}${weekly_str}${rate_reset_str}"
 
 printf "%s\n%s\n" "$line1" "$line2"

@@ -13,10 +13,6 @@ writable_roots = ["/home/dave"]
 status_line = [
   "current-dir",
   "context-used",
-  # Session-level token counters. Codex currently does not expose
-  # a built-in "current context tokens used" numeric status item.
-  "used-tokens",
-  "context-window-size",
   "five-hour-limit",
   "weekly-limit",
   "model-with-reasoning",
