@@ -428,10 +428,3 @@ const todosSlice = createSlice({
   },
 });
 ```
-
-## Resources
-
-- [Redux Toolkit Documentation](https://redux-toolkit.js.org/)
-- [Zustand GitHub](https://github.com/pmndrs/zustand)
-- [Jotai Documentation](https://jotai.org/)
-- [TanStack Query](https://tanstack.com/query)
