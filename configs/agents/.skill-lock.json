@@ -214,6 +214,69 @@
       "skillFolderHash": "1f8c5ca82753f4b84725bc82d7b30e88547bd2d7",
       "installedAt": "2026-03-29T08:19:30.685Z",
       "updatedAt": "2026-03-29T08:19:30.685Z"
+    },
+    "elasticsearch-audit": {
+      "source": "elastic/agent-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/elastic/agent-skills.git",
+      "skillPath": "skills/elasticsearch/elasticsearch-audit/SKILL.md",
+      "skillFolderHash": "4a9f7937140edc2d964a6fdcb742b288add02688",
+      "installedAt": "2026-03-29T09:46:36.826Z",
+      "updatedAt": "2026-03-29T09:46:36.826Z"
+    },
+    "elasticsearch-authn": {
+      "source": "elastic/agent-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/elastic/agent-skills.git",
+      "skillPath": "skills/elasticsearch/elasticsearch-authn/SKILL.md",
+      "skillFolderHash": "ab9b37f3490ea1e46b792516280be4c9ccc3298b",
+      "installedAt": "2026-03-29T09:46:29.605Z",
+      "updatedAt": "2026-03-29T09:46:29.605Z"
+    },
+    "elasticsearch-authz": {
+      "source": "elastic/agent-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/elastic/agent-skills.git",
+      "skillPath": "skills/elasticsearch/elasticsearch-authz/SKILL.md",
+      "skillFolderHash": "0fa68c3d1abc95f8310fb05d205dc2c2fbdeae16",
+      "installedAt": "2026-03-29T09:46:30.117Z",
+      "updatedAt": "2026-03-29T09:46:30.117Z"
+    },
+    "elasticsearch-esql": {
+      "source": "elastic/agent-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/elastic/agent-skills.git",
+      "skillPath": "skills/elasticsearch/elasticsearch-esql/SKILL.md",
+      "skillFolderHash": "56009db1232765ecb429e0a155fbf7d4862b6111",
+      "installedAt": "2026-03-29T09:46:30.545Z",
+      "updatedAt": "2026-03-29T09:46:30.545Z"
+    },
+    "elasticsearch-file-ingest": {
+      "source": "elastic/agent-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/elastic/agent-skills.git",
+      "skillPath": "skills/elasticsearch/elasticsearch-file-ingest/SKILL.md",
+      "skillFolderHash": "f813c40e662b9776c91cacf276e7e32b64e09e9b",
+      "installedAt": "2026-03-29T09:46:31.250Z",
+      "updatedAt": "2026-03-29T09:46:31.250Z"
+    },
+    "elasticsearch-onboarding": {
+      "source": "elastic/agent-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/elastic/agent-skills.git",
+      "skillPath": "skills/elasticsearch/elasticsearch-onboarding/SKILL.md",
+      "skillFolderHash": "85f091edb2c1de5f053e9ad57215694ef9678095",
+      "installedAt": "2026-03-29T09:46:31.856Z",
+      "updatedAt": "2026-03-29T09:46:31.856Z"
+    },
+    "elasticsearch-security-troubleshooting": {
+      "source": "elastic/agent-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/elastic/agent-skills.git",
+      "skillPath": "skills/elasticsearch/elasticsearch-security-troubleshooting/SKILL.md",
+      "skillFolderHash": "9e601ce086c1427815d1e3ed3405af67798d600e",
+      "installedAt": "2026-03-29T09:46:32.585Z",
+      "updatedAt": "2026-03-29T09:46:32.585Z"
     }
   },
   "dismissed": {}

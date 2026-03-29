@@ -328,18 +328,34 @@ npx skills add firecrawl/cli -g -s firecrawl -y
 npx skills add alejandrobailo/no-use-effect -g -s no-use-effect -y
 npx skills add antfu/skills -g -s pnpm -y
 npx skills add jezweb/claude-skills -g -s shadcn-ui -y
+npx skills add elastic/agent-skills -g \
+  -s elasticsearch-audit -s elasticsearch-authn -s elasticsearch-authz \
+  -s elasticsearch-esql -s elasticsearch-file-ingest -s elasticsearch-onboarding \
+  -s elasticsearch-security-troubleshooting \
+  -y
+# kibana-*, cloud-*, security-*, and observability-* skills intentionally excluded:
+# kibana-* not needed (no Kibana usage planned)
+# cloud-* targets Elastic Cloud SaaS/Serverless (we use ECK self-managed)
+# security-* is the Elastic SIEM product, not general ES security
+# observability-* (EDOT instrumentation) deferred — see docs/specs/99-backlog.md
 ```
 
-**Custom skills** (`gg-commit-push`, `markdownlint`) are not published on skills.sh and live only in
-this repo. Symlink them manually:
+**Custom skills** (`gg-commit-push`, `markdownlint`, `quarkus`) are not published on skills.sh and
+live only in this repo. Symlink them manually:
 
 ```bash
 mkdir -p ~/.claude/skills ~/.cursor/skills
-for skill in gg-commit-push markdownlint; do
+for skill in gg-commit-push markdownlint quarkus; do
   ln -sfn ~/projects/agent-box-setup/configs/agents/skills/$skill ~/.claude/skills/$skill
   ln -sfn ~/projects/agent-box-setup/configs/agents/skills/$skill ~/.cursor/skills/$skill
 done
 ```
+
+**Note — Quarkus skill**: the upstream `b6k-dev/quarkus-skill` uses a custom directory structure not
+compatible with `npx skills add`. Only `SKILL.md` is vendored here; the full reference tree is
+intentionally omitted. To update: check `https://github.com/b6k-dev/quarkus-skill` for changes to
+`skill/quarkus/SKILL.md` and copy the updated content into `configs/agents/skills/quarkus/SKILL.md`
+manually.
 
 **Update all upstream skills:**
 
