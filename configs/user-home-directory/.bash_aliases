@@ -45,6 +45,7 @@ alias nrd="pnpm run dev"
 alias nrb="pnpm run build"
 alias nrt="pnpm run test"
 
+alias pr="pnpm run"
 alias prs="pnpm run start"
 alias prd="pnpm run dev"
 alias prb="pnpm run build"
