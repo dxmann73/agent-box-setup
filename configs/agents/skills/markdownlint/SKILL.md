@@ -50,13 +50,13 @@ Apply these rules when writing or editing Markdown:
 1. Wrap/reflow prose with Prettier (line width is read from `.markdownlint.json`):
 
 ```bash
-bash configs/agents/skills/markdownlint/scripts/prettier-wrap.sh
+bash ~/projects/agent-box-setup/configs/agents/skills/markdownlint/scripts/prettier-wrap.sh
 ```
 
 1. Lint with ignore-path support:
 
 ```bash
-bash configs/agents/skills/markdownlint/scripts/lint-fix.sh
+bash ~/projects/agent-box-setup/configs/agents/skills/markdownlint/scripts/lint-fix.sh
 ```
 
 The lint script prefers `markdownlint` or `markdownlint-cli` when already installed. If neither is
