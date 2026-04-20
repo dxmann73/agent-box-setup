@@ -35,8 +35,17 @@ trust_level = "trusted"
 [projects."/home/dave"]
 trust_level = "trusted"
 
+[projects."/home/dave/projects/caveman"]
+trust_level = "trusted"
+
 [notice]
 hide_full_access_warning = true
 
 [plugins."github@openai-curated"]
 enabled = true
+
+[plugins."caveman@caveman-repo"]
+enabled = true
+
+[features]
+codex_hooks = true

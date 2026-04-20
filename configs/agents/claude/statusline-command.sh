@@ -13,6 +13,19 @@ C_CTX_GREEN=$'\033[32m'
 C_CTX_YELLOW=$'\033[33m'
 C_CTX_RED=$'\033[31m'
 
+# caveman
+caveman_text=""
+caveman_flag="$HOME/.claude/.caveman-active"
+if [ -f "$caveman_flag" ]; then
+  caveman_mode=$(cat "$caveman_flag" 2>/dev/null)
+  if [ "$caveman_mode" = "full" ] || [ -z "$caveman_mode" ]; then
+    caveman_text=$'\033[38;5;172m[CAVEMAN]\033[0m'
+  else
+    caveman_suffix=$(echo "$caveman_mode" | tr '[:lower:]' '[:upper:]')
+    caveman_text=$'\033[38;5;172m[CAVEMAN:'"${caveman_suffix}"$']\033[0m'
+  fi
+fi
+
 # Git branch
 git_branch=""
 if git -C "$cwd" rev-parse --git-dir > /dev/null 2>&1; then
@@ -22,7 +35,7 @@ if git -C "$cwd" rev-parse --git-dir > /dev/null 2>&1; then
 fi
 
 # Line 1: user@host:/path (branch)
-line1="${C_GREEN}$(whoami)@$(hostname -s)${C_RESET}:${C_BLUE}${cwd}${C_YELLOW}${git_branch}${C_RESET}"
+line1="${C_GREEN}$(whoami)@$(hostname -s)${C_RESET}:${C_BLUE}${cwd}${C_YELLOW}${git_branch}${C_RESET}${caveman_text}"
 
 # Context window (live from JSON)
 used_pct=$(echo "$input" | jq -r '.context_window.used_percentage // empty')

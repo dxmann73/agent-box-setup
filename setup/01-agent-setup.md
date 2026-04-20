@@ -201,8 +201,8 @@ ls -l ~/.codex/config.toml
 ```
 
 Key settings: `approval_policy = "never"` is YOLO mode (no prompts),
-`model_reasoning_effort = "high"` sets reasoning effort, and `tui.status_line` shows model,
-context usage percentage, session token counters, and rate-limit windows in the footer. See
+`model_reasoning_effort = "high"` sets reasoning effort, and `tui.status_line` shows model, context
+usage percentage, session token counters, and rate-limit windows in the footer. See
 [security defaults](https://developers.openai.com/codex/security). Protected paths (`.git`,
 `.agents`, `.codex`) stay read-only even in writable modes.
 
@@ -215,6 +215,55 @@ Codex uses [AGENTS.md](https://developers.openai.com/codex/guides/agents-md) —
 
 See [skills documentation](https://developers.openai.com/codex/skills#where-to-save-skills) for
 skill placement.
+
+## Caveman
+
+[Caveman](https://github.com/JuliusBrussee/caveman) cuts ~75% of agent output tokens while keeping
+full technical accuracy. Clone the repo first:
+
+```bash
+git clone https://github.com/JuliusBrussee/caveman ~/projects/caveman
+```
+
+### Claude Code
+
+Register the marketplace and install the plugin:
+
+```bash
+claude plugin marketplace add JuliusBrussee/caveman
+claude plugin install caveman@caveman
+```
+
+The plugin bundles `SessionStart` and `UserPromptSubmit` hooks — caveman activates automatically
+every session. `configs/agents/claude/settings.json` has the marketplace entry and plugin enabled;
+the symlink from the Claude Code Settings step above picks this up.
+
+### Codex
+
+Install the plugin interactively (once):
+
+1. `cd ~/projects/caveman && codex`
+2. Type `/plugins` → Search "Caveman" → Install
+
+Symlink the hooks file for user-level auto-start:
+
+```bash
+ln -sf ~/projects/agent-box-setup/configs/agents/codex/hooks.json ~/.codex/hooks.json
+```
+
+The `config.toml` symlink (set up in the Codex section above) already enables
+`[features] codex_hooks = true` and the caveman plugin. Caveman fires on every session start via the
+`SessionStart` hook.
+
+**Note:** Codex hooks are disabled on Windows; use `$caveman` to activate manually there.
+
+### Cursor
+
+Cursor has no hook system. Caveman activates via a user-level rule with `alwaysApply: true`.
+
+The `caveman.mdc` rule in `configs/agents/user-rules/` is picked up by the rules sync step above —
+no extra step needed. Caveman is active from the first response of every session. Say "stop caveman"
+or "normal mode" to deactivate.
 
 ---
 
@@ -350,9 +399,9 @@ for skill in gg-commit-push markdownlint quarkus brainstorming; do
 done
 ```
 
-**Brainstorming** — Originally derived from
-[obra/superpowers](https://github.com/obra/superpowers) (`skills/brainstorming`); content is
-maintained here so upstream changes do not overwrite local edits.
+**Brainstorming** — Originally derived from [obra/superpowers](https://github.com/obra/superpowers)
+(`skills/brainstorming`); content is maintained here so upstream changes do not overwrite local
+edits.
 
 **Note — Quarkus skill**: the upstream `b6k-dev/quarkus-skill` uses a custom directory structure not
 compatible with `npx skills add`. Only `SKILL.md` is vendored here; the full reference tree is
