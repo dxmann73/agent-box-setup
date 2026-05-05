@@ -345,8 +345,9 @@ Skills are managed via the [skills CLI](https://github.com/vercel-labs/skills) (
 Because `~/.agents` is symlinked to `configs/agents/`, a global install (`-g`) writes skill files
 directly into `configs/agents/skills/` and the lock file into `configs/agents/.skill-lock.json`,
 keeping everything version-controlled in this repo. Agent-specific symlinks (`~/.claude/skills/`,
-`~/.cursor/skills/`) are created automatically by the CLI. Set `DISABLE_TELEMETRY=1` to opt out of
-anonymous install telemetry (add to `~/.bash_secrets`).
+`~/.cursor/skills/`) are often created automatically by the CLI, but do not rely on that alone:
+finish with the directory-driven sync below so every box matches the repo exactly. Set
+`DISABLE_TELEMETRY=1` to opt out of anonymous install telemetry (add to `~/.bash_secrets`).
 
 Note: the `firecrawl` skill requires Firecrawl CLI to be installed and authenticated — see
 `setup/03-dev-environment.md` (`firecrawl --status`).
@@ -387,15 +388,18 @@ npx skills add elastic/agent-skills -g \
 # observability-* (EDOT instrumentation) deferred — see docs/specs/99-backlog.md
 ```
 
-**Custom / repo-owned skills** (`gg-commit-push`, `markdownlint`, `quarkus`, `brainstorming`) are
-not managed by `npx skills add` or `npx skills update` (no lockfile entry). They live only in this
-repo; symlink them manually:
+**Custom / repo-owned skills** (for example `gg-commit-push`, `markdownlint`, `quarkus`,
+`brainstorming`) are not managed by `npx skills add` or `npx skills update` (no lockfile entry).
+Some upstream-managed skills may also fail to create or refresh agent-specific symlinks on an older
+box. Normalize all skill links from the repo after installs or updates:
 
 ```bash
 mkdir -p ~/.claude/skills ~/.cursor/skills
-for skill in gg-commit-push markdownlint quarkus brainstorming; do
-  ln -sfn ~/projects/agent-box-setup/configs/agents/skills/$skill ~/.claude/skills/$skill
-  ln -sfn ~/projects/agent-box-setup/configs/agents/skills/$skill ~/.cursor/skills/$skill
+find ~/.claude/skills ~/.cursor/skills -maxdepth 1 -xtype l -delete
+find ~/projects/agent-box-setup/configs/agents/skills -mindepth 1 -maxdepth 1 -type d -print0 | while IFS= read -r -d '' skill_dir; do
+  skill_name="$(basename "$skill_dir")"
+  ln -sfn "$skill_dir" ~/.claude/skills/"$skill_name"
+  ln -sfn "$skill_dir" ~/.cursor/skills/"$skill_name"
 done
 ```
 
@@ -438,6 +442,7 @@ echo -e "\n=== Settings ===" && \
 ls -l ~/.claude/settings.json && \
 ls -l ~/.claude/statusline-command.sh && \
 ls -l ~/.codex/config.toml && \
+ls -l ~/.codex/hooks.json && \
 echo -e "\n=== Rules Count ===" && \
 echo "Claude rules: $(ls ~/.claude/rules/ 2>/dev/null | wc -l)" && \
 echo "Cursor rules: $(ls ~/.cursor/rules/ 2>/dev/null | wc -l)" && \

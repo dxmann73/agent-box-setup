@@ -18,6 +18,7 @@ directory, then verify here.
 - [ ] Codex installed (`codex --version`)
 - [ ] `~/AGENTS.md` and `~/CLAUDE.md` symlinked
 - [ ] Claude settings symlinked to `~/.claude/settings.json`
+- [ ] Codex hooks symlinked to `~/.codex/hooks.json`
 - [ ] User-level rules symlinked (`~/.claude/rules/`, `~/.cursor/rules/`)
 - [ ] `~/.agents` symlinked to repo config (`~/projects/agent-box-setup/configs/agents`)
 - [ ] Skills symlinked (`~/.claude/skills/`, `~/.cursor/skills/`, `~/.agents/skills/`) and verified

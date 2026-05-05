@@ -35,6 +35,13 @@ elif [ -f ~/.codex/config.toml ]; then
 else
     echo "✗ ~/.codex/config.toml missing"
 fi
+if [ -L ~/.codex/hooks.json ]; then
+    echo "✓ ~/.codex/hooks.json symlinked"
+elif [ -f ~/.codex/hooks.json ]; then
+    echo "✗ ~/.codex/hooks.json exists but is NOT a symlink"
+else
+    echo "✗ ~/.codex/hooks.json missing"
+fi
 echo ""
 
 # Home Directory Symlinks
