@@ -35,6 +35,15 @@ elif [ -f ~/.codex/config.toml ]; then
 else
     echo "✗ ~/.codex/config.toml missing"
 fi
+if [ -f ~/.codex/config.toml ]; then
+    if rg -n '^[[:space:]]*codex_hooks[[:space:]]*=' ~/.codex/config.toml >/dev/null 2>&1; then
+        echo "✗ ~/.codex/config.toml uses deprecated [features].codex_hooks"
+    elif rg -n '^[[:space:]]*hooks[[:space:]]*=[[:space:]]*true$' ~/.codex/config.toml >/dev/null 2>&1; then
+        echo "✓ ~/.codex/config.toml enables [features].hooks"
+    else
+        echo "✗ ~/.codex/config.toml missing [features].hooks = true"
+    fi
+fi
 if [ -L ~/.codex/hooks.json ]; then
     echo "✓ ~/.codex/hooks.json symlinked"
 elif [ -f ~/.codex/hooks.json ]; then

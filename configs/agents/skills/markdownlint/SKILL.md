@@ -64,6 +64,16 @@ npx --yes markdownlint-cli --config .markdownlint.json --ignore-path .markdownli
 
 Both scripts accept optional file/directory/glob targets. Default: `"**/*.md"` and `"**/*.mdc"`, honoring `.markdownlintignore`.
 
+### Troubleshooting
+
+- `markdownlint` usage text with exit `0` is not success. Usually ignore rules reduced targets to
+  zero.
+- Check `.markdownlintignore` before linting a single file with `--ignore-path`.
+- In this repo, `configs/agents/skills` is ignored. Linting `configs/agents/skills/.../SKILL.md`
+  with repo ignore path can collapse to zero files and print usage text.
+- For normal repo lint runs, honor `.markdownlintignore`. Spot-check ignored files only as ad hoc
+  checks.
+
 Persistent install:
 
 ```bash
