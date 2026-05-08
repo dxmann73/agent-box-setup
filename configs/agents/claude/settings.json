@@ -36,5 +36,6 @@
       "Working"
     ]
   },
-  "skipDangerousModePermissionPrompt": true
+  "skipDangerousModePermissionPrompt": true,
+  "awaySummaryEnabled": false
 }
