@@ -219,7 +219,7 @@ Use Corepack to manage pnpm version:
 ```json
 // package.json
 {
-  "packageManager": "pnpm@9.0.0"
+  "packageManager": "pnpm@11.1.1"
 }
 ```
 
