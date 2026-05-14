@@ -363,7 +363,7 @@ find ~/.claude/skills ~/.cursor/skills -maxdepth 1 -xtype l -delete
 **Install all upstream skills:**
 
 ```bash
-npx skills add anthropics/skills -g -s docx -s frontend-design -s pdf -s webapp-testing -s xlsx -y
+npx skills add anthropics/skills -g -s docx -s frontend-design -s pdf -s xlsx -y
 npx skills add vercel-labs/agent-skills -g -s vercel-react-best-practices -s web-design-guidelines -y
 npx skills add vercel-labs/agent-browser -g -s agent-browser -y
 npx skills add obra/superpowers -g -s verification-before-completion -y
