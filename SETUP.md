@@ -37,7 +37,7 @@ directory, then verify here.
 - [ ] npm working (`command npm --version`)
 - [ ] nvm can switch versions (`nvm list`)
 - [ ] TypeScript compiler (`tsc --version`)
-- [ ] pnpm package manager (`pnpm --version`)
+- [ ] pnpm package manager (`type -a pnpm` then `hash -r && pnpm --version`)
 - [ ] Markdown linting available (`markdownlint --version || npx --yes markdownlint-cli --version`)
 - [ ] ripgrep installed (`rg --version`)
 - [ ] Firecrawl CLI installed and authenticated (`firecrawl --status`)

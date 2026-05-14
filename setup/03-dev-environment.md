@@ -42,19 +42,26 @@ Bootstrap `pnpm` with Corepack and install global JS tools.
 ```bash
 corepack enable
 corepack prepare pnpm@latest --activate
+hash -r
 pnpm --version
 npm install -g typescript ts-node
 ```
+
+If `pnpm --version` still shows an older globally installed release, open a new shell or run
+`hash -r` again so Bash stops using a cached `/usr/bin/pnpm` path and picks up the Corepack shim.
 
 **Verify installation:**
 
 ```bash
 tsc --version
 ts-node --version
+type -a pnpm
+hash -r
 pnpm --version
 ```
 
-Expected output: Version numbers for TypeScript, ts-node, and pnpm
+Expected output: Version numbers for TypeScript and ts-node, plus `pnpm` resolving to the Corepack
+shim under your active Node installation and reporting the latest stable release (currently 11.x).
 
 ---
 
@@ -253,6 +260,8 @@ npm --version && \
 echo -e "\n=== Global JS tools ===" && \
 tsc --version && \
 ts-node --version && \
+type -a pnpm && \
+hash -r && \
 pnpm --version && \
 echo -e "\n=== Markdown tooling ===" && \
 (markdownlint --version || npx --yes markdownlint-cli --version) && \
@@ -283,7 +292,8 @@ Confirm all tools are working:
 - [ ] TypeScript compiler: `tsc --version` shows version
 - [ ] ts-node runtime: `ts-node --version` shows version
 - [ ] Markdown linting available: `markdownlint --version || npx --yes markdownlint-cli --version`
-- [ ] pnpm package manager: `pnpm --version` shows version
+- [ ] pnpm package manager: `type -a pnpm` shows the Corepack shim first, then
+      `hash -r && pnpm --version` shows the latest stable version
 - [ ] ripgrep installed: `rg --version` shows version
 - [ ] Firecrawl CLI installed and authenticated: `firecrawl --status` shows `Authenticated`
 - [ ] Playwright Chromium installed for frontend browser tests
