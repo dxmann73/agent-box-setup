@@ -9,6 +9,8 @@ Turn ideas into agreed design before implementation. Engineering style, plans, r
 
 Example (nomap): planning/design artifacts live under repo-root `plans/`; checked-in system description lives under `docs/sdd/`. Follow target project layout when different.
 
+Plans describe required changes only. Do not pad plans with statements about behavior that already exists, things that stay unchanged, or work that does not need doing.
+
 ## Hard gate
 
 No implement, scaffold, or invoke implementation skills until design presented and approved. Applies even to "small" work; design may be few sentences.
