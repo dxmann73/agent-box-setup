@@ -143,10 +143,15 @@ Copy any desired settings from the reference into `~/.cursor/cli-config.json` ma
 
 **Key settings:**
 
-- `permissions.allow: ["Shell(*)"]` — auto-approve all shell commands (yolo mode). The
-  `approvalMode` field itself is Cursor-managed; use `--force` / `--yolo` CLI flags to skip approval
-  prompts at invocation time.
-- `sandbox.mode: "disabled"` — no sandboxing.
+- `approvalMode: "unrestricted"` — YOLO / "Run Everything". Valid values are `"allowlist"`
+  (default, prompt per command) and `"unrestricted"` (skip all approvals). The public docs at
+  `cursor.com/docs/cli/reference/configuration` don't list these enum values; they come from the
+  CLI's bundled config schema (`cursor-agent` 2026.05+). The `--force` / `--yolo` CLI flags are
+  the per-invocation equivalent.
+- `permissions.allow: ["Shell(*)"]` — auto-approve all shell commands (belt-and-braces with
+  `approvalMode: "unrestricted"`).
+- `sandbox.mode: "disabled"` — no sandboxing. Pair `approvalMode: "unrestricted"` with
+  `sandbox.mode: "enabled"` if you want YOLO without giving up host isolation.
 - `attribution.attributeCommitsToAgent: true` — commits are attributed to the agent.
 
 ### Codex
