@@ -3,6 +3,9 @@ alias be="cd ~/projects/nomap/apps/backend"
 alias fe="cd ~/projects/nomap/apps/frontend"
 alias docs="cd ~/projects/nomap/docs"
 alias nom="cd ~/projects/nomap"
+alias mac="cd ~/projects/macros"
+alias tax="cd ~/projects/dave-tax-advisor"
+alias web="cd ~/projects/website"
 
 # General aliases
 # Note: This may be needed later on, do not delete

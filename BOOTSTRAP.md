@@ -1,11 +1,12 @@
 # Steps for bootstrapping a Ubuntu VM
 
-These steps will have already been done when any coding agents hit this repo. This file is here purely to keep track of
-the process.
+These steps will have already been done when any coding agents hit this repo. This file is here
+purely to keep track of the process.
 
 ## Install VMWare Workstation Pro
 
-Get [VMWare Workstation Pro](https://www.vmware.com/products/desktop-hypervisor/workstation-and-fusion)
+Get
+[VMWare Workstation Pro](https://www.vmware.com/products/desktop-hypervisor/workstation-and-fusion)
 
 Notes:
 
@@ -38,9 +39,9 @@ Power > Power saving > Screen blank > Never System > Enable automatic login
 
 Install `Gnome Tweaks` and set proper font scaling under "Appearance"
 
-### Passwordless apt
+### Passwordless apt and mount
 
-Set up passwordless apt for automation/AI agents:
+Set up passwordless sudo for apt and mount (needed for automation/AI agents):
 
 ```bash
 sudo visudo -f /etc/sudoers.d/apt-nopasswd
@@ -49,10 +50,10 @@ sudo visudo -f /etc/sudoers.d/apt-nopasswd
 Add this line (replace `YOUR_USER_NAME` with your username):
 
 ```text
-YOUR_USER_NAME ALL=(ALL) NOPASSWD: /usr/bin/apt, /usr/bin/apt-get
+YOUR_USER_NAME ALL=(ALL) NOPASSWD: /usr/bin/apt, /usr/bin/apt-get, /usr/bin/mount, /usr/bin/umount
 ```
 
-Save and exit. Now `sudo apt` won't require a password.
+Save and exit. Now `sudo apt` and `sudo mount` won't require a password.
 
 ### SSH keys
 
@@ -60,8 +61,8 @@ Generate a keypair and copy it to the `~/.ssh` directory
 
 ### HF token
 
-Create a [Hugging Face access token](https://huggingface.co/settings/tokens), Click New token, Choose Read access
-(enough for downloads)
+Create a [Hugging Face access token](https://huggingface.co/settings/tokens), Click New token,
+Choose Read access (enough for downloads)
 
 ```bash
 export HF_TOKEN=hf_your_token_here
