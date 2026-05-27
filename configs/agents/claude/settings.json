@@ -6,7 +6,7 @@
   "permissions": {
     "defaultMode": "bypassPermissions"
   },
-  "model": "opusplan",
+  "model": "sonnet",
   "statusLine": {
     "type": "command",
     "command": "bash ~/.claude/statusline-command.sh"
@@ -36,6 +36,7 @@
       "Working"
     ]
   },
+  "awaySummaryEnabled": false,
   "skipDangerousModePermissionPrompt": true,
-  "awaySummaryEnabled": false
+  "effortLevel": "high"
 }
