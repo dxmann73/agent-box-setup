@@ -44,7 +44,7 @@ Install `Gnome Tweaks` and set proper font scaling under "Appearance"
 Set up passwordless sudo for apt and mount (needed for automation/AI agents):
 
 ```bash
-sudo visudo -f /etc/sudoers.d/apt-nopasswd
+sudo visudo -f /etc/sudoers.d/agent-nopasswd
 ```
 
 Add this line (replace `YOUR_USER_NAME` with your username):
