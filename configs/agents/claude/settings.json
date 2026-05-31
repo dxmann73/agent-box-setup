@@ -6,7 +6,6 @@
   "permissions": {
     "defaultMode": "bypassPermissions"
   },
-  "model": "sonnet",
   "statusLine": {
     "type": "command",
     "command": "bash ~/.claude/statusline-command.sh"
@@ -36,7 +35,7 @@
       "Working"
     ]
   },
+  "effortLevel": "high",
   "awaySummaryEnabled": false,
-  "skipDangerousModePermissionPrompt": true,
-  "effortLevel": "high"
+  "skipDangerousModePermissionPrompt": true
 }

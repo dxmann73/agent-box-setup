@@ -86,35 +86,8 @@ if [ -n "$used_pct" ]; then
   [ -n "$tok_str" ] && ctx_label="${ctx_label} (${tok_str})"
 fi
 
-# ccusage caching: bucket to nearest 10 seconds
-CACHE_FILE="/tmp/claude-ccusage-output"
-TMP_CACHE="/tmp/claude-ccusage-output.tmp"
-BUCKET_FILE="/tmp/claude-ccusage-bucket"
-
-now_sec=$(date +%s)
-current_bucket=$(( (now_sec / 10) * 10 ))
-
-stored_bucket=""
-[ -f "$BUCKET_FILE" ] && stored_bucket=$(cat "$BUCKET_FILE" 2>/dev/null)
-
-if [ "$current_bucket" != "$stored_bucket" ]; then
-  echo "$current_bucket" > "$BUCKET_FILE"
-  # Run ccusage in background, atomically update cache on success
-  (echo "$input" | npx ccusage@latest statusline --offline > "$TMP_CACHE" 2>/dev/null \
-    && mv "$TMP_CACHE" "$CACHE_FILE") &
-fi
-
-# Parse ccusage cache output
-ccusage_model=""
-ccusage_cost=""
-if [ -f "$CACHE_FILE" ]; then
-  # Strip ANSI codes, find the statusline output line
-  ccusage_raw=$(sed 's/\x1b\[[0-9;]*m//g' "$CACHE_FILE" 2>/dev/null | grep -m1 '🤖')
-  if [ -n "$ccusage_raw" ]; then
-    ccusage_model=$(echo "$ccusage_raw" | sed 's/.*🤖 \([^|]*\)|.*/\1/' | sed 's/[[:space:]]*$//')
-    ccusage_cost=$(echo "$ccusage_raw" | sed 's/.*💰 \([^|]*\)|.*/\1/' | sed 's/[[:space:]]*$//')
-  fi
-fi
+# Model name from JSON input
+model_name=$(echo "$input" | jq -r '.model.display_name // empty')
 
 # Weekly spending limit (7-day rate limit from JSON)
 weekly_str=""
@@ -156,13 +129,10 @@ if [ -f /tmp/claude-rate-reset ]; then
   fi
 fi
 
-# Line 2: [Model] ▓▓▓░░░░░░░ 32% | $x.xx session / $x.xx today / block (Xh Xm left)
+# Line 2: [Model] ▓▓▓░░░░░░░ 32% (weekly limit)
 model_part=""
-[ -n "$ccusage_model" ] && model_part="[${ccusage_model}] "
+[ -n "$model_name" ] && model_part="[${model_name}] "
 
-cost_part=""
-[ -n "$ccusage_cost" ] && cost_part=" | ${ccusage_cost}"
-
-line2="${model_part}${ctx_bar_str}${ctx_label}${cost_part}${weekly_str}${rate_reset_str}"
+line2="${model_part}${ctx_bar_str}${ctx_label}${weekly_str}${rate_reset_str}"
 
 printf "%s\n%s\n" "$line1" "$line2"
