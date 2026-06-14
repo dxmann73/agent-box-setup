@@ -6,6 +6,10 @@
 - Claude [status line](https://code.claude.com/docs/en/statusline)
 - [Github and Bugbot integration](https://cursor.com/docs/integrations/github)
 - Try composer-1 model
+- Superpowers plugin removed. `brainstorming` + `verification-before-completion` skills (from
+  [obra/superpowers](https://github.com/obra/superpowers)) kept for now — revisit whether an
+  ADLC-aligned workflow can replace them. See ADLC in the website project:
+  `website/src/pages/ai/aidlc.mdx` (route `/ai/aidlc`).
 
 <https://www.youtube.com/watch?v=I9-tdhxiH7w> <https://www.youtube.com/watch?v=rcRS8-7OgBo>
 <https://www.youtube.com/watch?v=P60LqQg1RH8>
