@@ -24,7 +24,7 @@ cd ~/projects/agent-box-setup
 This will verify:
 
 - Agent binaries (Claude Code, Cursor CLI Agent, Cursor IDE)
-- Home directory symlinks (`.bashrc`, `.bash_aliases`, `.profile`, `.gitconfig`, `.bash_secrets`,
+- Home directory symlinks (`.bashrc`, `.bash_aliases`, `.profile`, `.gitconfig`, `.bash_secrets`, `ua.sh`,
   `.markdownlint.json`)
 - Agent configuration and symlinks
 - Rules and skills setup
@@ -77,6 +77,7 @@ The `configs/user-home-directory/` contains dotfiles that must be **symlinked** 
 - `.bash_secrets` - API tokens/secrets (created from `.bash_secrets.CHANGE-ME` template)
 - `.profile` - User profile settings
 - `.gitconfig` - Git configuration
+- `ua.sh` - Update-all script: fetch/pull all git repos under a root dir
 
 The repo root `.markdownlint.json` is symlinked to `~/projects/.markdownlint.json`.
 

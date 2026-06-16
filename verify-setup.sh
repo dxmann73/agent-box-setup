@@ -55,7 +55,7 @@ echo ""
 
 # Home Directory Symlinks
 echo "=== Home Directory Symlinks ==="
-for dotfile in .bashrc .bash_aliases .profile .gitconfig .bash_secrets; do
+for dotfile in .bashrc .bash_aliases .profile .gitconfig .bash_secrets ua.sh; do
     if [ -L ~/"$dotfile" ]; then
         echo "✓ ~/$dotfile symlinked"
     elif [ -f ~/"$dotfile" ]; then

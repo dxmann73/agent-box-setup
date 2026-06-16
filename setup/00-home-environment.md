@@ -24,6 +24,7 @@ The `configs/user-home-directory/` contains dotfiles and configuration that shou
 - `.bash_secrets.CHANGE-ME` - Template for API tokens/secrets (copy and customize)
 - `.profile` - User profile settings
 - `.gitconfig` - Git configuration
+- `ua.sh` - Update-all script: fetch/pull all git repos under a root dir
 - `cursor-default.code-profile` - Cursor IDE profile
 
 The repo root also contains:
@@ -43,6 +44,7 @@ ln -sf ~/projects/agent-box-setup/configs/user-home-directory/.bashrc ~/.bashrc
 ln -sf ~/projects/agent-box-setup/configs/user-home-directory/.bash_aliases ~/.bash_aliases
 ln -sf ~/projects/agent-box-setup/configs/user-home-directory/.profile ~/.profile
 ln -sf ~/projects/agent-box-setup/configs/user-home-directory/.gitconfig ~/.gitconfig
+ln -sf ~/projects/agent-box-setup/configs/user-home-directory/ua.sh ~/ua.sh
 # Shared markdownlint config for all projects in ~/projects
 ln -sf ~/projects/agent-box-setup/.markdownlint.json ~/projects/.markdownlint.json
 ```
@@ -92,7 +94,7 @@ Or check manually:
 
 ```bash
 # All dotfiles should be symlinks, not regular files
-ls -la ~/.bashrc ~/.bash_aliases ~/.profile ~/.gitconfig ~/.bash_secrets
+ls -la ~/.bashrc ~/.bash_aliases ~/.profile ~/.gitconfig ~/.bash_secrets ~/ua.sh
 ls -la ~/projects/.markdownlint.json
 
 # Test an alias (if defined in .bash_aliases)
@@ -113,6 +115,7 @@ echo $HF_TOKEN
 - [ ] `.bash_aliases` symlinked (not a regular file)
 - [ ] `.profile` symlinked (not a regular file)
 - [ ] `.gitconfig` symlinked (not a regular file)
+- [ ] `ua.sh` symlinked (`~/ua.sh`)
 - [ ] Secrets file created from template and symlinked (`~/.bash_secrets`)
 - [ ] Shared markdownlint config symlinked (`~/projects/.markdownlint.json`)
 - [ ] Shell configuration reloaded (`source ~/.bashrc`)
