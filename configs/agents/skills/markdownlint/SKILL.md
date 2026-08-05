@@ -1,16 +1,15 @@
 ---
 name: markdownlint
-description: Use when creating or editing Markdown files (.md/.mdc), fixing markdownlint issues,
-  or reviewing Markdown formatting. This skill contains the Markdown style rules and lint workflow.
-  Always use `.markdownlint.json` as the line-length source of truth and honor
-  `.markdownlintignore`.
+description: Use when creating or editing Markdown files (.md/.mdc) except plan files.
+  Used for fixing markdownlint issues, or reviewing Markdown formatting.
+  Contains the Markdown style rules and lint workflow. 
 ---
 
 # Markdownlint
 
 ## Overview
 
-Use for all Markdown authoring and markdownlint workflows. Single source of truth for Markdown formatting.
+Use for all Markdown authoring and markdownlint workflows except plans. Single source of truth for Markdown formatting.
 
 ## Source of Truth
 
