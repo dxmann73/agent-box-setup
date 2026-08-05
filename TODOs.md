@@ -1,11 +1,13 @@
 # TODOs
 
+There are things we want to do project-level here, fold them out into another repo. They will ofc depend
+on a properly set up box.
+
 - Get a proper terminal (Ghostty)
 - try browser automation in all agents
 - put docs in condensed form into [AGENTS.md](https://vercel.com/blog/agents-md-outperforms-skills-in-our-agent-evals)
 - Claude [status line](https://code.claude.com/docs/en/statusline)
 - [Github and Bugbot integration](https://cursor.com/docs/integrations/github)
-- Try composer-1 model
 - Superpowers plugin removed. `brainstorming` + `verification-before-completion` skills (from
   [obra/superpowers](https://github.com/obra/superpowers)) kept for now — revisit whether an
   ADLC-aligned workflow can replace them. See ADLC in the website project:
@@ -19,6 +21,8 @@
 [LSP / Code intelligence plugins](https://code.claude.com/docs/en/discover-plugins#code-intelligence)
 
 - there should be rules/skills for quarkus, tanstack start, scripts for playwright etc.
+
+Also look at jeffrey emmanuel skills portfolio
 
 ## project setup
 
