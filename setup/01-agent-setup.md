@@ -354,8 +354,8 @@ npx skills add elastic/agent-skills -g \
 ```
 
 **Custom / repo-owned skills** (for example `gg-commit-push`, `markdownlint`, `quarkus`,
-`brainstorming`, `grill-me`) are not managed by `npx skills add` or `npx skills update` (no lockfile
-entry).
+`brainstorming`, `grill-me`, `new-project`, `sync-repo-setup`) are not managed by `npx skills add`
+or `npx skills update` (no lockfile entry).
 Some upstream-managed skills may also fail to create or refresh agent-specific symlinks on an older
 box. Normalize all skill links from the repo after installs or updates:
 
