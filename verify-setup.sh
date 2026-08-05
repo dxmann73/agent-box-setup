@@ -87,41 +87,24 @@ else
 fi
 echo ""
 
-# Rules
-echo "=== Rules ==="
-rules_source_dir="$(dirname "$0")/configs/agents/user-rules"
-expected_rules=()
-while IFS= read -r -d '' rule_path; do
-    expected_rules+=("$(basename "$rule_path")")
-done < <(find "$rules_source_dir" -type f \( -name '*.md' -o -name '*.mdc' \) -print0)
-expected_rule_count=${#expected_rules[@]}
-claude_rules=$(find ~/.claude/rules -mindepth 1 -maxdepth 1 2>/dev/null | wc -l)
-cursor_rules=$(find ~/.cursor/rules -mindepth 1 -maxdepth 1 2>/dev/null | wc -l)
-echo "Expected rules from source: $expected_rule_count files"
-echo "Claude rules: $claude_rules files"
-echo "Cursor rules: $cursor_rules files"
-
-rules_missing=0
-for target_dir in ~/.claude/rules ~/.cursor/rules; do
-    for rule in "${expected_rules[@]}"; do
-        if [ ! -e "$target_dir/$rule" ]; then
-            echo "✗ Missing rule '$rule' in $target_dir"
-            rules_missing=1
-        fi
-    done
-    while IFS= read -r broken_link; do
-        [ -n "$broken_link" ] || continue
-        echo "✗ Broken rule link '$(basename "$broken_link")' in $target_dir"
-        rules_missing=1
-    done < <(find "$target_dir" -maxdepth 1 -xtype l 2>/dev/null)
-done
-
-if [ "$expected_rule_count" -eq 0 ]; then
-    echo "✗ No source rules found in $rules_source_dir"
-elif [ "$rules_missing" -eq 0 ]; then
-    echo "✓ Rules configured and synced to source"
+# Caveman hooks
+echo "=== Caveman Hooks ==="
+if [ -L ~/.codex/hooks.json ]; then
+    echo "✓ Codex hooks.json symlinked"
 else
-    echo "✗ Rules missing or incomplete"
+    echo "✗ Codex hooks.json missing or not a symlink"
+fi
+if [ -L ~/.cursor/hooks.json ] && [ -L ~/.cursor/hooks ]; then
+    echo "✓ Cursor hooks.json + hooks/ symlinked"
+else
+    echo "✗ Cursor hooks.json / hooks/ missing or not symlinks"
+fi
+if [ -x ~/.cursor/hooks/caveman.sh ] &&
+    echo '{"session_id":"verify","is_background_agent":false}' |
+    ~/.cursor/hooks/caveman.sh 2>/dev/null | grep -q additional_context; then
+    echo "✓ Cursor caveman sessionStart hook returns context"
+else
+    echo "✗ Cursor caveman sessionStart hook not working"
 fi
 echo ""
 

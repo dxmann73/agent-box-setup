@@ -20,7 +20,8 @@ directory, then verify here.
 - [ ] Claude settings symlinked to `~/.claude/settings.json`
 - [ ] Codex config symlinked to `~/.codex/config.toml`; `[features] hooks = true`
 - [ ] Codex hooks symlinked to `~/.codex/hooks.json`
-- [ ] User-level rules symlinked (`~/.claude/rules/`, `~/.cursor/rules/`)
+- [ ] Cursor hooks symlinked (`~/.cursor/hooks.json`, `~/.cursor/hooks/`) and caveman hook returns
+      `additional_context`
 - [ ] `~/.agents` symlinked to repo config (`~/projects/agent-box-setup/configs/agents`)
 - [ ] Skills symlinked (`~/.claude/skills/`, `~/.cursor/skills/`, `~/.agents/skills/`) and verified
       against `configs/agents/skills/`

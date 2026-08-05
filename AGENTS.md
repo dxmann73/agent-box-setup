@@ -27,7 +27,8 @@ This will verify:
 - Home directory symlinks (`.bashrc`, `.bash_aliases`, `.profile`, `.gitconfig`, `.bash_secrets`, `ua.sh`,
   `.markdownlint.json`)
 - Agent configuration and symlinks
-- Rules and skills setup
+- Caveman hooks (Codex, Cursor)
+- Skills setup
 - Core tools (GitHub CLI, Docker, jq)
 - Development environment (Node.js, Java, etc.)
 - Imaging tools (ImageMagick, sharp, resvg)
@@ -36,7 +37,8 @@ This will verify:
 ## Setup Order
 
 1. [setup/00-home-environment.md](setup/00-home-environment.md) - Shell configuration and dotfiles
-2. [setup/01-agent-setup.md](setup/01-agent-setup.md) - Claude Code, Cursor CLI, agent rules
+2. [setup/01-agent-setup.md](setup/01-agent-setup.md) - Claude Code, Cursor CLI, Codex, skills,
+   hooks
 3. [setup/02-core-tools.md](setup/02-core-tools.md) - GitHub CLI, jq, Docker
 4. [setup/03-dev-environment.md](setup/03-dev-environment.md) - Node.js and development tools
 5. [setup/04-ide+tooling.md](setup/04-ide+tooling.md) - Cursor IDE
@@ -60,7 +62,7 @@ This will verify:
 ## Project Rules
 
 - Two scopes live in this repo: **box-level** (machine setup, `setup/`) and **project-level**
-  (skills, rules, per-language toolchains). Project-level items are installed globally as an interim
+  (skills, per-language toolchains). Project-level items are installed globally as an interim
   measure; classify new additions before adding them. See "Scope" in `README.md`.
 - Treat `configs/agents/skills/` as the single source of truth for installed skills.
 - Keep setup docs/scripts in sync with that directory (`setup/01-agent-setup.md`, `verify-setup.sh`,

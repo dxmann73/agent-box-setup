@@ -263,11 +263,29 @@ fires each session via `SessionStart`.
 
 ### Cursor
 
-Cursor has no hook system. Caveman uses user-level rule with `alwaysApply: true`.
+Cursor now has [hooks](https://cursor.com/docs/hooks) (IDE and CLI). Caveman uses a user-level
+`sessionStart` hook that returns `additional_context`, so it is active from the first response of
+each session. Say "stop caveman" or "normal mode" to deactivate.
 
-The `caveman.mdc` rule in `configs/agents/user-rules/` is picked up by rules sync above. No extra
-step. Caveman is active from first response of each session. Say "stop caveman" or "normal mode" to
-deactivate.
+Source: `configs/agents/cursor/hooks.json` + `configs/agents/cursor/hooks/`
+Destination: `~/.cursor/hooks.json` + `~/.cursor/hooks/`
+
+```bash
+ln -sfn ~/projects/agent-box-setup/configs/agents/cursor/hooks.json ~/.cursor/hooks.json
+ln -sfn ~/projects/agent-box-setup/configs/agents/cursor/hooks ~/.cursor/hooks
+```
+
+Hook text lives in `configs/agents/cursor/hooks/caveman.md`; the script wraps it as JSON and needs
+`jq` (installed in `02-core-tools.md`).
+
+**Verify hook:**
+
+```bash
+echo '{"session_id":"test","is_background_agent":false}' | ~/.cursor/hooks/caveman.sh
+```
+
+Expected: JSON with an `additional_context` field. Cursor also has a Hooks tab in **Customize** to
+confirm the hook is loaded.
 
 ---
 
@@ -276,69 +294,12 @@ deactivate.
 Leerob video
 [Agent Skills, Rules, Subagents: Explained!](https://www.youtube.com/watch?v=L_p5GxGSB_I)
 
-## User-Level Rules
-
-User-Level Rules are a way to destructure the AGENTS.md file into smaller pieces and let the agent
-decide which rules need to be included in the context, instead of always including the whole AGENTS
-file. They provide persistent instructions across all projects.
-
-All agents support user-level rules.
-
-### Claude user-level rules
-
-For reference, here the documentation about
-[Rules in Claude](https://code.claude.com/docs/en/memory#modular-rules-with-claude%2Frules%2F) as
-well as [User level rules](https://code.claude.com/docs/en/memory#user-level-rules) .
-
-Source: `configs/agents/user-rules/` Destination: `~/.claude/rules/`
-
-```bash
-SOURCE_RULES=~/projects/agent-box-setup/configs/agents/user-rules
-mkdir -p ~/.claude/rules
-# Remove stale/dangling links from removed rules
-find ~/.claude/rules -maxdepth 1 -xtype l -delete
-find "$SOURCE_RULES" -type f \( -name '*.md' -o -name '*.mdc' \) -print0 | while IFS= read -r -d '' f; do
-  ln -sfn "$f" ~/.claude/rules/"$(basename "$f")"
-done
-```
-
-**Verify rules:**
-
-```bash
-count_rules() { find "$1" -mindepth 1 -maxdepth 1 2>/dev/null | wc -l; }
-echo "Source rules: $(count_rules ~/projects/agent-box-setup/configs/agents/user-rules)"
-echo "Claude rules: $(count_rules ~/.claude/rules)"
-```
-
-Expected: `Claude rules` equals `Source rules`
-
-### Cursor CLI user-level rules
-
-Rules as a means to manage context are
-[described here](https://cursor.com/blog/agent-best-practices#rules-static-context-for-your-project)
-
-As per the [documentation](https://cursor.com/docs/context/rules#rule-file-format), rules should be
-in the home dir of the user in the `.cursor/rules` directory.
-
-```bash
-SOURCE_RULES=~/projects/agent-box-setup/configs/agents/user-rules
-mkdir -p ~/.cursor/rules
-# Remove stale/dangling links from removed rules
-find ~/.cursor/rules -maxdepth 1 -xtype l -delete
-find "$SOURCE_RULES" -type f \( -name '*.md' -o -name '*.mdc' \) -print0 | while IFS= read -r -d '' f; do
-  ln -sfn "$f" ~/.cursor/rules/"$(basename "$f")"
-done
-```
-
-**Verify rules:**
-
-```bash
-count_rules() { find "$1" -mindepth 1 -maxdepth 1 2>/dev/null | wc -l; }
-echo "Source rules: $(count_rules ~/projects/agent-box-setup/configs/agents/user-rules)"
-echo "Cursor rules: $(count_rules ~/.cursor/rules)"
-```
-
-Expected: `Cursor rules` equals `Source rules`
+There is no user-level rules directory on this box. Global instructions live in `~/AGENTS.md`
+(`~/CLAUDE.md` symlink, see "Global Agent Rule File"); per-project instructions live in the
+project-root `AGENTS.md` with a `CLAUDE.md` symlink. Codex reads `~/AGENTS.md`, Claude Code reads
+`~/CLAUDE.md`, and the [Cursor CLI](https://cursor.com/docs/cli/using#rules) reads project-root
+`AGENTS.md`/`CLAUDE.md` plus `.cursor/rules` inside a project. Cursor "User Rules" are free-text
+preferences set in **Customize → Rules**, not files.
 
 ## Skills
 
@@ -454,9 +415,7 @@ ls -l ~/.claude/statusline-command.sh && \
 ls -l ~/.codex/config.toml && \
 rg -n "^[[:space:]]*hooks[[:space:]]*=[[:space:]]*true$" ~/.codex/config.toml && \
 ls -l ~/.codex/hooks.json && \
-echo -e "\n=== Rules Count ===" && \
-echo "Claude rules: $(ls ~/.claude/rules/ 2>/dev/null | wc -l)" && \
-echo "Cursor rules: $(ls ~/.cursor/rules/ 2>/dev/null | wc -l)" && \
+ls -l ~/.cursor/hooks.json ~/.cursor/hooks && \
 echo -e "\n=== Agent Config Links ===" && \
 ls -ld ~/.agents ~/agents && \
 echo -e "\n=== Skills Count ===" && \

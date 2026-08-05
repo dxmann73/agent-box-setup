@@ -19,9 +19,8 @@ side by side:
 - **Box-level** — installed once per machine: shell/dotfiles, agent binaries, Docker, Node, Java,
   IDE. This is the `setup/` numbered guides.
 - **Project-level** — belongs to whatever you are working on, and is only wired globally because
-  there is no better home yet: skills in `configs/agents/skills/`, rules in
-  `configs/agents/user-rules/`, and language toolchains that only some projects need (SDKMAN,
-  Quarkus, pnpm).
+  there is no better home yet: skills in `configs/agents/skills/` and language toolchains that only
+  some projects need (SDKMAN, Quarkus, pnpm).
 
 Project-level items are installed globally (symlinked into `~/.claude/skills`, `~/.cursor/skills`)
 as an interim measure so every project gets them. The intended end state is packaging them per
@@ -40,7 +39,7 @@ repo".
 | File                     | Description                                                    |
 | ------------------------ | -------------------------------------------------------------- |
 | `00-home-environment.md` | Shell config, dotfiles, WSL notes                              |
-| `01-agent-setup.md`      | Claude, Cursor CLI, Codex, rules/skills                        |
+| `01-agent-setup.md`      | Claude, Cursor CLI, Codex, global rule file, skills, hooks     |
 | `02-core-tools.md`       | GitHub CLI, jq, Docker                                         |
 | `03-dev-environment.md`  | Node.js/nvm, pnpm, Firecrawl CLI, SDKMAN, Java, Quarkus, Maven |
 | `04-ide+tooling.md`      | Cursor IDE, keybindings, Java extensions                       |
