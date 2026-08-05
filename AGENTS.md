@@ -59,6 +59,9 @@ This will verify:
 
 ## Project Rules
 
+- Two scopes live in this repo: **box-level** (machine setup, `setup/`) and **project-level**
+  (skills, rules, per-language toolchains). Project-level items are installed globally as an interim
+  measure; classify new additions before adding them. See "Scope" in `README.md`.
 - Treat `configs/agents/skills/` as the single source of truth for installed skills.
 - Keep setup docs/scripts in sync with that directory (`setup/01-agent-setup.md`, `verify-setup.sh`,
   `SETUP.md`).

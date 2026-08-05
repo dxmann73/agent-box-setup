@@ -7,6 +7,7 @@ We are currently using the following skills:
 - https://skills.sh/anthropics/skills/frontend-design
 - https://skills.sh/vercel-labs/agent-browser/agent-browser
 - local: `brainstorming` (repo-owned; not skills.sh / lockfile)
+- local: `grill-me` (repo-owned; vendored from <https://github.com/mattpocock/skills>)
 - https://skills.sh/anthropics/skills/pdf
 - https://skills.sh/anthropics/skills/xlsx
 - https://skills.sh/anthropics/skills/docx

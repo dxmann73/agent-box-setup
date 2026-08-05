@@ -22,8 +22,21 @@
 
 ## project setup
 
-Some of the steps in here are actually only relevant for certain types of projects, e.g. you only need sdkman if you are
-working on a JAVA project. Break out these parts as well as the relevant skills / tools / rules into packages.
+Some of the steps in here are actually only relevant for certain types of projects, e.g. you only
+need sdkman if you are working on a JAVA project. Break out these parts as well as the relevant
+skills / tools / rules into packages.
+
+This is not only about toolchains — most of `configs/agents/skills/` is project-level, not
+box-level. Right now everything is installed globally so every project gets everything, which is the
+wrong default: a Quarkus project does not need `tanstack-*`, an infra/docs repo does not need
+`shadcn-ui`. Candidate split:
+
+- **Always-on (box-level)**: `markdownlint`, `gg-commit-push`, `brainstorming`, `grill-me`,
+  `verification-before-completion`, `firecrawl`, `agent-browser`.
+- **Per project type**: tanstack/react/tailwind/shadcn (web), `quarkus`/`pnpm` (toolchain),
+  `elasticsearch-*` (ES work), `docx`/`xlsx`/`pdf` (document work).
+
+Until that split exists, note the scope in `README.md` and keep installing globally.
 
 ## etc
 

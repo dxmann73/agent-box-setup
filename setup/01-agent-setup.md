@@ -393,7 +393,8 @@ npx skills add elastic/agent-skills -g \
 ```
 
 **Custom / repo-owned skills** (for example `gg-commit-push`, `markdownlint`, `quarkus`,
-`brainstorming`) are not managed by `npx skills add` or `npx skills update` (no lockfile entry).
+`brainstorming`, `grill-me`) are not managed by `npx skills add` or `npx skills update` (no lockfile
+entry).
 Some upstream-managed skills may also fail to create or refresh agent-specific symlinks on an older
 box. Normalize all skill links from the repo after installs or updates:
 
@@ -410,6 +411,11 @@ done
 **Brainstorming** — Originally derived from [obra/superpowers](https://github.com/obra/superpowers)
 (`skills/brainstorming`); content is maintained here so upstream changes do not overwrite local
 edits.
+
+**Grill-me** — Vendored from [mattpocock/skills](https://github.com/mattpocock/skills)
+(`skills/grill-me`); not on skills.sh, so it is copied in and maintained here. Pairs with
+`brainstorming`: brainstorm to open up options, grill-me to stress-test the chosen plan before
+implementation.
 
 **Note — Quarkus skill**: the upstream `b6k-dev/quarkus-skill` uses a custom directory structure not
 compatible with `npx skills add`. Only `SKILL.md` is vendored here; the full reference tree is

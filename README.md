@@ -8,8 +8,25 @@ The steps outlined here will assume you have already done the [bootstrapping](./
 
 1. To unlock the power of coding agents, they need to run in YOLO mode.
 2. To reduce the blast radius, agents will need to run fully isolated in a sandbox.
-3. To automate the setup itself, and also sync changes to the current setup to existing machines, we need a repo that
-   holds both the configuration as well as the instructions to synchronize it.
+3. To automate the setup itself, and also sync changes to the current setup to existing machines, we
+   need a repo that holds both the configuration as well as the instructions to synchronize it.
+
+## Scope: box-level vs. project-level
+
+The repo name is historical. Not everything in here is machine setup — two different scopes live
+side by side:
+
+- **Box-level** — installed once per machine: shell/dotfiles, agent binaries, Docker, Node, Java,
+  IDE. This is the `setup/` numbered guides.
+- **Project-level** — belongs to whatever you are working on, and is only wired globally because
+  there is no better home yet: skills in `configs/agents/skills/`, rules in
+  `configs/agents/user-rules/`, and language toolchains that only some projects need (SDKMAN,
+  Quarkus, pnpm).
+
+Project-level items are installed globally (symlinked into `~/.claude/skills`, `~/.cursor/skills`)
+as an interim measure so every project gets them. The intended end state is packaging them per
+project type — see the "project setup" entry in [TODOs.md](./TODOs.md). When adding something,
+decide which scope it belongs to first.
 
 ## Usage
 
