@@ -21,12 +21,9 @@ or reset inflight work of other agents.
 When validating or converting data, fail fast: throw and stop as soon as a value is not what you
 expect; do not substitute silent defaults or empty placeholders that hide bad input until later.
 
-Docs should state current intent, not history. Git has the history. This applies by default to
-every `.md` file — plans, PRDs, SDDs, ADRs, specs, READMEs, docs. When you revise one, rewrite the
-affected text so it reads as if written that way today. Remove remarks about corrections or terms
-like "superseded by", "previously we said", strikethrough of old wording, or notes about what an earlier
-version got wrong. Remove rejected options, out-of-scope items, or things that will not happen
-— except where a rejected alternative is the point of the document. Delete instead of annotating.
+Docs state present intent, not history — git keeps history. Applies to every doc regardless of
+format: plans, PRDs, SDDs, specs, READMEs. When revising, rewrite so it reads as written today:
+delete instead of annotating ("superseded by", "previously we said", strikethrough), and drop
+rejected options and out-of-scope items unless the rejection is the doc's point.
 
-Exceptions only where history is the content: CHANGELOG files, ADR status changes, migration and
-upgrade guides, and any file whose stated purpose is a record over time.
+Exception: docs whose purpose is a record over time — CHANGELOGs, ADR status, migration guides.
