@@ -6,6 +6,7 @@ alias nom="cd ~/projects/nomap"
 alias mac="cd ~/projects/macros"
 alias tax="cd ~/projects/dave-tax-advisor"
 alias web="cd ~/projects/website"
+alias ai="cd ~/projects/ai"
 
 # General aliases
 # Note: This may be needed later on, do not delete
