@@ -130,4 +130,4 @@ command -v exiftool >/dev/null && echo "exiftool: $(exiftool -ver)" || echo "exi
 - [ ] graphicsmagick installed: `gm version` shows version
 - [ ] Optional: pngquant, optipng, exiftool as needed
 
-**Next:** Continue to voice tools (`05-voice-tools-*.md`) or optional tools (`06-optional.md`) as needed.
+**Next:** Continue to optional tools (`06-optional.md`) as needed.

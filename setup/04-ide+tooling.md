@@ -146,4 +146,4 @@ echo "Cursor app installed: $(test -d /opt/Cursor && echo "✓ Yes" || echo "✗
 - [ ] Java extensions installed if applicable (manual step)
 - [ ] Settings profile exported (manual step)
 
-**Next:** Continue to `05-voice-tools-a-faster-whisper.md`
+**Next:** Continue to `06-optional.md` or `07-imaging-tools.md`

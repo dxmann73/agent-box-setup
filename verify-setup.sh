@@ -257,29 +257,6 @@ kubectl version --client >/dev/null 2>&1 && echo "✓ kubectl installed" || echo
 minikube version >/dev/null 2>&1 && echo "✓ Minikube installed" || echo "⊗ Minikube not installed (optional)"
 echo ""
 
-# Voice Tools
-echo "=== Voice Tools ==="
-voice_detect_script="$(dirname "$0")/scripts/detect-voice-tooling.sh"
-wispr_detected=0
-if [ -x "$voice_detect_script" ]; then
-    voice_output="$("$voice_detect_script")"
-    echo "$voice_output"
-    if echo "$voice_output" | grep -qi "wispr.*detected\|whisper.*flow.*detected"; then
-        wispr_detected=1
-    fi
-else
-    echo "⊗ Voice detector script missing"
-fi
-if [ "$wispr_detected" -eq 1 ]; then
-    echo "✓ Wispr Flow detected — no additional Linux voice tools needed"
-else
-    test -x ~/.local/bin/dictate-start && echo "✓ dictate-start installed" || echo "⊗ dictate-start missing (optional)"
-    command -v nerd-dictation >/dev/null 2>&1 && echo "✓ nerd-dictation installed" || echo "⊗ nerd-dictation missing (optional)"
-    command -v talon >/dev/null 2>&1 && echo "✓ Talon installed" || echo "⊗ Talon not detected (optional)"
-    groups | grep -q input && echo "✓ User in input group (needed for faster-whisper hotkeys)" || echo "⊗ Not in input group (needed for faster-whisper hotkeys)"
-fi
-echo ""
-
 echo "========================================="
 echo "  Verification Complete"
 echo "========================================="

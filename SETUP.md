@@ -60,13 +60,6 @@ directory, then verify here.
 - [ ] Java extensions installed (if applicable)
 - [ ] Settings profile exported
 
-## 05 - Voice Tools
-
-- [ ] Voice input tool installed (faster-whisper / nerd-dictation)
-- [ ] Microphone working
-- [ ] Hotkey configured
-- [ ] Test dictation working
-
 ## 06 - Optional (check what's installed; see `setup/06-optional.md`)
 
 - [ ] Helm (`helm version`)

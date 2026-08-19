@@ -1,5 +1,7 @@
 # Local whisper support
 
+> Archived. Not part of the active setup — see [README.md](README.md).
+
 ## Audio
 
 On the fly encoding:

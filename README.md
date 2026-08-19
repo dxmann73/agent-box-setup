@@ -43,9 +43,8 @@ repo".
 | `02-core-tools.md`       | GitHub CLI, jq, Docker                                         |
 | `03-dev-environment.md`  | Node.js/nvm, pnpm, Firecrawl CLI, SDKMAN, Java, Quarkus, Maven |
 | `04-ide+tooling.md`      | Cursor IDE, keybindings, Java extensions                       |
-| `05-voice-tools-*.md`    | Voice input (Faster Whisper, nerd-dictation)                   |
 | `06-optional.md`         | Helm, Minikube, kubectl                                        |
-| `08-local-whisper.md`    | Reference notes: Windows Whisper setup (not a setup step)      |
+| `07-imaging-tools.md`    | ImageMagick, sharp, resvg, ffmpeg, Inkscape                    |
 
 ### Config Files (`configs/`)
 

@@ -42,13 +42,11 @@ This will verify:
 3. [setup/02-core-tools.md](setup/02-core-tools.md) - GitHub CLI, jq, Docker
 4. [setup/03-dev-environment.md](setup/03-dev-environment.md) - Node.js and development tools
 5. [setup/04-ide+tooling.md](setup/04-ide+tooling.md) - Cursor IDE
-6. [setup/05-voice-tools-a-faster-whisper.md](setup/05-voice-tools-a-faster-whisper.md) - Voice
-   input (faster-whisper) — skip if Wispr Flow is already available
-7. [setup/05-voice-tools-b-nerd-dictation.md](setup/05-voice-tools-b-nerd-dictation.md) - Voice
-   input (nerd-dictation alternative) — skip if Wispr Flow is already available
-8. [setup/06-optional.md](setup/06-optional.md) - Helm, cloud CLIs, extras
-9. [setup/07-imaging-tools.md](setup/07-imaging-tools.md) - ImageMagick, sharp, resvg, optional
+6. [setup/06-optional.md](setup/06-optional.md) - Helm, cloud CLIs, extras
+7. [setup/07-imaging-tools.md](setup/07-imaging-tools.md) - ImageMagick, sharp, resvg, optional
    image tools
+
+Voice tooling is retired: see [linux-setup/voice-setup.old/](linux-setup/voice-setup.old/).
 
 ## Important Notes
 
