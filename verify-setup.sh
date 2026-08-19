@@ -3,8 +3,42 @@
 # Agent Box Setup Verification Script
 # Run this to verify all components are properly installed
 
+# Target profile: host (Ubuntu desktop) or vm (agent VM). See README.md.
+PROFILE=""
+while [ $# -gt 0 ]; do
+    case "$1" in
+        --host) PROFILE="host" ;;
+        --vm)   PROFILE="vm" ;;
+        -h|--help)
+            echo "Usage: $0 [--host|--vm]"
+            echo "  --host  verify the Ubuntu host (GPU, local model runtime)"
+            echo "  --vm    verify the agent VM (Playwright, shared folders)"
+            echo "  (omitted: detected via systemd-detect-virt)"
+            exit 0
+            ;;
+        *)
+            echo "Unknown argument: $1" >&2
+            echo "Usage: $0 [--host|--vm]" >&2
+            exit 2
+            ;;
+    esac
+    shift
+done
+
+if [ -z "$PROFILE" ]; then
+    if systemd-detect-virt --quiet 2>/dev/null; then
+        PROFILE="vm"
+    else
+        PROFILE="host"
+    fi
+    DETECTED=" (detected)"
+else
+    DETECTED=""
+fi
+
 echo "========================================="
 echo "  Agent Box Setup Verification"
+echo "  Profile: $PROFILE$DETECTED"
 echo "========================================="
 echo ""
 
@@ -196,10 +230,12 @@ if firecrawl --version >/dev/null 2>&1; then
 else
     echo "✗ Firecrawl CLI missing"
 fi
-if npx --yes playwright --version >/dev/null 2>&1; then
-    echo "✓ Playwright installed"
-else
-    echo "✗ Playwright missing (run: pnpm exec playwright install chromium)"
+if [ "$PROFILE" = "vm" ]; then
+    if npx --yes playwright --version >/dev/null 2>&1; then
+        echo "✓ Playwright installed"
+    else
+        echo "✗ Playwright missing (run: pnpm exec playwright install chromium)"
+    fi
 fi
 sdk version >/dev/null 2>&1 && echo "✓ SDKMAN installed" || echo "✗ SDKMAN missing"
 if grep -q "sdkman_auto_env=true" ~/.sdkman/etc/config 2>/dev/null; then
@@ -250,6 +286,49 @@ command -v inkscape >/dev/null 2>&1 && echo "✓ inkscape" || echo "✗ inkscape
 command -v gm >/dev/null 2>&1 && echo "✓ graphicsmagick (gm)" || echo "✗ graphicsmagick (gm) missing"
 echo ""
 
+# Host-only: GPU stack and local model runtime (see host/01-hardware-validation.md, local-llm/)
+if [ "$PROFILE" = "host" ]; then
+    echo "=== Host: GPU and local model ==="
+    if lspci -k 2>/dev/null | grep -A4 -E 'VGA|Display' | grep -q 'amdgpu'; then
+        echo "✓ amdgpu kernel driver in use"
+    else
+        echo "✗ amdgpu kernel driver not reported by lspci"
+    fi
+    if command -v vulkaninfo >/dev/null 2>&1; then
+        if vulkaninfo --summary >/dev/null 2>&1; then
+            echo "✓ Vulkan works"
+        else
+            echo "✗ vulkaninfo present but fails"
+        fi
+    else
+        echo "✗ vulkan-tools missing (sudo apt install -y vulkan-tools)"
+    fi
+    command -v vmware >/dev/null 2>&1 && echo "✓ VMware Workstation installed" || echo "⊗ VMware Workstation not found (optional until the agent VM is needed)"
+    echo ""
+fi
+
+# VM-only: sandbox plumbing (see vm/01-bootstrap.md, vm/06-shared-folders.md)
+if [ "$PROFILE" = "vm" ]; then
+    echo "=== VM: sandbox plumbing ==="
+    if [ -f /etc/sudoers.d/agent-nopasswd ]; then
+        echo "✓ passwordless apt/mount configured"
+    else
+        echo "✗ /etc/sudoers.d/agent-nopasswd missing (see vm/01-bootstrap.md)"
+    fi
+    command -v vmhgfs-fuse >/dev/null 2>&1 && echo "✓ open-vm-tools (vmhgfs-fuse) installed" || echo "✗ open-vm-tools missing (sudo apt install -y open-vm-tools)"
+    if mountpoint -q /mnt/hgfs 2>/dev/null; then
+        echo "✓ /mnt/hgfs mounted: $(ls /mnt/hgfs 2>/dev/null | tr '\n' ' ')"
+    else
+        echo "⊗ /mnt/hgfs not mounted (no host directories shared)"
+    fi
+    if [ -d ~/.ssh ] && [ -n "$(ls -A ~/.ssh 2>/dev/null)" ]; then
+        echo "✓ VM has its own ~/.ssh contents"
+    else
+        echo "✗ no SSH key in the VM (see vm/05-credentials.md)"
+    fi
+    echo ""
+fi
+
 # Optional Tools
 echo "=== Optional Tools ==="
 helm version >/dev/null 2>&1 && echo "✓ Helm installed" || echo "⊗ Helm not installed (optional)"
@@ -266,4 +345,4 @@ echo "  ✓ = Installed and configured"
 echo "  ✗ = Missing (required)"
 echo "  ⊗ = Not installed (optional)"
 echo ""
-echo "To fix missing components, see SETUP.md and setup/*.md"
+echo "To fix missing components, see SETUP.md, common/*.md and $PROFILE/*.md"

@@ -2,7 +2,7 @@
 
 Retired local Linux voice stacks. Current choice is
 [vibetyper](https://vibetyper.com/docs), see
-[../03-software-installation.md](../03-software-installation.md).
+[../02-applications.md](../02-applications.md).
 
 Nothing here is referenced by the active setup, `verify-setup.sh`, or `SETUP.md`.
 
@@ -18,5 +18,5 @@ Nothing here is referenced by the active setup, `verify-setup.sh`, or `SETUP.md`
 Commands inside the guides are written for the repo root as working directory, e.g.
 
 ```bash
-./linux-setup/voice-setup.old/detect-voice-tooling.sh
+./host/voice-setup.old/detect-voice-tooling.sh
 ```

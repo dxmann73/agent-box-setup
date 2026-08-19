@@ -11,7 +11,7 @@ Use this guide only if you picked faster-whisper as your primary Linux voice sta
 From the repo root:
 
 ```bash
-./linux-setup/voice-setup.old/detect-voice-tooling.sh
+./host/voice-setup.old/detect-voice-tooling.sh
 ```
 
 Decision rules:
@@ -52,7 +52,7 @@ groups | grep input
 ```bash
 # Create systemd user directory and symlink the service file
 mkdir -p ~/.config/systemd/user
-ln -sf "$(pwd)/linux-setup/voice-setup.old/systemd-user/ydotool.service" ~/.config/systemd/user/ydotool.service
+ln -sf "$(pwd)/host/voice-setup.old/systemd-user/ydotool.service" ~/.config/systemd/user/ydotool.service
 
 # Enable and start it:
 systemctl --user daemon-reload && systemctl --user enable ydotool && systemctl --user start ydotool
@@ -95,15 +95,15 @@ Symlink the scripts from this repo to `~/.local/bin`:
 mkdir -p ~/.local/bin
 
 # Symlink all dictation scripts
-ln -sf "$(pwd)/linux-setup/voice-setup.old/local-bin/dictate-start" ~/.local/bin/dictate-start
-ln -sf "$(pwd)/linux-setup/voice-setup.old/local-bin/dictate-stop" ~/.local/bin/dictate-stop
-ln -sf "$(pwd)/linux-setup/voice-setup.old/local-bin/dictate-toggle" ~/.local/bin/dictate-toggle
+ln -sf "$(pwd)/host/voice-setup.old/local-bin/dictate-start" ~/.local/bin/dictate-start
+ln -sf "$(pwd)/host/voice-setup.old/local-bin/dictate-stop" ~/.local/bin/dictate-stop
+ln -sf "$(pwd)/host/voice-setup.old/local-bin/dictate-toggle" ~/.local/bin/dictate-toggle
 
 # Make them executable
 chmod +x ~/.local/bin/dictate-*
 ```
 
-The scripts are located in `linux-setup/voice-setup.old/local-bin/` and use `$HOME` for paths, so they work for any user.
+The scripts are located in `host/voice-setup.old/local-bin/` and use `$HOME` for paths, so they work for any user.
 
 ### Step 6: Test Manually
 
@@ -142,8 +142,8 @@ Hold Ctrl+Space to record, release to stop. This requires a background daemon th
 sudo apt install -y python3-evdev
 
 # Symlink the push-to-talk script and service
-ln -sf "$(pwd)/linux-setup/voice-setup.old/local-bin/dictate-ptt" ~/.local/bin/dictate-ptt
-ln -sf "$(pwd)/linux-setup/voice-setup.old/systemd-user/dictate-ptt.service" ~/.config/systemd/user/dictate-ptt.service
+ln -sf "$(pwd)/host/voice-setup.old/local-bin/dictate-ptt" ~/.local/bin/dictate-ptt
+ln -sf "$(pwd)/host/voice-setup.old/systemd-user/dictate-ptt.service" ~/.config/systemd/user/dictate-ptt.service
 chmod +x ~/.local/bin/dictate-ptt
 
 # Your user needs access to input devices
@@ -218,7 +218,7 @@ small delay.
 The first transcription after a reboot will be slower (model loading). Subsequent transcriptions are faster. You can
 also try using the "base" model instead of "small" for faster (but less accurate) results:
 
-Change WhisperModel("small") to WhisperModel("base") in `linux-setup/voice-setup.old/local-bin/dictate-stop`.
+Change WhisperModel("small") to WhisperModel("base") in `host/voice-setup.old/local-bin/dictate-stop`.
 
 ### No speech detected
 
@@ -264,7 +264,7 @@ For CPU-only systems, I recommend "small" as the best balance of accuracy and sp
 Run verification commands:
 
 ```bash
-./linux-setup/voice-setup.old/detect-voice-tooling.sh && \
+./host/voice-setup.old/detect-voice-tooling.sh && \
 echo "=== Dependencies ===" && \
 which ydotool && \
 which xdotool && \
@@ -282,7 +282,7 @@ systemctl --user is-active dictate-ptt 2>/dev/null || echo "Service not running 
 
 ## Verification Checklist
 
-- [ ] Preflight complete: `./linux-setup/voice-setup.old/detect-voice-tooling.sh`
+- [ ] Preflight complete: `./host/voice-setup.old/detect-voice-tooling.sh`
 - [ ] Exactly one primary voice stack selected
 - [ ] System dependencies installed (ydotool, xdotool, etc.)
 - [ ] User is in `input` group: `groups | grep input`

@@ -1,4 +1,4 @@
-## Requirements Agent Box
+## Specification Agent Box
 
 1. **Ubuntu host**
 

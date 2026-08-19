@@ -18,7 +18,7 @@ Use this guide only if you picked nerd-dictation as your primary Linux voice sta
 From the repo root:
 
 ```bash
-./linux-setup/voice-setup.old/detect-voice-tooling.sh
+./host/voice-setup.old/detect-voice-tooling.sh
 ```
 
 Decision rules:
@@ -70,7 +70,7 @@ Symlink the helper scripts from this repo:
 
 ```bash
 # Toggle script for keyboard shortcuts
-ln -sf "$(pwd)/linux-setup/voice-setup.old/local-bin/nerd-dictation-toggle" ~/.local/bin/nerd-dictation-toggle
+ln -sf "$(pwd)/host/voice-setup.old/local-bin/nerd-dictation-toggle" ~/.local/bin/nerd-dictation-toggle
 chmod +x ~/.local/bin/nerd-dictation-toggle
 ```
 
@@ -93,7 +93,7 @@ For persistent operation, symlink and enable the systemd user service:
 mkdir -p ~/.config/systemd/user
 
 # Symlink the service file
-ln -sf "$(pwd)/linux-setup/voice-setup.old/systemd-user/nerd-dictation.service" ~/.config/systemd/user/nerd-dictation.service
+ln -sf "$(pwd)/host/voice-setup.old/systemd-user/nerd-dictation.service" ~/.config/systemd/user/nerd-dictation.service
 
 # Enable and start
 systemctl --user daemon-reload
@@ -122,7 +122,7 @@ Tips:
 
 ## Verification Checklist
 
-- [ ] Preflight complete: `./linux-setup/voice-setup.old/detect-voice-tooling.sh`
+- [ ] Preflight complete: `./host/voice-setup.old/detect-voice-tooling.sh`
 - [ ] Exactly one primary voice stack selected
 - [ ] Voice input tool installed (nerd-dictation or Talon)
 - [ ] Microphone working and configured

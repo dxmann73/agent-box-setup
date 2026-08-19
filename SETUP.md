@@ -1,7 +1,7 @@
 # Agent Box Setup Checklist
 
-Master verification checklist for new machine setup. Follow the numbered guides in `setup/`
-directory, then verify here.
+Master verification checklist for new machine setup. Follow the numbered guides in `host/`, `vm/`
+and `common/`, then verify here.
 
 ## 00 - Home Environment
 
@@ -60,7 +60,7 @@ directory, then verify here.
 - [ ] Java extensions installed (if applicable)
 - [ ] Settings profile exported
 
-## 06 - Optional (check what's installed; see `setup/06-optional.md`)
+## 06 - Optional (check what's installed; see `common/06-optional.md`)
 
 - [ ] Helm (`helm version`)
 - [ ] Minikube (`minikube version`)

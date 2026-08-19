@@ -33,6 +33,8 @@ The repo root also contains:
 
 ---
 
+
+
 ## 2. Symlink Configuration Files
 
 ```bash
@@ -50,6 +52,8 @@ ln -sf ~/projects/agent-box-setup/.markdownlint.json ~/projects/.markdownlint.js
 ```
 
 ---
+
+
 
 ## 3. Set Up Secrets File
 
@@ -71,6 +75,8 @@ Update the placeholder values with your real tokens (e.g., `HF_TOKEN` for Huggin
 
 ---
 
+
+
 ## 4. Reload Shell Configuration
 
 Apply the new configuration:
@@ -80,6 +86,8 @@ source ~/.bashrc
 ```
 
 ---
+
+
 
 ## 5. Verify
 
@@ -108,6 +116,8 @@ echo $HF_TOKEN
 ```
 
 ---
+
+
 
 ## Verification Checklist
 
