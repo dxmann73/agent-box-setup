@@ -362,6 +362,16 @@ if systemctl --user is-enabled --quiet update-tools.timer 2>/dev/null; then
 else
     echo "✗ update-tools.timer not enabled (see machines/common/08-auto-updates.md section 3)"
 fi
+if [ "$(loginctl show-user "$USER" --property=Linger --value 2>/dev/null)" = "yes" ]; then
+    echo "✓ lingering enabled (user timers run without a login session)"
+else
+    echo "✗ lingering disabled (loginctl enable-linger \"$USER\")"
+fi
+if grep -q '^Prompt=lts' /etc/update-manager/release-upgrades 2>/dev/null; then
+    echo "✓ release upgrades set to Prompt=lts"
+else
+    echo "✗ release upgrades not set to Prompt=lts (see machines/common/08-auto-updates.md section 4)"
+fi
 if [ -f /var/run/reboot-required ]; then
     echo "⊗ reboot pending: $(tr '\n' ' ' < /var/run/reboot-required.pkgs 2>/dev/null)"
 fi
@@ -512,4 +522,4 @@ echo "  ✓ = Installed and configured"
 echo "  ✗ = Missing (required)"
 echo "  ⊗ = Not installed (optional)"
 echo ""
-echo "To fix missing components, see SETUP.md, agents/README.md, machines/common/*.md and machines/$PROFILE/*.md"
+echo "To fix missing components, see agents/README.md, machines/common/*.md and machines/$PROFILE/*.md"

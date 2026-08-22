@@ -54,6 +54,16 @@ project-root `AGENTS.md` with a `CLAUDE.md` symlink. Codex reads `~/AGENTS.md`, 
 `AGENTS.md`/`CLAUDE.md` plus `.cursor/rules` inside a project. Cursor "User Rules" are free-text
 preferences set in **Customize → Rules**, not files.
 
+### MCP servers
+
+MCP servers stay **off** on both machines. Skills and hooks cover what this box needs, and every
+enabled server adds tool definitions to each prompt plus a process that talks to the network.
+Confirm after setting up an agent — neither is scriptable, both are one-off checks in a running
+session:
+
+- `/mcp` in Claude Code lists the configured servers; the list should be empty.
+- `claude config list` shows the effective agent configuration.
+
 ## Skills
 
 [Official documentation](https://agentskills.io/what-are-skills). For further reading, see also the
