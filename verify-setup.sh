@@ -55,12 +55,6 @@ count_entries() {
 echo "=== Agent Binaries ==="
 claude --version 2>/dev/null && echo "✓ Claude Code installed" || echo "✗ Claude Code missing"
 agent --version 2>/dev/null && echo "✓ Cursor CLI Agent installed" || echo "✗ Cursor CLI Agent missing"
-if cursor --version >/dev/null 2>&1; then
-    cursor --version 2>/dev/null | head -1
-    echo "✓ Cursor IDE installed"
-else
-    echo "✗ Cursor IDE missing"
-fi
 codex --version 2>/dev/null && echo "✓ Codex installed" || echo "✗ Codex missing"
 if [ -L ~/.codex/config.toml ]; then
     echo "✓ ~/.codex/config.toml symlinked"
@@ -269,6 +263,68 @@ if [ -f ~/.redhat/io.quarkus.analytics.localconfig ]; then
     fi
 else
     echo "✗ Quarkus build analytics not configured (will prompt interactively)"
+fi
+echo ""
+
+# Editor (see machines/common/04-ide+tooling.md)
+echo "=== Editor (VS Code) ==="
+if code --version >/dev/null 2>&1; then
+    echo "✓ VS Code installed: $(code --version | head -1)"
+else
+    echo "✗ VS Code missing"
+fi
+
+# The live user config sits next to the UI: in $HOME natively, on the Windows side under WSL.
+vscode_user_dir=""
+if [ -d "$HOME/.config/Code/User" ]; then
+    vscode_user_dir="$HOME/.config/Code/User"
+else
+    win_code_dirs=(/mnt/c/Users/*/AppData/Roaming/Code/User)
+    if [ "${#win_code_dirs[@]}" -eq 1 ] && [ -d "${win_code_dirs[0]}" ]; then
+        vscode_user_dir="${win_code_dirs[0]}"
+    elif [ "${#win_code_dirs[@]}" -gt 1 ]; then
+        echo "✗ several Windows profiles carry a VS Code config; refusing to guess:"
+        printf '    %s\n' "${win_code_dirs[@]}"
+    fi
+fi
+
+if [ -z "$vscode_user_dir" ]; then
+    echo "✗ no VS Code user config directory found"
+elif ! command -v jq >/dev/null 2>&1; then
+    echo "✗ jq missing, cannot compare the live VS Code config against the repo copy"
+else
+    echo "✓ VS Code user config: $vscode_user_dir"
+    vscode_ref_dir="$(dirname "$0")/user-home/vscode"
+    # Strip // line comments so the JSONC reference files parse as JSON.
+    strip_jsonc() { sed 's|^[[:space:]]*//.*$||' "$1"; }
+
+    if [ ! -f "$vscode_user_dir/settings.json" ]; then
+        echo "✗ settings.json absent from the live config (Settings Sync off and never copied?)"
+    else
+        settings_drift=$(jq -n \
+            --argjson ref  "$(strip_jsonc "$vscode_ref_dir/settings.json")" \
+            --argjson live "$(strip_jsonc "$vscode_user_dir/settings.json")" \
+            '[$ref | to_entries[] | select($live[.key] != .value) | .key] | join(", ")' -r 2>/dev/null)
+        if [ -z "$settings_drift" ]; then
+            echo "✓ live settings.json carries every key from user-home/vscode/settings.json"
+        else
+            echo "✗ settings.json drift, live value missing or different: $settings_drift"
+        fi
+    fi
+
+    if [ ! -f "$vscode_user_dir/keybindings.json" ]; then
+        echo "✗ keybindings.json absent from the live config"
+    else
+        keys_drift=$(jq -n \
+            --argjson ref  "$(strip_jsonc "$vscode_ref_dir/keybindings.json")" \
+            --argjson live "$(strip_jsonc "$vscode_user_dir/keybindings.json")" \
+            '[$ref[] | select(. as $b | ($live | index([$b])) == null) | .key] | join(", ")' -r 2>/dev/null)
+        if [ -z "$keys_drift" ]; then
+            echo "✓ live keybindings.json carries every binding from user-home/vscode/keybindings.json"
+        else
+            echo "✗ keybindings.json drift, binding missing or different: $keys_drift"
+        fi
+    fi
 fi
 echo ""
 

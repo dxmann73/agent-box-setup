@@ -16,7 +16,7 @@ guides above slot it in after `00-home-environment.md`.
 | [00-home-environment.md](00-home-environment.md) | Shell config, dotfiles |
 | [02-core-tools.md](02-core-tools.md) | GitHub CLI, jq, Docker (VM only) |
 | [03-dev-environment.md](03-dev-environment.md) | Node.js (apt), pnpm, Firecrawl CLI, SDKMAN, Java, Quarkus, Maven |
-| [04-ide+tooling.md](04-ide+tooling.md) | Cursor IDE, keybindings, Java extensions |
+| [04-ide+tooling.md](04-ide+tooling.md) | VS Code, settings sync, keybindings, Java extensions |
 | [06-optional.md](06-optional.md) | Helm, Minikube, kubectl |
 | [07-imaging-tools.md](07-imaging-tools.md) | ImageMagick, sharp, resvg, ffmpeg, Inkscape |
 | [08-auto-updates.md](08-auto-updates.md) | Unattended apt upgrades, needrestart, weekly tooling update |

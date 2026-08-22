@@ -1,6 +1,10 @@
 # 04 - Editor Setup
 
-Cursor IDE is the primary editor. It's an AI-powered code editor built on VS Code.
+VS Code is the primary editor. Settings and keybindings live in
+[`../../user-home/vscode/README.md`](../../user-home/vscode/README.md).
+
+Cursor **CLI** (`cursor-agent`) is a separate product, not an editor — it is installed from
+[`../../agents/cursor/README.md`](../../agents/cursor/README.md).
 
 ## Prerequisites
 
@@ -8,86 +12,152 @@ Cursor IDE is the primary editor. It's an AI-powered code editor built on VS Cod
 
 ---
 
-## 1. Install Cursor IDE
+## 1. Install VS Code
 
-### Manual Installation Steps
+### Linux (Kubuntu host and agent VM)
 
-1. Open the [Cursor download page](https://cursor.com/download)
-2. Download the `.deb` package (it will save to your Downloads folder)
-3. Open Downloads and right-click on the `cursor_*.deb` file
-4. Select "Open With App Center"
-5. Click "Install" and authenticate as needed
-
-**Verify installation:**
+Install from Microsoft's apt repository, not the standalone `.deb`, so the daily
+`unattended-upgrades` run keeps it current (`08-auto-updates.md` already allows
+`origin=packages.microsoft.com`).
 
 ```bash
-cursor --version
+sudo apt install -y wget gpg apt-transport-https
+wget -qO- https://packages.microsoft.com/keys/microsoft.asc \
+  | gpg --dearmor \
+  | sudo tee /usr/share/keyrings/microsoft.gpg > /dev/null
+echo "deb [arch=amd64,arm64,armhf signed-by=/usr/share/keyrings/microsoft.gpg] \
+https://packages.microsoft.com/repos/code stable main" \
+  | sudo tee /etc/apt/sources.list.d/vscode.list > /dev/null
+sudo apt update && sudo apt install -y code
 ```
 
-Expected output: Version number like `2.x.x` along with commit hash
+**Verify:**
 
-**Note:** The Cursor application should also appear in your applications menu. Tell your human to 'pin it to the Dash'.
+```bash
+code --version
+```
+
+Expected: a version number, a commit hash and `x64`.
+
+Tell your human to pin VS Code to the Dash.
+
+### WSL host variant
+
+VS Code runs on the Windows side and attaches into WSL over the Remote-WSL extension. Install it on
+Windows (`winget install Microsoft.VisualStudioCode`), then install the **WSL** extension
+(`ms-vscode-remote.remote-wsl`). Afterwards `code .` works from inside the WSL shell — the wrapper
+is injected onto `PATH` on first attach.
+
+Consequences of the split, which differ from the native install:
+
+| Thing | Native Linux | WSL |
+| --- | --- | --- |
+| User settings | `~/.config/Code/User/` | `%APPDATA%\Code\User\` (Windows side) |
+| UI extensions | `~/.vscode/extensions/` | `%USERPROFILE%\.vscode\extensions\` |
+| Workspace extensions | same | `~/.vscode-server/extensions/` (inside WSL) |
+
+Extensions install into whichever side they declare. Language servers, formatters and linters land
+in `~/.vscode-server/`; themes and remote connectors stay on Windows. This is normal, not drift.
 
 ---
 
-## 2. Import current Settings into Profile
+## 2. Settings and keybindings
 
-If you have an existing Cursor profile in `cursor-default.code-profile`
+Settings Sync is the live mechanism. The repo copy under
+[`../../user-home/vscode/`](../../user-home/vscode/) is the bootstrap source and the drift
+reference.
 
-Tell your human to import this manually via Strg-Shift-P > Open Profiles (UI).
+1. Sign in: `Ctrl-Shift-P` > "Settings Sync: Turn On", authenticate with the GitHub account.
+   Sync covers settings, keybindings, extensions, snippets, UI state and profiles.
+2. On a machine where sync is not available, copy the two files into place instead:
 
-**Note:** Extensions will be installed automatically based on per-repository recommendations when you open projects.
+   ```bash
+   # Linux native
+   mkdir -p ~/.config/Code/User
+   cp ~/projects/agent-box-setup/user-home/vscode/settings.json    ~/.config/Code/User/
+   cp ~/projects/agent-box-setup/user-home/vscode/keybindings.json ~/.config/Code/User/
+   ```
 
----
+   On WSL the target is `/mnt/c/Users/<user>/AppData/Roaming/Code/User/`. Copy, do not symlink —
+   `ln -s` into `/mnt/c` does not work on DrvFs.
 
-## 3. Cursor Initial Tweaks
+**Verify:**
 
-### Keybindings (Strg-M Strg-S, then "record keys")
+```bash
+code --list-extensions | head
+```
 
-- Remove the default `Strg-Shift-K` keybind, then reassign `Strg-Shift-K` to "Delete Line"
-- Format document: Strg-Shift-P, Open keyboard Shortcuts, "format doc", add Strg-Alt-L
-- Java: Go to test: `Strg-Shift-T`
+### Custom keybindings
 
-### Settings
+Only two overrides are carried; everything else is stock VS Code.
 
-- Always show usage limits: Strg-Shift-J > Cursor Settings > Agents > Usage summary > "always"
-- Markdown theme: Strg-, > Workbench > Appearance > set to "Dark Modern"
-- Open terminal `Strg-ö`, choose Ubuntu WSL als default via the DDLB
-- Terminal scrollback: Settings > @feature:terminal scroll > Integrated scrollback > 9999
-- Send keybindings to shell: enable `terminal.integrated.sendKeybindingsToShell`
+| Key | Command |
+| --- | --- |
+| `Ctrl-Alt-L` | Format document |
+| `Ctrl-Shift-T` | Java: go to test (replaces "reopen closed editor") |
 
 ### Keyboard shortcuts reference
 
-See also [Cursor keyboard shortcuts](https://cursor.com/docs/configuration/kbd#tab)
-
 ```text
-Strg-I / Strg-L     Side Panel
-Strg-E               Agent Mode
-Strg-.               Mode (Agent, Plan, Ask)
-Strg-#               Model
-Strg-K / Strg-L      Inline edit / add to agent
-Strg-Alt-B           AI Window
+Ctrl-,              Settings
+Ctrl-Shift-P        Command palette
+Ctrl-P              Open file (cycle further entries with the right arrow)
+Ctrl-Shift-F        Search across the workspace
+Ctrl-Alt-F          Search in file, fuzzy on/off
+Ctrl-O              Open file
+Shift-Alt-O         Organize imports
+Ctrl-Shift-K        Delete line
+Shift-Alt-F         Format file
+Ctrl-D              Select next occurrence
+Alt-Enter           Select all occurrences
+Alt-click           Place an additional cursor
+Ctrl-Alt-Up/Down    Extend multi-cursor up/down
+Shift-Alt-Up/Down   Duplicate line up/down
+Ctrl-ö              Toggle terminal
 ```
 
-Since Cursor is based on VS Code, check the [VS Code keyboard shortcuts](./vs-code.md#keybinds)
+Full list: [VS Code key bindings](https://code.visualstudio.com/docs/getstarted/keybindings).
 
 ---
 
-## 4. Java Extensions
+## 3. Extensions
 
-If working with Java/Quarkus projects:
+Extensions are declared per project in `.vscode/extensions.json`, so opening a repository prompts
+for exactly what that repository needs. Nothing has to be installed by hand up front.
 
-- Install the **Spring Boot Extension** and the **Spring Boot Extension Pack**
-- Install the [Quarkus extension](https://marketplace.cursorapi.com/items/?itemName=redhat.vscode-quarkus)
-- Add Quarkus docs to Cursor @docs: Type @Docs > Add new doc > paste
-  [https://quarkus.io/guides](https://quarkus.io/guides)
+Linters and formatters belong to the project that uses them, so `markdownlint`, `prettier`,
+`astro` and `tailwindcss` are declared per repository. Only the genuinely editor-wide ones are
+installed here:
+
+```bash
+code --install-extension editorconfig.editorconfig \
+     --install-extension moshfeu.compare-folders \
+     --install-extension tomchen.paste-markdown-link
+```
+
+Microsoft-licensed extensions (Remote-SSH, Remote-WSL, Remote-Containers, C#, Pylance) are
+available only in real VS Code from the Microsoft marketplace. On the WSL host variant Remote-WSL
+is required, not optional.
+
+---
+
+## 4. Java extensions
+
+For Java/Quarkus projects:
+
+```bash
+code --install-extension vscjava.vscode-java-pack \
+     --install-extension redhat.vscode-quarkus \
+     --install-extension vmware.vscode-boot-dev-pack
+```
+
+`vscjava.vscode-java-pack` pulls in `redhat.java`, Maven, Gradle, debugger, test runner and
+project explorer. `vmware.vscode-boot-dev-pack` is the Spring Boot set.
 
 ### Java settings
 
-- Set Cursor to download sources: Open VS Code settings, search for `cursor://settings/java.maven.downloadSources`
-- [Exclude warnings from generated-sources](https://stackoverflow.com/questions/57215534/java-ignore-warnings-on-directory-package-level/79781667#79781667)
-
-This is accomplished by adding the following to workspace or user settings:
+Add to user or workspace settings — the `java.diagnostic.filter` entry
+[silences warnings from generated sources](https://stackoverflow.com/questions/57215534/java-ignore-warnings-on-directory-package-level/79781667#79781667):
 
 ```json
 {
@@ -98,52 +168,37 @@ This is accomplished by adding the following to workspace or user settings:
 }
 ```
 
-### IntelliJ sync
+### IntelliJ code style
 
-- Export IntelliJ settings into xml in user home
-- add to Users/dave/.cursor/settings.json
+For reference only, not part of this setup. Where a project has to match an IntelliJ formatting
+profile, export it from IntelliJ as XML and point VS Code at that file — a Windows path in the WSL
+case:
 
-  ```json
-    "settings": {
-      "java.completion.importOrder": [
-        "*",
-        "java",
-        "javax"
-      ],
-        "java.format.settings.url": "file:///Users/dave/.cursor/MHB-IntelliJ-Codestyle.xml",
-        "java.format.settings.profile": "IntelliJ IDEA",
-        "java.compile.nullAnalysis.mode": "automatic"
-    }
-  ```
-
----
-
-## 5. Postprocessing
-
-Export and save settings profile: Ctrl+Shift+P > "Preferences: Open Profiles (UI)"
-
----
+```json
+{
+  "java.format.settings.url": "file:///C:/Users/dave/MHB-IntelliJ-Codestyle.xml",
+  "java.format.settings.profile": "IntelliJ IDEA"
+}
+```
 
 ---
 
 ## Complete Verification
 
-Run verification command:
-
 ```bash
-echo "=== Cursor IDE ===" && \
-cursor --version && \
-echo -e "\nCursor binary location: $(which cursor)" && \
-echo "Cursor app installed: $(test -d /opt/Cursor && echo "✓ Yes" || echo "✗ No")"
+echo "=== VS Code ===" && \
+code --version && \
+echo -e "\nBinary: $(which code)" && \
+echo "Extensions installed: $(code --list-extensions | wc -l)"
 ```
 
 ## Verification Checklist
 
-- [ ] Cursor IDE installed: `cursor --version` shows version
-- [ ] `cursor` command works from terminal at `/usr/bin/cursor` or similar
-- [ ] Cursor application appears in applications menu
-- [ ] Keybindings customized (manual step)
-- [ ] Java extensions installed if applicable (manual step)
-- [ ] Settings profile exported (manual step)
+- [ ] VS Code installed: `code --version` shows a version
+- [ ] `code` command works from the terminal
+- [ ] Settings Sync turned on, or `settings.json` / `keybindings.json` copied into place
+- [ ] `Ctrl-Alt-L` formats the document
+- [ ] Editor-wide extensions installed
+- [ ] Java extensions installed, if applicable
 
 **Next:** Continue to `06-optional.md` or `07-imaging-tools.md`

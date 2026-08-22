@@ -12,7 +12,7 @@ installed afterwards is covered from the start.
 | Thing | How it stays current | Deliberate? |
 | --- | --- | --- |
 | apt packages, kernel, security fixes | `unattended-upgrades`, daily | no |
-| Chrome, `gh`, Docker, Node, Cursor | their own apt repos, same daily run | no |
+| Chrome, `gh`, Docker, Node, VS Code | their own apt repos, same daily run | no |
 | Snap packages | snapd refreshes itself, four times a day | no |
 | Flatpak applications | user timer added below | no |
 | Global npm CLIs, coding agents | weekly user timer added below | no |

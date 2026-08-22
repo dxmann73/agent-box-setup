@@ -50,13 +50,14 @@ Master verification checklist for new machine setup. Follow the numbered guides 
 - [ ] Quarkus installed (`quarkus --version`)
 - [ ] Maven installed (`mvn --version`)
 
-## 04 - Editor (Cursor IDE)
+## 04 - Editor (VS Code)
 
-- [ ] Cursor IDE installed (`cursor --version`)
-- [ ] `cursor` command works from terminal
-- [ ] Keybindings customized
+- [ ] VS Code installed (`code --version`)
+- [ ] `code` command works from terminal
+- [ ] Settings Sync on, or `user-home/vscode/` files copied into place
+- [ ] Keybindings active (`Ctrl-Alt-L` formats the document)
+- [ ] Editor-wide extensions installed
 - [ ] Java extensions installed (if applicable)
-- [ ] Settings profile exported
 
 ## 06 - Optional (check what's installed; see `machines/common/06-optional.md`)
 

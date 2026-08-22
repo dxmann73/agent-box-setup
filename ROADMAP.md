@@ -2,9 +2,13 @@
 
 ## Repo prep / cleanup
 
-- change setup instructions to use vs code instead of cursor.
-- check all settings and how they differ, keep list of them, plan AND TEST vs code settings sync
-- check cursor subscription model / renewal.
+- ~~change setup instructions to use vs code instead of cursor~~ done: `machines/common/04-ide+tooling.md`
+  rewritten, settings/keybindings translated into `user-home/vscode/`, per-repo extension
+  recommendations reconciled, drift check in `verify-setup.sh`. Untested — validate on the first
+  real box (install VS Code, turn Settings Sync on). If the translation has a hole, the Cursor
+  config is in git history: `git log --diff-filter=D -- user-home/cursor-default.code-profile`.
+- cancel Cursor subscription. Pro yearly, active, auto-renew, ~0 usage; billing anchor day 28,
+  so the next charge lands around 2027-07-28. Cursor **CLI** is a separate product and stays.
 - retire voice tooling setup (separate commit)
 - AGENTS, BOOTSTRAP, README, SETUP are all massively outdated
 - Rename repo to agent-setup

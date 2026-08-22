@@ -26,7 +26,7 @@ The `user-home/` contains dotfiles and configuration that should live in your ho
 - `.gitconfig` - Git configuration
 - `ua.sh` - Update-all script: fetch/pull all git repos under a root dir
 - `update-tools.sh` - Weekly tooling update: npm globals, agent CLIs, SDKMAN (see `08-auto-updates.md`)
-- `cursor-default.code-profile` - Cursor IDE profile
+- `vscode/` - VS Code settings/keybindings reference copy (see `04-ide+tooling.md`)
 
 The repo root also contains:
 

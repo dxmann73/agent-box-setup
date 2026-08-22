@@ -119,7 +119,7 @@ cd ~/projects/agent-box-setup
 - [ ] Node LTS + pnpm (Corepack shim) + tsc/ts-node
 - [ ] markdownlint and firecrawl CLIs available, firecrawl authenticated
 - [ ] SDKMAN with auto-env, Java 21, Quarkus, Maven
-- [ ] Cursor IDE installed and configured
+- [ ] VS Code installed and configured
 - [ ] T3 Code AppImage installed with `libfuse2t64` present, version recorded
 - [ ] Claude Code / Cursor CLI / Codex installed and authenticated
 - [ ] skills and hooks symlinked

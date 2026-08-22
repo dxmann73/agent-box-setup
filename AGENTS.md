@@ -48,7 +48,7 @@ Then [local-llm/](local-llm/) for the GPU model runtime (host-only).
 2. [agents/](agents/README.md) - Claude Code, Cursor CLI, Codex, global rule file, skills, hooks
 3. [common/02-core-tools.md](machines/common/02-core-tools.md) - GitHub CLI, jq, Docker
 4. [common/03-dev-environment.md](machines/common/03-dev-environment.md) - Node.js and development tools
-5. [common/04-ide+tooling.md](machines/common/04-ide+tooling.md) - Cursor IDE
+5. [common/04-ide+tooling.md](machines/common/04-ide+tooling.md) - VS Code
 6. [common/06-optional.md](machines/common/06-optional.md) - Helm, cloud CLIs, extras
 7. [common/07-imaging-tools.md](machines/common/07-imaging-tools.md) - ImageMagick, sharp, resvg, optional
    image tools
@@ -66,7 +66,7 @@ cd ~/projects/agent-box-setup
 
 This will verify:
 
-- Agent binaries (Claude Code, Cursor CLI Agent, Cursor IDE)
+- Agent binaries (Claude Code, Cursor CLI Agent, Codex) and VS Code
 - Home directory symlinks (`.bashrc`, `.bash_aliases`, `.profile`, `.gitconfig`, `.bash_secrets`,
   `ua.sh`, `update-tools.sh`, `.markdownlint.json`)
 - Agent configuration and symlinks

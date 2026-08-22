@@ -1,0 +1,41 @@
+{
+  // --- Workbench / window ---
+  "window.commandCenter": true,
+  "window.autoDetectColorScheme": false,
+  "workbench.colorTheme": "Default Dark Modern",
+  "workbench.activityBar.orientation": "vertical",
+  "workbench.editor.limit.value": 99,
+
+  // --- Editor ---
+  "editor.accessibilitySupport": "off",
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "editor.codeActions.triggerOnFocusChange": true,
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "explicit"
+  },
+  "[typescript]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[typescriptreact]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+
+  // --- Files ---
+  "files.autoSave": "onFocusChange",
+  "explorer.confirmDragAndDrop": false,
+  "explorer.confirmPasteNative": false,
+
+  // --- Git ---
+  "git.confirmSync": false,
+  "git.autoStash": true,
+
+  // --- Terminal ---
+  "terminal.integrated.scrollback": 9999,
+  "terminal.integrated.copyOnSelection": true,
+  "terminal.integrated.sendKeybindingsToShell": true,
+  "terminal.integrated.defaultProfile.linux": "bash",
+  "terminal.integrated.profiles.linux": {
+    "bash": { "path": "/bin/bash", "icon": "terminal-bash" }
+  },
+
+  // --- Java ---
+  "java.maven.downloadSources": true,
+  "redhat.telemetry.enabled": true
+}
