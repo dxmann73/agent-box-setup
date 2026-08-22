@@ -3,7 +3,7 @@
 ## Repo prep / cleanup
 
 - extract agent setup into ./agents with their own README.md and instructions and config in separate dirs
-- machines/ should have common/, host/, nmigration/ and vm/
+- create a directory machines/ that contain common/, host/, nmigration/ and vm/
 - change setup instructions to use vs code instead of cursor.
 - check all settings and how they differ, keep list of them, plan AND TEST vs code settings sync
 - check cursor subscription model / renewal.

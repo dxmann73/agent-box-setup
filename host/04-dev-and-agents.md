@@ -47,9 +47,27 @@ Applies on the host and not in the VM:
 - the personal Chrome profile: agents on the host must not drive it either; use a separate
   profile or the VM's Chromium
 
+### T3 Code on the host
+
+The host runs T3 Code twice over: its own server, for host-scoped work that cannot move into the VM
+(local model runtime, hypervisor, this repo), and the desktop app, which holds both environments, the local one and the VM's headless server.
+
+On Linux the desktop app ships as an AppImage only — there is no `.deb`, and the `winget`/Homebrew/
+AUR packages in the upstream README do not apply to Kubuntu:
+
+```bash
+gh release download --repo pingdotgg/t3code --pattern '*.AppImage' --dir ~/opt/t3code
+chmod +x ~/opt/t3code/T3-Code-*.AppImage
+```
+
+Pin the version rather than tracking nightlies: the server in the VM has to match the app
+([`../vm/03-t3code.md`](../vm/03-t3code.md) §4). The CLI needs no separate install — `npx t3@latest`
+uses the Node from [`../common/03-dev-environment.md`](../common/03-dev-environment.md).
+
+Then pair the VM environment as described in [`../vm/03-t3code.md`](../vm/03-t3code.md) §3.
+
 Applies in the VM and not here:
 
-- the herdr server ([`../vm/03-herdr.md`](../vm/03-herdr.md)) — the host runs only a client
 - Playwright browser binaries ([`../vm/02-dev-and-agents.md`](../vm/02-dev-and-agents.md))
 - agent-specific GitHub/SSH credentials ([`../vm/05-credentials.md`](../vm/05-credentials.md))
 

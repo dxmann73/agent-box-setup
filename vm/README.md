@@ -12,8 +12,8 @@ Prerequisite: the VM exists, created per
 | --- | --- |
 | [01-bootstrap.md](01-bootstrap.md) | Guest install, settings, passwordless apt/mount, first agent |
 | [02-dev-and-agents.md](02-dev-and-agents.md) | Toolchain and agents via [`../common/`](../common/), Playwright |
-| [03-herdr.md](03-herdr.md) | Herdr server — **not yet written** |
-| [04-networking.md](04-networking.md) | NAT, host model endpoint, herdr reachability, Tailscale |
+| [03-t3code.md](03-t3code.md) | T3 Code server, headless in the VM |
+| [04-networking.md](04-networking.md) | NAT, host model endpoint, T3 Code reachability, Tailscale |
 | [05-credentials.md](05-credentials.md) | VM-only SSH/GitHub/API credentials |
 | [06-shared-folders.md](06-shared-folders.md) | Narrow host directory shares, e.g. Dropbox tax folder |
 | [07-snapshots.md](07-snapshots.md) | Persistence, snapshots, backup, rebuild test |
@@ -24,7 +24,7 @@ Prerequisite: the VM exists, created per
 | --- | --- | --- |
 | coding agents, skills, hooks | ✅ | ✅ |
 | agent-worked projects | ✅ | ❌ |
-| herdr server | ✅ | client only |
+| T3 Code server | ✅ | ✅ own environment |
 | Playwright + headless Chromium | ✅ | ❌ |
 | full dev toolchain | ✅ | ✅ |
 | personal apps, Dropbox, personal Chrome profile | ❌ | ✅ |

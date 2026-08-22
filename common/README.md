@@ -25,7 +25,7 @@ Not covered here, because it belongs to one target only:
 | --- | --- |
 | GPU stack, local model runtime | [`../local-llm/`](../local-llm/), host |
 | hypervisor and VM creation | [`../host/05-hypervisor.md`](../host/05-hypervisor.md) |
-| herdr server | [`../vm/03-herdr.md`](../vm/03-herdr.md) |
+| T3 Code server in the VM | [`../vm/03-t3code.md`](../vm/03-t3code.md) |
 | Playwright browser binaries | [`../vm/02-dev-and-agents.md`](../vm/02-dev-and-agents.md) |
 | agent-specific credentials | [`../vm/05-credentials.md`](../vm/05-credentials.md) |
 | personal applications | [`../host/02-applications.md`](../host/02-applications.md) |

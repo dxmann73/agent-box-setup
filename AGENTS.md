@@ -33,7 +33,7 @@ Then [local-llm/](local-llm/) for the GPU model runtime (host-only).
 1. [vm/01-bootstrap.md](vm/01-bootstrap.md) - Guest install, passwordless apt/mount, first agent
 2. [vm/02-dev-and-agents.md](vm/02-dev-and-agents.md) - Toolchain and agents via `common/`,
    Playwright
-3. [vm/03-herdr.md](vm/03-herdr.md) - Herdr server (**not yet written**)
+3. [vm/03-t3code.md](vm/03-t3code.md) - T3 Code server, headless in the VM
 4. [vm/04-networking.md](vm/04-networking.md) - NAT, host model endpoint, Tailscale
 5. [vm/05-credentials.md](vm/05-credentials.md) - VM-only credentials
 6. [vm/06-shared-folders.md](vm/06-shared-folders.md) - Narrow host directory shares
@@ -128,7 +128,7 @@ See `common/00-home-environment.md` for the full symlink commands.
 - `docs/specification/` - What the setup has to achieve; source of truth
 - `common/` - Install guides used by both host and VM
 - `host/` - Ubuntu host: hardware, personal apps, system config, hypervisor
-- `vm/` - Agent VM: bootstrap, agents, herdr, networking, credentials, snapshots
+- `vm/` - Agent VM: bootstrap, agents, T3 Code, networking, credentials, snapshots
 - `local-llm/` - llama.cpp, models, benchmarks, ROCm (host-only)
 - `migration/` - One-time Windows → Kubuntu move; deletable
 - `configs/` - Configuration files to copy/symlink

@@ -12,7 +12,7 @@ Three separate paths, each with its own reason to exist (specification §11).
                                   │
                                   ▼
                  ┌──────────────────────────────────────┐
-        clients ─┤ herdr: host, LAN, remote via Tailscale│
+        clients ─┤ T3 Code: host, LAN, remote via tailnet │
                  └──────────────────────────────────────┘
 ```
 
@@ -54,28 +54,34 @@ Record the resulting base URL in `~/.bash_secrets` so agents pick it up from one
 - [ ] inference server bound to it, not to the LAN
 - [ ] base URL recorded in `~/.bash_secrets`
 
-## 3. Herdr reachability
+## 3. T3 Code reachability
 
-Herdr must be reachable from the host, from other machines on the network, and from outside
-(specification §4, §11). Tailscale is the intended route for the last one:
+The T3 Code server in the VM must be reachable from the host, from other machines on the network,
+and from outside (specification §4, §11). Tailscale is the route for the last one.
+
+The tailnet itself is not set up here. It is a piece of personal network infrastructure that spans
+host, VM, laptop and phone, and it is documented in the `infra` project
+(`docs/spec/tailscale.md`). Bring it up there first; this file only assumes the VM is a tailnet
+node:
 
 ```bash
-curl -fsSL https://tailscale.com/install.sh | sh
-sudo tailscale up
+tailscale status
 tailscale ip -4
 ```
 
-Prefer exposing herdr on the Tailscale interface over opening a port on the router.
+Bind the server to that address, or publish it over Tailscale Serve HTTPS — see
+[03-t3code.md](03-t3code.md) §3. Prefer either over opening a port on the router.
 
-- [ ] herdr reachable from the host
-- [ ] herdr reachable from a second machine on the LAN
-- [ ] herdr reachable over Tailscale from outside the LAN
-- [ ] no herdr port exposed directly to the public Internet
+- [ ] VM appears in `tailscale status` on the host and on the phone
+- [ ] T3 Code reachable from the host
+- [ ] T3 Code reachable from a second machine on the LAN
+- [ ] T3 Code reachable over the tailnet from outside the LAN
+- [ ] no T3 Code port exposed directly to the public Internet
 
 ## 4. What must not happen
 
 - no route from the VM into the host's personal services beyond the model endpoint
-- no herdr port forwarded on the router
+- no T3 Code port forwarded on the router
 - no host `$HOME` exported over the network to the VM; use
   [06-shared-folders.md](06-shared-folders.md) for the few directories that need sharing
 

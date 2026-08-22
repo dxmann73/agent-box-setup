@@ -1,4 +1,4 @@
-## Specification Agent Box
+# Specification Agent Box
 
 1. **Ubuntu host**
 
@@ -20,14 +20,17 @@
    * The VM becomes the main security boundary.
    * The VM should be relatively easy to recreate.
 
-4. **Herdr**
+4. **T3 Code**
 
-   * Run one Herdr server inside the VM.
-   * Run many concurrent agents under that Herdr instance.
+   * Run one T3 Code server inside the VM, headless (no GUI in the guest).
+   * Run many concurrent agents under that instance.
    * Also run ordinary terminals/processes there: dev servers, test watchers, build processes, etc.
-   * Connect to this Herdr instance from the Ubuntu host.
-   * Also connect to it from laptops/other machines over the network.
-   * Herdr remains the primary UI for observing and interacting with the agents.
+   * Connect to this instance from the Ubuntu host.
+   * Also connect to it from laptops/phones/other machines over the network.
+   * Run a second T3 Code server on the host for host-scoped work that cannot move into the VM.
+   * The T3 Code desktop app on the host is the primary UI, holding both environments at once, and
+     remains the way agents are observed and interacted with.
+   * Replaces the earlier choice of Herdr.
 
 5. **Multiple agents**
 
@@ -69,7 +72,7 @@
      * agent configurations
      * prompts/instructions
      * scripts
-     * Herdr configuration
+     * T3 Code configuration
      * browser workflows
      * other shared agent infrastructure.
    * Clone/synchronize this repository inside the VM.
@@ -84,8 +87,9 @@
 
     * VM needs outbound Internet access for LLM APIs, GitHub, package managers, browser testing, etc.
     * VM needs controlled connectivity to the host's local-model endpoint.
-    * Herdr needs to be reachable from authorized external machines.
-    * Find a way to access Herdr from the public Internet (tailscale, herdr app).
+    * The VM's T3 Code server needs to be reachable from authorized external machines.
+    * Reach it from outside the LAN over Tailscale; the tailnet is specified and operated in the
+      `infra` project, not here.
 
 12. **Credentials**
 
@@ -108,7 +112,7 @@ development tools
       ↓
 agents
       ↓
-Herdr
+T3 Code
       ↓
 Playwright/browser
       ↓
@@ -119,6 +123,6 @@ ready
 
 14. **Persistence/recovery**
 
-    * Herdr sessions and agent processes should survive disconnecting your host-side client.
+    * T3 Code sessions and agent processes should survive disconnecting your host-side client.
     * VM can remain running continuously.
     * Set up VM snapshots/backups.

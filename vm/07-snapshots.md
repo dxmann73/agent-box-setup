@@ -6,7 +6,7 @@ cheap to throw away and rebuild (specification §3, §13).
 ## 1. Persistence
 
 - the VM stays powered on; the host client connecting and disconnecting changes nothing
-- herdr sessions and agent processes survive a disconnect, see [03-herdr.md](03-herdr.md)
+- T3 Code sessions and agent processes survive a disconnect, see [03-t3code.md](03-t3code.md)
 - host suspend/resume with a running VM is worth re-testing explicitly, see
   [`../host/01-hardware-validation.md`](../host/01-hardware-validation.md)
 
@@ -32,7 +32,7 @@ VM, not a running one.
 What actually has to survive a lost VM:
 
 - pushed git branches — anything unpushed in `~/projects` is at risk
-- this repo's configuration, which is the source of truth for skills, agent config and herdr
+- this repo's configuration, which is the source of truth for skills, agent config and T3 Code
   configuration (specification §9)
 
 Everything else should be reproducible by rebuilding.
@@ -42,7 +42,7 @@ Everything else should be reproducible by rebuilding.
 The reproducibility claim is only real if it has been executed:
 
 ```text
-fresh Ubuntu VM → bootstrap → toolchain → agents → herdr → Playwright → agent-config repo → ready
+fresh Ubuntu VM → bootstrap → toolchain → agents → T3 Code → Playwright → agent-config repo → ready
 ```
 
 Run it end to end from a `clean-guest` snapshot periodically. Prefer deterministic scripts over

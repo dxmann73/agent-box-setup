@@ -43,7 +43,7 @@ Kubuntu host
 ├── local model runtime (llama.cpp, GPU-attached)
 ├── host toolchain + coding agents (host-scoped work)
 └── VMware Workstation Pro
-    └── agent VM  ── herdr, agents, projects, Playwright
+    └── agent VM  ── T3 Code server, agents, projects, Playwright
 ```
 
 ## Why Kubuntu

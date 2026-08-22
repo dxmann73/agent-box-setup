@@ -20,17 +20,19 @@ Kubuntu host                                  ← host/
 ├── personal apps and data (Chrome, Dropbox, Steam, documents)
 ├── local model runtime on the GPU            ← local-llm/
 ├── development toolchain + coding agents     ← common/
+├── T3 Code desktop app + local server        ← host/04-dev-and-agents.md
 └── VMware Workstation Pro
     └── agent VM                              ← vm/
-        ├── herdr server + many agents
+        ├── T3 Code server + many agents
         ├── development toolchain + agents    ← common/
         ├── projects agents work on
         └── Playwright / headless Chromium
 ```
 
 The host and the VM share the same development toolchain and the same agent configuration; they
-differ in what is *only* on one side — GPU and personal data on the host, herdr and agent-worked
-projects in the VM.
+differ in what is *only* on one side — GPU and personal data on the host, agent-worked projects in
+the VM. T3 Code runs on both: a headless server in the VM, a server plus the desktop app on the
+host, with the app holding both environments at once.
 
 ## Directories
 
@@ -39,7 +41,7 @@ projects in the VM.
 | [docs/specification/](docs/specification/) | What the setup has to achieve | no |
 | [common/](common/) | Install guides used by both host and VM | no |
 | [host/](host/) | Ubuntu host: hardware, personal apps, system config, hypervisor | no |
-| [vm/](vm/) | Agent VM: bootstrap, agents, herdr, networking, credentials, snapshots | no |
+| [vm/](vm/) | Agent VM: bootstrap, agents, T3 Code, networking, credentials, snapshots | no |
 | [local-llm/](local-llm/) | llama.cpp, models, benchmarks, ROCm — host-only | no |
 | [configs/](configs/) | Dotfiles, agent configuration, skills | no |
 | [migration/](migration/) | One-time Windows → Kubuntu move | **yes** |

@@ -81,4 +81,4 @@ cd ~/projects/agent-box-setup
 - [ ] imaging tools installed
 - [ ] `./verify-setup.sh --vm` passes
 
-Next: [03-herdr.md](03-herdr.md)
+Next: [03-t3code.md](03-t3code.md)
