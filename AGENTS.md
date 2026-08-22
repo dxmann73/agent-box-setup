@@ -55,8 +55,6 @@ Then [local-llm/](local-llm/) for the GPU model runtime (host-only).
 8. [common/08-auto-updates.md](machines/common/08-auto-updates.md) - Unattended apt upgrades, needrestart,
    weekly tooling update timer
 
-Voice tooling is retired: see [host/voice-setup.old/](machines/host/voice-setup.old/).
-
 ## Quick Verification
 
 ```bash
@@ -102,7 +100,7 @@ This will verify:
     machines/host/ machines/vm/ machines/common/
   grep -rnE 'WSL|/mnt/c|winget install|DrvFs' \
     machines/host/ machines/vm/ machines/common/ agents/ user-home/ \
-    --exclude-dir=skills --exclude-dir=voice-setup.old | grep -v 'wsl/README.md'
+    --exclude-dir=skills | grep -v 'wsl/README.md'
   ```
 
 - Two scopes live in this repo: **box-level** (machine setup under `machines/`, plus `agents/` and

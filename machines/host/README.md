@@ -36,8 +36,6 @@ Then:
   the GPU)
 - [`../vm/`](../vm/) — the agent VM
 
-Retired: [voice-setup.old/](voice-setup.old/).
-
 ## Layout
 
 ```text

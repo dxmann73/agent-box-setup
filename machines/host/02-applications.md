@@ -89,9 +89,6 @@ Host-only: dictation needs the microphone and types into host applications.
 Evaluate [VibeTyper](https://vibetyper.com/docs). If that doesn't work, try
 [repackaged WhisprFlow](https://github.com/wispr-flow-linux/wispr-flow-linux).
 
-The earlier self-hosted attempt (faster-whisper, nerd-dictation) is retired but kept for reference
-in [voice-setup.old/](voice-setup.old/).
-
 ## 10. Application checklist
 
 - [ ] Chrome installed
