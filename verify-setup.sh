@@ -199,8 +199,23 @@ echo ""
 # Development Environment
 echo "=== Development Environment ==="
 hash -r 2>/dev/null || true
-nvm --version >/dev/null 2>&1 && echo "✓ nvm installed" || echo "✗ nvm missing"
-node --version 2>/dev/null && echo "✓ Node.js installed: $(node --version)" || echo "✗ Node.js missing"
+if node --version >/dev/null 2>&1; then
+    echo "✓ Node.js installed: $(node --version) ($(command -v node))"
+    case "$(command -v node)" in
+        "$HOME"/.nvm/*)
+            echo "⊗ Node comes from nvm; systemd user services and non-interactive shells will not see it"
+            echo "  (see common/03-dev-environment.md — install Node from apt instead)"
+            ;;
+    esac
+else
+    echo "✗ Node.js missing"
+fi
+npm_prefix="$(npm config get prefix 2>/dev/null)"
+if [ -n "$npm_prefix" ] && [ -w "$npm_prefix" ]; then
+    echo "✓ npm global prefix writable without sudo: $npm_prefix"
+else
+    echo "✗ npm global prefix needs root: ${npm_prefix:-unknown} (npm config set prefix ~/.npm-global)"
+fi
 npm --version >/dev/null 2>&1 && echo "✓ npm installed" || echo "✗ npm missing"
 tsc --version >/dev/null 2>&1 && echo "✓ TypeScript installed" || echo "✗ TypeScript missing"
 if pnpm --version >/dev/null 2>&1; then
@@ -234,7 +249,7 @@ if [ "$PROFILE" = "vm" ]; then
     if npx --yes playwright --version >/dev/null 2>&1; then
         echo "✓ Playwright installed"
     else
-        echo "✗ Playwright missing (run: pnpm exec playwright install chromium)"
+        echo "✗ Playwright missing (run: npx --yes playwright@latest install chromium)"
     fi
 fi
 sdk version >/dev/null 2>&1 && echo "✓ SDKMAN installed" || echo "✗ SDKMAN missing"
@@ -254,6 +269,45 @@ if [ -f ~/.redhat/io.quarkus.analytics.localconfig ]; then
     fi
 else
     echo "✗ Quarkus build analytics not configured (will prompt interactively)"
+fi
+echo ""
+
+# Automatic updates (see common/08-auto-updates.md)
+echo "=== Automatic Updates ==="
+if dpkg -s unattended-upgrades >/dev/null 2>&1; then
+    echo "✓ unattended-upgrades installed"
+else
+    echo "✗ unattended-upgrades missing (sudo apt install -y unattended-upgrades)"
+fi
+if [ -f /etc/apt/apt.conf.d/20auto-upgrades ] \
+   && grep -q '^APT::Periodic::Unattended-Upgrade "1"' /etc/apt/apt.conf.d/20auto-upgrades; then
+    echo "✓ unattended upgrades enabled"
+else
+    echo "✗ unattended upgrades not enabled (sudo dpkg-reconfigure -plow unattended-upgrades)"
+fi
+if [ -f /etc/apt/apt.conf.d/52unattended-upgrades-local ]; then
+    echo "✓ local unattended-upgrades policy present"
+else
+    echo "✗ /etc/apt/apt.conf.d/52unattended-upgrades-local missing (see common/08-auto-updates.md)"
+fi
+if systemctl is-enabled --quiet apt-daily-upgrade.timer 2>/dev/null; then
+    echo "✓ apt-daily-upgrade.timer enabled"
+else
+    echo "✗ apt-daily-upgrade.timer not enabled"
+fi
+dpkg -s needrestart >/dev/null 2>&1 && echo "✓ needrestart installed" || echo "⊗ needrestart not installed (optional but recommended)"
+if [ -L ~/update-tools.sh ] || [ -x ~/update-tools.sh ]; then
+    echo "✓ update-tools.sh present"
+else
+    echo "✗ ~/update-tools.sh missing (see common/00-home-environment.md)"
+fi
+if systemctl --user is-enabled --quiet update-tools.timer 2>/dev/null; then
+    echo "✓ weekly tooling update timer enabled"
+else
+    echo "✗ update-tools.timer not enabled (see common/08-auto-updates.md section 3)"
+fi
+if [ -f /var/run/reboot-required ]; then
+    echo "⊗ reboot pending: $(tr '\n' ' ' < /var/run/reboot-required.pkgs 2>/dev/null)"
 fi
 echo ""
 
@@ -303,7 +357,36 @@ if [ "$PROFILE" = "host" ]; then
     else
         echo "✗ vulkan-tools missing (sudo apt install -y vulkan-tools)"
     fi
-    command -v vmware >/dev/null 2>&1 && echo "✓ VMware Workstation installed" || echo "⊗ VMware Workstation not found (optional until the agent VM is needed)"
+    if [ "$LIBVIRT_DEFAULT_URI" = "qemu:///system" ]; then
+        echo "✓ LIBVIRT_DEFAULT_URI=qemu:///system"
+    else
+        echo "✗ LIBVIRT_DEFAULT_URI is '${LIBVIRT_DEFAULT_URI:-unset}'; virsh will address the session daemon (see host/05-hypervisor.md section 3)"
+    fi
+    if command -v virsh >/dev/null 2>&1 && virsh -c qemu:///system list >/dev/null 2>&1; then
+        echo "✓ libvirt reachable without sudo"
+        if virsh -c qemu:///system dominfo agent-vm >/dev/null 2>&1; then
+            echo "✓ agent-vm defined: $(virsh -c qemu:///system domstate agent-vm 2>/dev/null)"
+            if virsh -c qemu:///system dumpxml agent-vm 2>/dev/null | grep -q pflash; then
+                echo "⊗ agent-vm boots UEFI; BIOS is assumed by the snapshot/backup steps (host/05-hypervisor.md section 5)"
+            else
+                echo "✓ agent-vm boots BIOS, no NVRAM file to track"
+            fi
+            if virsh -c qemu:///system dumpxml agent-vm 2>/dev/null | grep -q "access mode='shared'"; then
+                echo "✓ shared memory backing present (virtiofs shares can attach)"
+            else
+                echo "✗ no shared memory backing; virtiofs shares will not attach (host/05-hypervisor.md section 5)"
+            fi
+        else
+            echo "⊗ agent-vm not defined yet (see host/05-hypervisor.md)"
+        fi
+    else
+        echo "⊗ libvirt/KVM not usable (sudo apt install -y qemu-kvm libvirt-daemon-system virtinst; usermod -aG libvirt,kvm)"
+    fi
+    if command -v virtiofsd >/dev/null 2>&1 || [ -x /usr/libexec/virtiofsd ]; then
+        echo "✓ virtiofsd present"
+    else
+        echo "⊗ virtiofsd missing (needed for shared folders: sudo apt install -y virtiofsd)"
+    fi
     echo ""
 fi
 
@@ -311,15 +394,43 @@ fi
 if [ "$PROFILE" = "vm" ]; then
     echo "=== VM: sandbox plumbing ==="
     if [ -f /etc/sudoers.d/agent-nopasswd ]; then
-        echo "✓ passwordless apt/mount configured"
+        echo "✓ passwordless sudo configured (agent user is root in the VM, by design)"
     else
         echo "✗ /etc/sudoers.d/agent-nopasswd missing (see vm/01-bootstrap.md)"
     fi
-    command -v vmhgfs-fuse >/dev/null 2>&1 && echo "✓ open-vm-tools (vmhgfs-fuse) installed" || echo "✗ open-vm-tools missing (sudo apt install -y open-vm-tools)"
-    if mountpoint -q /mnt/hgfs 2>/dev/null; then
-        echo "✓ /mnt/hgfs mounted: $(ls /mnt/hgfs 2>/dev/null | tr '\n' ' ')"
+    if systemctl is-active --quiet ssh; then
+        echo "✓ sshd running (ssh agent-vm from the host)"
     else
-        echo "⊗ /mnt/hgfs not mounted (no host directories shared)"
+        echo "✗ sshd not running (sudo apt install -y openssh-server)"
+    fi
+    if [ "$(hostname)" = "agent-vm" ]; then
+        echo "✓ hostname is agent-vm, so libnss-libvirt resolves it from the host"
+    else
+        echo "⊗ hostname is '$(hostname)', not agent-vm; ssh agent-vm will not resolve"
+    fi
+    if systemctl is-active --quiet qemu-guest-agent; then
+        echo "✓ qemu-guest-agent active"
+    else
+        echo "✗ qemu-guest-agent not active (sudo apt install -y qemu-guest-agent)"
+    fi
+    if systemctl is-active --quiet sddm; then
+        echo "✓ Plasma display manager running"
+    else
+        echo "⊗ sddm not active (a desktop guest is expected, see vm/01-bootstrap.md)"
+    fi
+    if systemctl is-active --quiet spice-vdagentd; then
+        echo "✓ spice-vdagent active (SPICE console clipboard)"
+    else
+        echo "✗ spice-vdagentd not active (sudo apt install -y spice-vdagent)"
+    fi
+    if dpkg -s krdp >/dev/null 2>&1; then
+        echo "⊗ krdp installed; this setup deliberately exposes no RDP listener (see vm/01-bootstrap.md section 3)"
+    fi
+    virtiofs_mounts=$(findmnt -t virtiofs -no TARGET 2>/dev/null | tr '\n' ' ')
+    if [ -n "$virtiofs_mounts" ]; then
+        echo "✓ virtiofs shares mounted: $virtiofs_mounts"
+    else
+        echo "⊗ no virtiofs share mounted (no host directories shared)"
     fi
     if [ -d ~/.ssh ] && [ -n "$(ls -A ~/.ssh 2>/dev/null)" ]; then
         echo "✓ VM has its own ~/.ssh contents"

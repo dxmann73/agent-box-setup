@@ -11,11 +11,12 @@ Start from those, not from here — they carry the per-target deltas.
 | --- | --- |
 | [00-home-environment.md](00-home-environment.md) | Shell config, dotfiles |
 | [01-agent-setup.md](01-agent-setup.md) | Claude, Cursor CLI, Codex, global rule file, skills, hooks |
-| [02-core-tools.md](02-core-tools.md) | GitHub CLI, jq, Docker |
-| [03-dev-environment.md](03-dev-environment.md) | Node.js/nvm, pnpm, Firecrawl CLI, SDKMAN, Java, Quarkus, Maven |
+| [02-core-tools.md](02-core-tools.md) | GitHub CLI, jq, Docker (VM only) |
+| [03-dev-environment.md](03-dev-environment.md) | Node.js (apt), pnpm, Firecrawl CLI, SDKMAN, Java, Quarkus, Maven |
 | [04-ide+tooling.md](04-ide+tooling.md) | Cursor IDE, keybindings, Java extensions |
 | [06-optional.md](06-optional.md) | Helm, Minikube, kubectl |
 | [07-imaging-tools.md](07-imaging-tools.md) | ImageMagick, sharp, resvg, ffmpeg, Inkscape |
+| [08-auto-updates.md](08-auto-updates.md) | Unattended apt upgrades, needrestart, weekly tooling update |
 
 ## Deltas
 
@@ -25,7 +26,7 @@ Not covered here, because it belongs to one target only:
 | --- | --- |
 | GPU stack, local model runtime | [`../local-llm/`](../local-llm/), host |
 | hypervisor and VM creation | [`../host/05-hypervisor.md`](../host/05-hypervisor.md) |
-| T3 Code server in the VM | [`../vm/03-t3code.md`](../vm/03-t3code.md) |
+| T3 Code server in the VM | [`../vm/04-t3code.md`](../vm/04-t3code.md) |
 | Playwright browser binaries | [`../vm/02-dev-and-agents.md`](../vm/02-dev-and-agents.md) |
 | agent-specific credentials | [`../vm/05-credentials.md`](../vm/05-credentials.md) |
 | personal applications | [`../host/02-applications.md`](../host/02-applications.md) |

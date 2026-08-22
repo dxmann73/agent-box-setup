@@ -40,6 +40,7 @@ glxinfo -B
 Save the baseline:
 
 ```bash
+mkdir -p ~/system-info
 vulkaninfo --summary | tee ~/system-info/vulkan.txt
 glxinfo -B | tee ~/system-info/mesa.txt
 ```
@@ -74,51 +75,7 @@ Suspend reliability is more important for a laptop than many benchmark differenc
 A running agent VM changes suspend behavior. Re-test suspend/resume once the VM from
 [`../vm/`](../vm/) is running continuously (specification §14).
 
-## 4. Power profiles
-
-Check:
-
-```bash
-powerprofilesctl
-powerprofilesctl get
-powerprofilesctl list
-```
-
-Start with Kubuntu's stock power management.
-
-Do not immediately install TLP and several other overlapping power-management tools.
-
-## 5. Battery measurements
-
-Install:
-
-```bash
-sudo apt install -y powertop
-sudo powertop
-```
-
-Measure idle consumption under repeatable conditions before optimizing.
-
-Do not automatically apply every `powertop --auto-tune` recommendation; some power-saving settings
-can affect peripherals.
-
-## 6. Thermals
-
-```bash
-sudo apt install -y lm-sensors
-sudo sensors-detect
-sensors
-```
-
-For monitoring:
-
-```bash
-watch -n 2 sensors
-```
-
-Test temperatures during compilation, gaming and later local-LLM inference.
-
-## 7. External displays and docking
+## 4. External displays and docking
 
 Test the configurations you actually use:
 
@@ -137,7 +94,7 @@ System Settings
 → Display & Monitor
 ```
 
-## 8. Hardware checklist
+## 5. Hardware checklist
 
 - [ ] 96 GB RAM detected
 - [ ] Radeon 890M uses AMDGPU
@@ -154,5 +111,58 @@ System Settings
 - [ ] USB-C works
 - [ ] external display works
 - [ ] dock works if applicable
+
+## 6. Appendix: power and thermal diagnostics (optional)
+
+None of this is setup — it is measurement, and it is only worth doing when something is actually
+wrong (short battery life, fan noise, thermal throttling). Kubuntu's stock power management is the
+starting point and usually the ending point. Skip this section on a first pass.
+
+### Power profiles
+
+Check:
+
+```bash
+powerprofilesctl
+powerprofilesctl get
+powerprofilesctl list
+```
+
+Start with Kubuntu's stock power management.
+
+Do not immediately install TLP and several other overlapping power-management tools.
+
+### Battery measurements
+
+Install:
+
+```bash
+sudo apt install -y powertop
+sudo powertop
+```
+
+Measure idle consumption under repeatable conditions before optimizing.
+
+Do not automatically apply every `powertop --auto-tune` recommendation; some power-saving settings
+can affect peripherals.
+
+### Thermals
+
+```bash
+sudo apt install -y lm-sensors
+sudo sensors-detect
+sensors
+```
+
+For monitoring:
+
+```bash
+watch -n 2 sensors
+```
+
+Test temperatures during compilation, gaming and later local-LLM inference.
+
+Do not stack TLP, `powertop --auto-tune` and the stock power management on top of each other; the
+overlapping settings are what makes power problems hard to diagnose.
 
 Next: [02-applications.md](02-applications.md)

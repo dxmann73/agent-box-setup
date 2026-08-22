@@ -115,13 +115,27 @@ fi
 #               CUSTOM Settings                                   #
 ###################################################################
 
-# NVM setup (if installed)
+# NVM setup (if installed).
+# New machines install Node system-wide from apt instead (see
+# common/03-dev-environment.md) because systemd user services and other
+# non-interactive shells never source this file and so cannot see an nvm Node.
+# This block stays for machines that still have nvm; comment it out once the
+# system Node is in place.
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
 # Add local bin to PATH
 export PATH="$HOME/.local/bin:$PATH"
+
+# User-owned npm global prefix, so "npm install -g" and the weekly update timer
+# need no sudo. See common/03-dev-environment.md.
+export PATH="$HOME/.npm-global/bin:$PATH"
+
+# libvirt: talk to the system daemon, not the per-user session one.
+# Without this, virsh cannot see VMs created under qemu:///system.
+# Host-only in practice; harmless where libvirt is not installed.
+export LIBVIRT_DEFAULT_URI="qemu:///system"
 
 # Editor
 export EDITOR="cursor --wait"

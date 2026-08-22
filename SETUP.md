@@ -5,7 +5,7 @@ and `common/`, then verify here.
 
 ## 00 - Home Environment
 
-- [ ] Shell config files symlinked to home directory
+- [ ] Shell config files symlinked to home directory (including `update-tools.sh`)
 - [ ] Secrets file created from template (`~/.bash_secrets`)
 - [ ] Shell configuration reloaded
 - [ ] Aliases working
@@ -30,22 +30,20 @@ and `common/`, then verify here.
 
 - [ ] GitHub CLI installed and authenticated (`gh auth status`)
 - [ ] jq installed (`jq --version`)
-- [ ] Docker installed (`docker --version`)
+- [ ] Docker installed (`docker --version`) — **VM only**, the `docker` group is root-equivalent
 
 ## 03 - Development Environment
 
-- [ ] Node.js installed (`node --version`)
+- [ ] Node.js installed from apt (`command -v node` is `/usr/bin/node`)
 - [ ] npm working (`command npm --version`)
-- [ ] nvm can switch versions (`nvm list`)
+- [ ] npm global prefix is user-owned (`npm config get prefix` → `~/.npm-global`)
 - [ ] TypeScript compiler (`tsc --version`)
 - [ ] pnpm package manager (`type -a pnpm` then `hash -r && pnpm --version`)
 - [ ] Markdown linting available (`markdownlint --version || npx --yes markdownlint-cli --version`)
 - [ ] ripgrep installed (`rg --version`)
 - [ ] Firecrawl CLI installed and authenticated (`firecrawl --status`)
-- [ ] Playwright Chromium installed for frontend browser tests
-      (`pnpm exec playwright install chromium` in frontend repo)
-- [ ] Linux/WSL Playwright system deps installed (`pnpm exec playwright install-deps chromium` in
-      frontend repo)
+- [ ] Playwright system deps installed (`sudo npx --yes playwright@latest install-deps chromium`)
+- [ ] Playwright Chromium installed (`npx --yes playwright@latest install chromium`)
 - [ ] SDKMAN installed (`sdk version`)
 - [ ] SDKMAN auto-env enabled
 - [ ] Java installed (`java --version`)
@@ -65,6 +63,18 @@ and `common/`, then verify here.
 - [ ] Helm (`helm version`)
 - [ ] Minikube (`minikube version`)
 - [ ] kubectl (`kubectl version --client`)
+
+## 08 - Automatic Updates
+
+- [ ] `unattended-upgrades` and `needrestart` installed
+- [ ] Periodic tasks enabled (`/etc/apt/apt.conf.d/20auto-upgrades`)
+- [ ] Local policy written (`/etc/apt/apt.conf.d/52unattended-upgrades-local`)
+- [ ] Dry run clean (`sudo unattended-upgrade --dry-run`)
+- [ ] `Automatic-Reboot "false"`, pending reboots checked via `/var/run/reboot-required`
+- [ ] Weekly tooling timer enabled (`systemctl --user is-enabled update-tools.timer`)
+- [ ] Lingering enabled (`loginctl enable-linger "$USER"`)
+- [ ] Release upgrades set to `Prompt=lts`
+- [ ] T3 Code excluded from automation, updated on both ends together
 
 ## 07 - Imaging Tools
 

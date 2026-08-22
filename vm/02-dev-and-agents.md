@@ -27,6 +27,7 @@ mkdir -p ~/projects
 | languages/runtimes | [`../common/03-dev-environment.md`](../common/03-dev-environment.md) |
 | editor | [`../common/04-ide+tooling.md`](../common/04-ide+tooling.md) |
 | imaging | [`../common/07-imaging-tools.md`](../common/07-imaging-tools.md) |
+| automatic updates | [`../common/08-auto-updates.md`](../common/08-auto-updates.md) |
 | optional | [`../common/06-optional.md`](../common/06-optional.md) |
 
 Claude Code, Cursor CLI and Codex coexist and run in multiple simultaneous instances. Agent choice
@@ -44,11 +45,22 @@ Agent-worked repositories live in `~/projects` **inside the VM** (specification 
 Agents need a browser for testing and for producing proof of work — screenshots, traces, videos,
 console output (specification §7). Headless is the normal mode.
 
-From a project that has Playwright as a dependency:
+Install the browser and its system libraries once, machine-wide, so any project can drive it
+without repeating the download:
 
 ```bash
-pnpm exec playwright install chromium
-pnpm exec playwright install-deps chromium
+sudo npx --yes playwright@latest install-deps chromium
+npx --yes playwright@latest install chromium
+```
+
+`install-deps` installs apt packages and needs root; `install` downloads the browser into
+`~/.cache/ms-playwright` and must run as your own user, so the two commands differ deliberately.
+Projects that pin their own Playwright version will fetch a matching build on first use.
+
+Verify with a headless screenshot:
+
+```bash
+npx --yes playwright@latest screenshot --viewport-size=1280,720 https://example.com /tmp/pw.png
 ```
 
 The Chromium that Playwright downloads is separate from the host's personal Chrome profile, and
@@ -57,7 +69,7 @@ must stay that way. Never mount the host browser profile into the VM.
 ## 5. Model endpoints
 
 Agents reach the host's local model over the controlled interface described in
-[04-networking.md](04-networking.md). Cloud LLM APIs go out over NAT.
+[03-networking.md](03-networking.md). Cloud LLM APIs go out over NAT.
 
 ## 6. Verification
 
@@ -69,16 +81,17 @@ cd ~/projects/agent-box-setup
 ## 7. Checklist
 
 - [ ] apt development basics installed
+- [ ] unattended security updates active ([`../common/08-auto-updates.md`](../common/08-auto-updates.md))
 - [ ] dotfiles symlinked, secrets file populated
 - [ ] `gh auth status` shows logged in with the VM's own credentials
 - [ ] Docker works without sudo
 - [ ] Node LTS + pnpm (Corepack shim) + tsc/ts-node
 - [ ] markdownlint and firecrawl CLIs available, firecrawl authenticated
-- [ ] Playwright Chromium installed, headless run produces a screenshot
+- [ ] Playwright Chromium installed, headless screenshot of `example.com` succeeds
 - [ ] SDKMAN with auto-env, Java 21, Quarkus, Maven
 - [ ] Claude Code / Cursor CLI / Codex installed and authenticated
 - [ ] skills and hooks symlinked
 - [ ] imaging tools installed
 - [ ] `./verify-setup.sh --vm` passes
 
-Next: [03-t3code.md](03-t3code.md)
+Next: [03-networking.md](03-networking.md)

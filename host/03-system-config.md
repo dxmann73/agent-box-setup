@@ -15,14 +15,16 @@ Filesystem layout, backups, packaging, SSH and firewall on the host.
 │   ├── 32b/
 │   └── moe/
 ├── llm-bench/
-└── vms/                 # VM disk images
+├── system-info/         # hardware baselines from 01-hardware-validation.md
+└── vms/                 # ISOs, domain XML, virtiofs share XML (not the disks)
 ```
-
-Create the LLM directories with:
 
 ```bash
-mkdir -p ~/models ~/llm-bench
+mkdir -p ~/models ~/llm-bench ~/system-info ~/vms
 ```
+
+VM **disk images** live in libvirt's stock pool at `/var/lib/libvirt/images`, not under `$HOME`
+([05-hypervisor.md](05-hypervisor.md) §4). `~/vms/` holds only the text that describes them.
 
 Large downloaded model files are replaceable, so decide whether they are worth including in backups.
 
@@ -40,6 +42,7 @@ Prioritize:
 ~/Dropbox               # if not treated as already-replicated
 ~/projects
 ~/.ssh
+~/vms                   # domain XML and share definitions; small, and painful to rebuild
 important application configuration
 recovery material
 ```
@@ -89,30 +92,30 @@ new key is often preferable.
 
 ## 5. Firewall
 
-Check UFW:
+This is a laptop that joins networks you do not control, so the firewall is on. Not a preference:
 
 ```bash
-sudo ufw status
-```
-
-Enable it if desired:
-
-```bash
+sudo ufw default deny incoming
+sudo ufw default allow outgoing
 sudo ufw enable
 sudo ufw status verbose
 ```
 
-The local model server binds to the host-only VM network interface rather than `0.0.0.0`, so the VM
-can reach inference while the LAN cannot. Rules for that interface are in
-[`../vm/04-networking.md`](../vm/04-networking.md).
+`ufw enable` survives reboots. libvirt installs its own rules for the guest network in separate
+chains, so the NAT bridge keeps working with the firewall up.
+
+The local model server binds to the libvirt bridge `virbr0` rather than `0.0.0.0`, so the VM can
+reach inference while the LAN cannot. Rules for that interface are in
+[`../vm/03-networking.md`](../vm/03-networking.md).
 
 ## 6. System checklist
 
 - [ ] directory layout created
-- [ ] backups configured and restore tested
+- [ ] backups configured and restore tested, including `~/vms` and `/var/lib/libvirt/images`
 - [ ] packaging rule understood
 - [ ] SSH client/server state decided
-- [ ] firewall state decided
+- [ ] `ufw` enabled, default deny incoming
+- [ ] unattended security updates active ([`../common/08-auto-updates.md`](../common/08-auto-updates.md))
 - [ ] local model endpoint not exposed to the LAN
 
 Next: [04-dev-and-agents.md](04-dev-and-agents.md)

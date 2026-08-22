@@ -8,8 +8,9 @@ Correct this file from the real setup.
 client/server application: a server owns the projects, terminals, git state and provider sessions;
 the desktop app, the mobile app and the hosted web app are only clients that attach to it.
 
-Prerequisite: Tailscale is up on the host and on the VM before this file. That setup is documented
-in the `infra` project, `docs/spec/tailscale.md`, not here.
+Prerequisite: the VM's networking is done, [03-networking.md](03-networking.md), including
+Tailscale on the host and the VM. The tailnet itself is documented in the `infra` project,
+`docs/spec/tailscale.md`, not here.
 
 ## Target shape
 
@@ -66,23 +67,34 @@ on the machine you browse from:
 Codex and Claude are enabled by default; the rest are switched on per provider card in
 **Settings**.
 
-Each CLI must be on the server's `PATH` or have an explicit **Binary path** set in Settings — nvm
-installs are the usual reason a CLI is invisible to a service-started server.
+Each CLI must be on the server's `PATH` or have an explicit **Binary path** set in Settings. A
+Node installed by nvm is the usual reason a CLI is invisible to a service-started server, which is
+why [`../common/03-dev-environment.md`](../common/03-dev-environment.md) installs Node system-wide
+from apt instead. Check what the service actually sees:
+
+```bash
+systemd-run --user --pty --wait command -v claude codex
+```
 
 ## 2. Headless server in the VM
 
 The VM has no reason to run the Electron app. Run the server only.
 
+Pin the version to the one the host's desktop app is on
+([`../host/04-dev-and-agents.md`](../host/04-dev-and-agents.md)); `@latest` on both ends at
+different times is how skew happens. Export it once so the commands below read cleanly:
+
 ```bash
-npx t3@latest serve --host "$(tailscale ip -4)"
+export T3_VERSION=<version-from-the-AppImage-filename>
+npx "t3@$T3_VERSION" serve --host "$(tailscale ip -4)"
 ```
 
 `t3 serve` starts the server without opening a browser and prints a connection string, a one-time
-pairing token, a pairing URL and a QR code. Default port is `3773`. `npx t3@latest --help` has the
-full flag reference.
+pairing token, a pairing URL and a QR code. Default port is `3773`.
+`npx "t3@$T3_VERSION" --help` has the full flag reference.
 
-Bind deliberately: the tailnet address, or the host-only adapter address from
-[04-networking.md](04-networking.md). Not `0.0.0.0`, and not `127.0.0.1` if a client outside the VM
+Bind deliberately: the tailnet address, or the libvirt bridge address from
+[03-networking.md](03-networking.md). Not `0.0.0.0`, and not `127.0.0.1` if a client outside the VM
 has to reach it.
 
 ### Make it outlive the terminal
@@ -92,9 +104,12 @@ a systemd user unit at `~/.config/systemd/user/t3code.service`, with lingering e
 starts at VM boot and survives logout:
 
 ```bash
-npx t3@latest service install
-npx t3@latest service status
+npx "t3@$T3_VERSION" service install
+npx "t3@$T3_VERSION" service status
 ```
+
+Run `loginctl enable-linger "$USER"` if the unit does not come up at boot — a user service only
+starts without a login session when lingering is on.
 
 `service update` updates or repairs it, `service uninstall` removes it from startup. The service
 runs a small stable launcher and installs exact versions separately, so a failed update rolls back
@@ -122,13 +137,14 @@ Routes to the VM server, in the order to prefer them:
    the hosted web app at `https://app.t3.codes`, which cannot talk to a plain `http://` backend
    because of mixed-content rules. `tailscale serve --https=443 off` undoes the mapping.
 2. **Tailnet IP** — `http://100.x.y.z:3773`, fine for the desktop app.
-3. **Host-only adapter** — host → VM without touching the LAN.
+3. **libvirt bridge** — `192.168.122.x:3773`, host → VM without touching the LAN
+   ([03-networking.md](03-networking.md)).
 4. **SSH launch** — desktop app, **Settings → Connections → Add environment**, SSH target
    `user@vm-host`. The app starts or reuses a remote server and port-forwards the remote loopback
    port. Needs a compatible `node` in a *non-interactive* shell.
 
 Not wanted: a router port forward. Nothing about this server belongs on the public Internet
-([04-networking.md](04-networking.md)).
+([03-networking.md](03-networking.md)).
 
 ## 4. Version skew
 
@@ -138,8 +154,13 @@ usually the **Update server** button in the app. The manual equivalent on the VM
 version from the warning:
 
 ```bash
-npx t3@<client-version> service update
+npx "t3@<client-version>" service update
 ```
+
+Update the host AppImage and this server in the same sitting, and update `T3_VERSION` in
+`~/.bash_secrets` if you record it there. T3 Code is deliberately excluded from the automatic
+update path ([`../common/08-auto-updates.md`](../common/08-auto-updates.md)) for exactly this
+reason.
 
 Updating restarts the server — let running agents and terminal commands finish first. The project is
 pre-1.0 and ships nightlies daily, so treat skew as routine, not as an incident.
@@ -149,9 +170,9 @@ pre-1.0 and ships nightlies daily, so treat skew as routine, not as an incident.
 Threads default to **Full access** — commands and edits without prompts. That matches YOLO mode
 inside the VM, which is the whole reason the VM exists.
 
-On the **host** environment the calculus is different: there is no VM boundary there. 
-We are slower there and want to use
-**Supervised** or **Auto-accept edits** for host projects, and keep **Full access** for VM threads.
+On the **host** environment the calculus is different: there is no VM boundary there. We are slower
+there and want to use **Supervised** or **Auto-accept edits** for host projects, and keep
+**Full access** for VM threads.
 Modes are per thread; a thread created from another thread inherits its mode.
 
 ## 6. Configuration in this repo
@@ -169,14 +190,15 @@ To capture once the setup is real:
 
 ## 7. Verification
 
-- [ ] `npx t3@latest service status` shows the service installed and running in the VM
+- [ ] `npx "t3@$T3_VERSION" service status` shows the service installed and running in the VM
+- [ ] server and desktop app are on the same pinned version
 - [ ] server survives `logout` and a VM reboot
 - [ ] host desktop app lists both environments in **Settings → Connections**
 - [ ] a project on the host and a project in the VM are both open in the same app window
 - [ ] agent thread runs in the VM environment and edits only VM files
 - [ ] a terminal (dev server) started in the VM environment keeps running after closing the app
 - [ ] two concurrent agents in the VM, client disconnected and reattached, both sessions intact
-- [ ] phone or laptop pairs over the tailnet from outside the LAN
+- [ ] phone or laptop pairs over the tailnet, from the LAN and from outside it
 - [ ] no T3 Code port forwarded on the router
 
-Next: [04-networking.md](04-networking.md)
+Next: [05-credentials.md](05-credentials.md)

@@ -11,27 +11,73 @@ Programming languages and runtimes.
 
 ## 1. Node.js
 
-Install Node.js using nvm for version management (recommended).
+Install Node.js **system-wide from the NodeSource apt repository**, not with nvm.
 
-### Install nvm
+Two reasons, both of which cost real time otherwise:
+
+- **Services cannot see an nvm Node.** nvm lives in `~/.nvm` and is wired up by an interactive
+  `.bashrc`. The T3 Code server runs as a systemd user unit and the provider CLIs it launches
+  inherit that non-interactive environment, so an nvm-installed `node`, `claude` or `codex` is
+  simply not on `PATH` — this is the single most common reason a provider shows up as missing in
+  T3 Code ([`../vm/04-t3code.md`](../vm/04-t3code.md) §1). Cron jobs and SSH-launched environments
+  have the same problem.
+- **Updates.** An apt-installed Node is patched by the same unattended-upgrades run as everything
+  else ([08-auto-updates.md](08-auto-updates.md)). An nvm Node is patched when you remember.
 
 ```bash
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.4/install.sh | bash
-source ~/.bashrc
-nvm install --lts
-nvm use --lts
-nvm alias default lts/*
+sudo apt install -y ca-certificates curl gnupg
+sudo install -m 0755 -d /etc/apt/keyrings
+curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key \
+  | sudo gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
+echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_22.x nodistro main" \
+  | sudo tee /etc/apt/sources.list.d/nodesource.list
+sudo apt update && sudo apt install -y nodejs
 ```
+
+Node 22 is the current LTS and satisfies T3 Code's `^22.16 || ^23.11 || >=24.10`. To move to the
+next LTS later, change `node_22.x` in that file and `apt upgrade`.
 
 **Verify installation:**
 
 ```bash
-nvm --version
-node --version
+node --version                      # v22.x
 npm --version
+command -v node                     # /usr/bin/node, not a path under ~/.nvm
 ```
 
-Expected output: Version numbers for nvm, node (v22.x or similar), and npm
+### A user-owned global prefix
+
+By default an apt-installed Node puts global packages in `/usr/lib/node_modules`, so every
+`npm install -g` needs `sudo` — and an unattended update timer
+([08-auto-updates.md](08-auto-updates.md)) cannot use `sudo` at all. Point the prefix at the home
+directory instead:
+
+```bash
+mkdir -p ~/.npm-global
+npm config set prefix ~/.npm-global
+```
+
+`~/.npm-global/bin` is already on `PATH` via this repo's `.bashrc`
+([00-home-environment.md](00-home-environment.md)). Confirm, in a new shell:
+
+```bash
+npm config get prefix        # /home/you/.npm-global
+npm root -g                  # /home/you/.npm-global/lib/node_modules
+```
+
+Every `npm install -g` below then runs as your own user, and so does the weekly update.
+
+### If you already have nvm
+
+Leaving nvm installed alongside is fine as long as it does not shadow the system Node in
+non-interactive shells. Check with:
+
+```bash
+ssh localhost 'command -v node'     # must print /usr/bin/node
+```
+
+If it prints an `~/.nvm` path, comment the nvm block out of `.bashrc` and reinstall the global CLIs
+against the system Node. Keep nvm only if you actually need to switch Node versions per project.
 
 ---
 
@@ -129,22 +175,25 @@ If authentication is missing, tell the user to set up FIRECRAWL_API_KEY in ~/.ba
 
 ## 6. Playwright Browser Runtime (for frontend browser tests)
 
-Some frontend test suites run in a real browser through Playwright. Install Chromium once so those
-tests do not fail at startup.
-
-From a project that includes Playwright in dependencies (for example `apps/frontend` in `nomap`):
-
-```bash
-pnpm exec playwright install chromium
-```
-
-On Linux/WSL, also install required system packages:
+Some frontend test suites run in a real browser through Playwright. Install Chromium and its system
+libraries once, machine-wide, so those tests do not fail at startup and no project has to repeat
+the download.
 
 ```bash
-pnpm exec playwright install-deps chromium
+sudo npx --yes playwright@latest install-deps chromium
+npx --yes playwright@latest install chromium
 ```
 
-If system packages are already installed, `install-deps` is effectively a no-op.
+`install-deps` installs apt packages and needs root; `install` writes into
+`~/.cache/ms-playwright` and must run as your own user. If the system packages are already there,
+`install-deps` is effectively a no-op.
+
+Inside a project that pins its own Playwright version, `pnpm exec playwright install chromium`
+fetches the matching build; that is a per-project step, not part of machine setup.
+
+This is the agent VM's browser automation path — see
+[`../vm/02-dev-and-agents.md`](../vm/02-dev-and-agents.md) §4 for why it must never touch the
+host's personal Chrome profile.
 
 ---
 
@@ -254,7 +303,6 @@ Run all verification commands:
 
 ```bash
 echo "=== Node.js & npm ===" && \
-nvm --version && \
 node --version && \
 npm --version && \
 echo -e "\n=== Global JS tools ===" && \
@@ -288,7 +336,8 @@ Confirm all tools are working:
 
 - [ ] Node.js installed: `node --version` shows v22.x or similar
 - [ ] npm available: `npm --version` shows version
-- [ ] nvm can switch versions: `nvm list` shows installed versions
+- [ ] `command -v node` is `/usr/bin/node`, in an interactive *and* a non-interactive shell
+- [ ] `npm config get prefix` is `~/.npm-global`, and `npm install -g` needs no `sudo`
 - [ ] TypeScript compiler: `tsc --version` shows version
 - [ ] ts-node runtime: `ts-node --version` shows version
 - [ ] Markdown linting available: `markdownlint --version || npx --yes markdownlint-cli --version`

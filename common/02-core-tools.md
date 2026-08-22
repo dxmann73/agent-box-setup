@@ -61,10 +61,20 @@ Expected output: `jq-1.x` or similar
 
 ## 3. Docker
 
+**VM only.** Membership in the `docker` group is equivalent to root on the machine — the daemon
+will happily bind-mount `/` into a container for any group member. That is an acceptable trade
+inside the agent VM, which is already the boundary and where agents have root anyway
+([`../vm/01-bootstrap.md`](../vm/01-bootstrap.md) §5). It is not an acceptable trade on the host,
+which carries personal data and the model runtime. Install it in the VM; on the host, skip this
+section unless a specific host-scoped task needs it.
+
 ```bash
-sudo apt install docker.io docker-compose -y
+sudo apt install -y docker.io docker-compose-v2
 sudo usermod -aG docker $USER
 ```
+
+`docker-compose-v2` provides `docker compose` as a plugin. The old `docker-compose` package is
+Compose v1, which is Python-based and end-of-life; do not install it.
 
 **Important:** Log out and back in (or restart) for group changes to take effect.
 

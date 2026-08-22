@@ -34,6 +34,7 @@ mkdir -p ~/projects
 | languages/runtimes | [`../common/03-dev-environment.md`](../common/03-dev-environment.md) |
 | editor | [`../common/04-ide+tooling.md`](../common/04-ide+tooling.md) |
 | imaging | [`../common/07-imaging-tools.md`](../common/07-imaging-tools.md) |
+| automatic updates | [`../common/08-auto-updates.md`](../common/08-auto-updates.md) |
 | optional | [`../common/06-optional.md`](../common/06-optional.md) |
 
 Clone this repo into `~/projects` first — the dotfile symlinks point at it.
@@ -42,6 +43,9 @@ Clone this repo into `~/projects` first — the dotfile symlinks point at it.
 
 Applies on the host and not in the VM:
 
+- **Docker is skipped here.** The `docker` group is root-equivalent, and the host holds personal
+  data; container work belongs in the VM ([`../common/02-core-tools.md`](../common/02-core-tools.md)
+  §3)
 - GPU/compute stack and the local model runtime: [`../local-llm/`](../local-llm/)
 - the hypervisor and the agent VM itself: [05-hypervisor.md](05-hypervisor.md)
 - the personal Chrome profile: agents on the host must not drive it either; use a separate
@@ -50,21 +54,49 @@ Applies on the host and not in the VM:
 ### T3 Code on the host
 
 The host runs T3 Code twice over: its own server, for host-scoped work that cannot move into the VM
-(local model runtime, hypervisor, this repo), and the desktop app, which holds both environments, the local one and the VM's headless server.
+(local model runtime, hypervisor, this repo), and the desktop app, which holds both environments,
+the local one and the VM's headless server.
 
 On Linux the desktop app ships as an AppImage only — there is no `.deb`, and the `winget`/Homebrew/
-AUR packages in the upstream README do not apply to Kubuntu:
+AUR packages in the upstream README do not apply to Kubuntu. AppImages need FUSE 2, which Ubuntu no
+longer installs by default; without it the app exits with a "cannot mount AppImage" error that
+looks like a corrupt download:
 
 ```bash
+sudo apt install -y libfuse2t64
+mkdir -p ~/opt/t3code
 gh release download --repo pingdotgg/t3code --pattern '*.AppImage' --dir ~/opt/t3code
 chmod +x ~/opt/t3code/T3-Code-*.AppImage
 ```
 
-Pin the version rather than tracking nightlies: the server in the VM has to match the app
-([`../vm/03-t3code.md`](../vm/03-t3code.md) §4). The CLI needs no separate install — `npx t3@latest`
-uses the Node from [`../common/03-dev-environment.md`](../common/03-dev-environment.md).
+Give it a launcher so it behaves like an installed application:
 
-Then pair the VM environment as described in [`../vm/03-t3code.md`](../vm/03-t3code.md) §3.
+```bash
+mkdir -p ~/.local/share/applications
+cat > ~/.local/share/applications/t3code.desktop <<EOF
+[Desktop Entry]
+Type=Application
+Name=T3 Code
+Exec=$(echo ~/opt/t3code/T3-Code-*.AppImage) %U
+Icon=utilities-terminal
+Categories=Development;
+EOF
+update-desktop-database ~/.local/share/applications
+```
+
+**Pin the version, and update the app and the VM server together.** The server in the VM has to
+match the app ([`../vm/04-t3code.md`](../vm/04-t3code.md) §4), so T3 Code is deliberately left out
+of the automatic update path ([`../common/08-auto-updates.md`](../common/08-auto-updates.md)).
+Record the version you installed:
+
+```bash
+ls ~/opt/t3code/                        # the filename carries the version
+```
+
+The CLI needs no separate install — `npx t3@<that-version>` uses the Node from
+[`../common/03-dev-environment.md`](../common/03-dev-environment.md).
+
+Then pair the VM environment as described in [`../vm/04-t3code.md`](../vm/04-t3code.md) §3.
 
 Applies in the VM and not here:
 
@@ -81,13 +113,14 @@ cd ~/projects/agent-box-setup
 ## 5. Development checklist
 
 - [ ] apt development basics installed
+- [ ] unattended security updates active ([`../common/08-auto-updates.md`](../common/08-auto-updates.md))
 - [ ] dotfiles symlinked, secrets file populated
 - [ ] `gh auth status` shows logged in
-- [ ] Docker works without sudo
 - [ ] Node LTS + pnpm (Corepack shim) + tsc/ts-node
 - [ ] markdownlint and firecrawl CLIs available, firecrawl authenticated
 - [ ] SDKMAN with auto-env, Java 21, Quarkus, Maven
 - [ ] Cursor IDE installed and configured
+- [ ] T3 Code AppImage installed with `libfuse2t64` present, version recorded
 - [ ] Claude Code / Cursor CLI / Codex installed and authenticated
 - [ ] skills and hooks symlinked
 - [ ] imaging tools installed

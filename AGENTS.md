@@ -24,17 +24,17 @@ architecture. Check changes against it.
 2. [host/02-applications.md](host/02-applications.md) - Chrome, Bitwarden, Dropbox, Office, Steam
 3. [host/03-system-config.md](host/03-system-config.md) - Filesystem, backups, SSH, firewall
 4. [host/04-dev-and-agents.md](host/04-dev-and-agents.md) - Toolchain and agents via `common/`
-5. [host/05-hypervisor.md](host/05-hypervisor.md) - VMware Workstation Pro, agent VM
+5. [host/05-hypervisor.md](host/05-hypervisor.md) - KVM/libvirt, agent VM
 
 Then [local-llm/](local-llm/) for the GPU model runtime (host-only).
 
 ### VM
 
-1. [vm/01-bootstrap.md](vm/01-bootstrap.md) - Guest install, passwordless apt/mount, first agent
+1. [vm/01-bootstrap.md](vm/01-bootstrap.md) - Kubuntu guest settings, desktop access, first agent
 2. [vm/02-dev-and-agents.md](vm/02-dev-and-agents.md) - Toolchain and agents via `common/`,
    Playwright
-3. [vm/03-t3code.md](vm/03-t3code.md) - T3 Code server, headless in the VM
-4. [vm/04-networking.md](vm/04-networking.md) - NAT, host model endpoint, Tailscale
+3. [vm/04-t3code.md](vm/04-t3code.md) - T3 Code server, headless in the VM
+4. [vm/03-networking.md](vm/03-networking.md) - NAT, host model endpoint, Tailscale
 5. [vm/05-credentials.md](vm/05-credentials.md) - VM-only credentials
 6. [vm/06-shared-folders.md](vm/06-shared-folders.md) - Narrow host directory shares
 7. [vm/07-snapshots.md](vm/07-snapshots.md) - Persistence, snapshots, rebuild test
@@ -50,6 +50,8 @@ Then [local-llm/](local-llm/) for the GPU model runtime (host-only).
 6. [common/06-optional.md](common/06-optional.md) - Helm, cloud CLIs, extras
 7. [common/07-imaging-tools.md](common/07-imaging-tools.md) - ImageMagick, sharp, resvg, optional
    image tools
+8. [common/08-auto-updates.md](common/08-auto-updates.md) - Unattended apt upgrades, needrestart,
+   weekly tooling update timer
 
 Voice tooling is retired: see [host/voice-setup.old/](host/voice-setup.old/).
 
@@ -64,7 +66,7 @@ This will verify:
 
 - Agent binaries (Claude Code, Cursor CLI Agent, Cursor IDE)
 - Home directory symlinks (`.bashrc`, `.bash_aliases`, `.profile`, `.gitconfig`, `.bash_secrets`, `ua.sh`,
-  `.markdownlint.json`)
+  `update-tools.sh`, `.markdownlint.json`)
 - Agent configuration and symlinks
 - Caveman hooks (Codex, Cursor)
 - Skills setup
@@ -118,6 +120,7 @@ The `configs/user-home-directory/` contains dotfiles that must be **symlinked** 
 - `.profile` - User profile settings
 - `.gitconfig` - Git configuration
 - `ua.sh` - Update-all script: fetch/pull all git repos under a root dir
+- `update-tools.sh` - Weekly tooling update: npm globals, agent CLIs, SDKMAN
 
 The repo root `.markdownlint.json` is symlinked to `~/projects/.markdownlint.json`.
 

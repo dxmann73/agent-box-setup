@@ -21,8 +21,8 @@ Kubuntu host                                  ← host/
 ├── local model runtime on the GPU            ← local-llm/
 ├── development toolchain + coding agents     ← common/
 ├── T3 Code desktop app + local server        ← host/04-dev-and-agents.md
-└── VMware Workstation Pro
-    └── agent VM                              ← vm/
+└── KVM/libvirt                               ← host/05-hypervisor.md
+    └── agent VM (Kubuntu desktop)            ← vm/
         ├── T3 Code server + many agents
         ├── development toolchain + agents    ← common/
         ├── projects agents work on
@@ -91,6 +91,16 @@ cd ~/projects/agent-box-setup
 ```
 
 Detailed checklist with troubleshooting: [SETUP.md](./SETUP.md).
+
+## Staying current
+
+Both machines patch themselves: `unattended-upgrades` for everything apt reaches (including Chrome,
+Docker, Node and the other third-party repos), a weekly user timer for the npm-installed agent CLIs.
+Set up per machine in [common/08-auto-updates.md](common/08-auto-updates.md).
+
+Two things stay manual on purpose: **T3 Code**, because the desktop app and the VM server have to
+move together, and **Ubuntu release upgrades**, because they move the GPU stack under the local
+model and the libvirt version under the VM.
 
 ## Synchronizing settings
 

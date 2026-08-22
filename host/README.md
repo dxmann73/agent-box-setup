@@ -21,11 +21,14 @@ Target system:
 
 | File | Scope |
 | --- | --- |
-| [01-hardware-validation.md](01-hardware-validation.md) | AMDGPU, Vulkan/Mesa, suspend, power, thermals, displays |
+| [01-hardware-validation.md](01-hardware-validation.md) | AMDGPU, Vulkan/Mesa, suspend, displays (power/thermal diagnostics in an appendix) |
 | [02-applications.md](02-applications.md) | Chrome, Bitwarden, Dropbox, VLC, Office, Steam, dictation |
 | [03-system-config.md](03-system-config.md) | Filesystem layout, backups, packaging, SSH, firewall |
 | [04-dev-and-agents.md](04-dev-and-agents.md) | Toolchain and agents via [`../common/`](../common/) |
-| [05-hypervisor.md](05-hypervisor.md) | VMware Workstation Pro, agent VM creation |
+| [05-hypervisor.md](05-hypervisor.md) | KVM/libvirt, agent VM creation |
+
+Automatic patching applies to both machines and lives in
+[`../common/08-auto-updates.md`](../common/08-auto-updates.md); do it as part of step 04.
 
 Then:
 
@@ -42,8 +45,8 @@ Kubuntu host
 ├── personal apps and data (Chrome profile, Dropbox, documents, Steam)
 ├── local model runtime (llama.cpp, GPU-attached)
 ├── host toolchain + coding agents (host-scoped work)
-└── VMware Workstation Pro
-    └── agent VM  ── T3 Code server, agents, projects, Playwright
+└── KVM/libvirt (qemu-kvm, virt-manager)
+    └── agent VM  ── Kubuntu desktop, T3 Code server, agents, projects, Playwright
 ```
 
 ## Why Kubuntu

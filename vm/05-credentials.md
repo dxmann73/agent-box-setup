@@ -43,7 +43,7 @@ Tokens live in `~/.bash_secrets`, symlinked from
 `.bash_secrets.CHANGE-ME`; the real file is never committed.
 
 Typical contents: model provider keys, `FIRECRAWL_API_KEY`, `HF_TOKEN`, the local model base URL
-from [04-networking.md](04-networking.md).
+from [03-networking.md](03-networking.md).
 
 Hugging Face token: create at <https://huggingface.co/settings/tokens> with Read access, which is
 enough for downloads.
