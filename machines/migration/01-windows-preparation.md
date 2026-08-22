@@ -69,12 +69,12 @@ Do not hibernate Windows and subsequently mount its system volume read/write fro
 
 Local models and Steam games consume substantial storage.
 
-| Use | Suggested Linux space |
-| --- | --- |
-| Evaluation | 150–200 GB |
-| Normal primary OS | 300–500 GB |
-| Gaming + local LLMs | 500 GB+ |
-| Large game/model collection | 1 TB+ if available |
+| Use                         | Suggested Linux space |
+| --------------------------- | --------------------- |
+| Evaluation                  | 150–200 GB            |
+| Normal primary OS           | 300–500 GB            |
+| Gaming + local LLMs         | 500 GB+               |
+| Large game/model collection | 1 TB+ if available    |
 
 A 32B GGUF may consume roughly 20 GB, while large MoE models can consume 40–80+ GB each.
 
@@ -96,7 +96,12 @@ Leave the resulting area **unallocated**. Do not create Linux filesystems from W
 
 ## 7. Download Kubuntu
 
-Get Kubuntu 26.04 LTS from <https://kubuntu.org/getkubuntu/>
+Get Kubuntu 26.04 LTS from <https://kubuntu.org/getkubuntu/> — pick the 64-bit desktop ISO (~6 GB).
+Download `SHA256SUMS` from the same page.
+
+The repo standard is Kubuntu (KDE). Plain Ubuntu 26.04 LTS from
+<https://ubuntu.com/download/desktop> works too, but then the desktop-specific notes in
+[02-kubuntu-installation.md](02-kubuntu-installation.md) and `../host/` refer to KDE, not GNOME.
 
 Verify the ISO's SHA-256 checksum against the official value.
 
@@ -112,7 +117,15 @@ Linux:
 sha256sum kubuntu-*.iso
 ```
 
+Compare the hash to the matching line in `SHA256SUMS`. On mismatch, delete the ISO and download
+again — never flash an unverified image.
+
 ## 8. Create the installer USB
+
+USB stick: 8 GB minimum, 16 GB recommended.
+
+**Flashing erases the entire stick.** Confirm the drive letter and size shown by the tool matches
+the stick you intend to write, not an external disk or backup drive, before starting.
 
 Suitable tools:
 
@@ -120,7 +133,35 @@ Suitable tools:
 - balenaEtcher: <https://etcher.balena.io/>
 - Ventoy: <https://www.ventoy.net/>
 
+Rufus is portable — the downloaded `.exe` runs without installation. Settings:
+
+```text
+Device:             the USB stick (verify letter and size)
+Boot selection:     SELECT -> the downloaded ISO
+Partition scheme:   GPT
+Target system:      UEFI (non-CSM)
+File system:        FAT32 (default)
+```
+
+Then START, and choose "Write in ISO Image mode" when prompted.
+
 Use GPT/UEFI rather than legacy BIOS/CSM.
+
+balenaEtcher needs no settings — select image, select drive, flash. Ventoy is installed onto the
+stick once, after which ISOs are copied on as ordinary files and several can coexist.
+
+## 9. Boot the installer USB
+
+Leave the stick plugged in and reboot. During the vendor splash, press the one-time boot menu key.
+On XMG laptops this is usually `F7`; `F2` or `Del` open the firmware setup instead. If the timing is
+missed, let Windows start and retry.
+
+In the boot menu, choose the entry for the stick whose name is prefixed `UEFI:`. An entry without
+that prefix is the legacy/CSM path — back out and pick the UEFI one, otherwise the install lands in
+BIOS mode and will not coexist with the UEFI Windows install.
+
+If the stick does not appear at all, check that Fast Startup is disabled (section 4) and that a full
+shutdown was performed, then re-enter the firmware and confirm CSM is disabled.
 
 ## Checklist
 
@@ -132,5 +173,6 @@ Use GPT/UEFI rather than legacy BIOS/CSM.
 - [ ] unallocated space created via Disk Management
 - [ ] Kubuntu ISO downloaded and checksum verified
 - [ ] bootable UEFI installer USB created
+- [ ] machine boots the stick via the `UEFI:` boot-menu entry
 
 Next: [02-kubuntu-installation.md](02-kubuntu-installation.md)
