@@ -1,7 +1,7 @@
 # Agent Box Setup Checklist
 
-Master verification checklist for new machine setup. Follow the numbered guides in `host/`, `vm/`
-and `common/`, then verify here.
+Master verification checklist for new machine setup. Follow the numbered guides in
+`machines/host/`, `machines/vm/` and `machines/common/` plus `agents/`, then verify here.
 
 ## 00 - Home Environment
 
@@ -22,9 +22,9 @@ and `common/`, then verify here.
 - [ ] Codex hooks symlinked to `~/.codex/hooks.json`
 - [ ] Cursor hooks symlinked (`~/.cursor/hooks.json`, `~/.cursor/hooks/`) and caveman hook returns
       `additional_context`
-- [ ] `~/.agents` symlinked to repo config (`~/projects/agent-box-setup/configs/agents`)
+- [ ] `~/.agents` symlinked to repo config (`~/projects/agent-box-setup/agents`)
 - [ ] Skills symlinked (`~/.claude/skills/`, `~/.cursor/skills/`, `~/.agents/skills/`) and verified
-      against `configs/agents/skills/`
+      against `agents/skills/`
 
 ## 02 - Core Tools
 
@@ -58,7 +58,7 @@ and `common/`, then verify here.
 - [ ] Java extensions installed (if applicable)
 - [ ] Settings profile exported
 
-## 06 - Optional (check what's installed; see `common/06-optional.md`)
+## 06 - Optional (check what's installed; see `machines/common/06-optional.md`)
 
 - [ ] Helm (`helm version`)
 - [ ] Minikube (`minikube version`)

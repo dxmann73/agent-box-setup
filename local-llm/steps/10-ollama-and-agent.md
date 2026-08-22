@@ -60,7 +60,7 @@ Ollama exposes an OpenAI-compatible API at `http://localhost:11434/v1`:
 <https://docs.ollama.com/api/openai-compatibility>
 
 Add a local provider to the Codex configuration. In this repo that file is
-`configs/agents/codex/config.toml`, symlinked to `~/.codex/config.toml` — edit the repo copy, not
+`agents/codex/config.toml`, symlinked to `~/.codex/config.toml` — edit the repo copy, not
 the symlink target.
 
 ```toml

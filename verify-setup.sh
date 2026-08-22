@@ -144,7 +144,7 @@ echo ""
 
 # Skills
 echo "=== Skills ==="
-skills_source_dir="$(dirname "$0")/configs/agents/skills"
+skills_source_dir="$(dirname "$0")/agents/skills"
 expected_skills=()
 for skill_path in "$skills_source_dir"/*/; do
     [ -d "$skill_path" ] || continue
@@ -204,7 +204,7 @@ if node --version >/dev/null 2>&1; then
     case "$(command -v node)" in
         "$HOME"/.nvm/*)
             echo "⊗ Node comes from nvm; systemd user services and non-interactive shells will not see it"
-            echo "  (see common/03-dev-environment.md — install Node from apt instead)"
+            echo "  (see machines/common/03-dev-environment.md — install Node from apt instead)"
             ;;
     esac
 else
@@ -272,7 +272,7 @@ else
 fi
 echo ""
 
-# Automatic updates (see common/08-auto-updates.md)
+# Automatic updates (see machines/common/08-auto-updates.md)
 echo "=== Automatic Updates ==="
 if dpkg -s unattended-upgrades >/dev/null 2>&1; then
     echo "✓ unattended-upgrades installed"
@@ -288,7 +288,7 @@ fi
 if [ -f /etc/apt/apt.conf.d/52unattended-upgrades-local ]; then
     echo "✓ local unattended-upgrades policy present"
 else
-    echo "✗ /etc/apt/apt.conf.d/52unattended-upgrades-local missing (see common/08-auto-updates.md)"
+    echo "✗ /etc/apt/apt.conf.d/52unattended-upgrades-local missing (see machines/common/08-auto-updates.md)"
 fi
 if systemctl is-enabled --quiet apt-daily-upgrade.timer 2>/dev/null; then
     echo "✓ apt-daily-upgrade.timer enabled"
@@ -299,12 +299,12 @@ dpkg -s needrestart >/dev/null 2>&1 && echo "✓ needrestart installed" || echo 
 if [ -L ~/update-tools.sh ] || [ -x ~/update-tools.sh ]; then
     echo "✓ update-tools.sh present"
 else
-    echo "✗ ~/update-tools.sh missing (see common/00-home-environment.md)"
+    echo "✗ ~/update-tools.sh missing (see machines/common/00-home-environment.md)"
 fi
 if systemctl --user is-enabled --quiet update-tools.timer 2>/dev/null; then
     echo "✓ weekly tooling update timer enabled"
 else
-    echo "✗ update-tools.timer not enabled (see common/08-auto-updates.md section 3)"
+    echo "✗ update-tools.timer not enabled (see machines/common/08-auto-updates.md section 3)"
 fi
 if [ -f /var/run/reboot-required ]; then
     echo "⊗ reboot pending: $(tr '\n' ' ' < /var/run/reboot-required.pkgs 2>/dev/null)"
@@ -340,7 +340,7 @@ command -v inkscape >/dev/null 2>&1 && echo "✓ inkscape" || echo "✗ inkscape
 command -v gm >/dev/null 2>&1 && echo "✓ graphicsmagick (gm)" || echo "✗ graphicsmagick (gm) missing"
 echo ""
 
-# Host-only: GPU stack and local model runtime (see host/01-hardware-validation.md, local-llm/)
+# Host-only: GPU stack and local model runtime (see machines/host/01-hardware-validation.md, local-llm/)
 if [ "$PROFILE" = "host" ]; then
     echo "=== Host: GPU and local model ==="
     if lspci -k 2>/dev/null | grep -A4 -E 'VGA|Display' | grep -q 'amdgpu'; then
@@ -360,24 +360,24 @@ if [ "$PROFILE" = "host" ]; then
     if [ "$LIBVIRT_DEFAULT_URI" = "qemu:///system" ]; then
         echo "✓ LIBVIRT_DEFAULT_URI=qemu:///system"
     else
-        echo "✗ LIBVIRT_DEFAULT_URI is '${LIBVIRT_DEFAULT_URI:-unset}'; virsh will address the session daemon (see host/05-hypervisor.md section 3)"
+        echo "✗ LIBVIRT_DEFAULT_URI is '${LIBVIRT_DEFAULT_URI:-unset}'; virsh will address the session daemon (see machines/host/05-hypervisor.md section 3)"
     fi
     if command -v virsh >/dev/null 2>&1 && virsh -c qemu:///system list >/dev/null 2>&1; then
         echo "✓ libvirt reachable without sudo"
         if virsh -c qemu:///system dominfo agent-vm >/dev/null 2>&1; then
             echo "✓ agent-vm defined: $(virsh -c qemu:///system domstate agent-vm 2>/dev/null)"
             if virsh -c qemu:///system dumpxml agent-vm 2>/dev/null | grep -q pflash; then
-                echo "⊗ agent-vm boots UEFI; BIOS is assumed by the snapshot/backup steps (host/05-hypervisor.md section 5)"
+                echo "⊗ agent-vm boots UEFI; BIOS is assumed by the snapshot/backup steps (machines/host/05-hypervisor.md section 5)"
             else
                 echo "✓ agent-vm boots BIOS, no NVRAM file to track"
             fi
             if virsh -c qemu:///system dumpxml agent-vm 2>/dev/null | grep -q "access mode='shared'"; then
                 echo "✓ shared memory backing present (virtiofs shares can attach)"
             else
-                echo "✗ no shared memory backing; virtiofs shares will not attach (host/05-hypervisor.md section 5)"
+                echo "✗ no shared memory backing; virtiofs shares will not attach (machines/host/05-hypervisor.md section 5)"
             fi
         else
-            echo "⊗ agent-vm not defined yet (see host/05-hypervisor.md)"
+            echo "⊗ agent-vm not defined yet (see machines/host/05-hypervisor.md)"
         fi
     else
         echo "⊗ libvirt/KVM not usable (sudo apt install -y qemu-kvm libvirt-daemon-system virtinst; usermod -aG libvirt,kvm)"
@@ -390,13 +390,13 @@ if [ "$PROFILE" = "host" ]; then
     echo ""
 fi
 
-# VM-only: sandbox plumbing (see vm/01-bootstrap.md, vm/06-shared-folders.md)
+# VM-only: sandbox plumbing (see machines/vm/01-bootstrap.md, machines/vm/06-shared-folders.md)
 if [ "$PROFILE" = "vm" ]; then
     echo "=== VM: sandbox plumbing ==="
     if [ -f /etc/sudoers.d/agent-nopasswd ]; then
         echo "✓ passwordless sudo configured (agent user is root in the VM, by design)"
     else
-        echo "✗ /etc/sudoers.d/agent-nopasswd missing (see vm/01-bootstrap.md)"
+        echo "✗ /etc/sudoers.d/agent-nopasswd missing (see machines/vm/01-bootstrap.md)"
     fi
     if systemctl is-active --quiet ssh; then
         echo "✓ sshd running (ssh agent-vm from the host)"
@@ -416,7 +416,7 @@ if [ "$PROFILE" = "vm" ]; then
     if systemctl is-active --quiet sddm; then
         echo "✓ Plasma display manager running"
     else
-        echo "⊗ sddm not active (a desktop guest is expected, see vm/01-bootstrap.md)"
+        echo "⊗ sddm not active (a desktop guest is expected, see machines/vm/01-bootstrap.md)"
     fi
     if systemctl is-active --quiet spice-vdagentd; then
         echo "✓ spice-vdagent active (SPICE console clipboard)"
@@ -424,7 +424,7 @@ if [ "$PROFILE" = "vm" ]; then
         echo "✗ spice-vdagentd not active (sudo apt install -y spice-vdagent)"
     fi
     if dpkg -s krdp >/dev/null 2>&1; then
-        echo "⊗ krdp installed; this setup deliberately exposes no RDP listener (see vm/01-bootstrap.md section 3)"
+        echo "⊗ krdp installed; this setup deliberately exposes no RDP listener (see machines/vm/01-bootstrap.md section 3)"
     fi
     virtiofs_mounts=$(findmnt -t virtiofs -no TARGET 2>/dev/null | tr '\n' ' ')
     if [ -n "$virtiofs_mounts" ]; then
@@ -435,7 +435,7 @@ if [ "$PROFILE" = "vm" ]; then
     if [ -d ~/.ssh ] && [ -n "$(ls -A ~/.ssh 2>/dev/null)" ]; then
         echo "✓ VM has its own ~/.ssh contents"
     else
-        echo "✗ no SSH key in the VM (see vm/05-credentials.md)"
+        echo "✗ no SSH key in the VM (see machines/vm/05-credentials.md)"
     fi
     echo ""
 fi
@@ -456,4 +456,4 @@ echo "  ✓ = Installed and configured"
 echo "  ✗ = Missing (required)"
 echo "  ⊗ = Not installed (optional)"
 echo ""
-echo "To fix missing components, see SETUP.md, common/*.md and $PROFILE/*.md"
+echo "To fix missing components, see SETUP.md, agents/README.md, machines/common/*.md and machines/$PROFILE/*.md"

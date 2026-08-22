@@ -1,5 +1,5 @@
 # Secrets - never check in actual tokens
-configs/user-home-directory/.bash_secrets
+user-home/.bash_secrets
 CLAUDE.md
 .quarkus/
 .firecrawl/

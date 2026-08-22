@@ -16,15 +16,15 @@ Everything in this repo should be traceable back to it.
 ## Two targets, one toolchain
 
 ```text
-Kubuntu host                                  ← host/
+Kubuntu host                                  ← machines/host/
 ├── personal apps and data (Chrome, Dropbox, Steam, documents)
 ├── local model runtime on the GPU            ← local-llm/
-├── development toolchain + coding agents     ← common/
-├── T3 Code desktop app + local server        ← host/04-dev-and-agents.md
-└── KVM/libvirt                               ← host/05-hypervisor.md
-    └── agent VM (Kubuntu desktop)            ← vm/
+├── development toolchain + coding agents     ← machines/common/ + agents/
+├── T3 Code desktop app + local server        ← machines/host/04-dev-and-agents.md
+└── KVM/libvirt                               ← machines/host/05-hypervisor.md
+    └── agent VM (Kubuntu desktop)            ← machines/vm/
         ├── T3 Code server + many agents
-        ├── development toolchain + agents    ← common/
+        ├── development toolchain + agents    ← machines/common/ + agents/
         ├── projects agents work on
         └── Playwright / headless Chromium
 ```
@@ -39,27 +39,30 @@ host, with the app holding both environments at once.
 | Directory | Scope | Disposable |
 | --- | --- | --- |
 | [docs/specification/](docs/specification/) | What the setup has to achieve | no |
-| [common/](common/) | Install guides used by both host and VM | no |
-| [host/](host/) | Ubuntu host: hardware, personal apps, system config, hypervisor | no |
-| [vm/](vm/) | Agent VM: bootstrap, agents, T3 Code, networking, credentials, snapshots | no |
+| [agents/](agents/) | Agent CLIs: instructions, config, shared skills | no |
+| [machines/common/](machines/common/) | Install guides used by both host and VM | no |
+| [machines/host/](machines/host/) | Ubuntu host: hardware, personal apps, system config, hypervisor | no |
+| [machines/vm/](machines/vm/) | Agent VM: bootstrap, agents, T3 Code, networking, credentials, snapshots | no |
 | [local-llm/](local-llm/) | llama.cpp, models, benchmarks, ROCm — host-only | no |
-| [configs/](configs/) | Dotfiles, agent configuration, skills | no |
-| [migration/](migration/) | One-time Windows → Kubuntu move | **yes** |
+| [user-home/](user-home/) | Dotfiles and scripts symlinked into `~` | no |
+| [machines/migration/](machines/migration/) | One-time Windows → Kubuntu move | **yes** |
 
-`migration/` is deliberately self-contained so it can be deleted once Windows is gone. Keep it that
-way — no Windows or dual-boot instruction may appear outside it:
+`machines/migration/` is deliberately self-contained so it can be deleted once Windows is gone. Keep
+it that way — no Windows or dual-boot instruction may appear outside it:
 
 ```bash
-grep -rilE 'bitlocker|fast startup|dual.?boot|windows partition|shrink windows|ntfs' host/ vm/ common/   # must stay empty
+# must stay empty
+grep -rilE 'bitlocker|fast startup|dual.?boot|windows partition|shrink windows|ntfs' \
+  machines/host/ machines/vm/ machines/common/
 ```
 
 ## Where to start
 
 | Situation | Start at |
 | --- | --- |
-| Coming from Windows | [migration/](migration/) |
-| Fresh Kubuntu host | [host/](host/) |
-| New agent VM | [host/05-hypervisor.md](host/05-hypervisor.md) then [vm/](vm/) |
+| Coming from Windows | [machines/migration/](machines/migration/) |
+| Fresh Kubuntu host | [machines/host/](machines/host/) |
+| New agent VM | [machines/host/05-hypervisor.md](machines/host/05-hypervisor.md) then [machines/vm/](machines/vm/) |
 | Local model work | [local-llm/](local-llm/) |
 
 ## Scope: box-level vs. project-level
@@ -68,14 +71,14 @@ The repo name is historical. Not everything in here is machine setup — two dif
 side by side:
 
 - **Box-level** — installed once per machine: shell/dotfiles, agent binaries, Docker, Node, Java,
-  IDE. These are the `common/`, `host/` and `vm/` guides.
+  IDE. These are the `machines/` guides plus `agents/` and `user-home/`.
 - **Project-level** — belongs to whatever you are working on, and is only wired globally because
-  there is no better home yet: skills in `configs/agents/skills/` and language toolchains that only
+  there is no better home yet: skills in `agents/skills/` and language toolchains that only
   some projects need (SDKMAN, Quarkus, pnpm).
 
 Project-level items are installed globally (symlinked into `~/.claude/skills`, `~/.cursor/skills`)
 as an interim measure so every project gets them. The intended end state is packaging them per
-project type — see the "project setup" entry in [TODOs.md](./TODOs.md). When adding something,
+project type — see the "project setup" entry in [ROADMAP.md](./ROADMAP.md). When adding something,
 decide which scope it belongs to first.
 
 ## Usage
@@ -96,7 +99,7 @@ Detailed checklist with troubleshooting: [SETUP.md](./SETUP.md).
 
 Both machines patch themselves: `unattended-upgrades` for everything apt reaches (including Chrome,
 Docker, Node and the other third-party repos), a weekly user timer for the npm-installed agent CLIs.
-Set up per machine in [common/08-auto-updates.md](common/08-auto-updates.md).
+Set up per machine in [machines/common/08-auto-updates.md](machines/common/08-auto-updates.md).
 
 Two things stay manual on purpose: **T3 Code**, because the desktop app and the VM server have to
 move together, and **Ubuntu release upgrades**, because they move the GPU stack under the local
