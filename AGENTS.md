@@ -92,13 +92,17 @@ This will verify:
 - Every guide belongs to exactly one target: `machines/host/`, `machines/vm/`, or `machines/common/`
   when it applies to both. Agent-CLI instructions live in `agents/<agent>/README.md`. Classify
   before adding.
-- `machines/migration/` is disposable. No dual-boot/migration instruction may live outside it;
-  nothing outside it may depend on it. WSL notes are exempt — WSL is a supported host variant, not
-  migration content. This must stay empty:
+- `machines/migration/` and `machines/wsl/` are disposable. No dual-boot, migration or WSL
+  instruction may live outside them; nothing outside them may depend on them. The guides elsewhere
+  describe the native Linux case only and may point into these directories, never the reverse. Both
+  greps must stay empty, except for the exemptions `machines/wsl/README.md` itself records:
 
   ```bash
   grep -rilE 'bitlocker|fast startup|dual.?boot|windows partition|shrink windows|ntfs' \
     machines/host/ machines/vm/ machines/common/
+  grep -rnE 'WSL|/mnt/c|winget install|DrvFs' \
+    machines/host/ machines/vm/ machines/common/ agents/ user-home/ \
+    --exclude-dir=skills --exclude-dir=voice-setup.old | grep -v 'wsl/README.md'
   ```
 
 - Two scopes live in this repo: **box-level** (machine setup under `machines/`, plus `agents/` and
@@ -139,6 +143,7 @@ See `machines/common/00-home-environment.md` for the full symlink commands.
   - `machines/host/` - Ubuntu host: hardware, personal apps, system config, hypervisor
   - `machines/vm/` - Agent VM: bootstrap, agents, T3 Code, networking, credentials, snapshots
   - `machines/migration/` - One-time Windows → Kubuntu move; deletable
+  - `machines/wsl/` - Deltas for the Windows + WSL host variant; deletable
 - `local-llm/` - llama.cpp, models, benchmarks, ROCm (host-only)
 - `user-home/` - Dotfiles and scripts symlinked into `~` on every machine
 - `verify-setup.sh` - Automated verification script (`--host` / `--vm`)

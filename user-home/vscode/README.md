@@ -17,13 +17,11 @@ mechanism** — these files exist to bootstrap a fresh box, document intent, and
    Sync covers settings, keybindings, extensions, snippets, UI state and profiles.
 2. If sync is unavailable, copy `settings.json` and `keybindings.json` into the user config
    directory manually:
-   - Linux native: `~/.config/Code/User/`
-   - WSL (UI runs on Windows): `%APPDATA%\Code\User\`
+   `~/.config/Code/User/`
 3. Open each project once so workspace extension recommendations install.
 
-Note: on WSL the UI settings live on the Windows side, while extensions split between
-`~/.vscode-server/extensions` (remote) and `%APPDATA%\Code\User` / `%USERPROFILE%\.vscode\extensions`
-(UI). Symlinking from WSL into `/mnt/c` does not work on DrvFs, so WSL uses a copy, not a symlink.
+Paths differ under [`../../machines/wsl/README.md`](../../machines/wsl/README.md) (WSL host
+variant).
 
 ## Known gap
 

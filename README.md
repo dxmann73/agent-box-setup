@@ -46,9 +46,11 @@ host, with the app holding both environments at once.
 | [local-llm/](local-llm/) | llama.cpp, models, benchmarks, ROCm — host-only | no |
 | [user-home/](user-home/) | Dotfiles and scripts symlinked into `~` | no |
 | [machines/migration/](machines/migration/) | One-time Windows → Kubuntu move | **yes** |
+| [machines/wsl/](machines/wsl/) | Deltas for the Windows + WSL host variant | **yes** |
 
-`machines/migration/` is deliberately self-contained so it can be deleted once Windows is gone. Keep
-it that way — no Windows or dual-boot instruction may appear outside it:
+Both are deliberately self-contained so they can be deleted once Windows is gone. Keep them that
+way — no Windows, dual-boot or WSL instruction may appear outside them, beyond the touchpoints
+`machines/wsl/README.md` lists:
 
 ```bash
 # must stay empty
@@ -61,6 +63,7 @@ grep -rilE 'bitlocker|fast startup|dual.?boot|windows partition|shrink windows|n
 | Situation | Start at |
 | --- | --- |
 | Coming from Windows | [machines/migration/](machines/migration/) |
+| Staying on Windows + WSL for now | [machines/wsl/](machines/wsl/) |
 | Fresh Kubuntu host | [machines/host/](machines/host/) |
 | New agent VM | [machines/host/05-hypervisor.md](machines/host/05-hypervisor.md) then [machines/vm/](machines/vm/) |
 | Local model work | [local-llm/](local-llm/) |

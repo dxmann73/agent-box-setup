@@ -4,14 +4,11 @@ Set up shell environment and user configuration files.
 
 ## Prerequisites
 
-- Fresh Ubuntu installation (or WSL Ubuntu)
+- Fresh Ubuntu installation
 - This repository cloned to local machine
 - Access to the configs directory
 
-## WSL Note
-
-If running on WSL, keep your projects on the WSL filesystem (`\\wsl$\<distro>\home\<user>\`) for a ~10x build speed
-improvement over the Windows filesystem.
+On the WSL host variant, see [`../wsl/README.md`](../wsl/README.md) first.
 
 ---
 

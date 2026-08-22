@@ -1,8 +1,6 @@
 # Codex CLI
 
-[Codex CLI](https://developers.openai.com/codex/cli) is OpenAI's terminal-based coding agent. Run it
-in WSL as per the
-[WSL setup guide](https://developers.openai.com/codex/windows#windows-subsystem-for-linux).
+[Codex CLI](https://developers.openai.com/codex/cli) is OpenAI's terminal-based coding agent.
 
 **Prerequisites:** ChatGPT Plus, Pro, Business, Edu, or Enterprise plan. Node.js 22+ via nvm.
 
@@ -81,7 +79,5 @@ ln -sf ~/projects/agent-box-setup/agents/codex/hooks.json ~/.codex/hooks.json
 
 The `config.toml` symlink already enables `[features] hooks = true` and caveman plugin. Caveman
 fires each session via `SessionStart`.
-
-**Note:** Codex hooks are disabled on Windows; use `$caveman` to activate manually there.
 
 **Next:** [../README.md#skills](../README.md#skills)

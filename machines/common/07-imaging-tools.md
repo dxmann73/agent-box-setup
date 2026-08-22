@@ -11,8 +11,8 @@ CLI and scriptable image tools for icons, screenshots, asset generation, and con
 
 ## 1. ImageMagick (apt)
 
-ImageMagick provides CLI image conversion and inspection. On newer releases, the command is usually `magick`; on some
-Ubuntu/WSL installs (ImageMagick 6), `convert` is provided instead.
+ImageMagick provides CLI image conversion and inspection. On newer releases the command is usually
+`magick`; where apt still ships ImageMagick 6, `convert` is provided instead.
 
 ```bash
 sudo apt install -y imagemagick

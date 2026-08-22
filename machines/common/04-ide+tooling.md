@@ -6,6 +6,9 @@ VS Code is the primary editor. Settings and keybindings live in
 Cursor **CLI** (`cursor-agent`) is a separate product, not an editor — it is installed from
 [`../../agents/cursor/README.md`](../../agents/cursor/README.md).
 
+This guide describes the native Linux install. VS Code runs on the Windows side instead under
+[`../wsl/README.md`](../wsl/README.md) (WSL host variant).
+
 ## Prerequisites
 
 - Completed `02-core-tools.md`
@@ -41,24 +44,6 @@ Expected: a version number, a commit hash and `x64`.
 
 Tell your human to pin VS Code to the Dash.
 
-### WSL host variant
-
-VS Code runs on the Windows side and attaches into WSL over the Remote-WSL extension. Install it on
-Windows (`winget install Microsoft.VisualStudioCode`), then install the **WSL** extension
-(`ms-vscode-remote.remote-wsl`). Afterwards `code .` works from inside the WSL shell — the wrapper
-is injected onto `PATH` on first attach.
-
-Consequences of the split, which differ from the native install:
-
-| Thing | Native Linux | WSL |
-| --- | --- | --- |
-| User settings | `~/.config/Code/User/` | `%APPDATA%\Code\User\` (Windows side) |
-| UI extensions | `~/.vscode/extensions/` | `%USERPROFILE%\.vscode\extensions\` |
-| Workspace extensions | same | `~/.vscode-server/extensions/` (inside WSL) |
-
-Extensions install into whichever side they declare. Language servers, formatters and linters land
-in `~/.vscode-server/`; themes and remote connectors stay on Windows. This is normal, not drift.
-
 ---
 
 ## 2. Settings and keybindings
@@ -72,14 +57,10 @@ reference.
 2. On a machine where sync is not available, copy the two files into place instead:
 
    ```bash
-   # Linux native
    mkdir -p ~/.config/Code/User
    cp ~/projects/agent-box-setup/user-home/vscode/settings.json    ~/.config/Code/User/
    cp ~/projects/agent-box-setup/user-home/vscode/keybindings.json ~/.config/Code/User/
    ```
-
-   On WSL the target is `/mnt/c/Users/<user>/AppData/Roaming/Code/User/`. Copy, do not symlink —
-   `ln -s` into `/mnt/c` does not work on DrvFs.
 
 **Verify:**
 
@@ -135,9 +116,8 @@ code --install-extension editorconfig.editorconfig \
      --install-extension tomchen.paste-markdown-link
 ```
 
-Microsoft-licensed extensions (Remote-SSH, Remote-WSL, Remote-Containers, C#, Pylance) are
-available only in real VS Code from the Microsoft marketplace. On the WSL host variant Remote-WSL
-is required, not optional.
+Microsoft-licensed extensions (Remote-SSH, Remote-Containers, C#, Pylance) are available only in
+real VS Code from the Microsoft marketplace, not in forks that use a third-party one.
 
 ---
 
@@ -171,12 +151,11 @@ Add to user or workspace settings — the `java.diagnostic.filter` entry
 ### IntelliJ code style
 
 For reference only, not part of this setup. Where a project has to match an IntelliJ formatting
-profile, export it from IntelliJ as XML and point VS Code at that file — a Windows path in the WSL
-case:
+profile, export it from IntelliJ as XML and point VS Code at that file:
 
 ```json
 {
-  "java.format.settings.url": "file:///C:/Users/dave/MHB-IntelliJ-Codestyle.xml",
+  "java.format.settings.url": "file:///home/dave/MHB-IntelliJ-Codestyle.xml",
   "java.format.settings.profile": "IntelliJ IDEA"
 }
 ```
