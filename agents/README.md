@@ -147,6 +147,32 @@ intentionally omitted. To update: check `https://github.com/b6k-dev/quarkus-skil
 `skill/quarkus/SKILL.md` and copy the updated content into `agents/skills/quarkus/SKILL.md`
 manually.
 
+**Note — TanStack skills**: `DeckardGer/tanstack-agent-skills` stores its skills under bare
+directory names (`skills/tanstack-query/`) but each `SKILL.md` declares
+`name: tanstack-query-best-practices`. `npx skills` installs into a directory named after the
+frontmatter `name`, so the lockfile entries and the directories here both carry the
+`-best-practices` suffix. An earlier install pass left bare-named copies behind; they were removed
+because `npx skills update` never touched them. If bare `tanstack-*` directories reappear, they are
+stale duplicates — delete them, keep the `-best-practices` ones.
+
+**Note — web-design-guidelines**: upstream nests `argument-hint` under `metadata:`, where Claude
+Code ignores it. The local copy moves it to the top level, so `npx skills update` will revert the
+fix until upstream changes. Re-apply it, or run `./audit-skills.sh`, which flags the regression.
+
+**Audit skill frontmatter:**
+
+```bash
+cd ~/projects/agent-box-setup
+./audit-skills.sh          # --strict to fail on warnings too
+```
+
+Directory-driven check of every `agents/skills/*/SKILL.md` against the
+[frontmatter reference](https://code.claude.com/docs/en/skills#frontmatter-reference): unknown keys,
+missing `description`, duplicate `name`, `name` differing from the directory name, `metadata`
+shadowing a reserved field, `compatibility` over 500 chars, and the 1,536-char `description` +
+`when_to_use` listing cap. Also warns on Claude Code-only keys that do not port to claude.ai or the
+Skills API. `verify-setup.sh` runs it as part of the Skills section.
+
 **Update all upstream skills:**
 
 ```bash

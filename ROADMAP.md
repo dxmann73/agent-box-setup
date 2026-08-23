@@ -1,22 +1,5 @@
 # box setup roadmap
 
-- Remove `brainstorming` + `verification-before-completion` skills — still in `agents/skills/`;
-  delete dirs, drop the `obra/superpowers` install line in `agents/README.md`, re-run
-  `verify-setup.sh`.
-- [Two-skill capture/build workflow](https://www.youtube.com/watch?v=I9-tdhxiH7w) (Matt Maher,
-  [bladnman/do-work](https://github.com/bladnman/do-work)) — one skill queues ideas to files, a
-  second drains the queue via sub-agents (plan → build → test → commit). Evaluate as a repo-owned
-  skill pair.
-- [Skills & skills.sh crash course](https://www.youtube.com/watch?v=rcRS8-7OgBo) (Alejandro AO) —
-  covers the `npx skills` CLI we already use; watch only to check for install/lockfile flags we're
-  missing in `agents/README.md`.
-- [Sub-agents over one big context](https://www.youtube.com/watch?v=P60LqQg1RH8) (Leon van Zyl) —
-  built-in Explore/Plan agents, `@agent` invocation, Ctrl+B background runs, wave-based parallel
-  work. Decide which custom agents (code review, UI) belong in `agents/claude/` and document the
-  invocation conventions.
-- [Skills docs](https://code.claude.com/docs/en/skills) — audit our skills against the current
-  frontmatter reference: `allowed-tools` pre-approval, argument passing, invocation control
-  (user-only vs model), dynamic context injection, nested/additional skill directories.
 - [simonwillison: Claude Skills](https://simonwillison.net/2025/Oct/16/claude-skills/) — background
   on why skills beat MCP here (progressive disclosure, frontmatter costs a few dozen tokens).
   Reinforces the MCP-off policy; no action beyond keeping skills small and script-backed.

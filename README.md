@@ -197,7 +197,7 @@ This checks:
   `ua.sh`, `update-tools.sh`, `.markdownlint.json`)
 - Agent configuration and symlinks
 - Caveman hooks (Codex, Cursor)
-- Skills setup
+- Skills setup, including a `SKILL.md` frontmatter audit (`./audit-skills.sh`)
 - Core tools (GitHub CLI, Docker, jq)
 - Development environment (Node.js, Java, etc.)
 - Imaging tools (ImageMagick, sharp, resvg)
@@ -206,6 +206,13 @@ This checks:
 
 Fixes for anything it flags live in the guide the line names — `agents/README.md`,
 `machines/common/*.md` or `machines/<target>/*.md`.
+
+`./audit-skills.sh` also runs standalone and prints one line per finding. It is directory-driven:
+every `agents/skills/*/SKILL.md` is checked against the
+[frontmatter reference](https://code.claude.com/docs/en/skills#frontmatter-reference) — unknown
+keys, missing `description`, duplicate `name`, `name` differing from the directory name, `metadata`
+shadowing a reserved field, and the `description` listing cap. Errors exit non-zero; `--strict`
+also fails on warnings.
 
 ## Staying current
 

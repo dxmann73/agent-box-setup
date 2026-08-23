@@ -224,6 +224,17 @@ elif [ "$skills_missing" -eq 0 ]; then
 else
     echo "✗ Skills missing or incomplete vs source"
 fi
+
+skills_audit="$(dirname "$0")/audit-skills.sh"
+if [ -x "$skills_audit" ]; then
+    if "$skills_audit" >/dev/null 2>&1; then
+        echo "✓ Skill frontmatter valid (./audit-skills.sh)"
+    else
+        echo "✗ Skill frontmatter has errors - run ./audit-skills.sh"
+    fi
+else
+    echo "✗ Skill frontmatter audit missing or not executable: $skills_audit"
+fi
 echo ""
 
 # Core Tools
