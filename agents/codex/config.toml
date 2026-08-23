@@ -1,4 +1,4 @@
-model = "gpt-5.5"
+model = "gpt-5.6-terra"
 model_reasoning_effort = "high"
 approval_policy = "never"
 sandbox_mode = "danger-full-access"
@@ -10,14 +10,17 @@ network_access = true
 writable_roots = ["/home/dave"]
 
 [tui]
+# Mirrors the Claude Code statusline order: location -> model -> context -> rate limits.
+# Item identifiers are a fixed built-in set; unknown entries are silently ignored, so
+# verify-setup.sh validates this list. `/statusline` in the TUI edits it and writes back here.
 status_line = [
   "current-dir",
+  "git-branch",
+  "model-with-reasoning",
   "context-used",
+  "used-tokens",
   "five-hour-limit",
   "weekly-limit",
-  "model-with-reasoning",
-  "total-input-tokens",
-  "total-output-tokens",
 ]
 
 [tui.model_availability_nux]
