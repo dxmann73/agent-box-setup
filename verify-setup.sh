@@ -106,6 +106,22 @@ echo "=== Agent Configuration ==="
 test -L ~/AGENTS.md && echo "✓ ~/AGENTS.md symlink exists" || echo "✗ ~/AGENTS.md missing"
 test -L ~/CLAUDE.md && echo "✓ ~/CLAUDE.md symlink exists" || echo "✗ ~/CLAUDE.md missing"
 test -L ~/.claude/settings.json && echo "✓ Claude settings linked" || echo "✗ Claude settings missing"
+if [ -L ~/.claude/statusline-command.sh ]; then
+    echo "✓ Claude statusline script symlinked"
+else
+    echo "✗ Claude statusline script missing or not a symlink (see agents/claude/README.md#statusline)"
+fi
+if jq -e '.statusLine.command // empty' ~/.claude/settings.json > /dev/null 2>&1; then
+    echo "✓ statusLine wired in settings.json"
+else
+    echo "✗ statusLine absent from settings.json"
+fi
+statusline_probe='{"cwd":"'"$HOME"'","model":{"display_name":"Verify"},"context_window":{"used_percentage":42,"total_input_tokens":84000,"context_window_size":200000}}'
+if echo "$statusline_probe" | bash ~/.claude/statusline-command.sh 2>/dev/null | grep -q '42% (84k/200k)'; then
+    echo "✓ Claude statusline renders context bar"
+else
+    echo "✗ Claude statusline produced no context bar (is jq installed?)"
+fi
 if [ -L ~/.agents ]; then
     echo "✓ ~/.agents symlinked"
 elif [ -d ~/.agents ]; then

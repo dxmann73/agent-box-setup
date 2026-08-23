@@ -39,11 +39,8 @@ line1="${C_GREEN}$(whoami)@$(hostname -s)${C_RESET}:${C_BLUE}${cwd}${C_YELLOW}${
 
 # Context window (live from JSON)
 used_pct=$(echo "$input" | jq -r '.context_window.used_percentage // empty')
-ctx_tokens=$(echo "$input" | jq -r '
-  .context_window.current_usage as $u |
-  if $u then
-    (($u.input_tokens // 0) + ($u.cache_creation_input_tokens // 0) + ($u.cache_read_input_tokens // 0))
-  else empty end')
+# total_input_tokens == input + cache_creation + cache_read, the same sum used_percentage uses
+ctx_tokens=$(echo "$input" | jq -r '.context_window.total_input_tokens // empty')
 ctx_max=$(echo "$input" | jq -r '.context_window.context_window_size // empty')
 
 ctx_bar_str=""
@@ -89,30 +86,51 @@ fi
 # Model name from JSON input
 model_name=$(echo "$input" | jq -r '.model.display_name // empty')
 
-# Weekly spending limit (7-day rate limit from JSON)
-weekly_str=""
-week_pct=$(echo "$input" | jq -r '.rate_limits.seven_day.used_percentage // empty')
-week_resets_at=$(echo "$input" | jq -r '.rate_limits.seven_day.resets_at // empty')
-if [ -n "$week_pct" ]; then
-  week_int=$(printf '%.0f' "$week_pct" 2>/dev/null || echo "0")
-
-  reset_label=""
-  if [ -n "$week_resets_at" ]; then
-    now_epoch=$(date +%s)
-    days_left=$(( (week_resets_at - now_epoch + 86399) / 86400 ))
-    reset_date=$(date -d "@${week_resets_at}" '+%a %b %-d %H:%M' 2>/dev/null \
-      || date -r "$week_resets_at" '+%a %b %-d %H:%M' 2>/dev/null)
-    reset_label="resets in ${days_left}d (${reset_date})"
-  fi
-
-  if [ "$week_int" -ge 80 ]; then
-    weekly_str=" ${C_RED_BOLD}/ used ${week_int}%${reset_label:+, $reset_label}${C_RESET}"
-  elif [ "$week_int" -ge 50 ]; then
-    weekly_str=" ${C_CTX_YELLOW}/ used ${week_int}%${reset_label:+, $reset_label}${C_RESET}"
+# Rate limits: 5-hour session block and 7-day window, both rendered as % remaining
+fmt_hm() { # seconds -> "2h14m" / "47m"
+  if [ "$1" -lt 3600 ]; then
+    echo "$(( $1 / 60 ))m"
   else
-    weekly_str=" / used ${week_int}%${reset_label:+, $reset_label}"
+    echo "$(( $1 / 3600 ))h$(( ($1 % 3600) / 60 ))m"
   fi
-fi
+}
+
+# $1 = rate_limits key, $2 = label, $3 = time granularity (hm | d)
+rate_segment() {
+  local key=$1 label=$2 gran=$3
+  local pct used_int left_int resets now_epoch secs when color
+
+  pct=$(echo "$input" | jq -r ".rate_limits.${key}.used_percentage // empty")
+  [ -n "$pct" ] || return 0
+  used_int=$(printf '%.0f' "$pct" 2>/dev/null || echo "0")
+  left_int=$(( 100 - used_int ))
+
+  if [ "$left_int" -le 20 ]; then
+    color="$C_RED_BOLD"
+  elif [ "$left_int" -le 50 ]; then
+    color="$C_CTX_YELLOW"
+  else
+    color=""
+  fi
+
+  when=""
+  resets=$(echo "$input" | jq -r ".rate_limits.${key}.resets_at // empty")
+  if [[ "$resets" =~ ^[0-9]+$ ]]; then
+    now_epoch=$(date +%s)
+    secs=$(( resets - now_epoch ))
+    [ "$secs" -lt 0 ] && secs=0
+    if [ "$gran" = "d" ]; then
+      when=", $(( (secs + 86399) / 86400 ))d ($(date -d "@${resets}" '+%a %b %-d %H:%M' 2>/dev/null \
+        || date -r "$resets" '+%a %b %-d %H:%M' 2>/dev/null))"
+    else
+      when=", $(fmt_hm "$secs")"
+    fi
+  fi
+
+  printf '%s' " | ${color}${label} ${left_int}% left${when}${color:+$C_RESET}"
+}
+
+rate_str="$(rate_segment five_hour '5h' hm)$(rate_segment seven_day '7d' d)"
 
 # Rate limit reset: written by post-tool hook when rate limit fires
 rate_reset_str=""
@@ -133,6 +151,6 @@ fi
 model_part=""
 [ -n "$model_name" ] && model_part="[${model_name}] "
 
-line2="${model_part}${ctx_bar_str}${ctx_label}${weekly_str}${rate_reset_str}"
+line2="${model_part}${ctx_bar_str}${ctx_label}${rate_str}${rate_reset_str}"
 
 printf "%s\n%s\n" "$line1" "$line2"
