@@ -72,6 +72,39 @@ if [ -f ~/.codex/config.toml ]; then
         echo "✗ ~/.codex/config.toml missing [features].hooks = true"
     fi
 fi
+if [ -f ~/.codex/config.toml ]; then
+    # Codex silently ignores unknown status_line items ("Ignored invalid status line"), so a typo
+    # just makes a widget disappear. Item ids are a fixed built-in set, not documented as an enum.
+    python3 - ~/.codex/config.toml <<'PY'
+import sys, tomllib
+
+KNOWN = {
+    "project-name", "current-dir", "run-state", "thread-title", "git-branch",
+    "context-remaining", "context-used", "used-tokens",
+    "total-input-tokens", "total-output-tokens",
+    "five-hour-limit", "weekly-limit", "thread-credits", "estimated-thread-cost",
+    "codex-version", "thread-id", "fast-mode", "model-with-reasoning", "reasoning",
+    "task-progress",
+}
+
+try:
+    with open(sys.argv[1], "rb") as fh:
+        items = tomllib.load(fh).get("tui", {}).get("status_line")
+except (OSError, tomllib.TOMLDecodeError) as exc:
+    print(f"\u2717 ~/.codex/config.toml unreadable for status_line check: {exc}")
+    sys.exit(0)
+
+if items is None:
+    print("\u2297 [tui].status_line not configured (Codex default: model + cwd)")
+    sys.exit(0)
+
+unknown = [i for i in items if i not in KNOWN]
+if unknown:
+    print(f"\u2717 [tui].status_line has unknown items, Codex will drop them: {', '.join(unknown)}")
+else:
+    print(f"\u2713 [tui].status_line items all valid ({len(items)} shown)")
+PY
+fi
 if [ -L ~/.codex/hooks.json ]; then
     echo "✓ ~/.codex/hooks.json symlinked"
 elif [ -f ~/.codex/hooks.json ]; then
