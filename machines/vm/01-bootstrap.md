@@ -144,13 +144,8 @@ Install at least [one coding agent](../../agents/README.md), then clone this rep
 mkdir ~/projects && cd ~/projects && git clone https://github.com/dxmann73/agent-box-setup
 ```
 
-=> **Let the agent take over from here!**
-
-```bash
-cd agent-box-setup && claude --dangerously-skip-permissions
-```
-
-Tell the agent to follow [02-dev-and-agents.md](02-dev-and-agents.md).
+=> **Let the installed agent take over from here.** Follow the
+[agent-led bootstrap](../../README.md#agent-led-bootstrap) instructions, selecting the VM target.
 
 ## 9. Checklist
 

@@ -29,7 +29,14 @@ instructions for the first time.
    - Reuse existing project conventions (formatting, naming, directory layout).
    - Avoid broad rewrites of existing code while bootstrapping.
 
-5. Report what was created: files, symlinks, repo visibility.
+5. Project workspace:
+   - For a repository created under `~/projects`, update `~/projects/projects.code-workspace` so
+     VS Code includes it.
+   - Keep the project table in `~/projects/agent-box-setup/projects/README.md` in sync with the
+     project directories and VS Code workspace.
+   - Preserve existing workspace folders and settings; add the new project once.
+
+6. Report what was created: files, symlinks, repo visibility, and workspace updates.
 
 ## Boundaries
 

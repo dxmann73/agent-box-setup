@@ -58,6 +58,27 @@ grep -rilE 'bitlocker|fast startup|dual.?boot|windows partition|shrink windows|n
   machines/host/ machines/vm/ machines/common/
 ```
 
+## Agent-led bootstrap
+
+The only manual bootstrap is Git, plus one (installed and authenticated) coding agent. Then clone this
+repository and let the agent complete the target setup:
+
+```bash
+mkdir -p ~/projects
+cd ~/projects
+git clone https://github.com/dxmann73/agent-box-setup
+cd agent-box-setup
+```
+
+Start the installed agent in this directory and give it this instruction:
+
+> Set up this machine using agent-box-setup. Determine whether this is the host or VM, follow the
+> numbered guides for that target in order, ask before optional tools, diagnose errors before
+> continuing, and finish with the required verification command.
+
+After verification, follow [Clone or update projects](#clone-or-update-projects) to pull the
+remaining projects and add them to the VS Code workspace.
+
 ## Where to start
 
 | Situation | Start at |
@@ -110,6 +131,19 @@ Then [local-llm/](local-llm/) for the GPU model runtime (host-only).
    image tools
 8. [common/08-auto-updates.md](machines/common/08-auto-updates.md) - Unattended apt upgrades, needrestart,
    weekly tooling update timer
+
+## Clone or update projects
+
+After Agent Box Setup verification passes, authenticate GitHub CLI with access to private
+repositories. Then ask the coding agent to synchronize the project inventory:
+
+> For every project in `projects/README.md` except `agent-box-setup`, clone missing repositories
+> from `dxmann73` into `~/projects`. For existing Git repositories, pull with `--ff-only`. Do not
+> overwrite non-Git directories or pull a dirty worktree; ask first. Add every project directory to
+> `~/projects/projects.code-workspace`, preserving existing settings and folders.
+
+`projects.code-workspace` is the shared VS Code workspace file. Keep it and the inventory table in
+[projects/README.md](projects/README.md) in sync with the project directories.
 
 ## Config files
 

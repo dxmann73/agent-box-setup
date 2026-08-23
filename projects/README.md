@@ -1,24 +1,29 @@
 # Project Inventory
 
-This inventory covers active project directories directly under `~/projects` as of 2026-08-23. It
-excludes archived projects retained locally. It records machine and service dependencies, not every
-transitive package dependency. Package manifests and each project's own README remain authoritative
-for language-level dependencies.
+This inventory covers Git project directories directly under `~/projects` as of 2026-08-23. It
+records machine and service dependencies, not every transitive package dependency. Package manifests
+and each project's own README remain authoritative for language-level dependencies.
+
+Projects are grouped below by GitHub visibility: public first, then private.
 
 | Project            | Purpose                                                              | GitHub status |
 | ------------------ | -------------------------------------------------------------------- | ------------- |
 | `agent-box-setup`  | Host and agent-VM setup instructions and shared agent configuration. | Public        |
 | `ai`               | AI concepts, adoption, execution, and risk documentation.            | Public        |
-| `clackworks`       | Product and workflow-automation specification.                       | Public        |
 | `spcsim`           | Space-empire game design concept.                                    | Public        |
 | `website`          | Current personal website and blog.                                   | Public        |
-|                    |                                                                      |               |
+| `clackworks`       | Product and workflow-automation specification.                       | Private       |
+| `clackworks.agents` | Agent personalities and operating guidance for Clackworks.          | Private       |
+| `clackworks.ai`    | Clackworks business documentation and decision records.              | Private       |
 | `dave-box-setup`   | Legacy machine-setup scripts and notes.                              | Private       |
 | `dave-tax-advisor` | Tax-document filing and reconciliation helpers.                      | Private       |
 | `infra`            | Public DNS, mail, hosting, and migration documentation.              | Private       |
 | `macros`           | Personal nutrition and exercise tracking.                            | Private       |
 | `nomap`            | Search and knowledge-management application.                         | Private       |
 | `social-linkedin`  | LinkedIn recruiting-contact and message-management ideas.            | Private       |
+| `website-old`      | Previous personal website based on the AstroWind template.           | Private       |
+
+Keep this inventory table in sync with the project directories and the shared VS Code workspace.
 
 ## `agent-box-setup`
 
@@ -39,6 +44,17 @@ network access only when opened.
 Product vision and specification repository for workflow automation. Current contents are Markdown
 documentation, with no application runtime or external service configured. Needs Git and a Markdown
 editor.
+
+## `clackworks.agents`
+
+Home for Clackworks agent personalities, working styles, and operating guidance. It currently
+contains Markdown documentation only; no runtime, build system, or external service is configured.
+
+## `clackworks.ai`
+
+Home for Clackworks business direction, market understanding, commercial design, operations, and
+decision records. It is Markdown-only for now, with no application runtime or external service
+configured.
 
 ## `dave-box-setup`
 
@@ -94,3 +110,8 @@ Current personal website and blog built with Astro, Tailwind CSS, React islands,
 Requires Node.js LTS and pnpm; sharp performs native image optimization during builds. Local preview
 uses the Astro dev server. Deployment requires either Cloudflare Workers credentials or Netlify;
 `infra` documents the planned Cloudflare Workers deployment.
+
+## `website-old`
+
+Previous personal website based on AstroWind. It uses Astro and Tailwind CSS; working on it requires
+Node.js and its package manager. Treat it as an older site alongside the current `website` project.
