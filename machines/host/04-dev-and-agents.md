@@ -12,7 +12,7 @@ where this repo is edited. Agent work on personal projects still belongs in the 
 
 ```bash
 sudo apt install -y \
-  git curl wget build-essential cmake ninja-build pkg-config \
+  git curl wget build-essential pkg-config \
   python3 python3-pip python3-venv pipx jq htop btop tmux \
   ripgrep fd-find
 ```
@@ -20,9 +20,6 @@ sudo apt install -y \
 ```bash
 mkdir -p ~/projects
 ```
-
-`build-essential`, `cmake` and `ninja-build` are also what `llama.cpp` needs, see
-[local-llm, step 02](https://github.com/dxmann73/local-llm/blob/main/steps/02-build-llama-cpp.md).
 
 ## 2. Common guides, in order
 

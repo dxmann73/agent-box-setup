@@ -8,7 +8,7 @@ VM-side deltas.
 
 ```bash
 sudo apt install -y \
-  git curl wget build-essential cmake ninja-build pkg-config \
+  git curl wget build-essential pkg-config \
   python3 python3-pip python3-venv pipx jq htop btop tmux \
   ripgrep fd-find
 ```
