@@ -62,7 +62,7 @@ host/04 – development toolchain and agents
 Test Steam games, Office and video workflow
            │
            ▼
-local-llm/ – Vulkan baseline, then ROCm
+local-llm repo – Vulkan baseline, then ROCm
            │
            ▼
 host/05 + vm/ – hypervisor and agent VM

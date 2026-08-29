@@ -466,7 +466,8 @@ command -v inkscape >/dev/null 2>&1 && echo "✓ inkscape" || echo "✗ inkscape
 command -v gm >/dev/null 2>&1 && echo "✓ graphicsmagick (gm)" || echo "✗ graphicsmagick (gm) missing"
 echo ""
 
-# Host-only: GPU stack and local model runtime (see machines/host/01-hardware-validation.md, local-llm/)
+# Host-only: GPU stack and local model runtime
+# (see machines/host/01-hardware-validation.md and https://github.com/dxmann73/local-llm)
 if [ "$PROFILE" = "host" ]; then
     echo "=== Host: GPU and local model ==="
     if lspci -k 2>/dev/null | grep -A4 -E 'VGA|Display' | grep -q 'amdgpu'; then

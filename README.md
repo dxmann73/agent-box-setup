@@ -18,7 +18,7 @@ Everything in this repo should be traceable back to it.
 ```text
 Kubuntu host                                  ← machines/host/
 ├── personal apps and data (Chrome, Dropbox, Steam, documents)
-├── local model runtime on the GPU            ← local-llm/
+├── local model runtime on the GPU            ← local-llm repo (separate)
 ├── development toolchain + coding agents     ← machines/common/ + agents/
 ├── T3 Code desktop app + local server        ← machines/host/04-dev-and-agents.md
 └── KVM/libvirt                               ← machines/host/05-hypervisor.md
@@ -43,7 +43,6 @@ host, with the app holding both environments at once.
 | [machines/common/](machines/common/) | Install guides used by both host and VM | no |
 | [machines/host/](machines/host/) | Ubuntu host: hardware, personal apps, system config, hypervisor | no |
 | [machines/vm/](machines/vm/) | Agent VM: bootstrap, agents, T3 Code, networking, credentials, snapshots | no |
-| [local-llm/](local-llm/) | llama.cpp, models, benchmarks, ROCm — host-only | no |
 | [user-home/](user-home/) | Dotfiles and scripts symlinked into `~` | no |
 | [machines/migration/](machines/migration/) | One-time Windows → Kubuntu move | **yes** |
 | [machines/wsl/](machines/wsl/) | Deltas for the Windows + WSL host variant | **yes** |
@@ -87,7 +86,7 @@ After verification, hand over to the project-manager agent to pull the remaining
 | Staying on Windows + WSL for now | [machines/wsl/](machines/wsl/) |
 | Fresh Kubuntu host | [machines/host/](machines/host/) |
 | New agent VM | [machines/host/05-hypervisor.md](machines/host/05-hypervisor.md) then [machines/vm/](machines/vm/) |
-| Local model work | [local-llm/](local-llm/) |
+| Local model work | [local-llm](https://github.com/dxmann73/local-llm) (separate repo) |
 
 ## Setup order
 
@@ -104,7 +103,8 @@ commands.
 4. [host/04-dev-and-agents.md](machines/host/04-dev-and-agents.md) - Toolchain and agents via `machines/common/`
 5. [host/05-hypervisor.md](machines/host/05-hypervisor.md) - KVM/libvirt, agent VM
 
-Then [local-llm/](local-llm/) for the GPU model runtime (host-only).
+Then the separate [local-llm](https://github.com/dxmann73/local-llm) repo for the GPU model
+runtime (host-only).
 
 ### VM
 

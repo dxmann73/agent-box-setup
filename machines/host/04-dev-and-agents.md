@@ -22,7 +22,7 @@ mkdir -p ~/projects
 ```
 
 `build-essential`, `cmake` and `ninja-build` are also what `llama.cpp` needs, see
-[`../../local-llm/steps/02-build-llama-cpp.md`](../../local-llm/steps/02-build-llama-cpp.md).
+[local-llm, step 02](https://github.com/dxmann73/local-llm/blob/main/steps/02-build-llama-cpp.md).
 
 ## 2. Common guides, in order
 
@@ -46,7 +46,8 @@ Applies on the host and not in the VM:
 - **Docker is skipped here.** The `docker` group is root-equivalent, and the host holds personal
   data; container work belongs in the VM ([`../common/02-core-tools.md`](../common/02-core-tools.md)
   §3)
-- GPU/compute stack and the local model runtime: [`../../local-llm/`](../../local-llm/)
+- GPU/compute stack and the local model runtime: the separate
+  [local-llm](https://github.com/dxmann73/local-llm) repo
 - the hypervisor and the agent VM itself: [05-hypervisor.md](05-hypervisor.md)
 - the personal Chrome profile: agents on the host must not drive it either; use a separate
   profile or the VM's Chromium

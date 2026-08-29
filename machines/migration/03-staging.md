@@ -21,7 +21,8 @@ suspend/resume
 daily applications
 ```
 
-Only then follow the separate local-LLM guide and add ROCm: <https://rocm.docs.amd.com/>
+Only then follow the separate [local-LLM guide](https://github.com/dxmann73/local-llm) and add ROCm:
+<https://rocm.docs.amd.com/>
 
 This gives you a clean baseline: if something breaks after adding the compute stack, you know the
 underlying desktop installation worked beforehand.

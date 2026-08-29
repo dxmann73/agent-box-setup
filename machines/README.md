@@ -13,7 +13,7 @@ leftovers of Windows.
 
 Agent CLIs and their configuration are not here — they are the same on every machine and live in
 [`../agents/`](../agents/README.md). Dotfiles live in [`../user-home/`](../user-home/). The GPU
-model runtime is host-only: [`../local-llm/`](../local-llm/).
+model runtime is host-only and lives in its own repo: [local-llm](https://github.com/dxmann73/local-llm).
 
 ## Where to start
 

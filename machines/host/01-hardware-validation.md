@@ -4,7 +4,7 @@ Verify that graphics, laptop power features and displays work on the host. This 
 knowledge, re-run it after kernel or Mesa changes — it is not migration-only.
 
 The GPU results here are the precondition for the local model runtime
-([`../../local-llm/`](../../local-llm/), specification §10).
+([local-llm](https://github.com/dxmann73/local-llm), a separate repo; specification §10).
 
 ## 1. Verify AMDGPU
 

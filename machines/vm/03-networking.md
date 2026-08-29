@@ -38,8 +38,9 @@ The local model runs on the host because it needs the GPU (specification §10). 
 across the libvirt bridge, not over the LAN and not over the tailnet.
 
 Host side: bind the inference server to the bridge address — not `0.0.0.0`, and not only
-`127.0.0.1`, which the guest cannot reach. See [`../../local-llm/`](../../local-llm/) for the server
-itself and [`../host/03-system-config.md`](../host/03-system-config.md) for the firewall stance.
+`127.0.0.1`, which the guest cannot reach. See [local-llm](https://github.com/dxmann73/local-llm)
+for the server itself and [`../host/03-system-config.md`](../host/03-system-config.md) for the
+firewall stance.
 
 ```bash
 ip -4 addr show virbr0                # the host's address on the libvirt default network

@@ -31,6 +31,9 @@ Note: Setup is geared **specifically** towards an xmg evo right now; proceed wit
   `user-home/`) and **project-level** (skills, per-language toolchains). Project-level items are
   installed globally as an interim measure; classify new additions before adding them. See
   "Scope" in `README.md`.
+- The local LLM/model runtime is **out of scope**. It lives in a separate repo:
+  <https://github.com/dxmann73/local-llm>. Reference it by URL; do not add llama.cpp, model,
+  benchmark or Ollama instructions here.
 - Treat `agents/skills/` as the single source of truth for installed skills.
 - Keep setup docs/scripts in sync with that directory (`agents/README.md`, `verify-setup.sh`).
 - Verification must be directory-driven (derive expected skills from `agents/skills/`), not

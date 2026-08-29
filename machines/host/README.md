@@ -32,8 +32,8 @@ Automatic patching applies to both machines and lives in
 
 Then:
 
-- [`../../local-llm/`](../../local-llm/) — llama.cpp, models, benchmarks, ROCm (host-only, needs
-  the GPU)
+- [local-llm](https://github.com/dxmann73/local-llm) — separate repo: llama.cpp, models,
+  benchmarks, ROCm (host-only, needs the GPU)
 - [`../vm/`](../vm/) — the agent VM
 
 ## Layout

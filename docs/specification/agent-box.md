@@ -6,6 +6,7 @@
    * as a laptop it can be used when travelling so it will contain personal apps
    * Normal personal apps and data remain on the host: Chrome, Dropbox, documents, etc.
    * A local LLM/model runtime runs directly on the host so it can efficiently use the GPU.
+     Its setup is out of scope here and lives in a separate repo: <https://github.com/dxmann73/local-llm>.
 
 2. **Agent isolation**
 

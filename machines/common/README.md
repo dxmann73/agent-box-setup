@@ -27,7 +27,7 @@ Not covered here, because it belongs to one target only:
 
 | Target-specific | Where |
 | --- | --- |
-| GPU stack, local model runtime | [`../../local-llm/`](../../local-llm/), host |
+| GPU stack, local model runtime | [local-llm](https://github.com/dxmann73/local-llm) (separate repo), host |
 | agent CLIs, config, skills | [`../../agents/`](../../agents/README.md) |
 | hypervisor and VM creation | [`../host/05-hypervisor.md`](../host/05-hypervisor.md) |
 | T3 Code server in the VM | [`../vm/04-t3code.md`](../vm/04-t3code.md) |
