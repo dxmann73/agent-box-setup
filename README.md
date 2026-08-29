@@ -76,8 +76,8 @@ Start the installed agent in this directory and give it this instruction:
 > numbered guides for that target in order, ask before optional tools, diagnose errors before
 > continuing, and finish with the required verification command.
 
-After verification, follow [Clone or update projects](#clone-or-update-projects) to pull the
-remaining projects and add them to the VS Code workspace.
+After verification, hand over to the project-manager agent to pull the remaining projects — see
+[Next: clone the projects](#next-clone-the-projects).
 
 ## Where to start
 
@@ -132,18 +132,24 @@ Then [local-llm/](local-llm/) for the GPU model runtime (host-only).
 8. [common/08-auto-updates.md](machines/common/08-auto-updates.md) - Unattended apt upgrades, needrestart,
    weekly tooling update timer
 
-## Clone or update projects
+## Next: clone the projects
+
+Machine setup ends here. Filling the box with projects belongs to the **project-manager** agent in
+[clackworks.agents](https://github.com/dxmann73/clackworks.agents) (private), which owns the project
+inventory, the VS Code workspace file, and the periodic project review.
 
 After Agent Box Setup verification passes, authenticate GitHub CLI with access to private
-repositories. Then ask the coding agent to synchronize the project inventory:
+repositories, clone that repo, and hand over:
 
-> For every project in `projects/README.md` except `agent-box-setup`, clone missing repositories
-> from `dxmann73` into `~/projects`. For existing Git repositories, pull with `--ff-only`. Do not
-> overwrite non-Git directories or pull a dirty worktree; ask first. Add every project directory to
-> `~/projects/projects.code-workspace`, preserving existing settings and folders.
+```bash
+cd ~/projects
+git clone https://github.com/dxmann73/clackworks.agents
+```
 
-`projects.code-workspace` is the shared VS Code workspace file. Keep it and the inventory table in
-[projects/README.md](projects/README.md) in sync with the project directories.
+> Act as the project-manager agent described in `clackworks.agents/project-manager/README.md`.
+> Clone or update every project in its inventory and add them to `projects.code-workspace`.
+
+Nothing in this repository tracks the project list; keep it in the inventory over there.
 
 ## Config files
 
