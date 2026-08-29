@@ -9,6 +9,7 @@
   "permissions": {
     "defaultMode": "bypassPermissions"
   },
+  "enableArtifact": false,
   "model": "opus",
   "statusLine": {
     "type": "command",

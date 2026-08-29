@@ -20,3 +20,7 @@ or reset inflight work of other agents.
 
 When validating or converting data, fail fast: throw and stop as soon as a value is not what you
 expect; do not substitute silent defaults or empty placeholders that hide bad input until later.
+
+Do not publish artifacts. Deliverables stay as local files in the project directory.
+Never upload project content to claude.ai or any other external service without being
+asked for that specific upload.
