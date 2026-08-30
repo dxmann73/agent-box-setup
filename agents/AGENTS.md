@@ -18,6 +18,9 @@ If you hit unexpected concurrent changes, assume another agent is working in par
 Keep going and keep your edits focused. Don’t delete/rename unexpected stuff. Do not discard
 or reset inflight work of other agents.
 
+Not working with branches right now. Commit straight to the default branch; do not create
+a branch before committing unless asked.
+
 When validating or converting data, fail fast: throw and stop as soon as a value is not what you
 expect; do not substitute silent defaults or empty placeholders that hide bad input until later.
 
