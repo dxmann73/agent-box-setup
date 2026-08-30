@@ -55,7 +55,7 @@ trust_level = "trusted"
 [projects."/home/dave/projects/clackworks.ai"]
 trust_level = "trusted"
 
-[projects."/home/dave/projects/macros"]
+[projects."/home/dave/projects/dave.macros"]
 trust_level = "trusted"
 
 [notice]
