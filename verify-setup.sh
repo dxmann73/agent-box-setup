@@ -42,8 +42,9 @@ echo "  Profile: $PROFILE$DETECTED"
 echo "========================================="
 echo ""
 
-# Load nvm and SDKMAN in this non-interactive script when present.
-[ -s "$HOME/.nvm/nvm.sh" ] && . "$HOME/.nvm/nvm.sh"
+# Set service-compatible paths; system Node takes precedence over old nvm installs.
+export PATH="$HOME/.npm-global/bin:$HOME/.local/bin:/usr/local/bin:/usr/bin:/snap/bin:/bin:$PATH"
+export LIBVIRT_DEFAULT_URI="${LIBVIRT_DEFAULT_URI:-qemu:///system}"
 [ -s "$HOME/.sdkman/bin/sdkman-init.sh" ] && . "$HOME/.sdkman/bin/sdkman-init.sh"
 
 # Count top-level entries while excluding known metadata files.
@@ -203,7 +204,7 @@ echo "Cursor skills: $cursor_skills directories"
 echo "Agent skills: $agent_skills directories"
 
 skills_missing=0
-for target_dir in ~/.claude/skills ~/.cursor/skills ~/.agents/skills; do
+for target_dir in ~/.claude/skills ~/.cursor/skills ~/.codex/skills ~/.agents/skills; do
     for skill in "${expected_skills[@]}"; do
         if [ ! -e "$target_dir/$skill" ]; then
             echo "✗ Missing skill '$skill' in $target_dir"
@@ -242,7 +243,11 @@ echo "=== Core Tools ==="
 gh --version >/dev/null 2>&1 && echo "✓ GitHub CLI installed" || echo "✗ GitHub CLI missing"
 gh auth status >/dev/null 2>&1 && echo "✓ GitHub CLI authenticated" || echo "✗ GitHub CLI not authenticated"
 jq --version >/dev/null 2>&1 && echo "✓ jq installed" || echo "✗ jq missing"
-docker --version >/dev/null 2>&1 && echo "✓ Docker installed" || echo "✗ Docker missing"
+if [ "$PROFILE" = "vm" ]; then
+    docker --version >/dev/null 2>&1 && echo "✓ Docker installed" || echo "✗ Docker missing"
+else
+    echo "⊗ Docker skipped on host (VM only)"
+fi
 echo ""
 
 # Search Tools
@@ -328,8 +333,13 @@ echo ""
 
 # Editor (see machines/common/04-ide+tooling.md)
 echo "=== Editor (VS Code) ==="
-if code --version >/dev/null 2>&1; then
-    echo "✓ VS Code installed: $(code --version | head -1)"
+if command -v code >/dev/null 2>&1; then
+    code_version="$(code --version 2>/dev/null | head -1 || true)"
+    if [ -n "$code_version" ]; then
+        echo "✓ VS Code installed: $code_version"
+    else
+        echo "✓ VS Code command installed: $(command -v code) (version probe unavailable)"
+    fi
 else
     echo "✗ VS Code missing"
 fi
@@ -387,6 +397,48 @@ else
     fi
 fi
 echo ""
+
+# BB uses the desktop AppImage on the host and a persistent npm service in the VM.
+echo "=== BB ==="
+if [ "$PROFILE" = "host" ]; then
+    shopt -s nullglob
+    bb_appimages=("$HOME/Applications/bb.AppImage" "$HOME"/Applications/bb-*-x86_64.AppImage)
+    shopt -u nullglob
+    bb_appimage=""
+    for candidate in "${bb_appimages[@]}"; do
+        if [ -x "$candidate" ]; then
+            bb_appimage="$candidate"
+            break
+        fi
+    done
+    if [ -n "$bb_appimage" ]; then
+        echo "✓ BB desktop AppImage installed"
+    else
+        echo "✗ BB desktop AppImage missing or not executable (machines/common/05-bb.md)"
+    fi
+    if [ -f "$HOME/.config/autostart/bb.desktop" ]; then
+        echo "✓ BB desktop starts automatically at login"
+    else
+        echo "⊗ BB desktop autostart not enabled (optional)"
+    fi
+else
+    if command -v bb-app >/dev/null 2>&1; then
+        echo "✓ BB launcher installed"
+    else
+        echo "✗ BB launcher missing (machines/common/05-bb.md)"
+    fi
+    if systemctl --user is-active --quiet bb.service; then
+        echo "✓ BB service running"
+    else
+        echo "✗ BB service not running"
+    fi
+    if curl --fail --silent --retry 10 --retry-connrefused --retry-delay 1 \
+        --max-time 5 http://127.0.0.1:38886/ >/dev/null; then
+        echo "✓ BB web UI responds on loopback"
+    else
+        echo "✗ BB web UI unavailable"
+    fi
+fi
 
 # Automatic updates (see machines/common/08-auto-updates.md)
 echo "=== Automatic Updates ==="
@@ -507,7 +559,7 @@ if [ "$PROFILE" = "host" ]; then
             echo "⊗ agent-vm not defined yet (see machines/host/05-hypervisor.md)"
         fi
     else
-        echo "⊗ libvirt/KVM not usable (sudo apt install -y qemu-kvm libvirt-daemon-system virtinst; usermod -aG libvirt,kvm)"
+        echo "⊗ libvirt/KVM not usable (sudo apt install -y qemu-system-x86 libvirt-daemon-system virtinst; usermod -aG libvirt,kvm)"
     fi
     if command -v virtiofsd >/dev/null 2>&1 || [ -x /usr/libexec/virtiofsd ]; then
         echo "✓ virtiofsd present"

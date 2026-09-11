@@ -19,9 +19,9 @@ This guide describes the native Linux install. VS Code runs on the Windows side 
 
 ### Linux (Kubuntu host and agent VM)
 
-Install from Microsoft's apt repository, not the standalone `.deb`, so the daily
-`unattended-upgrades` run keeps it current (`08-auto-updates.md` already allows
-`origin=packages.microsoft.com`).
+Keep an existing working VS Code installation (including Snap). For a new installation, use
+Microsoft's apt repository so the daily `unattended-upgrades` run keeps it current
+(`08-auto-updates.md` already allows `origin=packages.microsoft.com`).
 
 ```bash
 sudo apt install -y wget gpg apt-transport-https
@@ -52,8 +52,8 @@ Settings Sync is the live mechanism. The repo copy under
 [`../../user-home/vscode/`](../../user-home/vscode/) is the bootstrap source and the drift
 reference.
 
-1. Sign in: `Ctrl-Shift-P` > "Settings Sync: Turn On", authenticate with the GitHub account.
-   Sync covers settings, keybindings, extensions, snippets, UI state and profiles.
+1. Sign in: `Ctrl-Shift-P` > "Settings Sync: Turn On", authenticate with the GitHub account. Sync
+   covers settings, keybindings, extensions, snippets, UI state and profiles.
 2. On a machine where sync is not available, copy the two files into place instead:
 
    ```bash
@@ -72,9 +72,9 @@ code --list-extensions | head
 
 Only two overrides are carried; everything else is stock VS Code.
 
-| Key | Command |
-| --- | --- |
-| `Ctrl-Alt-L` | Format document |
+| Key            | Command                                            |
+| -------------- | -------------------------------------------------- |
+| `Ctrl-Alt-L`   | Format document                                    |
 | `Ctrl-Shift-T` | Java: go to test (replaces "reopen closed editor") |
 
 ### Keyboard shortcuts reference
@@ -106,9 +106,9 @@ Full list: [VS Code key bindings](https://code.visualstudio.com/docs/getstarted/
 Extensions are declared per project in `.vscode/extensions.json`, so opening a repository prompts
 for exactly what that repository needs. Nothing has to be installed by hand up front.
 
-Linters and formatters belong to the project that uses them, so `markdownlint`, `prettier`,
-`astro` and `tailwindcss` are declared per repository. Only the genuinely editor-wide ones are
-installed here:
+Linters and formatters belong to the project that uses them, so `markdownlint`, `prettier`, `astro`
+and `tailwindcss` are declared per repository. Only the genuinely editor-wide ones are installed
+here:
 
 ```bash
 code --install-extension editorconfig.editorconfig \
@@ -131,8 +131,8 @@ code --install-extension vscjava.vscode-java-pack \
      --install-extension vmware.vscode-boot-dev-pack
 ```
 
-`vscjava.vscode-java-pack` pulls in `redhat.java`, Maven, Gradle, debugger, test runner and
-project explorer. `vmware.vscode-boot-dev-pack` is the Spring Boot set.
+`vscjava.vscode-java-pack` pulls in `redhat.java`, Maven, Gradle, debugger, test runner and project
+explorer. `vmware.vscode-boot-dev-pack` is the Spring Boot set.
 
 ### Java settings
 

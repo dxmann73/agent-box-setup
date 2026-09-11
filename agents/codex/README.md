@@ -2,7 +2,8 @@
 
 [Codex CLI](https://developers.openai.com/codex/cli) is OpenAI's terminal-based coding agent.
 
-**Prerequisites:** ChatGPT Plus, Pro, Business, Edu, or Enterprise plan. Node.js 22+ via nvm.
+**Prerequisites:** ChatGPT Plus, Pro, Business, Edu, or Enterprise plan. System Node.js 24 and a
+user-owned npm global prefix.
 
 ## Installation
 

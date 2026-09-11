@@ -64,10 +64,29 @@ specialized Excel functionality are where the web apps and LibreOffice fall shor
 
 ## 7. Video editing
 
-A strong KDE-native alternative to CapCut is Kdenlive: <https://kdenlive.org/>
+Decision (September 11, 2026): Kdenlive on the host as the CapCut replacement. Channel: Snap from
+the `kde` publisher, `latest/stable`. Installed: 26.04.3 (rev 144). snapd refreshes it automatically
+([`../common/08-auto-updates.md`](../common/08-auto-updates.md) §2). Do not install it in the agent
+VM.
+
+On a new host:
 
 ```bash
-sudo apt install -y kdenlive
+sudo snap install kdenlive
+```
+
+<https://kdenlive.org/>
+
+KDE's Linux downloads are AppImage and Flatpak. Snap is the chosen channel here because it updates
+with no extra timer. Ubuntu apt on this machine offers 25.12.3; skip it. Do not install DaVinci
+Resolve.
+
+Intended use: cut clips, speed a section for a timelapse, and re-encode only when a different format
+is needed. Clips under `$HOME` (including Dropbox) are visible to the Snap. For USB or other
+removable volumes:
+
+```bash
+sudo snap connect kdenlive:removable-media
 ```
 
 ## 8. Steam and Proton
@@ -82,12 +101,10 @@ Game-by-game testing is important, especially for multiplayer titles with anti-c
 
 Prefer a Linux-native ext4 Steam library.
 
-## 9. Voice dictation
+## 9. Voice dictation reference
 
-Host-only: dictation needs the microphone and types into host applications.
-
-Evaluate [VibeTyper](https://vibetyper.com/docs). If that doesn't work, try
-[repackaged WhisprFlow](https://github.com/wispr-flow-linux/wispr-flow-linux).
+[Vibe Typer](https://vibetyper.com/docs) is already installed, paid for, and working. No dictation
+installation or alternative-tool evaluation is part of this setup.
 
 ## 10. Application checklist
 
@@ -97,10 +114,11 @@ Evaluate [VibeTyper](https://vibetyper.com/docs). If that doesn't work, try
 - [ ] WhatsApp Web works
 - [ ] VLC works
 - [ ] Office workflow tested
+- [x] Kdenlive installed (Snap 26.04.3, KDE)
 - [ ] video editing workflow tested
 - [ ] Steam installed
 - [ ] important Steam games tested
 - [ ] controllers/peripherals tested
-- [ ] voice dictation tested
+- [ ] Vibe Typer installed and working
 
 Next: [03-system-config.md](03-system-config.md)

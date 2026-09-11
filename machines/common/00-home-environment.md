@@ -22,7 +22,8 @@ The `user-home/` contains dotfiles and configuration that should live in your ho
 - `.profile` - User profile settings
 - `.gitconfig` - Git configuration
 - `ua.sh` - Update-all script: fetch/pull all git repos under a root dir
-- `update-tools.sh` - Weekly tooling update: npm globals, agent CLIs, SDKMAN (see `08-auto-updates.md`)
+- `update-tools.sh` - Weekly tooling update: npm globals, agent CLIs, SDKMAN (see
+  `08-auto-updates.md`)
 - `vscode/` - VS Code settings/keybindings reference copy (see `04-ide+tooling.md`)
 
 The repo root also contains:
@@ -30,8 +31,6 @@ The repo root also contains:
 - `.markdownlint.json` - Shared markdownlint config, symlinked to `~/projects/.markdownlint.json`
 
 ---
-
-
 
 ## 2. Symlink Configuration Files
 
@@ -52,12 +51,10 @@ ln -sf ~/projects/agent-box-setup/.markdownlint.json ~/projects/.markdownlint.js
 
 ---
 
-
-
 ## 3. Set Up Secrets File
 
-The `.bash_secrets` file stores API tokens and credentials. It is sourced by `.bashrc` but never checked into version
-control (via `.gitignore`).
+The `.bash_secrets` file stores API tokens and credentials. It is sourced by `.bashrc` but never
+checked into version control (via `.gitignore`).
 
 ```bash
 # Copy the template to create your secrets file (in the repo)
@@ -74,8 +71,6 @@ Update the placeholder values with your real tokens (e.g., `HF_TOKEN` for Huggin
 
 ---
 
-
-
 ## 4. Reload Shell Configuration
 
 Apply the new configuration:
@@ -85,8 +80,6 @@ source ~/.bashrc
 ```
 
 ---
-
-
 
 ## 5. Verify
 
@@ -111,12 +104,10 @@ alias
 git config --global --list
 
 # Verify secrets are loaded
-echo $HF_TOKEN
+test -n "${HF_TOKEN:-}" && echo "HF_TOKEN is set"
 ```
 
 ---
-
-
 
 ## Verification Checklist
 
@@ -131,6 +122,7 @@ echo $HF_TOKEN
 - [ ] Shell configuration reloaded (`source ~/.bashrc`)
 - [ ] Aliases working (test with `alias` command)
 - [ ] Git config loaded (`git config --global --list`)
-- [ ] Secrets loaded (e.g., `echo $HF_TOKEN` shows your token)
+- [ ] Secrets loaded (e.g., `test -n "${HF_TOKEN:-}" && echo "HF_TOKEN is set"` confirms presence
+      without printing the token)
 
-**Next:** Continue to [`../../agents/`](../../agents/README.md)
+**Next:** Continue to [core tools](02-core-tools.md), then Node.js before agent installation.

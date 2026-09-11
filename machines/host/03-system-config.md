@@ -33,6 +33,9 @@ repo and the local-model work.
 
 ## 2. Backups
 
+Current host decision (September 10, 2026): defer host backups. Do not configure a backup service or
+destination during this setup. The guidance below is for later.
+
 Configure Linux backups before moving the only copy of important data to Kubuntu.
 
 Prioritize:
@@ -61,11 +64,14 @@ A useful packaging rule is:
 
 ```text
 System/development components → apt
-Desktop applications          → apt or Flatpak
+Desktop applications          → apt, Snap, or Flatpak
 GPU/ROCm compute stack        → AMD-supported instructions
 ```
 
-Kubuntu/Ubuntu may also use Snap. There is no need to remove it preemptively.
+Prefer Snap or Flatpak when the Ubuntu package lags and the app should follow its own release
+cadence. Snap refreshes itself; Flatpak uses the user timer in
+[`../common/08-auto-updates.md`](../common/08-auto-updates.md) §2. Kubuntu/Ubuntu already ships
+snapd. There is no need to remove it preemptively.
 
 Avoid mixing packaging systems for low-level GPU components without a reason.
 
@@ -115,7 +121,8 @@ reach inference while the LAN cannot. Rules for that interface are in
 - [ ] packaging rule understood
 - [ ] SSH client/server state decided
 - [ ] `ufw` enabled, default deny incoming
-- [ ] unattended security updates active ([`../common/08-auto-updates.md`](../common/08-auto-updates.md))
+- [ ] unattended security updates active
+      ([`../common/08-auto-updates.md`](../common/08-auto-updates.md))
 - [ ] local model endpoint not exposed to the LAN
 
 Next: [04-dev-and-agents.md](04-dev-and-agents.md)

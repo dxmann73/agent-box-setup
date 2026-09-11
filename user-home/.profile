@@ -25,3 +25,7 @@ fi
 if [ -d "$HOME/.local/bin" ] ; then
     PATH="$HOME/.local/bin:$PATH"
 fi
+
+# Shared CLI paths also apply to non-interactive login shells.
+export PATH="$HOME/.npm-global/bin:$HOME/.local/bin:$PATH"
+export LIBVIRT_DEFAULT_URI="qemu:///system"

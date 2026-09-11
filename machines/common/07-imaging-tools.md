@@ -59,14 +59,14 @@ Expected output: help line and `sharp OK`, `resvg OK`
 
 Install required and optional tools; all provide global CLI commands:
 
-| Tool | Package | Use case |
-|-------------|----------------------|-----------------------------------|
-| ffmpeg | `ffmpeg` | Animated images, GIFs, thumbnails |
-| Inkscape | `inkscape` | SVG editing, `inkscape --export-type=png` |
-| GraphicsMagick | `graphicsmagick` | ImageMagick alternative, sometimes faster |
-| pngquant | `pngquant` | Lossy PNG compression |
-| optipng | `optipng` | Lossless PNG optimization |
-| exiftool | `libimage-exiftool-perl` | Read/write image metadata |
+| Tool           | Package                  | Use case                                  |
+| -------------- | ------------------------ | ----------------------------------------- |
+| ffmpeg         | `ffmpeg`                 | Animated images, GIFs, thumbnails         |
+| Inkscape       | `inkscape`               | SVG editing, `inkscape --export-type=png` |
+| GraphicsMagick | `graphicsmagick`         | ImageMagick alternative, sometimes faster |
+| pngquant       | `pngquant`               | Lossy PNG compression                     |
+| optipng        | `optipng`                | Lossless PNG optimization                 |
+| exiftool       | `libimage-exiftool-perl` | Read/write image metadata                 |
 
 ```bash
 # Required imaging CLIs

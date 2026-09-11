@@ -32,13 +32,12 @@ gh auth login
 gh auth status
 ```
 
-Prefer an account or fine-grained token limited to the repositories agents actually work on. A
-token that can push to everything is a token an agent can push to everything with.
+Prefer an account or fine-grained token limited to the repositories agents actually work on. A token
+that can push to everything is a token an agent can push to everything with.
 
 ## 4. API tokens
 
-Tokens live in `~/.bash_secrets`, symlinked from
-[`../../user-home/`](../../user-home/) per
+Tokens live in `~/.bash_secrets`, symlinked from [`../../user-home/`](../../user-home/) per
 [`../common/00-home-environment.md`](../common/00-home-environment.md). The template is
 `.bash_secrets.CHANGE-ME`; the real file is never committed.
 

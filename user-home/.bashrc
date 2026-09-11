@@ -138,8 +138,8 @@ export PATH="$HOME/.npm-global/bin:$PATH"
 export LIBVIRT_DEFAULT_URI="qemu:///system"
 
 # Editor
-export EDITOR="cursor --wait"
-export VISUAL="cursor --wait"
+export EDITOR="code --wait"
+export VISUAL="code --wait"
 
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="$HOME/.sdkman"

@@ -12,12 +12,12 @@ Do not erase Windows during the first installation. Keep dual boot until you hav
 - USB-C, docking and external displays;
 - Steam games and controllers;
 - Microsoft Office workflow;
-- CapCut replacement/workflow;
+- Kdenlive (CapCut replacement) workflow;
 - development tools;
 - local LLMs.
 
-Office desktop, CapCut, and some anti-cheat games are the strongest reasons you may still need
-Windows.
+Office desktop, video editing that Kdenlive cannot cover, and some anti-cheat games are the
+strongest reasons you may still need Windows.
 
 ## 2. Back up Windows
 

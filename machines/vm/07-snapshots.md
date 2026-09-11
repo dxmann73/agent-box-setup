@@ -6,16 +6,16 @@ cheap to throw away and rebuild (specification §3, §13).
 ## 1. Persistence
 
 - the VM stays powered on; the host client connecting and disconnecting changes nothing
-- T3 Code sessions and agent processes survive a disconnect, see [04-t3code.md](04-t3code.md)
+- BB sessions and agent processes survive a disconnect, see [04-bb.md](04-bb.md)
 - host suspend/resume with a running VM is worth re-testing explicitly, see
   [`../host/01-hardware-validation.md`](../host/01-hardware-validation.md)
 
 ## 2. Snapshots
 
-libvirt snapshots of the qcow2 disk. Taken while the VM runs they include memory state, so
-reverting lands in a running machine rather than at a boot prompt. This works because the guest
-uses BIOS firmware: libvirt restricts internal snapshots on UEFI/pflash domains, which is one of
-the reasons [`../host/05-hypervisor.md`](../host/05-hypervisor.md) §5 chooses SeaBIOS.
+libvirt snapshots of the qcow2 disk. Taken while the VM runs they include memory state, so reverting
+lands in a running machine rather than at a boot prompt. This works because the guest uses BIOS
+firmware: libvirt restricts internal snapshots on UEFI/pflash domains, which is one of the reasons
+[`../host/05-hypervisor.md`](../host/05-hypervisor.md) §5 chooses SeaBIOS.
 
 ```bash
 virsh snapshot-create-as agent-vm clean-guest --description 'bootstrapped, no toolchain' --atomic
@@ -30,11 +30,11 @@ per-user session daemon and report that the domain does not exist.
 
 Take one at the points where recovery is actually useful:
 
-| Snapshot | When |
-| --- | --- |
-| `clean-guest` | after [01-bootstrap.md](01-bootstrap.md), before any toolchain |
-| `toolchain` | after [02-dev-and-agents.md](02-dev-and-agents.md) passes verification |
-| `pre-experiment` | before anything invasive an agent is about to attempt |
+| Snapshot         | When                                                                   |
+| ---------------- | ---------------------------------------------------------------------- |
+| `clean-guest`    | after [01-bootstrap.md](01-bootstrap.md), before any toolchain         |
+| `toolchain`      | after [02-dev-and-agents.md](02-dev-and-agents.md) passes verification |
+| `pre-experiment` | before anything invasive an agent is about to attempt                  |
 
 Delete `pre-experiment` snapshots once the experiment is settled. Internal snapshots live inside the
 qcow2 file: every one of them grows it and long chains cost read performance.
@@ -48,8 +48,8 @@ Two things a snapshot does **not** cover:
 
 ## 3. Backup
 
-Two files, both on the host: the disk image in libvirt's pool, and the domain XML that describes
-the hardware around it. Back up a powered-off VM, not a running one:
+Two files, both on the host: the disk image in libvirt's pool, and the domain XML that describes the
+hardware around it. Back up a powered-off VM, not a running one:
 
 ```bash
 virsh shutdown agent-vm                                   # wait for it to stop
@@ -65,12 +65,13 @@ a hand-rebuilt domain. Restoring is `virsh define ~/vms/agent-vm.xml` plus the i
 pool. There is no NVRAM file to keep track of, because the guest is BIOS-booted
 ([`../host/05-hypervisor.md`](../host/05-hypervisor.md) §5).
 
-Both paths are in the host backup set ([`../host/03-system-config.md`](../host/03-system-config.md)).
+Both paths are in the host backup set
+([`../host/03-system-config.md`](../host/03-system-config.md)).
 
 What actually has to survive a lost VM:
 
 - pushed git branches — anything unpushed in `~/projects` is at risk
-- this repo's configuration, which is the source of truth for skills, agent config and T3 Code
+- this repo's configuration, which is the source of truth for skills, agent config and BB
   configuration (specification §9)
 
 Everything else should be reproducible by rebuilding.
@@ -80,7 +81,7 @@ Everything else should be reproducible by rebuilding.
 The reproducibility claim is only real if it has been executed:
 
 ```text
-fresh Ubuntu VM → bootstrap → toolchain → agents → T3 Code → Playwright → agent-config repo → ready
+fresh Ubuntu VM → bootstrap → toolchain → agents → BB → Playwright → agent-config repo → ready
 ```
 
 Step one, the Kubuntu install, is either hand-driven once or scripted with autoinstall
@@ -107,9 +108,9 @@ virt-clone --original agent-vm --name agent-vm-rebuild \
 it a different hostname before putting it on the tailnet. Delete it with
 `virsh undefine agent-vm-rebuild --remove-all-storage` when the test is done.
 
-Everything after the guest install — toolchain, agents, T3 Code, Playwright, agent config — comes
-from this repo and should stay scripted. Prefer deterministic scripts over asking an agent to
-reproduce machine state by hand.
+Everything after the guest install — toolchain, agents, BB, Playwright, agent config — comes from
+this repo and should stay scripted. Prefer deterministic scripts over asking an agent to reproduce
+machine state by hand.
 
 ## 5. Checklist
 

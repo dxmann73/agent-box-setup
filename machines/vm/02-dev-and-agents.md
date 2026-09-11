@@ -19,16 +19,16 @@ mkdir -p ~/projects
 
 ## 2. Common guides, in order
 
-| Step | Guide |
-| --- | --- |
-| shell/dotfiles | [`../common/00-home-environment.md`](../common/00-home-environment.md) |
-| coding agents, skills, hooks | [`../../agents/`](../../agents/README.md) |
-| core tools | [`../common/02-core-tools.md`](../common/02-core-tools.md) |
-| languages/runtimes | [`../common/03-dev-environment.md`](../common/03-dev-environment.md) |
-| editor | [`../common/04-ide+tooling.md`](../common/04-ide+tooling.md) |
-| imaging | [`../common/07-imaging-tools.md`](../common/07-imaging-tools.md) |
-| automatic updates | [`../common/08-auto-updates.md`](../common/08-auto-updates.md) |
-| optional | [`../common/06-optional.md`](../common/06-optional.md) |
+| Step                         | Guide                                                                  |
+| ---------------------------- | ---------------------------------------------------------------------- |
+| shell/dotfiles               | [`../common/00-home-environment.md`](../common/00-home-environment.md) |
+| core tools                   | [`../common/02-core-tools.md`](../common/02-core-tools.md)             |
+| languages/runtimes           | [`../common/03-dev-environment.md`](../common/03-dev-environment.md)   |
+| coding agents, skills, hooks | [`../../agents/`](../../agents/README.md)                              |
+| editor                       | [`../common/04-ide+tooling.md`](../common/04-ide+tooling.md)           |
+| imaging                      | [`../common/07-imaging-tools.md`](../common/07-imaging-tools.md)       |
+| automatic updates            | [`../common/08-auto-updates.md`](../common/08-auto-updates.md)         |
+| optional                     | [`../common/06-optional.md`](../common/06-optional.md)                 |
 
 Claude Code, Cursor CLI and Codex coexist and run in multiple simultaneous instances. Agent choice
 does not change anything about the isolation architecture — it is the VM that isolates, not the
@@ -45,8 +45,8 @@ Agent-worked repositories live in `~/projects` **inside the VM** (specification 
 Agents need a browser for testing and for producing proof of work — screenshots, traces, videos,
 console output (specification §7). Headless is the normal mode.
 
-Install the browser and its system libraries once, machine-wide, so any project can drive it
-without repeating the download:
+Install the browser and its system libraries once, machine-wide, so any project can drive it without
+repeating the download:
 
 ```bash
 sudo npx --yes playwright@latest install-deps chromium
@@ -63,8 +63,8 @@ Verify with a headless screenshot:
 npx --yes playwright@latest screenshot --viewport-size=1280,720 https://example.com /tmp/pw.png
 ```
 
-The Chromium that Playwright downloads is separate from the host's personal Chrome profile, and
-must stay that way. Never mount the host browser profile into the VM.
+The Chromium that Playwright downloads is separate from the host's personal Chrome profile, and must
+stay that way. Never mount the host browser profile into the VM.
 
 ## 5. Model endpoints
 
@@ -81,7 +81,8 @@ cd ~/projects/agent-box-setup
 ## 7. Checklist
 
 - [ ] apt development basics installed
-- [ ] unattended security updates active ([`../common/08-auto-updates.md`](../common/08-auto-updates.md))
+- [ ] unattended security updates active
+      ([`../common/08-auto-updates.md`](../common/08-auto-updates.md))
 - [ ] dotfiles symlinked, secrets file populated
 - [ ] `gh auth status` shows logged in with the VM's own credentials
 - [ ] Docker works without sudo

@@ -13,12 +13,11 @@ sudo apt update && sudo apt full-upgrade
 ```
 
 That is the last upgrade you should have to type. Set up unattended patching now, so the guest stays
-current on its own from here on:
-[`../common/08-auto-updates.md`](../common/08-auto-updates.md).
+current on its own from here on: [`../common/08-auto-updates.md`](../common/08-auto-updates.md).
 
-The guest is a full Plasma desktop, the same one as the host. Agents do not need it — T3 Code runs
-headless in the VM ([04-t3code.md](04-t3code.md)) and Playwright drives headless Chromium — but a
-human inspecting an agent's work does.
+The guest is a full Plasma desktop, the same one as the host. Agents do not need it — BB runs
+headless in the VM ([04-bb.md](04-bb.md)) and Playwright drives headless Chromium — but a human
+inspecting an agent's work does.
 
 ## 2. Desktop settings
 
@@ -41,9 +40,9 @@ only works there (§3), and nothing in this guest needs Wayland.
 
 ## 3. Getting at the desktop
 
-One way in, deliberately: the **SPICE console**, from `virt-manager` or from
-`virt-viewer agent-vm` on the host. It works before the network is up, it is what the Kubuntu
-installer ran in, it needs no password of its own, and it opens no listening port.
+One way in, deliberately: the **SPICE console**, from `virt-manager` or from `virt-viewer agent-vm`
+on the host. It works before the network is up, it is what the Kubuntu installer ran in, it needs no
+password of its own, and it opens no listening port.
 
 Clipboard sharing and window auto-resize need the guest agent:
 
@@ -57,10 +56,10 @@ clipboard channel does not work — a long-standing gap, not a misconfiguration.
 `Session=plasmax11` (§2) and the clipboard works both ways.
 
 **Not installed: KRdp.** Plasma's RDP server was the earlier plan for reaching the desktop from
-other machines. It is not needed — other machines reach *T3 Code*, not the guest desktop
-([04-t3code.md](04-t3code.md)) — and it would add a password-protected login surface to the machine
-that holds every agent credential. If a graphical session from a second machine ever becomes
-necessary, `virt-viewer` over SSH to the host is the route that adds no new listener:
+other machines. It is not needed — other machines reach _BB_, not the guest desktop
+([04-bb.md](04-bb.md)) — and it would add a password-protected login surface to the machine that
+holds every agent credential. If a graphical session from a second machine ever becomes necessary,
+`virt-viewer` over SSH to the host is the route that adds no new listener:
 
 ```bash
 virt-viewer --connect "qemu+ssh://you@host/system" agent-vm
@@ -103,8 +102,8 @@ system. A narrow-looking rule that is trivially escaped is worse than a wide one
 down, because only the wide one gets treated with the caution it deserves.
 
 The containment is the VM, not the sudoers file (specification §2, §3). Treat everything reachable
-from inside the guest as reachable by an agent, and keep the boundary where it actually holds:
-what is shared in ([06-shared-folders.md](06-shared-folders.md)), what credentials live here
+from inside the guest as reachable by an agent, and keep the boundary where it actually holds: what
+is shared in ([06-shared-folders.md](06-shared-folders.md)), what credentials live here
 ([05-credentials.md](05-credentials.md)), and what the network reaches
 ([03-networking.md](03-networking.md)).
 

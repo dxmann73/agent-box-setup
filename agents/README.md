@@ -5,14 +5,19 @@ Agent CLIs, their configuration, and the shared skill set. Installed identically
 
 ## Layout
 
-| Path | Contents |
-| ---- | -------- |
-| [claude/](claude/README.md) | Claude Code — install, `settings.json`, statusline, caveman |
+| Path                        | Contents                                                         |
+| --------------------------- | ---------------------------------------------------------------- |
+| [claude/](claude/README.md) | Claude Code — install, `settings.json`, statusline, caveman      |
 | [cursor/](cursor/README.md) | Cursor CLI Agent — install, `cli-config.json` reference, caveman |
-| [codex/](codex/README.md) | Codex CLI — install, `config.toml`, caveman |
-| `skills/` | Skill set, single source of truth (see [Skills](#skills)) |
-| `AGENTS.md` | Global agent rule file, symlinked to `~/AGENTS.md` |
-| `.skill-lock.json` | Lock file written by `npx skills` |
+| [codex/](codex/README.md)   | Codex CLI — install, `config.toml`, caveman                      |
+| `skills/`                   | Skill set, single source of truth (see [Skills](#skills))        |
+| `AGENTS.md`                 | Global agent rule file, symlinked to `~/AGENTS.md`               |
+| `.skill-lock.json`          | Lock file written by `npx skills`                                |
+
+## Host configuration
+
+On a personal host, preserve existing application configuration and plugins. Do not replace authenticated app state or remove existing plugin
+connections.
 
 ## Order
 
@@ -70,10 +75,10 @@ session:
 Codex take on [skills/evals](https://developers.openai.com/blog/eval-skills).
 
 Skills are managed via the [skills CLI](https://github.com/vercel-labs/skills) (`npx skills`).
-Because `~/.agents` is symlinked to `agents/`, a global install (`-g`) writes skill files
-directly into `agents/skills/` and the lock file into `agents/.skill-lock.json`,
-keeping everything version-controlled in this repo. Agent-specific symlinks (`~/.claude/skills/`,
-`~/.cursor/skills/`) are often created automatically by the CLI, but do not rely on that alone:
+Because `~/.agents` is symlinked to `agents/`, a global install (`-g`) writes skill files directly
+into `agents/skills/` and the lock file into `agents/.skill-lock.json`, keeping everything
+version-controlled in this repo. Agent-specific symlinks (`~/.claude/skills/`, `~/.cursor/skills/`,
+`~/.codex/skills/`) are often created automatically by the CLI, but do not rely on that alone:
 finish with the directory-driven sync below so every box matches the repo exactly. Set
 `DISABLE_TELEMETRY=1` to opt out of anonymous install telemetry (add to `~/.bash_secrets`).
 
@@ -118,17 +123,18 @@ npx skills add elastic/agent-skills -g \
 
 **Custom / repo-owned skills** (for example `gg-commit-push`, `markdownlint`, `quarkus`,
 `brainstorming`, `grill-me`, `new-project`, `sync-repo-setup`) are not managed by `npx skills add`
-or `npx skills update` (no lockfile entry).
-Some upstream-managed skills may also fail to create or refresh agent-specific symlinks on an older
-box. Normalize all skill links from the repo after installs or updates:
+or `npx skills update` (no lockfile entry). Some upstream-managed skills may also fail to create or
+refresh agent-specific symlinks on an older box. Normalize all skill links from the repo after
+installs or updates:
 
 ```bash
-mkdir -p ~/.claude/skills ~/.cursor/skills
+mkdir -p ~/.claude/skills ~/.cursor/skills ~/.codex/skills
 find ~/.claude/skills ~/.cursor/skills -maxdepth 1 -xtype l -delete
 find ~/projects/agent-box-setup/agents/skills -mindepth 1 -maxdepth 1 -type d -print0 | while IFS= read -r -d '' skill_dir; do
   skill_name="$(basename "$skill_dir")"
   ln -sfn "$skill_dir" ~/.claude/skills/"$skill_name"
   ln -sfn "$skill_dir" ~/.cursor/skills/"$skill_name"
+  ln -sfn "$skill_dir" ~/.codex/skills/"$skill_name"
 done
 ```
 

@@ -3,8 +3,8 @@
 The host runs the hypervisor; the VM it creates is the security boundary for all agent work
 (specification §3).
 
-> **Status: unverified.** The commands have not been run on this box yet. Correct them from
-> the real setup and delete this notice.
+> **Status:** host prerequisites are being validated on Kubuntu 26.04. VM creation and
+> guest-dependent checks remain unverified and require a hands-on walkthrough.
 
 Every `virsh` command in this file and in [`../vm/`](../vm/) assumes
 `LIBVIRT_DEFAULT_URI=qemu:///system` is exported (§3).
@@ -17,15 +17,15 @@ else. Nothing here is out-of-tree, licensed, or dependent on a vendor's Linux su
 
 What the requirements actually need, and where each is met:
 
-| Requirement | Mechanism |
-| --- | --- |
-| a full VM, not a container (§2, §3) | KVM hardware virtualization |
-| cheap to recreate (§3, §13) | a baseline qcow2 to clone from, plus optional autoinstall |
-| snapshots (§14) | qcow2 snapshots via `virsh snapshot-*`, BIOS firmware keeps them unrestricted |
-| narrow host directory shares (§8) | virtiofs, one `<filesystem>` device per share, read-only supported |
-| VM reaches the host model endpoint (§10) | the NAT bridge's host address, `192.168.122.1` |
-| outbound Internet (§11) | the same libvirt NAT network |
-| runs continuously, survives client disconnects (§14) | `virsh autostart`, the T3 Code server runs as a service |
+| Requirement                                          | Mechanism                                                                     |
+| ---------------------------------------------------- | ----------------------------------------------------------------------------- |
+| a full VM, not a container (§2, §3)                  | KVM hardware virtualization                                                   |
+| cheap to recreate (§3, §13)                          | a baseline qcow2 to clone from, plus optional autoinstall                     |
+| snapshots (§14)                                      | qcow2 snapshots via `virsh snapshot-*`, BIOS firmware keeps them unrestricted |
+| narrow host directory shares (§8)                    | virtiofs, one `<filesystem>` device per share, read-only supported            |
+| VM reaches the host model endpoint (§10)             | the NAT bridge's host address, `192.168.122.1`                                |
+| outbound Internet (§11)                              | the same libvirt NAT network                                                  |
+| runs continuously, survives client disconnects (§14) | `virsh autostart`, the BB server runs as a service                            |
 
 Rejected:
 
@@ -53,16 +53,17 @@ grep -c svm /proc/cpuinfo        # AMD-V; a count > 0 means it is enabled
 ## 3. Install
 
 ```bash
-sudo apt install -y qemu-kvm libvirt-daemon-system libvirt-clients virtinst virt-manager \
+sudo apt install -y qemu-system-x86 libvirt-daemon-system libvirt-clients virtinst virt-manager \
                     virt-viewer virtiofsd libnss-libvirt
 sudo usermod -aG libvirt,kvm "$USER"
+# qemu-kvm is a virtual package on 26.04; select qemu-system-x86 explicitly.
 ```
 
 Log out and back in for the group change.
 
 ### Point `virsh` at the system daemon, once
 
-A normal user's `virsh` defaults to `qemu:///session`, a *different* hypervisor instance from the
+A normal user's `virsh` defaults to `qemu:///session`, a _different_ hypervisor instance from the
 `qemu:///system` one this setup uses. Without this, `virsh start agent-vm` reports that the domain
 does not exist while `virt-manager` shows it running. Set it once in the shell config
 ([`../common/00-home-environment.md`](../common/00-home-environment.md) symlinks `.bashrc`):
@@ -79,15 +80,30 @@ Verify:
 systemctl is-active libvirtd            # or virtqemud on a modular-daemon setup
 virsh uri                               # must print qemu:///system
 virsh list --all                        # must work without sudo
-virsh net-list --all                    # 'default' should be active and autostart
+virsh net-list --all
+# If default is inactive, start it; enable autostart once:
+virsh net-start default
+virsh net-autostart default
 ```
 
 `libnss-libvirt` lets the host resolve the guest by name, so `ssh agent-vm` works without knowing
 its DHCP address. Add the two modules to the `hosts:` line of `/etc/nsswitch.conf`:
 
 ```bash
-sudo sed -i 's/^hosts:.*/hosts:          files libvirt libvirt_guest mdns4_minimal [NOTFOUND=return] dns/' \
-  /etc/nsswitch.conf
+# Preserve existing resolver modules; insert libvirt after files.
+sudo python3 - <<'PYCODE'
+from pathlib import Path
+p = Path('/etc/nsswitch.conf')
+lines = p.read_text().splitlines()
+for i, line in enumerate(lines):
+    if line.startswith('hosts:'):
+        fields = line.split()
+        for module in ('libvirt_guest', 'libvirt'):
+            if module not in fields:
+                fields.insert(2, module)
+        lines[i] = ' '.join(fields)
+p.write_text('\n'.join(lines) + '\n')
+PYCODE
 getent hosts agent-vm                   # works once the guest is installed and running
 ```
 
@@ -95,21 +111,30 @@ Name resolution matches the guest's **hostname**, so the guest must be named `ag
 time (§5).
 
 Versions in Kubuntu 26.04: libvirt 12.0, QEMU 10.2, virt-manager 5.1, virtiofsd 1.13. The virtiofs
-read-only export used in [`../vm/06-shared-folders.md`](../vm/06-shared-folders.md) needs libvirt
-≥ 11.0 and virtiofsd ≥ 1.13, so 26.04 is the floor for this setup.
+read-only export used in [`../vm/06-shared-folders.md`](../vm/06-shared-folders.md) needs libvirt ≥
+11.0 and virtiofsd ≥ 1.13, so 26.04 is the floor for this setup.
 
 ## 4. Storage
 
-Disks stay in libvirt's stock `default` pool, `/var/lib/libvirt/images`. Nothing to define, nothing
-to autostart, and no `chmod 711 ~` opening the home directory to every local user just so `qemu`
-can traverse it.
+Disks stay in libvirt's stock `default` pool, `/var/lib/libvirt/images`. Check whether the pool
+exists; a fresh libvirt installation may have none. Create and activate the directory pool if
+absent. No home-directory permission change is needed.
 
 ```bash
-virsh pool-list --all                   # 'default' active and autostart
+virsh pool-list --all
+# Only if the default pool is absent:
+virsh pool-define-as default dir --target /var/lib/libvirt/images
+virsh pool-start default
+virsh pool-autostart default
+# If it already exists, just start it if inactive and enable autostart.
 ```
 
-`~/vms/` still exists, but only for host-side text: the ISO, the dumped domain XML and the virtiofs
-share definitions ([`../vm/06-shared-folders.md`](../vm/06-shared-folders.md)).
+`~/vms/` still exists, but only for host-side text: the dumped domain XML and the virtiofs share
+definitions ([`../vm/06-shared-folders.md`](../vm/06-shared-folders.md)).
+
+Installer ISOs go to `/var/lib/libvirt/boot/`, libvirt's stock location for them. QEMU runs as
+`libvirt-qemu`, which cannot traverse a `750` home directory; letting it in with an ACL on `$HOME`
+would open most of the home directory to the QEMU process, the host side of the boundary.
 
 ```bash
 mkdir -p ~/vms
@@ -119,6 +144,9 @@ Back up `/var/lib/libvirt/images/agent-vm.qcow2` together with `~/vms/`, see
 [`../vm/07-snapshots.md`](../vm/07-snapshots.md).
 
 ## 5. Create the VM
+
+**Current handoff boundary:** stop before this section. VM creation will be done with the user, one
+step at a time. Do not run `virt-install` or define a guest until that walkthrough begins.
 
 The guest is **Kubuntu 26.04 desktop**, same as the host: Plasma is what the eyes are trained on,
 and a real desktop in the VM means a browser, a file manager and a graphical editor are there when
@@ -133,43 +161,61 @@ Two decisions that keep the rest of the setup short:
   alongside the disk image ([`../vm/07-snapshots.md`](../vm/07-snapshots.md)), and avoids libvirt's
   restrictions on snapshotting a pflash domain.
 
-Download the [Kubuntu ISO](https://kubuntu.org/getkubuntu/) to `~/vms/`.
+Download the [Kubuntu ISO](https://kubuntu.org/getkubuntu/) to `~/vms/`, verify it, and move it to
+`/var/lib/libvirt/boot/` (§4). Take the newest point release in the release directory, `26.04.1` at
+the time of writing:
+
+```bash
+cd ~/vms
+BASE=https://cdimage.ubuntu.com/kubuntu/releases/26.04/release
+curl -fLO -C - "$BASE/kubuntu-26.04.1-desktop-amd64.iso"
+curl -fLO "$BASE/SHA256SUMS"
+curl -fLO "$BASE/SHA256SUMS.gpg"
+gpgv --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg SHA256SUMS.gpg SHA256SUMS
+sha256sum --check --ignore-missing SHA256SUMS
+sudo mv kubuntu-26.04.1-desktop-amd64.iso /var/lib/libvirt/boot/
+```
+
+`gpgv` must report a good signature from the Ubuntu CD Image Automatic Signing Key. That key ships
+in `ubuntu-keyring`, so the trust comes from the installed system, not from the download server;
+only after that does the checksum `OK` mean anything. When a newer point release replaces `26.04.1`,
+update the filename here and in the commands below.
 
 ### The one command
 
 ```bash
 virt-install --name agent-vm --osinfo detect=on,name=ubuntu24.04 \
-  --vcpus 8 --cpu host-passthrough \
-  --memory 24576 --memballoon model=virtio,freePageReporting=on \
+  --vcpus 20 --cpu host-passthrough \
+  --memory 32768 --memballoon model=virtio,freePageReporting=on \
   --memorybacking source.type=memfd,access.mode=shared \
   --disk size=200,format=qcow2,bus=virtio,discard=unmap \
   --network network=default,model=virtio \
-  --boot bios \
+  --boot firmware=bios \
   --graphics spice,listen=none,gl.enable=yes \
   --video virtio,accel3d=yes \
-  --cdrom "$HOME/vms/kubuntu-26.04-desktop-amd64.iso" --autostart
+  --cdrom /var/lib/libvirt/boot/kubuntu-26.04.1-desktop-amd64.iso --autostart
 ```
 
 What each choice is for:
 
-| Flag | Reason |
-| --- | --- |
-| `--vcpus 8 --cpu host-passthrough` | 8 of 24 threads; leaves the host responsive and the model runtime fed |
-| `--memory 24576` | desktop, browsers, several agents; the balloon gives idle RAM back |
-| `--memorybacking source.type=memfd,access.mode=shared` | **required** for virtiofs shares; adding it later means editing the domain and rebooting |
-| `--disk size=200,...,discard=unmap` | 200 GiB sparse qcow2 in the `default` pool; TRIM reaches the host filesystem |
-| `--network network=default,model=virtio` | outbound NAT and the host model endpoint on one interface ([`../vm/03-networking.md`](../vm/03-networking.md)) |
-| `--boot bios` | SeaBIOS, see above |
-| `--graphics spice,listen=none,gl.enable=yes` + `--video virtio,accel3d=yes` | Plasma without a software renderer; virgl needs a local client, and the console is local anyway |
-| `--autostart` | the VM comes back with the host (§14) |
+| Flag                                                                        | Reason                                                                                                                                                                                                                     |
+| --------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--vcpus 20 --cpu host-passthrough`                                         | 20 of 24 threads; idle vCPUs cost nothing, default cgroup weights keep the desktop usable under contention, 4 threads stay free for QEMU, `virtiofsd` and the model runtime ([load test](../../_incoming/vm-load-test.md)) |
+| `--memory 32768`                                                            | desktop, browsers, many parallel agents; the balloon returns only free pages, so count all 32 GiB against host RAM shared with the iGPU model ([load test](../../_incoming/vm-load-test.md))                               |
+| `--memorybacking source.type=memfd,access.mode=shared`                      | **required** for virtiofs shares; adding it later means editing the domain and rebooting                                                                                                                                   |
+| `--disk size=200,...,discard=unmap`                                         | 200 GiB sparse qcow2 in the `default` pool; TRIM reaches the host filesystem                                                                                                                                               |
+| `--network network=default,model=virtio`                                    | outbound NAT and the host model endpoint on one interface ([`../vm/03-networking.md`](../vm/03-networking.md))                                                                                                             |
+| `--boot firmware=bios`                                                      | SeaBIOS, see above; written as `<os firmware="bios">` so a future UEFI default cannot change it (there is a `--boot uefi` shortcut, but no `--boot bios`)                                                                  |
+| `--graphics spice,listen=none,gl.enable=yes` + `--video virtio,accel3d=yes` | Plasma without a software renderer; virgl needs a local client, and the console is local anyway                                                                                                                            |
+| `--autostart`                                                               | the VM comes back with the host (§14)                                                                                                                                                                                      |
 
 `--osinfo detect=on,name=ubuntu24.04` detects from the ISO and falls back to the 24.04 profile
 rather than aborting: `osinfo-db` does not always carry the newest release id yet. Check with
 `osinfo-query os | grep ubuntu` if curious.
 
-`virt-manager` can do the same thing through **New VM** → Local install media →
-**Customize configuration before install**, but every setting above then has to be found in the
-GUI, and shared memory in particular is easy to miss. Prefer the command.
+`virt-manager` can do the same thing through **New VM** → Local install media → **Customize
+configuration before install**, but every setting above then has to be found in the GUI, and shared
+memory in particular is easy to miss. Prefer the command.
 
 ### Install the guest
 
@@ -215,25 +261,25 @@ Generate the password hash with `mkpasswd --method=SHA-512`, and use the host ke
 `~/.ssh/id_ed25519.pub`. Then swap `--cdrom` for:
 
 ```bash
-  --location "$HOME/vms/kubuntu-26.04-desktop-amd64.iso",kernel=casper/vmlinuz,initrd=casper/initrd \
+  --location /var/lib/libvirt/boot/kubuntu-26.04.1-desktop-amd64.iso,kernel=casper/vmlinuz,initrd=casper/initrd \
   --cloud-init user-data="$HOME/vms/user-data,meta-data=$HOME/vms/meta-data" \
   --extra-args 'autoinstall ---'
 ```
 
-This is worth doing the *second* time the VM is built, not the first: it is easier to write the
-user-data once the manual install has shown what the answers are. Either way the baseline image
-from [`../vm/07-snapshots.md`](../vm/07-snapshots.md) is what makes rebuilds cheap.
+This is worth doing the _second_ time the VM is built, not the first: it is easier to write the
+user-data once the manual install has shown what the answers are. Either way the baseline image from
+[`../vm/07-snapshots.md`](../vm/07-snapshots.md) is what makes rebuilds cheap.
 
 ## 6. Day-to-day
 
-| Task | Command |
-| --- | --- |
-| Start / stop | `virsh start agent-vm` / `virsh shutdown agent-vm` |
-| Force off | `virsh destroy agent-vm` |
-| Serial console | `virsh console agent-vm` (leave with `Ctrl+]`) |
-| Graphical console | `virt-manager`, or `virt-viewer agent-vm` |
-| Edit hardware | `virsh edit agent-vm` |
-| Save the definition | `virsh dumpxml agent-vm > ~/vms/agent-vm.xml` |
+| Task                | Command                                            |
+| ------------------- | -------------------------------------------------- |
+| Start / stop        | `virsh start agent-vm` / `virsh shutdown agent-vm` |
+| Force off           | `virsh destroy agent-vm`                           |
+| Serial console      | `virsh console agent-vm` (leave with `Ctrl+]`)     |
+| Graphical console   | `virt-manager`, or `virt-viewer agent-vm`          |
+| Edit hardware       | `virsh edit agent-vm`                              |
+| Save the definition | `virsh dumpxml agent-vm > ~/vms/agent-vm.xml`      |
 
 ## 7. Then
 

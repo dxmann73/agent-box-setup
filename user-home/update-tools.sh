@@ -3,9 +3,8 @@
 # Update the tooling that apt does not manage: global npm packages, the coding
 # agent CLIs, and SDKMAN candidates.
 #
-# Deliberately excluded: T3 Code. Its client and server must stay on the same
-# version, so it is updated by hand on both ends together. See
-# common/08-auto-updates.md and vm/04-t3code.md.
+# The host BB AppImage updates itself. The VM npm runtime lives in
+# ~/.local/share/bb-runtime and is updated deliberately; see vm/04-bb.md.
 #
 # Symlinked to ~/update-tools.sh; run weekly by a systemd user timer.
 
@@ -13,7 +12,7 @@ set -Eeuo pipefail
 
 # Non-interactive shells (systemd timers) get none of ~/.bashrc, so put the
 # usual tool locations on PATH explicitly.
-export PATH="$HOME/.local/bin:/usr/local/bin:/usr/bin:/bin:$PATH"
+export PATH="$HOME/.npm-global/bin:$HOME/.local/bin:/usr/local/bin:/usr/bin:/snap/bin:/bin:$PATH"
 
 failed=()
 
@@ -97,7 +96,7 @@ step "Codex"               codex_cli
 step "SDKMAN"              sdkman
 step "Playwright browsers" playwright_browsers
 
-log "T3 Code: skipped on purpose — update the desktop app and the VM server together"
+log "BB: separate runtime; update deliberately while agents are idle"
 
 if [ ${#failed[@]} -gt 0 ]; then
     log "FAILED: ${failed[*]}"

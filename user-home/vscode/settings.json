@@ -2,7 +2,7 @@
   // --- Workbench / window ---
   "window.commandCenter": true,
   "window.autoDetectColorScheme": false,
-  "workbench.colorTheme": "Default Dark Modern",
+  "workbench.colorTheme": "Dark Modern",
   "workbench.activityBar.orientation": "vertical",
   "workbench.editor.limit.value": 99,
 
@@ -37,5 +37,6 @@
 
   // --- Java ---
   "java.maven.downloadSources": true,
-  "redhat.telemetry.enabled": true
+  "redhat.telemetry.enabled": true,
+  "workbench.startupEditor": "none"
 }

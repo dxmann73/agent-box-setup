@@ -3,3 +3,7 @@ user-home/.bash_secrets
 CLAUDE.md
 .quarkus/
 .firecrawl/
+
+agents/codex/config.host.toml
+
+agents/claude/settings.host.json

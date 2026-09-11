@@ -7,7 +7,7 @@ Perform this review periodically and after major machine or toolchain changes.
 - [ ] Identify whether review runs on host or VM, then perform corresponding setup verification.
 - [ ] Inspect coding-agent CLI versions, authentication state, configuration, hooks, and shared
       skill symlinks.
-- [ ] Confirm agent processes and T3 Code server state match intended host and VM roles.
+- [ ] Confirm agent processes and BB server state match intended host and VM roles.
 - [ ] Review available disk space, VM health, snapshots, backups, and recovery readiness.
 - [ ] Check that project access remains limited to intended directories and credentials.
 - [ ] Review toolchain updates and any upgrade failures from scheduled maintenance.

@@ -16,11 +16,11 @@ Install Node.js **system-wide from the NodeSource apt repository**, not with nvm
 Two reasons, both of which cost real time otherwise:
 
 - **Services cannot see an nvm Node.** nvm lives in `~/.nvm` and is wired up by an interactive
-  `.bashrc`. The T3 Code server runs as a systemd user unit and the provider CLIs it launches
+  `.bashrc`. The VM's BB server runs as a systemd user unit and the provider CLIs it launches
   inherit that non-interactive environment, so an nvm-installed `node`, `claude` or `codex` is
-  simply not on `PATH` — this is the single most common reason a provider shows up as missing in
-  T3 Code ([`../vm/04-t3code.md`](../vm/04-t3code.md) §1). Cron jobs and SSH-launched environments
-  have the same problem.
+  simply not on `PATH` — this is a common reason a provider shows up as missing in BB
+  ([`../vm/04-bb.md`](../vm/04-bb.md) §1). Cron jobs and SSH-launched environments have the same
+  problem.
 - **Updates.** An apt-installed Node is patched by the same unattended-upgrades run as everything
   else ([08-auto-updates.md](08-auto-updates.md)). An nvm Node is patched when you remember.
 
@@ -29,18 +29,19 @@ sudo apt install -y ca-certificates curl gnupg
 sudo install -m 0755 -d /etc/apt/keyrings
 curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key \
   | sudo gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
-echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_22.x nodistro main" \
+echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_24.x nodistro main" \
   | sudo tee /etc/apt/sources.list.d/nodesource.list
 sudo apt update && sudo apt install -y nodejs
 ```
 
-Node 22 is the current LTS and satisfies T3 Code's `^22.16 || ^23.11 || >=24.10`. To move to the
-next LTS later, change `node_22.x` in that file and `apt upgrade`.
+Use Node 24, a BB-supported LTS release line. BB's tested runtime floor is Node 22.19; see
+[BB platform support](https://github.com/get-bb/bb/blob/main/docs/platform-support.md). Check
+runtime compatibility before changing Node major versions.
 
 **Verify installation:**
 
 ```bash
-node --version                      # v22.x
+node --version                      # v24.x
 npm --version
 command -v node                     # /usr/bin/node, not a path under ~/.nvm
 ```
@@ -86,7 +87,8 @@ against the system Node. Keep nvm only if you actually need to switch Node versi
 Bootstrap `pnpm` with Corepack and install global JS tools.
 
 ```bash
-corepack enable
+npm install -g corepack
+corepack enable --install-directory ~/.local/bin
 corepack prepare pnpm@latest --activate
 hash -r
 pnpm --version
@@ -173,27 +175,29 @@ If authentication is missing, tell the user to set up FIRECRAWL_API_KEY in ~/.ba
 
 ---
 
-## 6. Playwright Browser Runtime (for frontend browser tests)
+## 6. Playwright Browser Runtime (VM only)
+
+Skip this section on the host.
 
 Some frontend test suites run in a real browser through Playwright. Install Chromium and its system
-libraries once, machine-wide, so those tests do not fail at startup and no project has to repeat
-the download.
+libraries once, machine-wide, so those tests do not fail at startup and no project has to repeat the
+download.
 
 ```bash
 sudo npx --yes playwright@latest install-deps chromium
 npx --yes playwright@latest install chromium
 ```
 
-`install-deps` installs apt packages and needs root; `install` writes into
-`~/.cache/ms-playwright` and must run as your own user. If the system packages are already there,
-`install-deps` is effectively a no-op.
+`install-deps` installs apt packages and needs root; `install` writes into `~/.cache/ms-playwright`
+and must run as your own user. If the system packages are already there, `install-deps` is
+effectively a no-op.
 
 Inside a project that pins its own Playwright version, `pnpm exec playwright install chromium`
 fetches the matching build; that is a per-project step, not part of machine setup.
 
 This is the agent VM's browser automation path — see
-[`../vm/02-dev-and-agents.md`](../vm/02-dev-and-agents.md) §4 for why it must never touch the
-host's personal Chrome profile.
+[`../vm/02-dev-and-agents.md`](../vm/02-dev-and-agents.md) §4 for why it must never touch the host's
+personal Chrome profile.
 
 ---
 
@@ -245,7 +249,7 @@ This should activate the SDKs as defined in `.sdkmanrc` and print the versions b
 ## 8. Java (via SDKMAN)
 
 ```bash
-sdk install java 21.0.8-oracle
+sdk install java 21.0.12-oracle
 ```
 
 **Verify installation:**
@@ -254,7 +258,7 @@ sdk install java 21.0.8-oracle
 java --version
 ```
 
-Expected output: `java 21.0.8` or similar
+Expected output: `java 21.0.12` or similar
 
 ---
 
@@ -336,7 +340,7 @@ Confirm all tools are working:
 
 - [ ] Node.js installed: `node --version` shows v22.x or similar
 - [ ] npm available: `npm --version` shows version
-- [ ] `command -v node` is `/usr/bin/node`, in an interactive *and* a non-interactive shell
+- [ ] `command -v node` is `/usr/bin/node`, in an interactive _and_ a non-interactive shell
 - [ ] `npm config get prefix` is `~/.npm-global`, and `npm install -g` needs no `sudo`
 - [ ] TypeScript compiler: `tsc --version` shows version
 - [ ] ts-node runtime: `ts-node --version` shows version

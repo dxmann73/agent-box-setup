@@ -1,0 +1,6 @@
+[Unit]
+Description=Update agent CLIs and global JS tools
+
+[Service]
+Type=oneshot
+ExecStart=%h/update-tools.sh

@@ -2,25 +2,28 @@
 
 Both machines should stay close to the current patch state without being asked. This file sets that
 up once per machine; after it, the only updates you type by hand are the two that must stay
-deliberate (T3 Code, and release upgrades).
+deliberate (BB, and release upgrades).
 
-Run this early — right after the first `apt full-upgrade` on a new machine — so everything
-installed afterwards is covered from the start.
+Run this early — right after the first `apt full-upgrade` on a new machine — so everything installed
+afterwards is covered from the start.
 
 ## What updates itself, and what does not
 
-| Thing | How it stays current | Deliberate? |
-| --- | --- | --- |
-| apt packages, kernel, security fixes | `unattended-upgrades`, daily | no |
-| Chrome, `gh`, Docker, Node, VS Code | their own apt repos, same daily run | no |
-| Snap packages | snapd refreshes itself, four times a day | no |
-| Flatpak applications | user timer added below | no |
-| Global npm CLIs, coding agents | weekly user timer added below | no |
-| **T3 Code** (app + VM server) | **manual, both ends together** | **yes** |
-| **Ubuntu release** (26.04 → next) | **manual `do-release-upgrade`** | **yes** |
+| Thing                                | How it stays current                     | Deliberate? |
+| ------------------------------------ | ---------------------------------------- | ----------- |
+| apt packages, kernel, security fixes | `unattended-upgrades`, daily             | no          |
+| Chrome, `gh`, Docker, Node, VS Code  | their own apt repos, same daily run      | no          |
+| Snap packages                        | snapd refreshes itself, four times a day | no          |
+| Flatpak applications                 | user timer added below                   | no          |
+| Global npm CLIs, coding agents       | weekly user timer added below            | no          |
+| **BB desktop AppImage (host)**       | built-in desktop updater                 | yes         |
+| **BB npm runtime (VM)**              | manual, while agents are idle            | yes         |
+| **Ubuntu release** (26.04 → next)    | **manual `do-release-upgrade`**          | **yes**     |
 
-T3 Code is excluded on purpose: client and server have to be on the same version
-([`../vm/04-t3code.md`](../vm/04-t3code.md) §4), and an automatic bump on one side breaks the other.
+Keep the host AppImage in a writable user directory so its built-in updater can replace it. Apply an
+offered update after host work is idle. The VM runtime uses a dedicated npm prefix,
+`~/.local/share/bb-runtime`, outside `npm update -g`; update it deliberately after its running
+agents finish.
 
 ## 1. apt: unattended upgrades
 
@@ -42,8 +45,8 @@ APT::Periodic::Unattended-Upgrade "1";
 ```
 
 By default only the `-security` pocket is installed. Widen it to regular updates and let it clean up
-after itself — write `/etc/apt/apt.conf.d/52unattended-upgrades-local` so the change survives package
-upgrades of `unattended-upgrades` itself:
+after itself — write `/etc/apt/apt.conf.d/52unattended-upgrades-local` so the change survives
+package upgrades of `unattended-upgrades` itself:
 
 ```bash
 sudo tee /etc/apt/apt.conf.d/52unattended-upgrades-local >/dev/null <<'EOF'
@@ -71,8 +74,8 @@ Unattended-Upgrade::Mail "";
 EOF
 ```
 
-`origin=` values are what the repositories actually publish, and they change. Verify against the real
-list rather than trusting the block above:
+`origin=` values are what the repositories actually publish, and they change. Verify against the
+real list rather than trusting the block above:
 
 ```bash
 apt-cache policy | grep -o 'o=[^,]*' | sort -u
@@ -100,7 +103,7 @@ reasons:
 - **VM** — it runs continuously with agents and dev servers attached
   ([`../vm/07-snapshots.md`](../vm/07-snapshots.md) §1). A reboot kills running agent threads.
 
-So kernel and library updates are *installed* automatically but *activated* when you decide. Find
+So kernel and library updates are _installed_ automatically but _activated_ when you decide. Find
 out when that is pending:
 
 ```bash
@@ -167,9 +170,8 @@ Skip this entirely if you install no Flatpaks.
 
 The agent CLIs and the global JS tools are outside apt. One script updates all of them, and a weekly
 timer runs it. The script lives in
-[`../../user-home/update-tools.sh`](../../user-home/update-tools.sh)
-and is symlinked into `$HOME` alongside the other dotfiles
-([00-home-environment.md](00-home-environment.md)):
+[`../../user-home/update-tools.sh`](../../user-home/update-tools.sh) and is symlinked into `$HOME`
+alongside the other dotfiles ([00-home-environment.md](00-home-environment.md)):
 
 ```bash
 ln -sf ~/projects/agent-box-setup/user-home/update-tools.sh ~/update-tools.sh
@@ -177,7 +179,7 @@ ln -sf ~/projects/agent-box-setup/user-home/update-tools.sh ~/update-tools.sh
 ```
 
 It updates the global npm packages, Claude Code, Cursor CLI, Codex and SDKMAN candidates, and prints
-what changed. It deliberately does **not** touch T3 Code.
+what changed. It deliberately does **not** touch BB.
 
 Run it weekly:
 
@@ -250,4 +252,4 @@ systemctl --user list-timers
 - [ ] `~/update-tools.sh` symlinked, run once by hand, weekly timer enabled
 - [ ] lingering enabled so user timers run without a login session
 - [ ] release upgrades set to `Prompt=lts`
-- [ ] T3 Code understood as manually updated on both ends together
+- [ ] host BB AppImage stored in a writable directory; VM BB runtime kept outside global npm updates

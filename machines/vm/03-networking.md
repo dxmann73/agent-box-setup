@@ -1,4 +1,4 @@
-# 04 – Networking
+# 03 – Networking
 
 Three separate paths, each with its own reason to exist (specification §11).
 
@@ -12,7 +12,7 @@ Three separate paths, each with its own reason to exist (specification §11).
         192.168.122.1             │
                                   ▼
                  ┌───────────────────────────────────────┐
-        clients ─┤ T3 Code: host and tailnet, no LAN NAT │
+        clients ─┤ BB: host and tailnet, no LAN NAT │
                  └───────────────────────────────────────┘
 ```
 
@@ -67,23 +67,23 @@ Record the resulting base URL in `~/.bash_secrets` so agents pick it up from one
 - [ ] guest reaches the endpoint, host's other services stay unreachable
 - [ ] base URL recorded in `~/.bash_secrets`
 
-## 3. T3 Code reachability
+## 3. BB reachability
 
-The T3 Code server in the VM must be reachable from the host, from other machines on the network,
-and from outside (specification §4, §11). Tailscale is the route for the last one.
+The BB server in the VM must be reachable from the host, from other machines on the network, and
+from outside (specification §4, §11). Tailscale is the route for the last one.
 
 The tailnet itself is not set up here. It is a piece of personal network infrastructure that spans
-host, VM, laptop and phone, and it is documented in the `infra` project
-(`docs/spec/tailscale.md`). Bring it up there first; this file only assumes the VM is a tailnet
-node:
+host, VM, laptop and phone, and it is documented in the `infra` project (`docs/spec/tailscale.md`).
+Bring it up there first; this file only assumes the VM is a tailnet node:
 
 ```bash
 tailscale status
 tailscale ip -4
 ```
 
-Bind the server to that address, or publish it over Tailscale Serve HTTPS — see
-[04-t3code.md](04-t3code.md) §3. Prefer either over opening a port on the router.
+Keep BB on loopback and publish it over Tailscale Serve HTTPS, or use an SSH tunnel from the host —
+see [04-bb.md](04-bb.md) §3. The raw BB API is unauthenticated; do not bind it directly to the LAN
+or tailnet.
 
 The libvirt NAT network hides the guest from the LAN: other machines in the flat cannot reach
 `192.168.122.x` at all, only the host can. That is deliberate. Every other client — laptop, phone —
@@ -92,16 +92,16 @@ macvtap interface is needed. Add one only if a device that cannot join the tailn
 the VM.
 
 - [ ] VM appears in `tailscale status` on the host and on the phone
-- [ ] T3 Code reachable from the host over `virbr0`
-- [ ] T3 Code reachable from the laptop over the tailnet, on the LAN and from outside it
+- [ ] BB reachable from the host through an SSH tunnel over `virbr0`
+- [ ] BB reachable from the laptop over the tailnet, on the LAN and from outside it
 - [ ] guest not reachable from other LAN machines except through the tailnet
-- [ ] no T3 Code port exposed directly to the public Internet
+- [ ] no BB port exposed directly to the public Internet
 
 ## 4. What must not happen
 
 - no route from the VM into the host's personal services beyond the model endpoint
-- no T3 Code port forwarded on the router
+- no BB port forwarded on the router
 - no host `$HOME` exported over the network to the VM; use
   [06-shared-folders.md](06-shared-folders.md) for the few directories that need sharing
 
-Next: [04-t3code.md](04-t3code.md)
+Next: [04-bb.md](04-bb.md)
