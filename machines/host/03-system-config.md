@@ -93,8 +93,66 @@ systemctl status ssh
 The host's `~/.ssh` is never shared into the VM. Agents get their own purpose-specific keys, see
 [`../vm/05-credentials.md`](../vm/05-credentials.md) (specification §12).
 
-If you migrate existing private SSH keys, preserve their permissions. Generating a machine-specific
-new key is often preferable.
+If you migrate existing private SSH keys, preserve their permissions: `~/.ssh` at `700`, private
+keys at `600`. OpenSSH silently skips a private key that others can read
+(`Permissions 0644 for '~/.ssh/id_rsa' are too open. This private key will be ignored.`), which only
+shows up in `ssh -v`. Generating a machine-specific new key is often preferable.
+
+```bash
+chmod 700 ~/.ssh
+chmod 600 ~/.ssh/id_* ~/.ssh/*.pem
+chmod 644 ~/.ssh/*.pub
+```
+
+### One SSH agent
+
+Kubuntu 26.04 starts up to three SSH agents in the user session: OpenSSH's `ssh-agent`
+(`ssh-agent.socket`), GNOME's `gcr-ssh-agent`, and `gpg-agent`'s SSH socket. Whichever sets
+`SSH_AUTH_SOCK` last wins. On this host that was gcr. It lists every key in `~/.ssh` that has a
+`.pub` file next to it, but cannot unlock a passphrase-protected key under Plasma, so key logins
+failed with
+
+```text
+sign_and_send_pubkey: signing failed for RSA "/home/dave/.ssh/id_rsa" from agent: agent refused operation
+```
+
+and SSH fell back to password authentication, with `ksshaskpass` filling the password from KWallet.
+It looked passwordless; `ssh -v` showed `Authenticated … using "password"`.
+
+Use one agent — OpenSSH's, with `ksshaskpass` and KWallet — and switch gcr off:
+
+```bash
+systemctl --user mask --now gcr-ssh-agent.socket gcr-ssh-agent.service
+systemctl --user set-environment SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/openssh_agent"
+```
+
+The second line matters because lingering is on (`loginctl show-user "$USER" -p Linger`): the
+systemd user manager survives a logout and keeps gcr's dead socket path in its environment, so the
+next login would inherit it. After a reboot, `ssh-agent.socket` sets the variable itself.
+
+`~/.ssh/config`, mode `600`:
+
+```text
+Host *
+    AddKeysToAgent yes
+```
+
+Log out and back in. The first `ssh` of a session asks for the key passphrase through `ksshaskpass`;
+tick **Remember** and KWallet supplies it from then on, while the agent holds the key until logout.
+If the dialog asks for a remote _password_ instead of the key passphrase, the key is still not being
+used.
+
+`gpg-agent`'s SSH socket only claims `SSH_AUTH_SOCK` when `enable-ssh-support` is set in
+`~/.gnupg/gpg-agent.conf`; leave it unset. The `/etc/X11/Xsession.d` agent scripts do not run in the
+Plasma Wayland session.
+
+Verify:
+
+```bash
+echo "$SSH_AUTH_SOCK"                                     # …/openssh_agent
+ssh-add -l                                                # the key, after the first ssh
+ssh -v xmg-evo-agent-vm true 2>&1 | grep Authenticated    # … using "publickey"
+```
 
 ## 5. Firewall
 
@@ -120,6 +178,8 @@ reach inference while the LAN cannot. Rules for that interface are in
 - [ ] backups configured and restore tested, including `~/vms` and `/var/lib/libvirt/images`
 - [ ] packaging rule understood
 - [ ] SSH client/server state decided
+- [ ] `~/.ssh` at `700`, private keys at `600`
+- [ ] one SSH agent: gcr masked, `SSH_AUTH_SOCK` on `openssh_agent`, `ssh -v` shows `publickey`
 - [ ] `ufw` enabled, default deny incoming
 - [ ] unattended security updates active
       ([`../common/08-auto-updates.md`](../common/08-auto-updates.md))

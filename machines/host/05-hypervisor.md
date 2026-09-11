@@ -3,8 +3,9 @@
 The host runs the hypervisor; the VM it creates is the security boundary for all agent work
 (specification §3).
 
-> **Status:** host prerequisites are being validated on Kubuntu 26.04. VM creation and
-> guest-dependent checks remain unverified and require a hands-on walkthrough.
+> **Status:** host prerequisites and VM creation verified on 2026-09-11: Kubuntu 26.04.1 guest
+> `xmg-evo-agent-vm` on the XMG Evo host. `ssh xmg-evo-agent-vm` is set up and checked in
+> [`../vm/01-bootstrap.md`](../vm/01-bootstrap.md).
 
 Every `virsh` command in this file and in [`../vm/`](../vm/) assumes
 `LIBVIRT_DEFAULT_URI=qemu:///system` is exported (§3).
@@ -64,8 +65,8 @@ Log out and back in for the group change.
 ### Point `virsh` at the system daemon, once
 
 A normal user's `virsh` defaults to `qemu:///session`, a _different_ hypervisor instance from the
-`qemu:///system` one this setup uses. Without this, `virsh start agent-vm` reports that the domain
-does not exist while `virt-manager` shows it running. Set it once in the shell config
+`qemu:///system` one this setup uses. Without this, `virsh start xmg-evo-agent-vm` reports that the
+domain does not exist while `virt-manager` shows it running. Set it once in the shell config
 ([`../common/00-home-environment.md`](../common/00-home-environment.md) symlinks `.bashrc`):
 
 ```bash
@@ -86,8 +87,8 @@ virsh net-start default
 virsh net-autostart default
 ```
 
-`libnss-libvirt` lets the host resolve the guest by name, so `ssh agent-vm` works without knowing
-its DHCP address. Add the two modules to the `hosts:` line of `/etc/nsswitch.conf`:
+`libnss-libvirt` lets the host resolve the guest by name, so `ssh xmg-evo-agent-vm` works without
+knowing its DHCP address. Add the two modules to the `hosts:` line of `/etc/nsswitch.conf`:
 
 ```bash
 # Preserve existing resolver modules; insert libvirt after files.
@@ -104,11 +105,11 @@ for i, line in enumerate(lines):
         lines[i] = ' '.join(fields)
 p.write_text('\n'.join(lines) + '\n')
 PYCODE
-getent hosts agent-vm                   # works once the guest is installed and running
+getent hosts xmg-evo-agent-vm                   # works once the guest is installed and running
 ```
 
-Name resolution matches the guest's **hostname**, so the guest must be named `agent-vm` at install
-time (§5).
+Name resolution matches the guest's **hostname**, so the guest must be named `xmg-evo-agent-vm` at
+install time (§5).
 
 Versions in Kubuntu 26.04: libvirt 12.0, QEMU 10.2, virt-manager 5.1, virtiofsd 1.13. The virtiofs
 read-only export used in [`../vm/06-shared-folders.md`](../vm/06-shared-folders.md) needs libvirt ≥
@@ -140,13 +141,10 @@ would open most of the home directory to the QEMU process, the host side of the 
 mkdir -p ~/vms
 ```
 
-Back up `/var/lib/libvirt/images/agent-vm.qcow2` together with `~/vms/`, see
+Back up `/var/lib/libvirt/images/xmg-evo-agent-vm.qcow2` together with `~/vms/`, see
 [`../vm/07-snapshots.md`](../vm/07-snapshots.md).
 
 ## 5. Create the VM
-
-**Current handoff boundary:** stop before this section. VM creation will be done with the user, one
-step at a time. Do not run `virt-install` or define a guest until that walkthrough begins.
 
 The guest is **Kubuntu 26.04 desktop**, same as the host: Plasma is what the eyes are trained on,
 and a real desktop in the VM means a browser, a file manager and a graphical editor are there when
@@ -154,12 +152,20 @@ an agent's work has to be inspected by hand.
 
 Two decisions that keep the rest of the setup short:
 
-- **Hostname `agent-vm`.** `libnss-libvirt` (§3) resolves the guest by its hostname; `ssh agent-vm`
-  and every reference in [`../vm/`](../vm/) depend on it.
-- **BIOS firmware, not UEFI.** The guest boots nothing that needs Secure Boot. Choosing SeaBIOS
-  drops the `ovmf` package, drops the separate NVRAM file that has to be backed up and restored
-  alongside the disk image ([`../vm/07-snapshots.md`](../vm/07-snapshots.md)), and avoids libvirt's
-  restrictions on snapshotting a pflash domain.
+- **Name `xmg-evo-agent-vm`**, following the pattern `<host>-agent-vm`. Use it for both the libvirt
+  domain (`--name`) and the guest hostname set in the installer. `libnss-libvirt` (§3) resolves the
+  guest by either, so `ssh xmg-evo-agent-vm` works. The host part tells agent VMs on different hosts
+  apart on the tailnet, in BB and among the SSH keys registered with GitHub. This repo is written
+  for the XMG Evo host; on another host, replace `xmg-evo` throughout.
+- **BIOS firmware, not UEFI.** The guest boots nothing that needs Secure Boot. SeaBIOS drops the
+  separate NVRAM file that has to be backed up and restored alongside the disk image
+  ([`../vm/07-snapshots.md`](../vm/07-snapshots.md)), and avoids libvirt's restrictions on
+  snapshotting a pflash domain. Get it by leaving `--boot` out: with no firmware in the domain XML,
+  QEMU loads its built-in SeaBIOS. Do not write `--boot firmware=bios`. That asks libvirt to pick a
+  firmware from the descriptors in `/usr/share/qemu/firmware/`, Ubuntu ships descriptors only for
+  UEFI, and the install fails with
+  `Unable to find 'bios' firmware that is compatible with the current configuration`. `ovmf` gets
+  installed alongside QEMU anyway; it stays unused.
 
 Download the [Kubuntu ISO](https://kubuntu.org/getkubuntu/) to `~/vms/`, verify it, and move it to
 `/var/lib/libvirt/boot/` (§4). Take the newest point release in the release directory, `26.04.1` at
@@ -184,13 +190,12 @@ update the filename here and in the commands below.
 ### The one command
 
 ```bash
-virt-install --name agent-vm --osinfo detect=on,name=ubuntu24.04 \
+virt-install --name xmg-evo-agent-vm --osinfo detect=on,name=ubuntu24.04 \
   --vcpus 20 --cpu host-passthrough \
   --memory 32768 --memballoon model=virtio,freePageReporting=on \
   --memorybacking source.type=memfd,access.mode=shared \
   --disk size=200,format=qcow2,bus=virtio,discard=unmap \
   --network network=default,model=virtio \
-  --boot firmware=bios \
   --graphics spice,listen=none,gl.enable=yes \
   --video virtio,accel3d=yes \
   --cdrom /var/lib/libvirt/boot/kubuntu-26.04.1-desktop-amd64.iso --autostart
@@ -205,7 +210,7 @@ What each choice is for:
 | `--memorybacking source.type=memfd,access.mode=shared`                      | **required** for virtiofs shares; adding it later means editing the domain and rebooting                                                                                                                                   |
 | `--disk size=200,...,discard=unmap`                                         | 200 GiB sparse qcow2 in the `default` pool; TRIM reaches the host filesystem                                                                                                                                               |
 | `--network network=default,model=virtio`                                    | outbound NAT and the host model endpoint on one interface ([`../vm/03-networking.md`](../vm/03-networking.md))                                                                                                             |
-| `--boot firmware=bios`                                                      | SeaBIOS, see above; written as `<os firmware="bios">` so a future UEFI default cannot change it (there is a `--boot uefi` shortcut, but no `--boot bios`)                                                                  |
+| no `--boot`                                                                 | QEMU's built-in SeaBIOS, see above                                                                                                                                                                                         |
 | `--graphics spice,listen=none,gl.enable=yes` + `--video virtio,accel3d=yes` | Plasma without a software renderer; virgl needs a local client, and the console is local anyway                                                                                                                            |
 | `--autostart`                                                               | the VM comes back with the host (§14)                                                                                                                                                                                      |
 
@@ -220,13 +225,13 @@ memory in particular is easy to miss. Prefer the command.
 ### Install the guest
 
 Install Kubuntu normally in the console window that opens: minimal installation, no third-party
-drivers, whole virtual disk as one partition, **hostname `agent-vm`**. Continue in
+drivers, whole virtual disk as one partition, **hostname `xmg-evo-agent-vm`**. Continue in
 [`../vm/01-bootstrap.md`](../vm/01-bootstrap.md).
 
 To reopen the console later:
 
 ```bash
-virt-viewer agent-vm
+virt-viewer --attach xmg-evo-agent-vm
 ```
 
 ### Unattended alternative
@@ -241,7 +246,7 @@ cat > ~/vms/user-data <<'EOF'
 autoinstall:
   version: 1
   identity:
-    hostname: agent-vm
+    hostname: xmg-evo-agent-vm
     username: CHANGE-ME
     password: "CHANGE-ME-MKPASSWD-HASH"
   ssh:
@@ -272,14 +277,14 @@ user-data once the manual install has shown what the answers are. Either way the
 
 ## 6. Day-to-day
 
-| Task                | Command                                            |
-| ------------------- | -------------------------------------------------- |
-| Start / stop        | `virsh start agent-vm` / `virsh shutdown agent-vm` |
-| Force off           | `virsh destroy agent-vm`                           |
-| Serial console      | `virsh console agent-vm` (leave with `Ctrl+]`)     |
-| Graphical console   | `virt-manager`, or `virt-viewer agent-vm`          |
-| Edit hardware       | `virsh edit agent-vm`                              |
-| Save the definition | `virsh dumpxml agent-vm > ~/vms/agent-vm.xml`      |
+| Task                | Command                                                            |
+| ------------------- | ------------------------------------------------------------------ |
+| Start / stop        | `virsh start xmg-evo-agent-vm` / `virsh shutdown xmg-evo-agent-vm` |
+| Force off           | `virsh destroy xmg-evo-agent-vm`                                   |
+| Serial console      | `virsh console xmg-evo-agent-vm` (leave with `Ctrl+]`)             |
+| Graphical console   | `virt-manager`, or `virt-viewer --attach xmg-evo-agent-vm`         |
+| Edit hardware       | `virsh edit xmg-evo-agent-vm`                                      |
+| Save the definition | `virsh dumpxml xmg-evo-agent-vm > ~/vms/xmg-evo-agent-vm.xml`      |
 
 ## 7. Then
 
@@ -298,10 +303,10 @@ user-data once the manual install has shown what the answers are. Either way the
 - [ ] `default` network active and set to autostart
 - [ ] `default` storage pool active at `/var/lib/libvirt/images`
 - [ ] `libvirt`/`libvirt_guest` on the `hosts:` line of `/etc/nsswitch.conf`
-- [ ] Kubuntu 26.04 desktop installed in the guest, hostname `agent-vm`
-- [ ] guest firmware is BIOS, not UEFI (`virsh dumpxml agent-vm | grep -c pflash` returns 0)
+- [ ] Kubuntu 26.04 desktop installed in the guest, hostname `xmg-evo-agent-vm`
+- [ ] guest firmware is BIOS, not UEFI (`virsh dumpxml xmg-evo-agent-vm | grep -c pflash` returns 0)
 - [ ] shared memory backing (`memfd`) present in the domain XML
 - [ ] virtio video with 3D acceleration, Spice listen type `none`
 - [ ] VM autostarts with the host
-- [ ] `getent hosts agent-vm` resolves, and `ssh agent-vm` works from the host
-- [ ] domain XML dumped to `~/vms/agent-vm.xml`
+- [ ] `getent hosts xmg-evo-agent-vm` resolves, and `ssh xmg-evo-agent-vm` works from the host
+- [ ] domain XML dumped to `~/vms/xmg-evo-agent-vm.xml`

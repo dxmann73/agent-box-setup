@@ -18,10 +18,10 @@ firmware: libvirt restricts internal snapshots on UEFI/pflash domains, which is 
 [`../host/05-hypervisor.md`](../host/05-hypervisor.md) §5 chooses SeaBIOS.
 
 ```bash
-virsh snapshot-create-as agent-vm clean-guest --description 'bootstrapped, no toolchain' --atomic
-virsh snapshot-list agent-vm --tree
-virsh snapshot-revert agent-vm clean-guest
-virsh snapshot-delete agent-vm pre-experiment
+virsh snapshot-create-as xmg-evo-agent-vm clean-guest --description 'bootstrapped, no toolchain' --atomic
+virsh snapshot-list xmg-evo-agent-vm --tree
+virsh snapshot-revert xmg-evo-agent-vm clean-guest
+virsh snapshot-delete xmg-evo-agent-vm pre-experiment
 ```
 
 Every `virsh` here assumes `LIBVIRT_DEFAULT_URI=qemu:///system`
@@ -43,8 +43,8 @@ Two things a snapshot does **not** cover:
 
 - host directories shared over virtiofs ([06-shared-folders.md](06-shared-folders.md)) — those are
   host files, and reverting the VM does not undo a write an agent made in a share
-- the disk file itself. A snapshot inside `agent-vm.qcow2` dies with `agent-vm.qcow2`; it is an undo
-  button, not a backup
+- the disk file itself. A snapshot inside `xmg-evo-agent-vm.qcow2` dies with
+  `xmg-evo-agent-vm.qcow2`; it is an undo button, not a backup
 
 ## 3. Backup
 
@@ -52,17 +52,17 @@ Two files, both on the host: the disk image in libvirt's pool, and the domain XM
 hardware around it. Back up a powered-off VM, not a running one:
 
 ```bash
-virsh shutdown agent-vm                                   # wait for it to stop
-virsh dumpxml agent-vm > ~/vms/agent-vm.xml               # the definition is not in the disk image
-sudo cp --sparse=always /var/lib/libvirt/images/agent-vm.qcow2 /backup/target/
-virsh start agent-vm
+virsh shutdown xmg-evo-agent-vm                                   # wait for it to stop
+virsh dumpxml xmg-evo-agent-vm > ~/vms/xmg-evo-agent-vm.xml               # the definition is not in the disk image
+sudo cp --sparse=always /var/lib/libvirt/images/xmg-evo-agent-vm.qcow2 /backup/target/
+virsh start xmg-evo-agent-vm
 ```
 
 `--sparse=always` matters: the file is provisioned at 200 GiB and is far smaller on disk.
 
 The domain XML is the piece people lose — without it a restored disk image has to be re-attached to
-a hand-rebuilt domain. Restoring is `virsh define ~/vms/agent-vm.xml` plus the image back in the
-pool. There is no NVRAM file to keep track of, because the guest is BIOS-booted
+a hand-rebuilt domain. Restoring is `virsh define ~/vms/xmg-evo-agent-vm.xml` plus the image back in
+the pool. There is no NVRAM file to keep track of, because the guest is BIOS-booted
 ([`../host/05-hypervisor.md`](../host/05-hypervisor.md) §5).
 
 Both paths are in the host backup set
@@ -89,24 +89,24 @@ Step one, the Kubuntu install, is either hand-driven once or scripted with autoi
 is keeping its result as a baseline image:
 
 ```bash
-virsh shutdown agent-vm                                              # wait for it to stop
-sudo cp --sparse=always /var/lib/libvirt/images/agent-vm.qcow2 \
+virsh shutdown xmg-evo-agent-vm                                              # wait for it to stop
+sudo cp --sparse=always /var/lib/libvirt/images/xmg-evo-agent-vm.qcow2 \
                         /var/lib/libvirt/images/baseline-clean-guest.qcow2
-virsh dumpxml agent-vm > ~/vms/agent-vm.xml
-virsh start agent-vm
+virsh dumpxml xmg-evo-agent-vm > ~/vms/xmg-evo-agent-vm.xml
+virsh start xmg-evo-agent-vm
 ```
 
 That baseline is the artifact the chain starts from. To exercise the chain without touching the
 working VM, clone it:
 
 ```bash
-virt-clone --original agent-vm --name agent-vm-rebuild \
-  --file /var/lib/libvirt/images/agent-vm-rebuild.qcow2
+virt-clone --original xmg-evo-agent-vm --name xmg-evo-agent-vm-rebuild \
+  --file /var/lib/libvirt/images/xmg-evo-agent-vm-rebuild.qcow2
 ```
 
 `virt-clone` resets the MAC address and the machine ID, so the clone gets its own DHCP lease. Give
 it a different hostname before putting it on the tailnet. Delete it with
-`virsh undefine agent-vm-rebuild --remove-all-storage` when the test is done.
+`virsh undefine xmg-evo-agent-vm-rebuild --remove-all-storage` when the test is done.
 
 Everything after the guest install — toolchain, agents, BB, Playwright, agent config — comes from
 this repo and should stay scripted. Prefer deterministic scripts over asking an agent to reproduce

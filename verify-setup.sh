@@ -543,20 +543,20 @@ if [ "$PROFILE" = "host" ]; then
     fi
     if command -v virsh >/dev/null 2>&1 && virsh -c qemu:///system list >/dev/null 2>&1; then
         echo "✓ libvirt reachable without sudo"
-        if virsh -c qemu:///system dominfo agent-vm >/dev/null 2>&1; then
-            echo "✓ agent-vm defined: $(virsh -c qemu:///system domstate agent-vm 2>/dev/null)"
-            if virsh -c qemu:///system dumpxml agent-vm 2>/dev/null | grep -q pflash; then
-                echo "⊗ agent-vm boots UEFI; BIOS is assumed by the snapshot/backup steps (machines/host/05-hypervisor.md section 5)"
+        if virsh -c qemu:///system dominfo xmg-evo-agent-vm >/dev/null 2>&1; then
+            echo "✓ xmg-evo-agent-vm defined: $(virsh -c qemu:///system domstate xmg-evo-agent-vm 2>/dev/null)"
+            if virsh -c qemu:///system dumpxml xmg-evo-agent-vm 2>/dev/null | grep -q pflash; then
+                echo "⊗ xmg-evo-agent-vm boots UEFI; BIOS is assumed by the snapshot/backup steps (machines/host/05-hypervisor.md section 5)"
             else
-                echo "✓ agent-vm boots BIOS, no NVRAM file to track"
+                echo "✓ xmg-evo-agent-vm boots BIOS, no NVRAM file to track"
             fi
-            if virsh -c qemu:///system dumpxml agent-vm 2>/dev/null | grep -q "access mode='shared'"; then
+            if virsh -c qemu:///system dumpxml xmg-evo-agent-vm 2>/dev/null | grep -q "access mode='shared'"; then
                 echo "✓ shared memory backing present (virtiofs shares can attach)"
             else
                 echo "✗ no shared memory backing; virtiofs shares will not attach (machines/host/05-hypervisor.md section 5)"
             fi
         else
-            echo "⊗ agent-vm not defined yet (see machines/host/05-hypervisor.md)"
+            echo "⊗ xmg-evo-agent-vm not defined yet (see machines/host/05-hypervisor.md)"
         fi
     else
         echo "⊗ libvirt/KVM not usable (sudo apt install -y qemu-system-x86 libvirt-daemon-system virtinst; usermod -aG libvirt,kvm)"
@@ -578,14 +578,14 @@ if [ "$PROFILE" = "vm" ]; then
         echo "✗ /etc/sudoers.d/agent-nopasswd missing (see machines/vm/01-bootstrap.md)"
     fi
     if systemctl is-active --quiet ssh; then
-        echo "✓ sshd running (ssh agent-vm from the host)"
+        echo "✓ sshd running (ssh xmg-evo-agent-vm from the host)"
     else
         echo "✗ sshd not running (sudo apt install -y openssh-server)"
     fi
-    if [ "$(hostname)" = "agent-vm" ]; then
-        echo "✓ hostname is agent-vm, so libnss-libvirt resolves it from the host"
+    if [ "$(hostname)" = "xmg-evo-agent-vm" ]; then
+        echo "✓ hostname is xmg-evo-agent-vm, so libnss-libvirt resolves it from the host"
     else
-        echo "⊗ hostname is '$(hostname)', not agent-vm; ssh agent-vm will not resolve"
+        echo "⊗ hostname is '$(hostname)', not xmg-evo-agent-vm; ssh xmg-evo-agent-vm will not resolve"
     fi
     if systemctl is-active --quiet qemu-guest-agent; then
         echo "✓ qemu-guest-agent active"

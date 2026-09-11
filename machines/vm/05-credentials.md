@@ -20,7 +20,7 @@ that is acceptable.
 Generate a keypair that exists only in the VM:
 
 ```bash
-ssh-keygen -t ed25519 -C "agent-vm" -f ~/.ssh/id_ed25519
+ssh-keygen -t ed25519 -C "xmg-evo-agent-vm" -f ~/.ssh/id_ed25519
 ```
 
 Register the public key with GitHub as a separate key so it can be revoked on its own.

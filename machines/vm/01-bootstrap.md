@@ -6,14 +6,44 @@ Bringing a fresh Kubuntu guest to the point where a coding agent can take over t
 Prerequisite: the VM exists and Kubuntu 26.04 is installed in it, see
 [`../host/05-hypervisor.md`](../host/05-hypervisor.md).
 
-## 1. First boot
+## 1. First boot and SSH
+
+In the guest console:
 
 ```bash
 sudo apt update && sudo apt full-upgrade
+sudo apt install -y openssh-server
 ```
 
-That is the last upgrade you should have to type. Set up unattended patching now, so the guest stays
-current on its own from here on: [`../common/08-auto-updates.md`](../common/08-auto-updates.md).
+SSH goes in first. Until the X11 session and `spice-vdagent` (§2, §3) are in place, the console has
+no shared clipboard and every command has to be typed by hand; over SSH, everything after this step
+can be pasted into a terminal on the host. `sshd` listens on port 22, which only the host can reach:
+the libvirt NAT network hides `192.168.122.x` from the LAN ([03-networking.md](03-networking.md)).
+
+Add the host's public key so the login is by key, not password:
+
+```bash
+# on the host
+ssh-copy-id xmg-evo-agent-vm
+ssh xmg-evo-agent-vm hostname      # prints xmg-evo-agent-vm without a password prompt
+```
+
+The first connection asks whether to trust the guest's host key. Compare the fingerprint it shows
+with the guest's own before answering `yes`:
+
+```bash
+# in the guest console
+ssh-keygen -lf /etc/ssh/ssh_host_ed25519_key.pub
+```
+
+Name resolution comes from `libnss-libvirt` on the host and the guest hostname `xmg-evo-agent-vm`,
+both set in [`../host/05-hypervisor.md`](../host/05-hypervisor.md) §3 and §5.
+
+If the upgrade brought a new kernel, reboot now; nothing runs in the guest yet.
+
+That is the last upgrade you should have to type. Set up unattended patching next, so the guest
+stays current on its own from here on:
+[`../common/08-auto-updates.md`](../common/08-auto-updates.md).
 
 The guest is a full Plasma desktop, the same one as the host. Agents do not need it — BB runs
 headless in the VM ([04-bb.md](04-bb.md)) and Playwright drives headless Chromium — but a human
@@ -40,9 +70,9 @@ only works there (§3), and nothing in this guest needs Wayland.
 
 ## 3. Getting at the desktop
 
-One way in, deliberately: the **SPICE console**, from `virt-manager` or from `virt-viewer agent-vm`
-on the host. It works before the network is up, it is what the Kubuntu installer ran in, it needs no
-password of its own, and it opens no listening port.
+One way in, deliberately: the **SPICE console**, from `virt-manager` or from
+`virt-viewer --attach xmg-evo-agent-vm` on the host. It works before the network is up, it is what
+the Kubuntu installer ran in, it needs no password of its own, and it opens no listening port.
 
 Clipboard sharing and window auto-resize need the guest agent:
 
@@ -62,7 +92,7 @@ holds every agent credential. If a graphical session from a second machine ever 
 `virt-viewer` over SSH to the host is the route that adds no new listener:
 
 ```bash
-virt-viewer --connect "qemu+ssh://you@host/system" agent-vm
+virt-viewer --connect "qemu+ssh://you@host/system" xmg-evo-agent-vm
 ```
 
 ## 4. Guest agent
@@ -110,26 +140,14 @@ is shared in ([06-shared-folders.md](06-shared-folders.md)), what credentials li
 ## 6. Credentials
 
 Generate the VM's own keys and tokens rather than copying the host's, see
-[05-credentials.md](05-credentials.md). Add the host's public key to `~/.ssh/authorized_keys` so
-`ssh agent-vm` works from the host; that key is for access into the VM, not the VM's identity
-towards GitHub.
+[05-credentials.md](05-credentials.md). The host's public key that §1 put into
+`~/.ssh/authorized_keys` is for access into the VM, not the VM's identity towards GitHub.
 
 ## 7. Base applications
 
 ```bash
-sudo apt install -y git curl openssh-server
+sudo apt install -y git curl
 ```
-
-`openssh-server` is what makes `ssh agent-vm` work from the host. Add the host's public key so the
-login is by key, not password:
-
-```bash
-# on the host
-ssh-copy-id agent-vm
-```
-
-Name resolution comes from `libnss-libvirt` on the host and the guest hostname `agent-vm`, both set
-in [`../host/05-hypervisor.md`](../host/05-hypervisor.md) §3 and §5.
 
 [Google Chrome](https://www.google.com/chrome/) goes in for manual debugging and stays signed out of
 personal accounts (specification §7). Agent browser work is headless Chromium via Playwright,
@@ -148,7 +166,7 @@ mkdir ~/projects && cd ~/projects && git clone https://github.com/dxmann73/agent
 
 ## 9. Checklist
 
-- [ ] guest hostname is `agent-vm`
+- [ ] guest hostname is `xmg-evo-agent-vm`
 - [ ] guest fully updated, autologin into the Plasma **X11** session
 - [ ] screen blanking off
 - [ ] desktop reachable over the SPICE console, clipboard works both ways
@@ -156,7 +174,7 @@ mkdir ~/projects && cd ~/projects && git clone https://github.com/dxmann73/agent
 - [ ] `qemu-guest-agent` active
 - [ ] `unattended-upgrades` active ([`../common/08-auto-updates.md`](../common/08-auto-updates.md))
 - [ ] passwordless sudo configured, and understood as root-in-the-VM
-- [ ] `ssh agent-vm` works from the host by key
+- [ ] `ssh xmg-evo-agent-vm` works from the host by key
 - [ ] VM-specific SSH key and tokens created
 - [ ] git, curl, openssh-server, Chrome installed
 - [ ] one coding agent installed and authenticated

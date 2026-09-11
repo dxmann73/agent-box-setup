@@ -5,6 +5,10 @@ projects they work on and the browsers they drive all live here (specification ย
 
 Prerequisite: the VM exists, created per [`../host/05-hypervisor.md`](../host/05-hypervisor.md).
 
+Naming: the VM is called `xmg-evo-agent-vm`, as both libvirt domain and guest hostname. The pattern
+is `<host>-agent-vm`, so VMs on different hosts stay apart; on another host, replace `xmg-evo`
+throughout ([`../host/05-hypervisor.md`](../host/05-hypervisor.md) ยง5).
+
 ## Order
 
 | File                                         | Scope                                                                 |

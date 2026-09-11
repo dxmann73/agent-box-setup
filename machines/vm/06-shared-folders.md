@@ -33,8 +33,8 @@ One XML file per share. `~/vms/share-tax.xml`:
 the running VM and to its persistent definition:
 
 ```bash
-virsh attach-device agent-vm ~/vms/share-tax.xml --live --config
-virsh dumpxml agent-vm | grep -A6 filesystem
+virsh attach-device xmg-evo-agent-vm ~/vms/share-tax.xml --live --config
+virsh dumpxml xmg-evo-agent-vm | grep -A6 filesystem
 ```
 
 Drop `<readonly/>` only when the agent genuinely has to write. Enforcing it here rather than in the
@@ -43,7 +43,7 @@ the VM, and agents have root in the VM.
 
 `<readonly/>` for virtiofs needs libvirt ≥ 11.0 and virtiofsd ≥ 1.13 — Kubuntu 26.04 ships 12.0 and
 1.13. If the domain refuses to start after attaching a share, read
-`/var/log/libvirt/qemu/agent-vm.log`; an AppArmor denial on the source path shows up there.
+`/var/log/libvirt/qemu/xmg-evo-agent-vm.log`; an AppArmor denial on the source path shows up there.
 
 ## 2. Guest side
 
@@ -74,11 +74,11 @@ No `qemu-guest-agent` involvement and no FUSE helper — virtiofs is a kernel fi
 # guest
 sudo umount /mnt/shares/tax
 # host
-virsh detach-device agent-vm ~/vms/share-tax.xml --live --config
+virsh detach-device xmg-evo-agent-vm ~/vms/share-tax.xml --live --config
 ```
 
 The boundary is only as good as the current share list. Review it with
-`virsh dumpxml agent-vm | grep -c '<filesystem'` and remove what no task needs.
+`virsh dumpxml xmg-evo-agent-vm | grep -c '<filesystem'` and remove what no task needs.
 
 ## 4. Working rules
 

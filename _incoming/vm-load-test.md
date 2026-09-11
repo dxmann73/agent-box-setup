@@ -45,7 +45,7 @@ is done, record the results in
 | host  | `systemd-cgtop`                                          | CPU and memory per slice: VM vs desktop vs rest |
 | host  | `cat /proc/pressure/cpu /proc/pressure/memory`           | time tasks stalled waiting for CPU or memory    |
 | host  | `free -h`, `swapon --show`, `vmstat 5`                   | RAM headroom, swap use                          |
-| host  | `virsh dommemstat agent-vm`                              | what the guest actually holds                   |
+| host  | `virsh dommemstat xmg-evo-agent-vm`                      | what the guest actually holds                   |
 | host  | `grep MHz /proc/cpuinfo`, `sensors`                      | clocks and temperature under sustained load     |
 | guest | `vmstat 5` (`st` column), `top` (`st`)                   | steal time: vCPUs ready to run, host busy       |
 | guest | `free -h`, `cat /proc/pressure/memory`                   | whether 32 GiB is enough inside the VM          |
@@ -53,11 +53,11 @@ is done, record the results in
 
 ## Knobs if an assumption fails
 
-- vCPUs: `virsh setvcpus agent-vm N --config --maximum` and `virsh setvcpus agent-vm N --config`
-  with the VM shut down
+- vCPUs: `virsh setvcpus xmg-evo-agent-vm N --config --maximum` and
+  `virsh setvcpus xmg-evo-agent-vm N --config` with the VM shut down
 - CPU priority: `sudo systemctl set-property machine.slice CPUWeight=50` gives the host about 2/3
   under contention
-- VM memory: `virsh setmaxmem agent-vm 40G --config` and `virsh setmem agent-vm 40G --config` with
-  the VM shut down, or smaller
+- VM memory: `virsh setmaxmem xmg-evo-agent-vm 40G --config` and
+  `virsh setmem xmg-evo-agent-vm 40G --config` with the VM shut down, or smaller
 - guest parallelism: cap build jobs or the number of concurrent agents
 - model: pick a smaller one if RAM or bandwidth is the limit
