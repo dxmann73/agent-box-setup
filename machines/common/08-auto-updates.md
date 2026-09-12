@@ -61,13 +61,10 @@ Unattended-Upgrade::Allowed-Origins {
     "${distro_id}ESM:${distro_codename}-infra-security";
 };
 
-// Third-party repos installed by this repo's guides.
+// Third-party repos. Add a line only once that repo exists on this machine
+// and its origin string has been verified; see below.
 Unattended-Upgrade::Origins-Pattern {
     "origin=Google LLC,codename=stable";
-    "origin=packages.microsoft.com";
-    "origin=Docker";
-    "origin=Node Source";
-    "origin=packagecloud.io/github/git-lfs";
 };
 
 Unattended-Upgrade::Remove-Unused-Kernel-Packages "true";
@@ -78,11 +75,19 @@ EOF
 ```
 
 `origin=` values are what the repositories actually publish, and they change. Verify against the
-real list rather than trusting the block above:
+real list rather than trusting any block, including this one:
 
 ```bash
 apt-cache policy | grep -o 'o=[^,]*' | sort -u
+apt-cache policy | grep -B1 -i <repo>          # the full release line: o=, a=, n=, l=
 ```
+
+Add each third-party pattern when its repo is actually installed, not in advance. A pattern for an
+absent repo is inert, so a wrong one cannot be noticed — it simply never matches. The Google line
+above was taken from a guest that had just installed Chrome, whose release line reads
+`v=1.0,o=Google LLC,a=stable,n=stable,l=Google,c=main`; `codename=` corresponds to `n=`. The repos
+the later guides add — Microsoft, Docker, Node, git-lfs — get their lines the same way, in
+[`../vm/02-dev-and-agents.md`](../vm/02-dev-and-agents.md).
 
 Test the configuration without installing anything:
 

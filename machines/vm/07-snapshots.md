@@ -32,9 +32,15 @@ Take one at the points where recovery is actually useful:
 
 | Snapshot         | When                                                                   |
 | ---------------- | ---------------------------------------------------------------------- |
-| `clean-guest`    | after [01-bootstrap.md](01-bootstrap.md), before any toolchain         |
+| `clean-guest`    | after [01-bootstrap.md](01-bootstrap.md) §7, **before** credentials    |
 | `toolchain`      | after [02-dev-and-agents.md](02-dev-and-agents.md) passes verification |
 | `pre-experiment` | before anything invasive an agent is about to attempt                  |
+
+`clean-guest` is taken **before** [01-bootstrap.md](01-bootstrap.md)'s credentials section, not
+after it. A snapshot lives inside the qcow2 and captures whatever is on disk, so one taken after
+[05-credentials.md](05-credentials.md) carries the VM's SSH private key, its `gh` token and
+`~/.bash_secrets` into every copy of that image. Reverting to a credential-free snapshot costs one
+re-run of `vm/05`; a snapshot full of live tokens costs a rotation.
 
 Delete `pre-experiment` snapshots once the experiment is settled. Internal snapshots live inside the
 qcow2 file: every one of them grows it and long chains cost read performance.

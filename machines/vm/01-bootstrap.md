@@ -194,13 +194,7 @@ This is what lets the host shut the VM down gracefully, read its addresses with 
 and freeze its filesystems while a snapshot is taken. Unrelated to virtiofs shares
 ([06-shared-folders.md](06-shared-folders.md)), which are a kernel filesystem in the guest.
 
-## 6. Credentials
-
-Generate the VM's own keys and tokens rather than copying the host's, see
-[05-credentials.md](05-credentials.md). The host's public key that §1 put into
-`~/.ssh/authorized_keys` is for access into the VM, not the VM's identity towards GitHub.
-
-## 7. Base applications
+## 6. Base applications
 
 ```bash
 sudo apt install -y git curl
@@ -209,6 +203,28 @@ sudo apt install -y git curl
 [Google Chrome](https://www.google.com/chrome/) goes in for manual debugging and stays signed out of
 personal accounts (specification §7). Agent browser work is headless Chromium via Playwright,
 installed in [02-dev-and-agents.md](02-dev-and-agents.md).
+
+```bash
+cd /tmp
+curl -fsSLO https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+sudo apt install -y /tmp/google-chrome-stable_current_amd64.deb
+```
+
+Installing the `.deb` runs Google's maintainer scripts as root and leaves
+`/etc/apt/sources.list.d/google-chrome.sources` and its signing key behind. That is what keeps
+Chrome current, and it is the first non-Ubuntu source on the machine — so add its origin to
+unattended upgrades now, verified against what the repo publishes
+([`../common/08-auto-updates.md`](../common/08-auto-updates.md) §1).
+
+> **Take the `clean-guest` snapshot here**, before the credentials below
+> ([07-snapshots.md](07-snapshots.md) §2). Everything up to this point is reproducible from this
+> file; everything after it is secret.
+
+## 7. Credentials
+
+Generate the VM's own keys and tokens rather than copying the host's, see
+[05-credentials.md](05-credentials.md). The host's public key that §1 put into
+`~/.ssh/authorized_keys` is for access into the VM, not the VM's identity towards GitHub.
 
 ## 8. First coding agent
 
@@ -232,7 +248,8 @@ mkdir ~/projects && cd ~/projects && git clone https://github.com/dxmann73/agent
 - [ ] `unattended-upgrades` active ([`../common/08-auto-updates.md`](../common/08-auto-updates.md))
 - [ ] passwordless sudo configured, and understood as root-in-the-VM
 - [ ] `ssh xmg-evo-agent-vm` works from the host by key
+- [ ] git, curl, openssh-server, Chrome installed; Chrome's origin added to unattended upgrades
+- [ ] `clean-guest` snapshot taken, before any credential exists on the disk
 - [ ] VM-specific SSH key and tokens created
-- [ ] git, curl, openssh-server, Chrome installed
 - [ ] one coding agent installed and authenticated
 - [ ] repo cloned to `~/projects/agent-box-setup`

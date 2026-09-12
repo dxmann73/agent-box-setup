@@ -44,7 +44,11 @@ Per [`../machines/vm/01-bootstrap.md`](../machines/vm/01-bootstrap.md).
   `TurnOffDisplayWhenIdle=false`, `TurnOffDisplayIdleTimeoutSec=-1` — there is no `DPMSControl`
   group any more, so the Plasma 5 keys would have written dead entries. Screen locking is
   `[Daemon] Autolock=false`, `LockOnResume=false`, `Timeout=0` in `kscreenlockerrc`
-- open: §6 credentials, §7 `git curl` and Chrome, §8 first coding agent
+- done: §6 base applications. `git` 2.53.0 and `curl` 8.18.0 were already installed;
+  `google-chrome-stable` 153.0.8010.36-1 added, which brought
+  `/etc/apt/sources.list.d/google-chrome.sources`
+- open: §7 credentials (`vm/05`), §8 first coding agent. `vm/01` §6 and §7 were **swapped**: base
+  applications now precede credentials, so the `clean-guest` snapshot can sit between them
 
 ### Host SSH agent: done and verified
 
@@ -68,9 +72,10 @@ Per [`../machines/common/08-auto-updates.md`](../machines/common/08-auto-updates
 - `/etc/apt/apt.conf.d/52unattended-upgrades-local` written with the `Allowed-Origins` block,
   `Remove-Unused-Kernel-Packages`, `Remove-New-Unused-Dependencies`, `Automatic-Reboot "false"` and
   an empty `Mail`
-- **no `Origins-Pattern` block yet**: the guest has only `o=Ubuntu` today. Add the third-party
-  patterns in `vm/02`, when Chrome, `gh`, Docker and Node actually add their repos, and verify each
-  `origin=` against `apt-cache policy | grep -o 'o=[^,]*' | sort -u`
+- `Origins-Pattern` now holds exactly one line, `"origin=Google LLC,codename=stable"`, added after
+  Chrome was installed and verified against the guest's own release line
+  `v=1.0,o=Google LLC,a=stable,n=stable,l=Google,c=main`. The Microsoft, Docker, Node and git-lfs
+  patterns get added the same way in `vm/02`, each once its repo exists
 - `/etc/needrestart/conf.d/50local.conf` written with `restart = 'a'` and `kernelhints = 0`
 - `sudo unattended-upgrade --dry-run --debug` exits 0 with nothing to upgrade; the effective origins
   include `o=Ubuntu,a=resolute-updates` and `resolute-backports` is pinned to `-32768`
@@ -79,10 +84,12 @@ Per [`../machines/common/08-auto-updates.md`](../machines/common/08-auto-updates
 
 ## Next steps
 
-1. **Rest of `vm/01`**: §3 screen blanking off — set it in System Settings once and copy the
-   resulting `~/.config/powerdevilrc` keys into the doc, because powerdevil 6.6 exposes no
-   `DPMSControl` key where the Plasma 5 layout had one. Then §6 credentials, §7 `git curl` and
-   Chrome, §8 first coding agent and clone of this repo. §1, §2, §4 and §5 are done.
+1. **Snapshot `clean-guest`** now that §6 is done and before any credential exists
+   ([`../machines/vm/07-snapshots.md`](../machines/vm/07-snapshots.md) §2). Taken while the VM runs,
+   it carries memory state, which works because the guest is BIOS-booted.
+2. **Rest of `vm/01`**: §7 credentials (`vm/05`: VM-only `ed25519` key registered separately on
+   GitHub, `gh auth login` scoped to the repos agents touch, `~/.bash_secrets` from the template),
+   then §8 first coding agent and clone of this repo. §1–§6 are done.
 2. **Snapshot `clean-guest`** ([`../machines/vm/07-snapshots.md`](../machines/vm/07-snapshots.md)
    §2).
 3. Then, in order: credentials (`vm/05` — pull it ahead of the toolchain, since `vm/02` already
@@ -101,6 +108,11 @@ Per [`../machines/common/08-auto-updates.md`](../machines/common/08-auto-updates
 - SSH before everything else in `vm/01`, so later steps can be pasted from the host
 - keep `id_rsa` with its passphrase; one agent: OpenSSH + `ksshaskpass` + KWallet
 - manual Kubuntu install this time; autoinstall on a future rebuild
+- GitHub auth in the VM will be a normal `gh auth login` against the full account, not the
+  fine-grained token `vm/05` §3 recommends. The consequence is explicit: an agent in the guest can
+  push to every repository the account can. Revocation path is the GitHub authorized-apps list, and
+  the VM's credentials get rotated independently of the host's
+- `clean-guest` is taken between `vm/01` §6 and §7, so the snapshot holds no credentials
 - **guest session is Wayland**, not X11. Kubuntu 26.04 ships no Plasma X11 session:
   `plasma-workspace-x11` has no installation candidate, `/usr/share/xsessions/` does not exist, and
   only `plasma.desktop` is offered. `Session=plasmax11` was therefore dropped from `vm/01`. The cost
