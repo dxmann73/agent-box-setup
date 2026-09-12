@@ -17,31 +17,36 @@ that is acceptable.
 
 ## 2. SSH
 
-Generate a keypair that exists only in the VM:
+**The VM has no git SSH key.** GitHub is reached over HTTPS with `gh`'s token (§3), so a keypair
+would be a second credential on the agent's disk that nothing uses. The only key material here is
+`~/.ssh/authorized_keys`, which is the host's public key for getting *into* the VM
+([01-bootstrap.md](01-bootstrap.md) §1) — not the VM's identity towards anything.
+
+If a genuine SSH need appears later — another host, a git remote that offers no HTTPS — generate it
+then, and without a passphrase:
 
 ```bash
 ssh-keygen -t ed25519 -C "xmg-evo-agent-vm" -f ~/.ssh/id_ed25519 -N ""
 ```
 
-**No passphrase**, deliberately. Agents run unattended and a passphrase-protected key needs an
-interactive unlock that nobody is present to give; on an autologin guest, loading it into an agent at
-session start would reduce the protection to a delay anyway. What limits the damage is that the key
-is the VM's own, registered separately, and revocable on its own — not that it is encrypted at rest
-on a disk the agent can read.
-
-Register the public key with GitHub as a separate key so it can be revoked on its own. `gh auth
-login` offers to upload it during §3; otherwise:
-
-```bash
-gh ssh-key add ~/.ssh/id_ed25519.pub --title xmg-evo-agent-vm
-```
+No passphrase, deliberately: agents run unattended, so a passphrase needs an interactive unlock that
+nobody is present to give, and on an autologin guest loading it into an agent at session start turns
+the protection into a delay. What limits the damage is that such a key is the VM's own, registered
+separately, and revocable on its own — not that it is encrypted at rest on a disk the agent reads.
 
 ## 3. GitHub
 
 ```bash
 gh auth login      # needs a TTY: ssh -t xmg-evo-agent-vm gh auth login
 gh auth status
+gh config get git_protocol     # https
+git config --get credential.https://github.com.helper
 ```
+
+Choose **HTTPS**, not SSH, and accept "Authenticate Git with your GitHub credentials?" — that runs
+`gh auth setup-git`, which installs the credential helper the last command checks for. Clones then
+use `https://github.com/...` and authenticate with the token, so the VM needs no SSH key at all
+(§2).
 
 `gh` is installed in [01-bootstrap.md](01-bootstrap.md) §6, before this step, because this step
 cannot run without it.
@@ -69,7 +74,7 @@ enough for downloads.
 
 ## 6. Checklist
 
-- [ ] VM-only SSH keypair generated, public key registered separately
+- [ ] GitHub over HTTPS with `gh`'s token and credential helper; no unused SSH key on the disk
 - [ ] GitHub auth scoped to the repositories agents need
 - [ ] `~/.bash_secrets` populated from the template, not committed
 - [ ] no host `~/.ssh`, browser profile or cloud config present in the VM

@@ -49,9 +49,10 @@ Per [`../machines/vm/01-bootstrap.md`](../machines/vm/01-bootstrap.md).
   `/etc/apt/sources.list.d/google-chrome.sources`
 - done: `gh` 2.46.0-4 installed from the Ubuntu archive, added to §6. No third-party repo, so no new
   `Origins-Pattern` line; it is needed by §7 and had to precede it
-- in progress: §7 credentials (`vm/05`). VM-only `ed25519` key generated with **no passphrase**,
-  `SHA256:aDXF6u0igMpmrcdQeyUK3b3f4KJR8TgO/QRwDM5HPNg`. Still open: `gh auth login` (interactive,
-  full account by decision), registering the public key, and `~/.bash_secrets` from the template
+- in progress: §7 credentials (`vm/05`). **GitHub over HTTPS**, so the VM gets no git SSH key: an
+  `ed25519` key was generated and then deleted again, unregistered, once HTTPS was chosen. `gh`'s
+  token plus its credential helper is the single GitHub credential. Still open: `gh auth login`
+  (interactive, TTY, full account by decision) and `~/.bash_secrets` from the template
 - open: §8 first coding agent. `vm/01` §6 and §7 were **swapped**: base applications now precede
   credentials, so the `clean-guest` snapshot can sit between them
 
