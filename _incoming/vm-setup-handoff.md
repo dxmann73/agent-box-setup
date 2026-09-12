@@ -49,10 +49,13 @@ Per [`../machines/vm/01-bootstrap.md`](../machines/vm/01-bootstrap.md).
   `/etc/apt/sources.list.d/google-chrome.sources`
 - done: `gh` 2.46.0-4 installed from the Ubuntu archive, added to §6. No third-party repo, so no new
   `Origins-Pattern` line; it is needed by §7 and had to precede it
-- in progress: §7 credentials (`vm/05`). **GitHub over HTTPS**, so the VM gets no git SSH key: an
-  `ed25519` key was generated and then deleted again, unregistered, once HTTPS was chosen. `gh`'s
-  token plus its credential helper is the single GitHub credential. Still open: `gh auth login`
-  (interactive, TTY, full account by decision) and `~/.bash_secrets` from the template
+- done: §7 credentials (`vm/05`) §2 and §3. **GitHub over HTTPS**, so the VM gets no git SSH key: an
+  `ed25519` key was generated and then deleted again, unregistered, once HTTPS was chosen. `gh auth
+  status` reports account `dxmann73`, `Git operations protocol: https`, and
+  `git config credential.https://github.com.helper` is `!/usr/bin/gh auth git-credential`. Full
+  account by decision, so an agent here can push wherever that account can; revoke through GitHub's
+  authorized-apps list
+- open: `vm/05` §4 `~/.bash_secrets`, which waits for `common/00` inside `vm/02`
 - in progress: §8. Repo cloned to `~/projects/agent-box-setup` over public HTTPS, and Claude Code
   2.1.269 installed with `curl -fsSL https://claude.ai/install.sh | bash` — no Node needed, so the
   toolchain stays in `vm/02`. Still open: authenticating `claude`, and the config symlinks from
