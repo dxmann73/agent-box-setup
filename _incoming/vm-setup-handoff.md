@@ -123,16 +123,17 @@ Per [`../machines/common/08-auto-updates.md`](../machines/common/08-auto-updates
 
 ## Next steps
 
-1. **`vm/01` §7 credentials** (`vm/05`): VM-only `ed25519` key registered separately on GitHub,
-   `gh auth login`, `~/.bash_secrets` from the template. **Blocked on a reorder**: `gh` is not
-   installed in the guest — it belongs to `vm/02` — so either pull `gh` forward or move credentials
-   after the toolchain. Pulling `gh` forward adds the GitHub apt repo, which then needs its own
-   verified `Origins-Pattern` line.
-2. **§8 first coding agent** and clone of this repo, then `vm/02` toolchain.
-3. Then, in order: credentials (`vm/05` — pull it ahead of the toolchain, since `vm/02` already
-   needs `gh auth`), toolchain (`vm/02`, and add the remaining `Origins-Pattern` lines there),
-   networking (`vm/03`), BB (`vm/04`), shared folders (`vm/06`, only when needed), backup and
-   rebuild test (`vm/07`), and the load test ([vm-load-test.md](vm-load-test.md)).
+1. **Finish `vm/01` §8**: `ssh -t xmg-evo-agent-vm claude`, authenticate, `/exit`. Then the caveman
+   plugin per `agents/claude/README.md` §Caveman. That closes `vm/01`.
+2. **`vm/02` toolchain**, starting with its §2 list. First is
+   [`../machines/common/00-home-environment.md`](../machines/common/00-home-environment.md), which
+   replaces the guest's `~/.bashrc`, `~/.profile` and `~/.gitconfig` — regular files from the
+   Kubuntu install — with symlinks into the repo, so back those up first. It also creates
+   `~/.bash_secrets` from `.bash_secrets.CHANGE-ME`, closing `vm/05` §4. Node arrives here, which is
+   what `npx skills` needs; add an `Origins-Pattern` line for every new third-party repo, verified
+   against `apt-cache policy`.
+3. Then, in order: networking (`vm/03`), BB (`vm/04`), shared folders (`vm/06`, only when needed),
+   backup and rebuild test (`vm/07`), and the load test ([vm-load-test.md](vm-load-test.md)).
 
 ## Decisions already made
 
