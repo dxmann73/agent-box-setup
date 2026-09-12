@@ -2,7 +2,7 @@
 Type=Application
 Name=Vibe Typer
 Comment=AI voice typing that cleans up speech and types into any application
-Exec=sh -c '$HOME/.local/bin/vibe-typer-launch.sh'
+Exec=vibe-typer-launch.sh
 Icon=vibe-typer
 Terminal=false
 StartupWMClass=Vibe Typer

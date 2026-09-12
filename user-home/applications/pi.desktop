@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Pi
+Comment=Pi coding agent in a terminal
+Exec=pi-launch.sh
+Icon=utilities-terminal
+Terminal=false
+StartupWMClass=pi-agent
+Categories=Development;

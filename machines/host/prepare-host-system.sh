@@ -131,7 +131,7 @@ ensure_libvirt_name_resolution
 if ! virsh -c qemu:///system net-info default >/dev/null 2>&1; then
     virsh -c qemu:///system net-define /usr/share/libvirt/networks/default.xml
 fi
-if ! virsh -c qemu:///system net-info default | grep -q 'Active:.*yes'; then
+if ! virsh -c qemu:///system net-list --name | grep -Fxq default; then
     virsh -c qemu:///system net-start default
 fi
 virsh -c qemu:///system net-autostart default
@@ -140,7 +140,7 @@ if ! virsh -c qemu:///system pool-info default >/dev/null 2>&1; then
     install -d -m 0755 /var/lib/libvirt/images
     virsh -c qemu:///system pool-define-as default dir --target /var/lib/libvirt/images
 fi
-if ! virsh -c qemu:///system pool-info default | grep -q 'State:.*running'; then
+if ! virsh -c qemu:///system pool-list --name | grep -Fxq default; then
     virsh -c qemu:///system pool-start default
 fi
 virsh -c qemu:///system pool-autostart default

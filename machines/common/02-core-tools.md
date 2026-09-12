@@ -97,9 +97,7 @@ Expected output: Should pull and run the hello-world image successfully
 
 ## 4. WezTerm
 
-Install WezTerm natively on both host and VM. The upstream project recommends
-the native package rather than its Flatpak once it becomes a daily terminal,
-because sandboxing limits some power-user behavior.
+Install WezTerm on both host and VM.
 
 ```bash
 curl -fsSL https://apt.fury.io/wez/gpg.key \
@@ -111,8 +109,8 @@ sudo apt update
 sudo apt install -y wezterm
 ```
 
-Add its verified `origin=wez_apt_fury_io` pattern to the unattended-upgrades
-policy after the repository is installed (see [08-auto-updates.md](08-auto-updates.md)).
+Add `origin=wez_apt_fury_io` to the unattended-upgrades policy
+([08-auto-updates.md](08-auto-updates.md)).
 
 Verify:
 

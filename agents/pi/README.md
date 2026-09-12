@@ -1,29 +1,25 @@
 # Pi
 
-Install Pi from the user-owned npm prefix, then authenticate in its first session:
+Install Pi and link its instructions and skills:
 
 ```bash
 npm install -g --ignore-scripts @earendil-works/pi-coding-agent
-pi
-```
-
-Run `/login` to authenticate. Link the global instructions and skills:
-
-```bash
 mkdir -p ~/.pi/agent
 ln -sfn ~/projects/agent-box-setup/agents/AGENTS.md ~/.pi/agent/AGENTS.md
 ln -sfn ~/projects/agent-box-setup/agents/skills ~/.pi/agent/skills
 ```
 
-Verify:
+Start `pi` and run `/login`. The optional Plasma launcher opens Pi in WezTerm:
 
 ```bash
-pi --version
-ls -l ~/.pi/agent/AGENTS.md ~/.pi/agent/skills
+mkdir -p ~/.local/bin ~/.local/share/applications
+ln -sfn ~/projects/agent-box-setup/user-home/pi-launch.sh ~/.local/bin/pi-launch.sh
+ln -sfn ~/projects/agent-box-setup/user-home/applications/pi.desktop \
+  ~/.local/share/applications/pi.desktop
+update-desktop-database ~/.local/share/applications
 ```
 
-Pi reads `~/.pi/agent/AGENTS.md` and discovers skills below `~/.pi/agent/skills/`. See the
-[official Pi quickstart](https://pi.dev/docs/latest/quickstart).
+See the [Pi quickstart](https://pi.dev/docs/latest/quickstart).
 
 ## Checklist
 

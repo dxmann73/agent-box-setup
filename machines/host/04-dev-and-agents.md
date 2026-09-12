@@ -49,8 +49,39 @@ Applies on the host and not in the VM:
 - the hypervisor and the agent VM itself: [05-hypervisor.md](05-hypervisor.md)
 - the personal Chrome profile: agents on the host must not drive it either; use a separate profile
   or the VM's Chromium
-- personal desktop applications: Bitwarden, Kdenlive, VibeTyper, Claude Desktop, and ChatGPT
-  Desktop are host-only ([02-applications.md](02-applications.md))
+- personal desktop applications: Bitwarden, Kdenlive, VibeTyper, Claude Desktop, and ChatGPT Desktop
+  are host-only ([02-applications.md](02-applications.md))
+
+### WezTerm
+
+Link the managed configuration:
+
+```bash
+mkdir -p ~/.config/wezterm
+ln -sfn ~/projects/agent-box-setup/user-home/wezterm/wezterm.lua \
+  ~/.config/wezterm/wezterm.lua
+```
+
+### Cursor Agent launcher
+
+Install the icon and link the desktop entry:
+
+```bash
+mkdir -p ~/.local/share/icons/hicolor/scalable/apps ~/.local/share/applications
+curl -fsSL https://cursor.com/favicon.svg \
+  -o ~/.local/share/icons/hicolor/scalable/apps/cursor-agent.svg
+for s in 16 24 32 48 64 128 256 512; do
+  mkdir -p ~/.local/share/icons/hicolor/${s}x${s}/apps
+  magick -background none ~/.local/share/icons/hicolor/scalable/apps/cursor-agent.svg \
+    -resize ${s}x${s} ~/.local/share/icons/hicolor/${s}x${s}/apps/cursor-agent.png
+done
+gtk-update-icon-cache -f -t ~/.local/share/icons/hicolor
+ln -sfn ~/projects/agent-box-setup/user-home/applications/cursor-agent.desktop \
+  ~/.local/share/applications/cursor-agent.desktop
+update-desktop-database ~/.local/share/applications
+```
+
+Open **Cursor Agent** from the launcher and pin it to the task manager if wanted.
 
 ### BB on the host
 

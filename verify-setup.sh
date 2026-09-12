@@ -259,6 +259,16 @@ if [ -x ~/.cursor/hooks/caveman.sh ] &&
 else
     echo "✗ Cursor caveman sessionStart hook not working"
 fi
+# Cursor rewrites cli-config.json at runtime, so it cannot be a symlink. The repository owns
+# only the display block; agents/cursor/apply-cli-config.sh re-applies it after drift.
+cursor_template="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/agents/cursor/cli-config.json"
+if [ -f ~/.cursor/cli-config.json ] && [ -f "$cursor_template" ] &&
+    jq -e --slurpfile template "$cursor_template" \
+        '.display == $template[0].display' ~/.cursor/cli-config.json > /dev/null 2>&1; then
+    echo "✓ Cursor display settings match the repository template"
+else
+    echo "✗ Cursor display settings drifted (run agents/cursor/apply-cli-config.sh)"
+fi
 echo ""
 
 # Skills
@@ -570,6 +580,19 @@ else
 fi
 if [ -f /var/run/reboot-required ]; then
     echo "⊗ reboot pending: $(tr '\n' ' ' < /var/run/reboot-required.pkgs 2>/dev/null)"
+fi
+if [ "$PROFILE" = "host" ]; then
+    unattended_patterns="$(apt-config dump 2>/dev/null || true)"
+    if grep -Fq 'site=persistent.oaistatic.com,codename=stable' <<<"$unattended_patterns"; then
+        echo "✓ ChatGPT desktop is covered by unattended upgrades"
+    else
+        echo "✗ ChatGPT desktop is not covered by unattended upgrades (see machines/common/08-auto-updates.md)"
+    fi
+    if grep -Fq 'origin=repo.radeon.com' <<<"$unattended_patterns"; then
+        echo "✗ Radeon/ROCm is updated unattended; remove it from the policy (local-llm maintenance is deliberate)"
+    else
+        echo "✓ Radeon/ROCm is excluded from unattended upgrades"
+    fi
 fi
 echo ""
 

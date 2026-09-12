@@ -91,8 +91,7 @@ above was taken from a guest that had just installed Chrome, whose release line 
 the later guides add — Microsoft, Docker, Node, git-lfs — get their lines the same way, in
 [`../vm/02-dev-and-agents.md`](../vm/02-dev-and-agents.md).
 
-For the intended host and VM setup, use these verified patterns only after the
-corresponding repository exists:
+Add these patterns after their repositories are installed:
 
 ```text
 # both host and VM
@@ -105,9 +104,7 @@ corresponding repository exists:
 "site=persistent.oaistatic.com,codename=stable";          // ChatGPT desktop
 ```
 
-Claude Desktop supplies its own `origin=Anthropic` rule. Do not add
-`repo.radeon.com`: local GPU/ROCm updates are a deliberate part of the separate
-`local-llm` workflow and require hardware validation afterwards.
+Claude Desktop supplies its own `origin=Anthropic` rule. Do not add `repo.radeon.com`.
 
 A real example of why: this host carried `"origin=Node Source"` for a long time while nodesource had
 moved to publishing `o=. nodistro,a=nodistro,n=nodistro`. The pattern matched nothing, so Node

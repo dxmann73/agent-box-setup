@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Cursor Agent
+Comment=Cursor CLI coding agent in a terminal
+Exec=wezterm start --always-new-process --class cursor-agent --cwd /home/dave/projects -- cursor-agent
+Icon=cursor-agent
+Terminal=false
+StartupWMClass=cursor-agent
+Categories=Development;

@@ -13,17 +13,13 @@ Chromium inside the VM, see [`../vm/02-dev-and-agents.md`](../vm/02-dev-and-agen
 
 ## 2. Bitwarden
 
-Use the official Bitwarden Snap on the host. It receives updates through
-Snap's refresh service; do not substitute the `.deb`, which Bitwarden does not
-auto-update.
+Install the official Bitwarden Snap on the host.
 
 ```bash
 sudo snap install bitwarden
 ```
 
-Install the Bitwarden browser extension in the personal Chrome profile too.
-Verify that the desktop vault, browser extension, and unlock flow work before
-becoming dependent on them.
+Install the Bitwarden browser extension in the personal Chrome profile.
 
 ## 3. Dropbox
 
@@ -110,10 +106,8 @@ Prefer a Linux-native ext4 Steam library.
 
 ## 9. Voice dictation reference
 
-[Vibe Typer](https://vibetyper.com/downloads) is a host-only, portable AppImage
-that supports both Plasma Wayland and X11. Download it to
-`~/Applications/VibeTyper.AppImage`, make it executable, and link the
-repository-managed launcher and desktop entry:
+[Vibe Typer](https://vibetyper.com/downloads) is a host-only AppImage. Download it to
+`~/Applications/VibeTyper.AppImage`, make it executable, and link the launcher:
 
 ```bash
 mkdir -p ~/Applications ~/.local/bin ~/.local/share/applications
@@ -124,12 +118,7 @@ ln -sfn ~/projects/agent-box-setup/user-home/applications/vibe-typer.desktop \
   ~/.local/share/applications/vibe-typer.desktop
 ```
 
-The launcher waits for KDE Wallet after login, avoiding the known wallet race.
-It deliberately passes `--no-sandbox`, matching the working host installation.
-
-Enable the weekly update reminder. It only notifies: VibeTyper has no
-documented signed/self-updating Linux channel, so replacing the AppImage stays
-a reviewed user action.
+Enable the weekly update reminder; it only notifies.
 
 ```bash
 ln -sfn ~/projects/agent-box-setup/user-home/vibe-typer-update-reminder.sh \
@@ -145,14 +134,12 @@ systemctl --user enable --now vibe-typer-update-reminder.timer
 
 ## 10. Claude Desktop and ChatGPT desktop
 
-Install the official Linux desktop packages on the host only. Their account
-sessions and desktop state remain outside the VM.
+Install the official Linux desktop packages on the host only.
 
-- [Claude Desktop](https://claude.ai/download) ships its own APT source and
-  unattended-upgrades rule.
-- [ChatGPT desktop](https://chatgpt.com/download) installs an APT source; add
-  its verified `site=persistent.oaistatic.com,codename=stable` pattern to the
-  unattended-upgrades policy in [08-auto-updates.md](../common/08-auto-updates.md).
+- [Claude Desktop](https://claude.ai/download) supplies its APT update rule.
+- [ChatGPT desktop](https://chatgpt.com/download): add
+  `site=persistent.oaistatic.com,codename=stable` to
+  [08-auto-updates.md](../common/08-auto-updates.md).
 
 Verify:
 

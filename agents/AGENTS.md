@@ -18,8 +18,10 @@ If you hit unexpected concurrent changes, assume another agent is working in par
 Keep going and keep your edits focused. Don’t delete/rename unexpected stuff. Do not discard
 or reset inflight work of other agents.
 
-Not working with branches right now. Commit straight to the default branch; do not create
-a branch before committing unless asked.
+Never commit unless explicitly asked. Finishing a task is not permission to commit; leave the work
+in the working tree and report what changed. When asked to commit: commit straight to the default
+branch, do not create a branch first unless asked. Stage only files you changed yourself, by path.
+Never `git add -A` or `git add .`.
 
 When validating or converting data, fail fast: throw and stop as soon as a value is not what you
 expect; do not substitute silent defaults or empty placeholders that hide bad input until later.
