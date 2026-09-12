@@ -106,8 +106,7 @@ that render `vim.mode` themselves, which this one does not.
 
 ## Caveman
 
-See [../README.md#caveman](../README.md#caveman) for the clone step. Register the marketplace and
-install the plugin:
+Register the Caveman GitHub marketplace and install the plugin:
 
 ```bash
 claude plugin marketplace add JuliusBrussee/caveman

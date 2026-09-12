@@ -70,11 +70,11 @@ npx skills update
 
 ## Caveman
 
-```bash
-git clone https://github.com/JuliusBrussee/caveman ~/projects/caveman
-```
+Caveman lives in `agents/skills/` with the rest of the shared skills. Codex and Cursor use the
+repo-managed skill symlinks plus their hook files; they do not need a separate checkout of
+`JuliusBrussee/caveman`.
 
-Configure Caveman in the Claude Code, Codex, and Cursor guides.
+Configure the Claude Code plugin and the Codex/Cursor hooks in the individual agent guides.
 
 ## Verification
 
