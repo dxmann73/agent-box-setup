@@ -57,9 +57,12 @@ Per [`../machines/vm/01-bootstrap.md`](../machines/vm/01-bootstrap.md).
   2.1.269 installed with `curl -fsSL https://claude.ai/install.sh | bash` — no Node needed, so the
   toolchain stays in `vm/02`. Still open: authenticating `claude`, and the config symlinks from
   `agents/claude/README.md`. Skills wait for `npx`, i.e. for `vm/02`
-- **the guest clone is stale**: it carries `2148e58`, because the doc commits from this walkthrough
-  (`b821784` … `97c77cc`) are local to the host and unpushed. Push them, then `git pull` in the
-  guest, before letting an agent in the VM follow these files
+- done: the walkthrough's commits were pushed (`2148e58..a04a253`) and the guest pulled them, so the
+  VM's copy of these docs is current
+- done: Claude Code config wired in the guest — `~/AGENTS.md` and `~/CLAUDE.md` symlinks, plus
+  `~/.claude/settings.json` and `~/.claude/statusline-command.sh` into the repo. `settings.json`
+  carries `bypassPermissions`, which is deliberate: the guest is the boundary and the agent already
+  has passwordless root
 - `vm/01` §6 and §7 were **swapped**: base applications now precede credentials, so the
   `clean-guest` snapshot can sit between them
 
