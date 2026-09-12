@@ -145,9 +145,10 @@ Per [`../machines/common/08-auto-updates.md`](../machines/common/08-auto-updates
 - `verify-setup.sh` now checks for the hostname `xmg-evo-agent-vm` literally
 - **host `52unattended-upgrades-local`: applied by hand**, since host `sudo` needs a password and the
   walkthrough could not write it. `apt-config dump` now shows five patterns plus Claude Desktop's.
-  The backup belongs outside `/etc/apt/apt.conf.d/`, or apt warns
-  `Ignoring file ... as it has an invalid filename extension` on every run. Findings that led to it: `"origin=Node Source"` matches nothing since
-  nodesource moved to `o=. nodistro`, so `nodejs` has had no automatic updates; Dropbox
+  Keep backups outside `/etc/apt/apt.conf.d/` — one left there makes apt warn
+  `Ignoring file ... as it has an invalid filename extension` on every run; this one was moved to
+  `/root/`. Findings that led to the change: `"origin=Node Source"` matched nothing since
+  nodesource moved to `o=. nodistro`, so `nodejs` had no automatic updates; Dropbox
   (`o=Dropbox.com`), wezterm (`o=wez_apt_fury_io`) and AMD (`o=repo.radeon.com`) have no pattern at
   all. Chrome's line is correct. Claude Desktop configures itself through
   `/etc/apt/apt.conf.d/50claude-desktop`. Snaps and AppImages need nothing here
