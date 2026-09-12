@@ -196,8 +196,8 @@ virt-install --name xmg-evo-agent-vm --osinfo detect=on,name=ubuntu24.04 \
   --memorybacking source.type=memfd,access.mode=shared \
   --disk size=200,format=qcow2,bus=virtio,discard=unmap \
   --network network=default,model=virtio \
-  --graphics spice,listen=none,gl.enable=yes \
-  --video virtio,accel3d=yes \
+  --graphics spice,listen=none \
+  --video virtio \
   --cdrom /var/lib/libvirt/boot/kubuntu-26.04.1-desktop-amd64.iso --autostart
 ```
 
@@ -211,7 +211,7 @@ What each choice is for:
 | `--disk size=200,...,discard=unmap`                                         | 200 GiB sparse qcow2 in the `default` pool; TRIM reaches the host filesystem                                                                                                                                               |
 | `--network network=default,model=virtio`                                    | outbound NAT and the host model endpoint on one interface ([`../vm/03-networking.md`](../vm/03-networking.md))                                                                                                             |
 | no `--boot`                                                                 | QEMU's built-in SeaBIOS, see above                                                                                                                                                                                         |
-| `--graphics spice,listen=none,gl.enable=yes` + `--video virtio,accel3d=yes` | Plasma without a software renderer; virgl needs a local client, and the console is local anyway                                                                                                                            |
+| `--graphics spice,listen=none` + `--video virtio`                           | SPICE console with no listening port. **No `gl.enable=yes` / `accel3d=yes`**: virgl cannot migrate, and QEMU refuses every live snapshot on a domain that has it — `cannot migrate domain: virgl is not yet migratable` ([`../vm/07-snapshots.md`](../vm/07-snapshots.md) §2). Snapshots beat 3D in a console used for occasional inspection |
 | `--autostart`                                                               | the VM comes back with the host (§14)                                                                                                                                                                                      |
 
 `--osinfo detect=on,name=ubuntu24.04` detects from the ISO and falls back to the 24.04 profile

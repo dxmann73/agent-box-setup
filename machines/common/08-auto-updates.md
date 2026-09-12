@@ -89,6 +89,28 @@ above was taken from a guest that had just installed Chrome, whose release line 
 the later guides add — Microsoft, Docker, Node, git-lfs — get their lines the same way, in
 [`../vm/02-dev-and-agents.md`](../vm/02-dev-and-agents.md).
 
+A real example of why: this host carried `"origin=Node Source"` for a long time while nodesource had
+moved to publishing `o=. nodistro,a=nodistro,n=nodistro`. The pattern matched nothing, so Node
+received no automatic updates at all, and nothing anywhere reported a problem.
+
+Prefer an **origin-only** matcher when the repo's `codename=` is a distribution release name, e.g.
+`"origin=Dropbox.com"` rather than `"origin=Dropbox.com,codename=resolute"`. A codename matcher stops
+matching after a release upgrade, silently, in exactly the same way. Keep `codename=` only where it
+is a constant of the repo itself, as in Chrome's `stable`.
+
+Three things this file does not cover:
+
+- **Vendor-supplied snippets.** Some packages configure their own unattended upgrades; Claude Desktop
+  ships `/etc/apt/apt.conf.d/50claude-desktop` with `origin=Anthropic,archive=stable`. Check
+  `apt-config dump | grep Origins-Pattern` for the effective list, not just this file.
+- **Snaps.** snapd refreshes them on its own, so Bitwarden, VS Code and Firefox as snaps need no
+  entry here.
+- **AppImages.** Outside apt entirely. Each one either has a built-in updater or is updated by hand.
+- **GPU and accelerator stacks.** `repo.radeon.com` and similar carry Mesa/ROCm, which the host's
+  model runtime depends on. Automating them means an unattended change to the GPU stack; if you
+  include one, re-run [`../host/01-hardware-validation.md`](../host/01-hardware-validation.md) when
+  it moves.
+
 Test the configuration without installing anything:
 
 ```bash

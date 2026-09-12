@@ -17,6 +17,23 @@ lands in a running machine rather than at a boot prompt. This works because the 
 firmware: libvirt restricts internal snapshots on UEFI/pflash domains, which is one of the reasons
 [`../host/05-hypervisor.md`](../host/05-hypervisor.md) §5 chooses SeaBIOS.
 
+BIOS firmware is necessary but not sufficient. Saving memory state goes through QEMU's migration
+path, and a device that cannot migrate blocks the whole snapshot:
+
+```text
+error: Requested operation is not valid: cannot migrate domain: virgl is not yet migratable
+```
+
+That is virgl, the 3D acceleration from `--graphics spice,gl.enable=yes --video virtio,accel3d=yes`.
+A guest configured that way takes no live snapshots at all. The domain here therefore runs with
+`<gl enable='no'/>` and `accel3d='no'` ([`../host/05-hypervisor.md`](../host/05-hypervisor.md) §5):
+the console is a headless agent VM inspected occasionally, so snapshots are worth more than GPU
+acceleration in it. Check before assuming a snapshot will work:
+
+```bash
+virsh dumpxml xmg-evo-agent-vm | grep -E "<gl |accel3d"
+```
+
 ```bash
 virsh snapshot-create-as xmg-evo-agent-vm clean-guest --description 'bootstrapped, no toolchain' --atomic
 virsh snapshot-list xmg-evo-agent-vm --tree

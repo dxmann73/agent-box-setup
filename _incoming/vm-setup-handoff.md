@@ -36,19 +36,28 @@ Per [`../machines/vm/01-bootstrap.md`](../machines/vm/01-bootstrap.md).
   shows session 1 on `seat0`/`tty1` with `Type=wayland`, `Active=yes`
 - done: §4 `spice-vdagent` was already installed and `spice-vdagentd` is active (a `static` unit).
   The clipboard stays unavailable regardless, because the session is Wayland
-- done and verified: §5 `qemu-guest-agent` installed and active; it survives a reboot without being
-  enabled, and `virsh --connect qemu:///system domifaddr xmg-evo-agent-vm --source agent` answers
-  from the host with `enp1s0 192.168.122.123/24`
 - done: §3 screen blanking and autolock off, set in System Settings and read back. powerdevil 6.6
   uses `[AC][Display]` with `DimDisplayWhenIdle=false`, `DimDisplayIdleTimeoutSec=-1`,
   `TurnOffDisplayWhenIdle=false`, `TurnOffDisplayIdleTimeoutSec=-1` — there is no `DPMSControl`
   group any more, so the Plasma 5 keys would have written dead entries. Screen locking is
   `[Daemon] Autolock=false`, `LockOnResume=false`, `Timeout=0` in `kscreenlockerrc`
+- done and verified: §5 `qemu-guest-agent` installed and active; it survives a reboot without being
+  enabled, and `virsh --connect qemu:///system domifaddr xmg-evo-agent-vm --source agent` answers
+  from the host with `enp1s0 192.168.122.123/24`
 - done: §6 base applications. `git` 2.53.0 and `curl` 8.18.0 were already installed;
   `google-chrome-stable` 153.0.8010.36-1 added, which brought
   `/etc/apt/sources.list.d/google-chrome.sources`
 - open: §7 credentials (`vm/05`), §8 first coding agent. `vm/01` §6 and §7 were **swapped**: base
   applications now precede credentials, so the `clean-guest` snapshot can sit between them
+
+### Snapshot `clean-guest`: done, after removing virgl
+
+The first attempt failed: `cannot migrate domain: virgl is not yet migratable`. Saving memory state
+goes through QEMU's migration path, and virgl blocks it, so the domain took **no** live snapshots at
+all. `<gl enable='no'/>` and `accel3d='no'` were applied with `virt-xml --define` while the guest was
+shut down; the console keeps 2D virtio-gpu and loses 3D acceleration. `clean-guest` then succeeded
+with state `running`, and `~/vms/xmg-evo-agent-vm.xml` was refreshed. `host/05` §5 and `vm/07` §2
+were corrected to match.
 
 ### Host SSH agent: done and verified
 
@@ -84,18 +93,16 @@ Per [`../machines/common/08-auto-updates.md`](../machines/common/08-auto-updates
 
 ## Next steps
 
-1. **Snapshot `clean-guest`** now that §6 is done and before any credential exists
-   ([`../machines/vm/07-snapshots.md`](../machines/vm/07-snapshots.md) §2). Taken while the VM runs,
-   it carries memory state, which works because the guest is BIOS-booted.
-2. **Rest of `vm/01`**: §7 credentials (`vm/05`: VM-only `ed25519` key registered separately on
-   GitHub, `gh auth login` scoped to the repos agents touch, `~/.bash_secrets` from the template),
-   then §8 first coding agent and clone of this repo. §1–§6 are done.
-2. **Snapshot `clean-guest`** ([`../machines/vm/07-snapshots.md`](../machines/vm/07-snapshots.md)
-   §2).
+1. **`vm/01` §7 credentials** (`vm/05`): VM-only `ed25519` key registered separately on GitHub,
+   `gh auth login`, `~/.bash_secrets` from the template. **Blocked on a reorder**: `gh` is not
+   installed in the guest — it belongs to `vm/02` — so either pull `gh` forward or move credentials
+   after the toolchain. Pulling `gh` forward adds the GitHub apt repo, which then needs its own
+   verified `Origins-Pattern` line.
+2. **§8 first coding agent** and clone of this repo, then `vm/02` toolchain.
 3. Then, in order: credentials (`vm/05` — pull it ahead of the toolchain, since `vm/02` already
-   needs `gh auth`), toolchain (`vm/02`, and add the `Origins-Pattern` block there), networking
-   (`vm/03`), BB (`vm/04`), shared folders (`vm/06`, only when needed), backup and rebuild test
-   (`vm/07`), and the load test ([vm-load-test.md](vm-load-test.md)).
+   needs `gh auth`), toolchain (`vm/02`, and add the remaining `Origins-Pattern` lines there),
+   networking (`vm/03`), BB (`vm/04`), shared folders (`vm/06`, only when needed), backup and
+   rebuild test (`vm/07`), and the load test ([vm-load-test.md](vm-load-test.md)).
 
 ## Decisions already made
 
@@ -131,6 +138,12 @@ Per [`../machines/common/08-auto-updates.md`](../machines/common/08-auto-updates
   tailnet
 - optional: a new `ed25519` host key; the autoinstall section expects `~/.ssh/id_ed25519.pub`
 - `verify-setup.sh` now checks for the hostname `xmg-evo-agent-vm` literally
+- **host `52unattended-upgrades-local` still needs fixing by hand** — host `sudo` needs a password,
+  so it could not be written from the walkthrough. `"origin=Node Source"` matches nothing since
+  nodesource moved to `o=. nodistro`, so `nodejs` has had no automatic updates; Dropbox
+  (`o=Dropbox.com`), wezterm (`o=wez_apt_fury_io`) and AMD (`o=repo.radeon.com`) have no pattern at
+  all. Chrome's line is correct. Claude Desktop configures itself through
+  `/etc/apt/apt.conf.d/50claude-desktop`. Snaps and AppImages need nothing here
 - `unattended-upgrade --dry-run` on the guest prints `Running on the development release` for
   26.04.1. With `DevRelease "auto"` it proceeds, so upgrades still apply; re-check after the next
   release-info update
