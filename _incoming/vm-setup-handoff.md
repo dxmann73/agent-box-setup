@@ -58,8 +58,13 @@ Per [`../machines/vm/01-bootstrap.md`](../machines/vm/01-bootstrap.md).
 - open: `vm/05` §4 `~/.bash_secrets`, which waits for `common/00` inside `vm/02`
 - in progress: §8. Repo cloned to `~/projects/agent-box-setup` over public HTTPS, and Claude Code
   2.1.269 installed with `curl -fsSL https://claude.ai/install.sh | bash` — no Node needed, so the
-  toolchain stays in `vm/02`. Still open: authenticating `claude`, and the config symlinks from
-  `agents/claude/README.md`. Skills wait for `npx`, i.e. for `vm/02`
+  toolchain stays in `vm/02`. Config symlinks are wired. Skills wait for `npx`, i.e. for `vm/02`
+- **open: `claude` is installed but not authenticated.** `~/.claude/.credentials.json` does not
+  exist, there are no keyring entries, and `~/.claude.json` holds only install-time keys. Run
+  `ssh -t xmg-evo-agent-vm claude`, authenticate, then `/exit`. Only Claude Code is being installed;
+  Cursor and Codex are deliberately skipped for now
+- open: the caveman plugin for Claude Code (`agents/claude/README.md` §Caveman), which needs an
+  authenticated `claude`
 - done: the walkthrough's commits were pushed (`2148e58..a04a253`) and the guest pulled them, so the
   VM's copy of these docs is current
 - done: Claude Code config wired in the guest — `~/AGENTS.md` and `~/CLAUDE.md` symlinks, plus
