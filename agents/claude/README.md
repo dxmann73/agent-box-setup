@@ -29,7 +29,7 @@ Current settings:
 
 | Setting                   | Value               | Description                             |
 | ------------------------- | ------------------- | --------------------------------------- |
-| `model`                   | `opusplan`          | Opus for planning, Sonnet for execution |
+| `model`                   | `opus`              | Opus for planning and for execution     |
 | `permissions.defaultMode` | `bypassPermissions` | YOLO mode - (no confirmation prompts)   |
 | `spinnerVerbs`            | `["Working"]`       | Simplified spinner text                 |
 
@@ -43,7 +43,7 @@ ln -sf ~/projects/agent-box-setup/agents/claude/settings.json ~/.claude/settings
 ls -l ~/.claude/settings.json && cat ~/.claude/settings.json | jq -r '.model, .permissions.defaultMode'
 ```
 
-Expected output: `opusplan` and `bypassPermissions`
+Expected output: `opus` and `bypassPermissions`
 
 ## Statusline
 
