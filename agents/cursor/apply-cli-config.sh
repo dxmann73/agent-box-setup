@@ -29,7 +29,7 @@ jq -e . "$live_config" > /dev/null || { echo "live config is not valid JSON: $li
 
 # Replaced wholesale, not deep-merged: dropping a key from the template must also drop it
 # from the live file, otherwise stale settings such as display.mode=zen survive forever.
-managed_keys=(display editor network attribution)
+managed_keys=(display editor network attribution statusLine)
 if [ "$apply_permissions" = true ]; then
     managed_keys+=(permissions approvalMode sandbox)
 fi
