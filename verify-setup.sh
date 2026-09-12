@@ -114,6 +114,72 @@ else
 fi
 echo ""
 
+# Shared terminal and host-only applications
+echo "=== Desktop Applications ==="
+wezterm --version >/dev/null 2>&1 && echo "✓ WezTerm installed" || echo "✗ WezTerm missing"
+if [ "$PROFILE" = "host" ]; then
+    bitwarden --version >/dev/null 2>&1 && echo "✓ Bitwarden installed" || echo "✗ Bitwarden missing"
+    kdenlive --version >/dev/null 2>&1 && echo "✓ Kdenlive installed" || echo "✗ Kdenlive missing"
+    virt-manager --version >/dev/null 2>&1 && echo "✓ Virtual Machine Manager installed" || echo "✗ Virtual Machine Manager missing"
+    claude-desktop --version >/dev/null 2>&1 && echo "✓ Claude Desktop installed" || echo "✗ Claude Desktop missing"
+    chatgpt --version >/dev/null 2>&1 && echo "✓ ChatGPT desktop installed" || echo "✗ ChatGPT desktop missing"
+    if [ -x "$HOME/Applications/VibeTyper.AppImage" ] \
+        && [ -L "$HOME/.local/bin/vibe-typer-launch.sh" ] \
+        && systemctl --user is-enabled --quiet vibe-typer-update-reminder.timer; then
+        echo "✓ VibeTyper AppImage, launcher, and weekly reminder configured"
+    else
+        echo "✗ VibeTyper AppImage, launcher, or weekly reminder missing"
+    fi
+fi
+echo ""
+
+# Locale and Plasma profile
+echo "=== Locale ==="
+if locale -a 2>/dev/null | grep -Eiq '^en_US\.(utf-?8)$'; then
+    echo "✓ en_US.UTF-8 generated"
+else
+    echo "✗ en_US.UTF-8 missing (see machines/common/01-localization.md)"
+fi
+if locale -a 2>/dev/null | grep -Eiq '^de_DE\.(utf-?8)$'; then
+    echo "✓ de_DE.UTF-8 generated"
+else
+    echo "✗ de_DE.UTF-8 missing (see machines/common/01-localization.md)"
+fi
+
+locale_output="$(locale 2>/dev/null || true)"
+if grep -qx 'LANG=en_US.UTF-8' <<<"$locale_output" \
+    && grep -qx 'LANGUAGE=en_US' <<<"$locale_output"; then
+    echo "✓ English UI locale configured"
+else
+    echo "✗ English UI locale not active (log in again after localization setup)"
+fi
+
+regional_categories=(
+    LC_ADDRESS LC_MEASUREMENT LC_MONETARY LC_NAME LC_NUMERIC LC_PAPER
+    LC_TELEPHONE LC_TIME
+)
+regional_locale_ok=1
+for category in "${regional_categories[@]}"; do
+    if ! grep -qx "${category}=de_DE.UTF-8" <<<"$locale_output"; then
+        echo "✗ ${category} is not de_DE.UTF-8"
+        regional_locale_ok=0
+    fi
+done
+if [ "$regional_locale_ok" -eq 1 ]; then
+    echo "✓ German regional locale categories configured"
+fi
+
+locale_profile_source="$(dirname "$0")/user-home/plasma-localerc"
+locale_profile_target="$HOME/.config/plasma-localerc"
+if [ -L "$locale_profile_target" ] \
+    && [ "$(readlink -f "$locale_profile_target")" = "$(readlink -f "$locale_profile_source")" ] \
+    && cmp -s "$locale_profile_source" "$locale_profile_target"; then
+    echo "✓ Plasma locale profile symlinked to repository source"
+else
+    echo "✗ Plasma locale profile missing, changed, or not linked to user-home/plasma-localerc"
+fi
+echo ""
+
 # Home Directory Symlinks
 echo "=== Home Directory Symlinks ==="
 for dotfile in .bashrc .bash_aliases .profile .gitconfig .bash_secrets ua.sh; do

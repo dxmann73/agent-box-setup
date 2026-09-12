@@ -2,7 +2,23 @@
 
 Filesystem layout, backups, packaging, SSH and firewall on the host.
 
-## 1. Filesystem organization
+## 1. Host baseline
+
+Run the idempotent privileged baseline from the checked-out repository before the detailed host
+configuration. It installs only deterministic host prerequisites, configures locale defaults,
+firewall and automatic-update timers, and prepares libvirt; it never creates a VM or changes
+host-agent permissions. The shared auto-update guide owns the third-party APT-origin policy, so the
+baseline does not overwrite a source that has already been verified for this machine.
+
+```bash
+cd ~/projects/agent-box-setup
+sudo ./machines/host/prepare-host-system.sh
+```
+
+The script backs up a managed configuration file only when it changes it. Its backup directory is
+reported at completion. Log out and back in after it adds the user to `libvirt` and `kvm` groups.
+
+## 2. Filesystem organization
 
 ```text
 /home/you/
@@ -31,7 +47,7 @@ Large downloaded model files are replaceable, so decide whether they are worth i
 Agent-driven project work happens inside the VM, not here (specification §8). The host keeps this
 repo and the local-model work.
 
-## 2. Backups
+## 3. Backups
 
 Current host decision (September 10, 2026): defer host backups. Do not configure a backup service or
 destination during this setup. The guidance below is for later.
@@ -55,7 +71,7 @@ Large GGUF model downloads can usually be excluded because they are reproducible
 VM disk images are backed up separately as snapshots, see
 [`../vm/07-snapshots.md`](../vm/07-snapshots.md).
 
-## 3. Flatpak and Snap
+## 4. Flatpak and Snap
 
 - Flatpak: <https://flatpak.org/>
 - Flathub: <https://flathub.org/>
@@ -75,7 +91,7 @@ snapd. There is no need to remove it preemptively.
 
 Avoid mixing packaging systems for low-level GPU components without a reason.
 
-## 4. SSH
+## 5. SSH
 
 Client:
 
@@ -154,7 +170,7 @@ ssh-add -l                                                # the key, after the f
 ssh -v xmg-evo-agent-vm true 2>&1 | grep Authenticated    # … using "publickey"
 ```
 
-## 5. Firewall
+## 6. Firewall
 
 This is a laptop that joins networks you do not control, so the firewall is on. Not a preference:
 
@@ -172,7 +188,7 @@ The local model server binds to the libvirt bridge `virbr0` rather than `0.0.0.0
 reach inference while the LAN cannot. Rules for that interface are in
 [`../vm/03-networking.md`](../vm/03-networking.md).
 
-## 6. System checklist
+## 7. System checklist
 
 - [ ] directory layout created
 - [ ] backups configured and restore tested, including `~/vms` and `/var/lib/libvirt/images`
@@ -184,5 +200,6 @@ reach inference while the LAN cannot. Rules for that interface are in
 - [ ] unattended security updates active
       ([`../common/08-auto-updates.md`](../common/08-auto-updates.md))
 - [ ] local model endpoint not exposed to the LAN
+- [ ] `prepare-host-system.sh` completes with no VM creation and no host `NOPASSWD` sudo rule
 
 Next: [04-dev-and-agents.md](04-dev-and-agents.md)

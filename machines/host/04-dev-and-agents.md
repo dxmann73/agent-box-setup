@@ -26,6 +26,7 @@ mkdir -p ~/projects
 | Step                         | Guide                                                                  |
 | ---------------------------- | ---------------------------------------------------------------------- |
 | shell/dotfiles               | [`../common/00-home-environment.md`](../common/00-home-environment.md) |
+| localization                 | [`../common/01-localization.md`](../common/01-localization.md)         |
 | core tools                   | [`../common/02-core-tools.md`](../common/02-core-tools.md)             |
 | languages/runtimes           | [`../common/03-dev-environment.md`](../common/03-dev-environment.md)   |
 | coding agents, skills, hooks | [`../../agents/`](../../agents/README.md)                              |
@@ -48,6 +49,8 @@ Applies on the host and not in the VM:
 - the hypervisor and the agent VM itself: [05-hypervisor.md](05-hypervisor.md)
 - the personal Chrome profile: agents on the host must not drive it either; use a separate profile
   or the VM's Chromium
+- personal desktop applications: Bitwarden, Kdenlive, VibeTyper, Claude Desktop, and ChatGPT
+  Desktop are host-only ([02-applications.md](02-applications.md))
 
 ### BB on the host
 
@@ -66,14 +69,31 @@ Applies in the VM and not here:
 - Playwright browser binaries ([`../vm/02-dev-and-agents.md`](../vm/02-dev-and-agents.md))
 - agent-specific GitHub/SSH credentials ([`../vm/05-credentials.md`](../vm/05-credentials.md))
 
-## 4. Verification
+## 4. Host completion gate
+
+Do not begin [05-hypervisor.md](05-hypervisor.md) until all of the following are true on the
+physical host:
+
+- the shared locale profile and host desktop/session policy are configured;
+- Claude Code, Codex, Cursor CLI, and Pi are installed and authenticated;
+- VS Code settings and keyboard shortcuts are installed and checked;
+- the BB desktop AppImage opens normally;
+- `clackworks.agents` is cloned or updated, and its project-manager workflow has cloned or updated
+  every inventory repository in `~/projects` and updated `~/projects/projects.code-workspace`;
+- the host verification command below has been reviewed and any required failures have been
+  resolved.
+
+Keep normal host-agent permissions supervised throughout this work. The VM is the unrestricted
+agent-execution boundary.
+
+## 5. Verification
 
 ```bash
 cd ~/projects/agent-box-setup
 ./verify-setup.sh --host
 ```
 
-## 5. Development checklist
+## 6. Development checklist
 
 - [ ] apt development basics installed
 - [ ] unattended security updates active

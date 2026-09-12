@@ -1,0 +1,9 @@
+[Unit]
+Description=Weekly VibeTyper update reminder
+
+[Timer]
+OnCalendar=weekly
+Persistent=true
+
+[Install]
+WantedBy=timers.target

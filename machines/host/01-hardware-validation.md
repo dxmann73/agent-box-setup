@@ -94,7 +94,38 @@ System Settings
 → Display & Monitor
 ```
 
-## 5. Hardware checklist
+Keep the laptop panel at its native resolution. For each external display or dock layout, choose the
+native resolution and refresh rate that remain stable through suspend/resume. Save a layout only
+after testing it in the locations where it will be used.
+
+## 5. Host desktop, power, and session policy
+
+This is a personal host, not the unrestricted agent VM. Keep the screen lock enabled, require it on
+resume, and do not enable automatic login. Start with a 10-minute automatic lock timeout; change
+that only as a deliberate personal security decision.
+
+```bash
+kwriteconfig6 --file kscreenlockerrc --group Daemon --key Autolock true
+kwriteconfig6 --file kscreenlockerrc --group Daemon --key LockOnResume true
+kwriteconfig6 --file kscreenlockerrc --group Daemon --key Timeout 10
+```
+
+Use Kubuntu's stock power profile and display energy-saving settings initially. Choose the profile
+and AC/battery display timeout after measuring suspend, battery life, and dock behavior. Do not use
+VM settings that disable blanking, locking, or autologin on the host.
+
+Verify in System Settings:
+
+```text
+System Settings
+→ Security & Privacy
+→ Screen Locking
+```
+
+Confirm automatic locking and lock-on-resume are enabled, then log out and back in before treating
+the session policy as complete.
+
+## 6. Hardware checklist
 
 - [ ] 96 GB RAM detected
 - [ ] Radeon 890M uses AMDGPU
@@ -111,8 +142,9 @@ System Settings
 - [ ] USB-C works
 - [ ] external display works
 - [ ] dock works if applicable
+- [ ] host screen lock is enabled, locks on resume, and automatic login is disabled
 
-## 6. Appendix: power and thermal diagnostics (optional)
+## 7. Appendix: power and thermal diagnostics (optional)
 
 None of this is setup — it is measurement, and it is only worth doing when something is actually
 wrong (short battery life, fan noise, thermal throttling). Kubuntu's stock power management is the

@@ -95,6 +95,31 @@ docker run hello-world
 
 Expected output: Should pull and run the hello-world image successfully
 
+## 4. WezTerm
+
+Install WezTerm natively on both host and VM. The upstream project recommends
+the native package rather than its Flatpak once it becomes a daily terminal,
+because sandboxing limits some power-user behavior.
+
+```bash
+curl -fsSL https://apt.fury.io/wez/gpg.key \
+  | sudo gpg --yes --dearmor -o /usr/share/keyrings/wezterm-fury.gpg
+echo 'deb [signed-by=/usr/share/keyrings/wezterm-fury.gpg] https://apt.fury.io/wez/ * *' \
+  | sudo tee /etc/apt/sources.list.d/wezterm.list >/dev/null
+sudo chmod 0644 /usr/share/keyrings/wezterm-fury.gpg
+sudo apt update
+sudo apt install -y wezterm
+```
+
+Add its verified `origin=wez_apt_fury_io` pattern to the unattended-upgrades
+policy after the repository is installed (see [08-auto-updates.md](08-auto-updates.md)).
+
+Verify:
+
+```bash
+wezterm --version
+```
+
 ---
 
 ---
@@ -124,5 +149,6 @@ All commands should complete successfully without errors.
 - [ ] jq installed (`jq --version` shows version)
 - [ ] Docker installed (`docker --version` shows version)
 - [ ] Docker working (`docker run hello-world` succeeds)
+- [ ] WezTerm installed (`wezterm --version` succeeds)
 
 **Next:** Continue to `03-dev-environment.md`

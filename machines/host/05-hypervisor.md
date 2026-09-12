@@ -2,6 +2,21 @@
 
 The host runs a KVM/libvirt VM as the agent boundary.
 
+## Host completion preflight
+
+This guide starts only after [04-dev-and-agents.md](04-dev-and-agents.md)'s host completion gate is
+satisfied. Confirm the host state with:
+
+```bash
+cd ~/projects/agent-box-setup
+./verify-setup.sh --host
+```
+
+Resolve required host failures before creating or restoring a guest. In particular, all four host
+agent CLIs, VS Code settings/shortcuts, the BB desktop AppImage, and the permanent host project
+workspace must be ready. The baseline script can prepare KVM/libvirt prerequisites, but it does not
+create a domain.
+
 ## 1. Install KVM/libvirt
 
 ```bash

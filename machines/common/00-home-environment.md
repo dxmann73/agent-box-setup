@@ -14,6 +14,9 @@ Move `.bash_aliases` too when it already exists:
 
 ```bash
 test ! -e ~/.bash_aliases || mv ~/.bash_aliases ~/.agent-box-setup-backup/
+mkdir -p ~/.config
+test ! -e ~/.config/plasma-localerc || \
+  mv ~/.config/plasma-localerc ~/.agent-box-setup-backup/
 ```
 
 ## 2. Create symlinks
@@ -26,6 +29,8 @@ ln -sf "$PWD/user-home/.profile" ~/.profile
 ln -sf "$PWD/user-home/.gitconfig" ~/.gitconfig
 ln -sf "$PWD/user-home/ua.sh" ~/ua.sh
 ln -sf "$PWD/user-home/update-tools.sh" ~/update-tools.sh
+mkdir -p ~/.config
+ln -sf "$PWD/user-home/plasma-localerc" ~/.config/plasma-localerc
 ln -sf "$PWD/.markdownlint.json" ~/projects/.markdownlint.json
 ```
 
@@ -43,6 +48,7 @@ source ~/.bashrc
 
 ```bash
 ls -l ~/.bashrc ~/.bash_aliases ~/.profile ~/.gitconfig ~/.bash_secrets ~/ua.sh ~/update-tools.sh
+ls -l ~/.config/plasma-localerc
 ls -l ~/projects/.markdownlint.json
 git config --global --list
 ```
@@ -51,6 +57,7 @@ git config --global --list
 
 - [ ] existing dotfiles are backed up
 - [ ] managed dotfiles and scripts are symlinked
+- [ ] Plasma locale profile is symlinked
 - [ ] `~/.bash_secrets` is created from the template and symlinked
 - [ ] shell configuration and Git configuration load
 

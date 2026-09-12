@@ -13,10 +13,17 @@ Chromium inside the VM, see [`../vm/02-dev-and-agents.md`](../vm/02-dev-and-agen
 
 ## 2. Bitwarden
 
-Official downloads: <https://bitwarden.com/download/>
+Use the official Bitwarden Snap on the host. It receives updates through
+Snap's refresh service; do not substitute the `.deb`, which Bitwarden does not
+auto-update.
 
-The browser extension is usually sufficient for daily browser use. Verify that your vault works
-before becoming dependent on the Linux installation.
+```bash
+sudo snap install bitwarden
+```
+
+Install the Bitwarden browser extension in the personal Chrome profile too.
+Verify that the desktop vault, browser extension, and unlock flow work before
+becoming dependent on them.
 
 ## 3. Dropbox
 
@@ -103,14 +110,63 @@ Prefer a Linux-native ext4 Steam library.
 
 ## 9. Voice dictation reference
 
-[Vibe Typer](https://vibetyper.com/docs) is already installed, paid for, and working. No dictation
-installation or alternative-tool evaluation is part of this setup.
+[Vibe Typer](https://vibetyper.com/downloads) is a host-only, portable AppImage
+that supports both Plasma Wayland and X11. Download it to
+`~/Applications/VibeTyper.AppImage`, make it executable, and link the
+repository-managed launcher and desktop entry:
+
+```bash
+mkdir -p ~/Applications ~/.local/bin ~/.local/share/applications
+chmod +x ~/Applications/VibeTyper.AppImage
+ln -sfn ~/projects/agent-box-setup/user-home/vibe-typer-launch.sh \
+  ~/.local/bin/vibe-typer-launch.sh
+ln -sfn ~/projects/agent-box-setup/user-home/applications/vibe-typer.desktop \
+  ~/.local/share/applications/vibe-typer.desktop
+```
+
+The launcher waits for KDE Wallet after login, avoiding the known wallet race.
+It deliberately passes `--no-sandbox`, matching the working host installation.
+
+Enable the weekly update reminder. It only notifies: VibeTyper has no
+documented signed/self-updating Linux channel, so replacing the AppImage stays
+a reviewed user action.
+
+```bash
+ln -sfn ~/projects/agent-box-setup/user-home/vibe-typer-update-reminder.sh \
+  ~/.local/bin/vibe-typer-update-reminder.sh
+mkdir -p ~/.config/systemd/user
+ln -sfn ~/projects/agent-box-setup/user-home/systemd/vibe-typer-update-reminder.service \
+  ~/.config/systemd/user/vibe-typer-update-reminder.service
+ln -sfn ~/projects/agent-box-setup/user-home/systemd/vibe-typer-update-reminder.timer \
+  ~/.config/systemd/user/vibe-typer-update-reminder.timer
+systemctl --user daemon-reload
+systemctl --user enable --now vibe-typer-update-reminder.timer
+```
+
+## 10. Claude Desktop and ChatGPT desktop
+
+Install the official Linux desktop packages on the host only. Their account
+sessions and desktop state remain outside the VM.
+
+- [Claude Desktop](https://claude.ai/download) ships its own APT source and
+  unattended-upgrades rule.
+- [ChatGPT desktop](https://chatgpt.com/download) installs an APT source; add
+  its verified `site=persistent.oaistatic.com,codename=stable` pattern to the
+  unattended-upgrades policy in [08-auto-updates.md](../common/08-auto-updates.md).
+
+Verify:
+
+```bash
+claude-desktop --version
+chatgpt --version
+```
 
 ## 10. Application checklist
 
 - [ ] Chrome installed
 - [ ] Bitwarden works
 - [ ] Dropbox installed and synced
+- [ ] Bitwarden desktop app and Chrome extension work
 - [ ] WhatsApp Web works
 - [ ] VLC works
 - [ ] Office workflow tested
@@ -120,5 +176,7 @@ installation or alternative-tool evaluation is part of this setup.
 - [ ] important Steam games tested
 - [ ] controllers/peripherals tested
 - [ ] Vibe Typer installed and working
+- [ ] VibeTyper weekly update reminder enabled
+- [ ] Claude Desktop and ChatGPT desktop installed and working
 
 Next: [03-system-config.md](03-system-config.md)

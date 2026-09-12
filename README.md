@@ -57,26 +57,16 @@ grep -rilE 'bitlocker|fast startup|dual.?boot|windows partition|shrink windows|n
   machines/host/ machines/vm/ machines/common/
 ```
 
-## Agent-led bootstrap
+## Host-first bootstrap
 
-The only manual bootstrap is Git, plus one (installed and authenticated) coding agent. Then clone
-this repository and let the agent complete the target setup:
+For a fresh Kubuntu host, start with [START-HERE.md](START-HERE.md) in the preinstalled browser. It
+installs and authenticates one supervised local agent; that agent clones this repository and
+completes the physical host before any VM work begins.
 
-```bash
-mkdir -p ~/projects
-cd ~/projects
-git clone https://github.com/dxmann73/agent-box-setup
-cd agent-box-setup
-```
-
-Start the installed agent in this directory and give it this instruction:
-
-> Set up this machine using agent-box-setup. Determine whether this is the host or VM, follow the
-> numbered guides for that target in order, ask before optional tools, diagnose errors before
-> continuing, and finish with the required verification command.
-
-After verification, hand over to the project-manager agent to pull the remaining projects — see
-[Next: clone the projects](#next-clone-the-projects).
+Host completion is a checkpoint, not merely a prerequisite install. Before the agent creates the VM,
+it must finish the host baseline, locale and desktop settings, all four agent CLIs, VS Code settings
+and shortcuts, the BB desktop application, and the permanent project workspace from the
+project-manager inventory.
 
 ## Where to start
 
@@ -84,7 +74,7 @@ After verification, hand over to the project-manager agent to pull the remaining
 | -------------------------------- | -------------------------------------------------------------------------------------------------- |
 | Coming from Windows              | [machines/migration/](machines/migration/)                                                         |
 | Staying on Windows + WSL for now | [machines/wsl/](machines/wsl/)                                                                     |
-| Fresh Kubuntu host               | [machines/host/](machines/host/)                                                                   |
+| Fresh Kubuntu host               | [START-HERE.md](START-HERE.md)                                                                     |
 | New agent VM                     | [machines/host/05-hypervisor.md](machines/host/05-hypervisor.md) then [machines/vm/](machines/vm/) |
 | Local model work                 | [local-llm](https://github.com/dxmann73/local-llm) (separate repo)                                 |
 
@@ -124,36 +114,32 @@ Then the separate [local-llm](https://github.com/dxmann73/local-llm) repo for th
 
 1. [common/00-home-environment.md](machines/common/00-home-environment.md) - Shell configuration and
    dotfiles
-2. [common/02-core-tools.md](machines/common/02-core-tools.md) - GitHub CLI, jq, Docker
-3. [common/03-dev-environment.md](machines/common/03-dev-environment.md) - Node.js and development
+2. [common/01-localization.md](machines/common/01-localization.md) - English UI, German regional
+   formats, Plasma locale profile
+3. [common/02-core-tools.md](machines/common/02-core-tools.md) - GitHub CLI, jq, Docker
+4. [common/03-dev-environment.md](machines/common/03-dev-environment.md) - Node.js and development
    tools
-4. [agents/](agents/README.md) - Claude Code, Codex, Cursor CLI, Pi, global rules, skills, Caveman
-5. [common/04-ide+tooling.md](machines/common/04-ide+tooling.md) - VS Code
-6. [common/05-bb.md](machines/common/05-bb.md) - BB desktop AppImage and VM server runtime
-7. [common/06-optional.md](machines/common/06-optional.md) - Helm, cloud CLIs, extras
-8. [common/07-imaging-tools.md](machines/common/07-imaging-tools.md) - ImageMagick, sharp, resvg,
+5. [agents/](agents/README.md) - Claude Code, Codex, Cursor CLI, Pi, global rules, skills, Caveman
+6. [common/04-ide+tooling.md](machines/common/04-ide+tooling.md) - VS Code
+7. [common/05-bb.md](machines/common/05-bb.md) - BB desktop AppImage and VM server runtime
+8. [common/06-optional.md](machines/common/06-optional.md) - Helm, cloud CLIs, extras
+9. [common/07-imaging-tools.md](machines/common/07-imaging-tools.md) - ImageMagick, sharp, resvg,
    optional image tools
-9. [common/08-auto-updates.md](machines/common/08-auto-updates.md) - Unattended apt upgrades,
-   needrestart, weekly tooling update timer
+10. [common/08-auto-updates.md](machines/common/08-auto-updates.md) - Unattended apt upgrades,
+    needrestart, weekly tooling update timer
 
-## Next: clone the projects
+## Host workspace inventory
 
-Machine setup ends here. Filling the box with projects belongs to the **project-manager** agent in
-[clackworks.agents](https://github.com/dxmann73/clackworks.agents) (private), which owns the project
-inventory, the VS Code workspace file, and the periodic project review.
+The **project-manager** agent in [clackworks.agents](https://github.com/dxmann73/clackworks.agents)
+(private) owns the complete project inventory, `projects.code-workspace`, and periodic project
+review. It is part of host completion, before the hypervisor/VM phase.
 
-After Agent Box Setup verification passes, authenticate GitHub CLI with access to private
-repositories, clone that repo, and hand over:
+After GitHub CLI is authenticated with access to private repositories, the host agent clones or
+updates `~/projects/clackworks.agents`, then follows `clackworks.agents/project-manager/README.md`
+to clone or update every listed repository and add it to `~/projects/projects.code-workspace`.
 
-```bash
-cd ~/projects
-git clone https://github.com/dxmann73/clackworks.agents
-```
-
-> Act as the project-manager agent described in `clackworks.agents/project-manager/README.md`. Clone
-> or update every project in its inventory and add them to `projects.code-workspace`.
-
-Nothing in this repository tracks the project list; keep it in the inventory over there.
+Nothing in this repository tracks the project list; keep it in the inventory there. The VM receives
+separate project clones later for unrestricted agent execution.
 
 ## Config files
 
@@ -166,8 +152,10 @@ Nothing in this repository tracks the project list; keep it in the inventory ove
 | `.bash_secrets`   | API tokens/secrets, created from the `.bash_secrets.CHANGE-ME` template |
 | `.profile`        | User profile settings                                                   |
 | `.gitconfig`      | Git configuration                                                       |
+| `plasma-localerc` | American-English UI with German regional formats in Plasma              |
 | `ua.sh`           | Update-all script: fetch/pull all git repos under a root dir            |
 | `update-tools.sh` | Weekly tooling update: npm globals, agent CLIs, SDKMAN                  |
+| VibeTyper helpers | Host AppImage launcher and weekly reviewed-update reminder              |
 
 The repo root `.markdownlint.json` is symlinked to `~/projects/.markdownlint.json`. Full symlink
 commands: [machines/common/00-home-environment.md](machines/common/00-home-environment.md).
@@ -189,8 +177,9 @@ every project gets them. The intended end state is packaging them per project ty
 
 ## Usage
 
-This repo is designed to work with coding agents. Just tell them to "Set up this machine using the
-agent-box-setup repo", and say whether it is the host or the VM.
+This repo is designed to work with coding agents. On a fresh physical host, begin at
+[START-HERE.md](START-HERE.md). For an existing machine, begin with the numbered guide sequence for
+its known target.
 
 ## Verification
 
@@ -203,7 +192,8 @@ This checks:
 
 - Claude Code, Codex, Cursor CLI, Pi, and VS Code
 - Home directory symlinks (`.bashrc`, `.bash_aliases`, `.profile`, `.gitconfig`, `.bash_secrets`,
-  `ua.sh`, `update-tools.sh`, `.markdownlint.json`)
+  `ua.sh`, `update-tools.sh`, `plasma-localerc`, `.markdownlint.json`)
+- Generated locales, system locale categories, and Plasma translation profile
 - Agent configuration and symlinks
 - Claude Code statusline and Caveman hooks/plugins
 - Skills setup, including a `SKILL.md` frontmatter audit (`./audit-skills.sh`)

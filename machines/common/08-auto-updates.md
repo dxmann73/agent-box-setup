@@ -65,6 +65,8 @@ Unattended-Upgrade::Allowed-Origins {
 // and its origin string has been verified; see below.
 Unattended-Upgrade::Origins-Pattern {
     "origin=Google LLC,codename=stable";
+    "origin=. nodistro";
+    "origin=wez_apt_fury_io";
 };
 
 Unattended-Upgrade::Remove-Unused-Kernel-Packages "true";
@@ -89,6 +91,24 @@ above was taken from a guest that had just installed Chrome, whose release line 
 the later guides add — Microsoft, Docker, Node, git-lfs — get their lines the same way, in
 [`../vm/02-dev-and-agents.md`](../vm/02-dev-and-agents.md).
 
+For the intended host and VM setup, use these verified patterns only after the
+corresponding repository exists:
+
+```text
+# both host and VM
+"origin=. nodistro";                                      // NodeSource
+"origin=wez_apt_fury_io";                                 // WezTerm
+
+# host only
+"origin=Google LLC,codename=stable";                      // Chrome
+"origin=Dropbox.com";                                    // Dropbox
+"site=persistent.oaistatic.com,codename=stable";          // ChatGPT desktop
+```
+
+Claude Desktop supplies its own `origin=Anthropic` rule. Do not add
+`repo.radeon.com`: local GPU/ROCm updates are a deliberate part of the separate
+`local-llm` workflow and require hardware validation afterwards.
+
 A real example of why: this host carried `"origin=Node Source"` for a long time while nodesource had
 moved to publishing `o=. nodistro,a=nodistro,n=nodistro`. The pattern matched nothing, so Node
 received no automatic updates at all, and nothing anywhere reported a problem.
@@ -105,7 +125,8 @@ Three things this file does not cover:
   `apt-config dump | grep Origins-Pattern` for the effective list, not just this file.
 - **Snaps.** snapd refreshes them on its own, so Bitwarden, VS Code and Firefox as snaps need no
   entry here.
-- **AppImages.** Outside apt entirely. Each one either has a built-in updater or is updated by hand.
+- **AppImages.** Outside apt entirely. VibeTyper uses a weekly reminder for a reviewed manual
+  replacement; its vendor does not document a signed or self-updating Linux channel.
 - **GPU and accelerator stacks.** `repo.radeon.com` and similar carry Mesa/ROCm, which the host's
   model runtime depends on. Automating them means an unattended change to the GPU stack; if you
   include one, re-run [`../host/01-hardware-validation.md`](../host/01-hardware-validation.md) when
