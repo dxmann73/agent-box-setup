@@ -53,8 +53,15 @@ Per [`../machines/vm/01-bootstrap.md`](../machines/vm/01-bootstrap.md).
   `ed25519` key was generated and then deleted again, unregistered, once HTTPS was chosen. `gh`'s
   token plus its credential helper is the single GitHub credential. Still open: `gh auth login`
   (interactive, TTY, full account by decision) and `~/.bash_secrets` from the template
-- open: §8 first coding agent. `vm/01` §6 and §7 were **swapped**: base applications now precede
-  credentials, so the `clean-guest` snapshot can sit between them
+- in progress: §8. Repo cloned to `~/projects/agent-box-setup` over public HTTPS, and Claude Code
+  2.1.269 installed with `curl -fsSL https://claude.ai/install.sh | bash` — no Node needed, so the
+  toolchain stays in `vm/02`. Still open: authenticating `claude`, and the config symlinks from
+  `agents/claude/README.md`. Skills wait for `npx`, i.e. for `vm/02`
+- **the guest clone is stale**: it carries `2148e58`, because the doc commits from this walkthrough
+  (`b821784` … `97c77cc`) are local to the host and unpushed. Push them, then `git pull` in the
+  guest, before letting an agent in the VM follow these files
+- `vm/01` §6 and §7 were **swapped**: base applications now precede credentials, so the
+  `clean-guest` snapshot can sit between them
 
 ### Snapshot `clean-guest`: done, after removing virgl
 
