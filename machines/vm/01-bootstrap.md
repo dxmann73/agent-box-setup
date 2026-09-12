@@ -197,8 +197,12 @@ and freeze its filesystems while a snapshot is taken. Unrelated to virtiofs shar
 ## 6. Base applications
 
 ```bash
-sudo apt install -y git curl
+sudo apt install -y git curl gh
 ```
+
+`gh` comes from the Ubuntu archive rather than GitHub's own repo: §7 needs it for `gh auth login`,
+and the archive build adds no third-party source, no keyring and no `Origins-Pattern` line to
+maintain. Take the upstream repo only if a specific `gh` feature requires it.
 
 [Google Chrome](https://www.google.com/chrome/) goes in for manual debugging and stays signed out of
 personal accounts (specification §7). Agent browser work is headless Chromium via Playwright,

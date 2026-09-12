@@ -20,17 +20,31 @@ that is acceptable.
 Generate a keypair that exists only in the VM:
 
 ```bash
-ssh-keygen -t ed25519 -C "xmg-evo-agent-vm" -f ~/.ssh/id_ed25519
+ssh-keygen -t ed25519 -C "xmg-evo-agent-vm" -f ~/.ssh/id_ed25519 -N ""
 ```
 
-Register the public key with GitHub as a separate key so it can be revoked on its own.
+**No passphrase**, deliberately. Agents run unattended and a passphrase-protected key needs an
+interactive unlock that nobody is present to give; on an autologin guest, loading it into an agent at
+session start would reduce the protection to a delay anyway. What limits the damage is that the key
+is the VM's own, registered separately, and revocable on its own — not that it is encrypted at rest
+on a disk the agent can read.
+
+Register the public key with GitHub as a separate key so it can be revoked on its own. `gh auth
+login` offers to upload it during §3; otherwise:
+
+```bash
+gh ssh-key add ~/.ssh/id_ed25519.pub --title xmg-evo-agent-vm
+```
 
 ## 3. GitHub
 
 ```bash
-gh auth login
+gh auth login      # needs a TTY: ssh -t xmg-evo-agent-vm gh auth login
 gh auth status
 ```
+
+`gh` is installed in [01-bootstrap.md](01-bootstrap.md) §6, before this step, because this step
+cannot run without it.
 
 Prefer an account or fine-grained token limited to the repositories agents actually work on. A token
 that can push to everything is a token an agent can push to everything with.

@@ -47,8 +47,13 @@ Per [`../machines/vm/01-bootstrap.md`](../machines/vm/01-bootstrap.md).
 - done: §6 base applications. `git` 2.53.0 and `curl` 8.18.0 were already installed;
   `google-chrome-stable` 153.0.8010.36-1 added, which brought
   `/etc/apt/sources.list.d/google-chrome.sources`
-- open: §7 credentials (`vm/05`), §8 first coding agent. `vm/01` §6 and §7 were **swapped**: base
-  applications now precede credentials, so the `clean-guest` snapshot can sit between them
+- done: `gh` 2.46.0-4 installed from the Ubuntu archive, added to §6. No third-party repo, so no new
+  `Origins-Pattern` line; it is needed by §7 and had to precede it
+- in progress: §7 credentials (`vm/05`). VM-only `ed25519` key generated with **no passphrase**,
+  `SHA256:aDXF6u0igMpmrcdQeyUK3b3f4KJR8TgO/QRwDM5HPNg`. Still open: `gh auth login` (interactive,
+  full account by decision), registering the public key, and `~/.bash_secrets` from the template
+- open: §8 first coding agent. `vm/01` §6 and §7 were **swapped**: base applications now precede
+  credentials, so the `clean-guest` snapshot can sit between them
 
 ### Snapshot `clean-guest`: done, after removing virgl
 
@@ -138,8 +143,10 @@ Per [`../machines/common/08-auto-updates.md`](../machines/common/08-auto-updates
   tailnet
 - optional: a new `ed25519` host key; the autoinstall section expects `~/.ssh/id_ed25519.pub`
 - `verify-setup.sh` now checks for the hostname `xmg-evo-agent-vm` literally
-- **host `52unattended-upgrades-local` still needs fixing by hand** — host `sudo` needs a password,
-  so it could not be written from the walkthrough. `"origin=Node Source"` matches nothing since
+- **host `52unattended-upgrades-local`: applied by hand**, since host `sudo` needs a password and the
+  walkthrough could not write it. `apt-config dump` now shows five patterns plus Claude Desktop's.
+  The backup belongs outside `/etc/apt/apt.conf.d/`, or apt warns
+  `Ignoring file ... as it has an invalid filename extension` on every run. Findings that led to it: `"origin=Node Source"` matches nothing since
   nodesource moved to `o=. nodistro`, so `nodejs` has had no automatic updates; Dropbox
   (`o=Dropbox.com`), wezterm (`o=wez_apt_fury_io`) and AMD (`o=repo.radeon.com`) have no pattern at
   all. Chrome's line is correct. Claude Desktop configures itself through
