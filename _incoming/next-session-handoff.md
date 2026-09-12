@@ -3,11 +3,7 @@
 ## Read first
 
 This handoff supersedes the earlier assumption that a guest-resident agent must
-be authenticated before it can finish setting up the guest. Do not reset the
-repository, the guest, or a snapshot unless the user explicitly asks.
-
-The source baseline is GitHub `main`. The guest-setup branch was compared and
-merged into `main`; do not recreate or merge it again.
+be authenticated before it can finish setting up the guest.
 
 ## Agreed end state
 
@@ -26,16 +22,14 @@ Starting from a vanilla Kubuntu installation on the physical host:
    - VS Code with its intended settings and keyboard shortcuts;
    - all repositories checked out on the host permanently;
    - host tooling, applications, automation, BB desktop app, and hypervisor.
-5. Only then does the same host agent create or restore and provision the guest
-   entirely over SSH.
+5. Only then does the same host agent create the guest entirely over SSH.
 6. The guest needs no Claude/Codex login to complete its deterministic setup.
    Guest provider, GitHub, Firecrawl, Tailscale, and model credentials are a
    later explicit phase.
 
 The host is a supervised environment. Do not make host sudo passwordless or
 enable unrestricted host-agent permissions. The VM remains the unrestricted
-agent-execution boundary, with its own clones of repositories; it is not the
-only place projects exist.
+agent-execution boundary, with its own clones of repositories.
 
 ## Design already recorded
 
@@ -52,16 +46,15 @@ clones.
 
 Group instructions by concern when the policy is genuinely shared:
 
-| Concern | Home |
-| --- | --- |
-| Locale and regional formats | shared `machines/common/` guide |
-| Host power, displays, suspend, and lock policy | `machines/host/` |
-| Guest blanking, locking, autologin, and virtual scale | `machines/vm/` |
-| VM SSH/access and guest-agent plumbing | `machines/vm/` |
-| Credentials, network exposure, and shares | their existing separate VM guides |
+| Concern                                               | Home                              |
+| ----------------------------------------------------- | --------------------------------- |
+| Locale and regional formats                           | shared `machines/common/` guide   |
+| Host power, displays, suspend, and lock policy        | `machines/host/`                  |
+| Guest blanking, locking, autologin, and virtual scale | `machines/vm/`                    |
+| VM SSH/access and guest-agent plumbing                | `machines/vm/`                    |
+| Credentials, network exposure, and shares             | their existing separate VM guides |
 
-Do not put host autologin or physical-display policy in a shared document: the
-host's personal-data/security posture and hardware differ from the guest's.
+Keep in mind that the host's personal-data/security posture and hardware differ from the guest's.
 
 ## Locale requirement
 
@@ -104,19 +97,13 @@ locales. Do not rely on manual KDE Settings changes.
 
 ## Reset decision: leave unchanged for now
 
-After the revised design is approved, choose one approach:
-
-1. Prefer restoring `clean-guest` to test the new host-driven provisioning
-   flow. It preserves the working VM hardware and SSH baseline while removing
-   later guest tools and credentials.
-2. Retain the running guest only if the goal is to migrate its existing state.
-3. Reinstall Kubuntu in a new guest only to test a new installer/autoinstall
-   path. It is not needed to test host-driven SSH provisioning.
+After the revised design is approved, restore the guest vm to the `clean-guest`
+snapshot to test the new host-driven provisioning flow. That preserves the working
+VM hardware and SSH baseline while removing later guest tools and credentials.
 
 ## Next work, in order
 
-1. Read the design and this handoff; reconcile them without discarding merged
-   guest fixes from `main`.
+1. Read the design and this handoff and reconcile them
 2. Inspect the official Pi documentation and decide its supported install,
    configuration, authentication, update, and verification path. Add it beside
    `agents/claude/`, `agents/cursor/`, and `agents/codex/`.
@@ -132,8 +119,6 @@ After the revised design is approved, choose one approach:
      guides;
    - bootstrap/operational/full verification profiles.
 5. Present the revised plan to the user before changing setup guides or scripts.
-6. Implement only after approval, exercise the flow against `clean-guest` or a
-   disposable clone, and then decide whether to reset the real guest.
 
 ## Repository state at handoff
 
