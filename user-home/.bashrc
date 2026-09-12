@@ -1,5 +1,26 @@
 # ~/.bashrc - Shell customizations for Agent Box
 
+# PATH additions sit ABOVE the interactive guard deliberately. Bash sources this
+# file for non-interactive remote commands too (`ssh host cmd`), and anything
+# below the guard never runs there — so `ssh host claude` or `ssh host npx`
+# would fail with "command not found" while the same command works after a
+# plain `ssh host`. The case guards keep a repeated source from growing PATH.
+
+# Local bin: agent CLIs installed by their own installers land here.
+case ":$PATH:" in
+    *":$HOME/.local/bin:"*) ;;
+    *) PATH="$HOME/.local/bin:$PATH" ;;
+esac
+
+# User-owned npm global prefix, so "npm install -g" and the weekly update timer
+# need no sudo. See common/03-dev-environment.md.
+case ":$PATH:" in
+    *":$HOME/.npm-global/bin:"*) ;;
+    *) PATH="$HOME/.npm-global/bin:$PATH" ;;
+esac
+
+export PATH
+
 # If not running interactively, don't do anything
 case $- in
     *i*) ;;
@@ -125,12 +146,8 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
-# Add local bin to PATH
-export PATH="$HOME/.local/bin:$PATH"
-
-# User-owned npm global prefix, so "npm install -g" and the weekly update timer
-# need no sudo. See common/03-dev-environment.md.
-export PATH="$HOME/.npm-global/bin:$PATH"
+# PATH is set at the top of this file, above the interactive guard, so that
+# non-interactive remote commands see it too.
 
 # libvirt: talk to the system daemon, not the per-user session one.
 # Without this, virsh cannot see VMs created under qemu:///system.
