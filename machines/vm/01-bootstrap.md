@@ -232,11 +232,21 @@ Generate the VM's own keys and tokens rather than copying the host's, see
 
 ## 8. First coding agent
 
-Install at least [one coding agent](../../agents/README.md), then clone this repo:
+Clone this repo first, then install at least [one coding agent](../../agents/README.md) — every
+agent's configuration is symlinked _out of_ the working tree, so the clone has to exist first:
 
 ```bash
 mkdir ~/projects && cd ~/projects && git clone https://github.com/dxmann73/agent-box-setup
 ```
+
+The clone is HTTPS and the repo is public, so it works with or without `gh` being logged in; pushing
+later is what uses the credential helper from [05-credentials.md](05-credentials.md) §3.
+
+Claude Code installs through `curl -fsSL https://claude.ai/install.sh | bash` and needs **no Node**,
+so it runs here without pulling the toolchain forward. The skill set in
+[`../../agents/README.md`](../../agents/README.md) is a different matter: `npx skills` needs Node,
+which arrives in [02-dev-and-agents.md](02-dev-and-agents.md). Install the agent and authenticate it
+here; leave skills for after the toolchain.
 
 => **Let the installed agent take over from here.** Follow the
 [agent-led bootstrap](../../README.md#agent-led-bootstrap) instructions, selecting the VM target.

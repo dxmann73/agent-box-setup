@@ -60,6 +60,15 @@ Tokens live in `~/.bash_secrets`, symlinked from [`../../user-home/`](../../user
 [`../common/00-home-environment.md`](../common/00-home-environment.md). The template is
 `.bash_secrets.CHANGE-ME`; the real file is never committed.
 
+Two consequences of that, in this order:
+
+1. **This section runs after the repo is cloned**, i.e. after
+   [01-bootstrap.md](01-bootstrap.md) §8 — the file lives inside the working tree and is symlinked
+   out of it, so there is nowhere to put it before the clone exists.
+2. **The clone will not contain `.bash_secrets`.** It is gitignored, so a fresh clone in the VM has
+   only `.bash_secrets.CHANGE-ME`. Create the VM's own from that template. Do not copy the host's
+   file in — that is the one move this whole file exists to prevent (§1).
+
 Typical contents: model provider keys, `FIRECRAWL_API_KEY`, `HF_TOKEN`, the local model base URL
 from [03-networking.md](03-networking.md).
 
