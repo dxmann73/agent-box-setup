@@ -13,6 +13,9 @@ credentials are deferred until the guest is operational.
 - The personal host remains a supervised environment. The bootstrap must not
   make the host agent passwordless root or silently enable unrestricted host
   permissions.
+- The host permanently carries the complete repository workspace. The VM has
+  its own clones for unrestricted agent execution, not the only copies of
+  those repositories.
 - The guest is the agent-execution boundary. Passwordless sudo is configured
   there after SSH is available.
 - The initial document must stand alone when viewed on GitHub in a fresh
@@ -55,8 +58,11 @@ script for the deterministic root-level work already partly covered by
 `machines/host/prepare-host-system.sh`. The script must be safe to re-run,
 validate inputs, preserve existing configuration where necessary, and stop on
 an error. The host agent continues with the targeted guides for hardware
-validation, personal applications, backup choices, and credentials. It keeps
-host permissions supervised and never installs a host-wide `NOPASSWD` rule.
+validation, personal applications, backup choices, credentials, VS Code
+settings and shortcuts, and the complete repository checkout. It installs,
+configures, and authenticates the four required local agent CLIs: Claude Code,
+Cursor CLI Agent, Codex CLI, and Pi. It keeps host permissions supervised and
+never installs a host-wide `NOPASSWD` rule.
 
 ### Guest completion
 
@@ -84,6 +90,8 @@ guides.
 | Guest screen blanking, locking, autologin, virtual display scale | `machines/vm/01-bootstrap.md` under one "Desktop and session" section | Deliberately different from the host; the guest is the agent boundary. |
 | VM access, SSH, guest agent, base packages | `machines/vm/01-bootstrap.md` | Establishes the remote-management path. |
 | Credentials and remote service exposure | dedicated VM credential/network guides | Must remain optional and separately reviewed. |
+| Agent CLI installation and configuration | `agents/` | All four agents share this source of truth; authentication remains target-specific. |
+| Complete repository workspace | host completion and project-manager guidance | Repositories remain present on the host and are cloned separately in the VM for agent execution. |
 
 ## Locale profile
 
@@ -122,6 +130,10 @@ KDE System Settings.
 - Add a guest baseline script that the host agent invokes over SSH.
 - Move the guest first-agent authentication instruction out of
   `machines/vm/01-bootstrap.md` and into a later optional credentials phase.
+- Add Pi installation, configuration, authentication, and verification next to
+  the existing Claude, Cursor, and Codex agent material.
+- Make host completion require VS Code settings/shortcuts and the complete
+  repository checkout before the hypervisor/guest phase begins.
 - Add `machines/common/01-localization.md`, the tracked Plasma locale profile,
   and locale verification to `verify-setup.sh`.
 - Reframe verification as bootstrap/operational/full checks so deferred
@@ -133,6 +145,8 @@ KDE System Settings.
   with no local repository checkout before that agent starts.
 - The host agent completes deterministic host baseline work with at most the
   normal supervised sudo confirmation.
+- Host completion verifies all four agent CLIs, VS Code settings and shortcuts,
+  and the complete repository workspace before guest creation begins.
 - The guest can be fully provisioned over SSH without a guest Claude/Codex
   login.
 - Host and guest report `en_US.UTF-8` UI translation settings plus German
