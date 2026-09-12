@@ -55,8 +55,9 @@ count_entries() {
 # Agent Binaries
 echo "=== Agent Binaries ==="
 claude --version 2>/dev/null && echo "✓ Claude Code installed" || echo "✗ Claude Code missing"
-agent --version 2>/dev/null && echo "✓ Cursor CLI Agent installed" || echo "✗ Cursor CLI Agent missing"
 codex --version 2>/dev/null && echo "✓ Codex installed" || echo "✗ Codex missing"
+agent --version 2>/dev/null && echo "✓ Cursor CLI installed" || echo "✗ Cursor CLI missing"
+pi --version 2>/dev/null && echo "✓ Pi installed" || echo "✗ Pi missing"
 if [ -L ~/.codex/config.toml ]; then
     echo "✓ ~/.codex/config.toml symlinked"
 elif [ -f ~/.codex/config.toml ]; then
@@ -74,12 +75,10 @@ if [ -f ~/.codex/config.toml ]; then
     fi
 fi
 if [ -f ~/.codex/config.toml ]; then
-    # Codex silently ignores unknown status_line items ("Ignored invalid status line"), so a typo
-    # just makes a widget disappear. Item ids are a fixed built-in set, not documented as an enum.
     python3 - ~/.codex/config.toml <<'PY'
 import sys, tomllib
 
-KNOWN = {
+known = {
     "project-name", "current-dir", "run-state", "thread-title", "git-branch",
     "context-remaining", "context-used", "used-tokens",
     "total-input-tokens", "total-output-tokens",
@@ -89,21 +88,21 @@ KNOWN = {
 }
 
 try:
-    with open(sys.argv[1], "rb") as fh:
-        items = tomllib.load(fh).get("tui", {}).get("status_line")
+    with open(sys.argv[1], "rb") as handle:
+        items = tomllib.load(handle).get("tui", {}).get("status_line")
 except (OSError, tomllib.TOMLDecodeError) as exc:
-    print(f"\u2717 ~/.codex/config.toml unreadable for status_line check: {exc}")
+    print(f"✗ ~/.codex/config.toml unreadable for status_line check: {exc}")
     sys.exit(0)
 
 if items is None:
-    print("\u2297 [tui].status_line not configured (Codex default: model + cwd)")
+    print("⊗ [tui].status_line not configured")
     sys.exit(0)
 
-unknown = [i for i in items if i not in KNOWN]
+unknown = [item for item in items if item not in known]
 if unknown:
-    print(f"\u2717 [tui].status_line has unknown items, Codex will drop them: {', '.join(unknown)}")
+    print(f"✗ [tui].status_line has unknown items: {', '.join(unknown)}")
 else:
-    print(f"\u2713 [tui].status_line items all valid ({len(items)} shown)")
+    print(f"✓ [tui].status_line items valid ({len(items)} shown)")
 PY
 fi
 if [ -L ~/.codex/hooks.json ]; then
@@ -140,6 +139,16 @@ echo "=== Agent Configuration ==="
 test -L ~/AGENTS.md && echo "✓ ~/AGENTS.md symlink exists" || echo "✗ ~/AGENTS.md missing"
 test -L ~/CLAUDE.md && echo "✓ ~/CLAUDE.md symlink exists" || echo "✗ ~/CLAUDE.md missing"
 test -L ~/.claude/settings.json && echo "✓ Claude settings linked" || echo "✗ Claude settings missing"
+if [ -L ~/.cursor/hooks.json ] && [ -L ~/.cursor/hooks ]; then
+    echo "✓ Cursor hooks linked"
+else
+    echo "✗ Cursor hooks missing"
+fi
+if [ -L ~/.pi/agent/AGENTS.md ] && [ -L ~/.pi/agent/skills ]; then
+    echo "✓ Pi instructions and skills linked"
+else
+    echo "✗ Pi instructions or skills missing"
+fi
 if [ -L ~/.claude/statusline-command.sh ]; then
     echo "✓ Claude statusline script symlinked"
 else
@@ -197,11 +206,13 @@ done
 expected_skill_count=${#expected_skills[@]}
 claude_skills=$(count_entries ~/.claude/skills)
 cursor_skills=$(count_entries ~/.cursor/skills)
+codex_skills=$(count_entries ~/.codex/skills)
 agent_skills=$(count_entries ~/.agents/skills)
 echo "Expected skills from source: $expected_skill_count directories"
 echo "Claude skills: $claude_skills directories"
 echo "Cursor skills: $cursor_skills directories"
-echo "Agent skills: $agent_skills directories"
+echo "Codex skills: $codex_skills directories"
+echo "Source skills: $agent_skills directories"
 
 skills_missing=0
 for target_dir in ~/.claude/skills ~/.cursor/skills ~/.codex/skills ~/.agents/skills; do
@@ -217,6 +228,13 @@ for target_dir in ~/.claude/skills ~/.cursor/skills ~/.codex/skills ~/.agents/sk
         skills_missing=1
     done < <(find "$target_dir" -maxdepth 1 -xtype l 2>/dev/null)
 done
+
+if [ -L ~/.pi/agent/skills ]; then
+    echo "✓ Pi skills linked to source"
+else
+    echo "✗ Pi skills missing or not a symlink"
+    skills_missing=1
+fi
 
 if [ "$expected_skill_count" -eq 0 ]; then
     echo "✗ No source skills found in $skills_source_dir"

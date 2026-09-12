@@ -37,11 +37,11 @@ third-party marketplace.
 
 ### Where things live
 
-| Thing | Native Linux | WSL |
-| --- | --- | --- |
-| User settings | `~/.config/Code/User/` | `%APPDATA%\Code\User\` (Windows side) |
-| UI extensions | `~/.vscode/extensions/` | `%USERPROFILE%\.vscode\extensions\` |
-| Workspace extensions | same | `~/.vscode-server/extensions/` (inside WSL) |
+| Thing                | Native Linux            | WSL                                         |
+| -------------------- | ----------------------- | ------------------------------------------- |
+| User settings        | `~/.config/Code/User/`  | `%APPDATA%\Code\User\` (Windows side)       |
+| UI extensions        | `~/.vscode/extensions/` | `%USERPROFILE%\.vscode\extensions\`         |
+| Workspace extensions | same                    | `~/.vscode-server/extensions/` (inside WSL) |
 
 Extensions install into whichever side they declare. Language servers, formatters and linters land
 in `~/.vscode-server/`; themes and remote connectors stay on Windows. This is normal, not drift.
@@ -73,23 +73,11 @@ Windows side, so the setting takes a Windows path:
 
 ---
 
-## Codex CLI
-
-Extends [`../../agents/codex/README.md`](../../agents/codex/README.md).
-
-Run Codex inside WSL, not in PowerShell — see OpenAI's
-[WSL setup guide](https://developers.openai.com/codex/windows#windows-subsystem-for-linux).
-
-Codex hooks do not fire on Windows. If Codex is ever run outside WSL, activate the caveman hook by
-hand with `$caveman`.
-
----
-
 ## Remaining touchpoints
 
 Two places outside this directory still know about WSL. Remove them when WSL goes:
 
-| Where | What | Why it lives there |
-| --- | --- | --- |
-| `verify-setup.sh` | `win_code_dirs=(/mnt/c/Users/*/AppData/Roaming/Code/User)` fallback in the VS Code config check | The script must run unmodified on either box; the fallback is inert on native Linux |
-| `AGENTS.md`, `README.md` | The rule and the table row declaring this directory disposable | Self-referential by nature |
+| Where                    | What                                                                                            | Why it lives there                                                                  |
+| ------------------------ | ----------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| `verify-setup.sh`        | `win_code_dirs=(/mnt/c/Users/*/AppData/Roaming/Code/User)` fallback in the VS Code config check | The script must run unmodified on either box; the fallback is inert on native Linux |
+| `AGENTS.md`, `README.md` | The rule and the table row declaring this directory disposable                                  | Self-referential by nature                                                          |

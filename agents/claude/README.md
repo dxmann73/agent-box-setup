@@ -27,11 +27,11 @@ Run `claude` and follow the authentication prompts.
 
 Current settings:
 
-| Setting                   | Value               | Description                             |
-| ------------------------- | ------------------- | --------------------------------------- |
-| `model`                   | `opus`              | Opus for planning and for execution     |
-| `permissions.defaultMode` | `bypassPermissions` | YOLO mode - (no confirmation prompts)   |
-| `spinnerVerbs`            | `["Working"]`       | Simplified spinner text                 |
+| Setting                   | Value               | Description                           |
+| ------------------------- | ------------------- | ------------------------------------- |
+| `model`                   | `opus`              | Opus for planning and for execution   |
+| `permissions.defaultMode` | `bypassPermissions` | YOLO mode - (no confirmation prompts) |
+| `spinnerVerbs`            | `["Working"]`       | Simplified spinner text               |
 
 ```bash
 ln -sf ~/projects/agent-box-setup/agents/claude/settings.json ~/.claude/settings.json
@@ -56,16 +56,16 @@ The statusline script renders a two-line footer in Claude Code sessions:
   - context bar + percentage from `context_window.used_percentage`
   - token count from `context_window.total_input_tokens` (input + cache creation + cache read — the
     same sum `used_percentage` is derived from), turns red bold at ≥150k
-  - both rate-limit windows from `rate_limits.five_hour` and `rate_limits.seven_day`: the
-    5-hour session block with time left until it rolls over, then the 7-day window with days left
-    and the absolute reset date
+  - both rate-limit windows from `rate_limits.five_hour` and `rate_limits.seven_day`: the 5-hour
+    session block with time left until it rolls over, then the 7-day window with days left and the
+    absolute reset date
   - `[RL reset 3m20s]` appended while `/tmp/claude-rate-reset` holds a future epoch
 
-The context bar is color-coded by usage: green (<50%), yellow (<80%), red (≥80%). The two
-rate-limit segments are color-coded by **budget remaining** — plain (>50% left), yellow (≤50%),
-red bold (≤20%) — and report percentage *remaining*, not consumed, so every number on the
-segment reads the same direction: bigger is better, and the countdown is how long until it
-refills. No subprocess beyond `jq`, `git` and `date`, so the script stays fast.
+The context bar is color-coded by usage: green (<50%), yellow (<80%), red (≥80%). The two rate-limit
+segments are color-coded by **budget remaining** — plain (>50% left), yellow (≤50%), red bold (≤20%)
+— and report percentage _remaining_, not consumed, so every number on the segment reads the same
+direction: bigger is better, and the countdown is how long until it refills. No subprocess beyond
+`jq`, `git` and `date`, so the script stays fast.
 
 Source: `agents/claude/statusline-command.sh`
 
@@ -118,4 +118,9 @@ Plugin ships `SessionStart` and `UserPromptSubmit` hooks, so caveman auto-starts
 `agents/claude/settings.json` already has marketplace entry + plugin enabled; the symlink above
 picks it up.
 
-**Next:** [../cursor/README.md](../cursor/README.md)
+## Checklist
+
+- [ ] `claude --version` succeeds
+- [ ] Claude Code is authenticated
+- [ ] settings and statusline symlinks are present
+- [ ] Caveman plugin is installed

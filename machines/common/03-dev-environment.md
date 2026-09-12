@@ -17,8 +17,8 @@ Two reasons, both of which cost real time otherwise:
 
 - **Services cannot see an nvm Node.** nvm lives in `~/.nvm` and is wired up by an interactive
   `.bashrc`. The VM's BB server runs as a systemd user unit and the provider CLIs it launches
-  inherit that non-interactive environment, so an nvm-installed `node`, `claude` or `codex` is
-  simply not on `PATH` — this is a common reason a provider shows up as missing in BB
+  inherit that non-interactive environment, so an nvm-installed `node`, `claude`, `codex`, or `pi`
+  is simply not on `PATH` — this is a common reason a provider shows up as missing in BB
   ([`../vm/04-bb.md`](../vm/04-bb.md) §1). Cron jobs and SSH-launched environments have the same
   problem.
 - **Updates.** An apt-installed Node is patched by the same unattended-upgrades run as everything

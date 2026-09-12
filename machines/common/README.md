@@ -7,9 +7,9 @@ and verification detail; the ordered, target-specific entry points are
 
 Start from those, not from here — they carry the per-target deltas.
 
-Agent CLIs (Claude Code, Cursor CLI, Codex), their configuration, the global rule file and the skill
-set live outside this directory in [`../../agents/`](../../agents/README.md); the toolchain guides
-above slot it in after the core tools and Node.js prerequisites.
+Claude Code, Codex, Cursor CLI, Pi, their configuration, the global rule file, and the skill set
+live outside this directory in [`../../agents/`](../../agents/README.md); the toolchain guides above
+slot them in after the core tools and Node.js prerequisites.
 
 | File                                             | Description                                                      |
 | ------------------------------------------------ | ---------------------------------------------------------------- |

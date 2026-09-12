@@ -1,175 +1,65 @@
 # 05 – Hypervisor and agent VM
 
-The host runs the hypervisor; the VM it creates is the security boundary for all agent work
-(specification §3).
+The host runs a KVM/libvirt VM as the agent boundary.
 
-> **Status:** host prerequisites and VM creation verified on 2026-09-11: Kubuntu 26.04.1 guest
-> `xmg-evo-agent-vm` on the XMG Evo host. `ssh xmg-evo-agent-vm` is set up and checked in
-> [`../vm/01-bootstrap.md`](../vm/01-bootstrap.md).
-
-Every `virsh` command in this file and in [`../vm/`](../vm/) assumes
-`LIBVIRT_DEFAULT_URI=qemu:///system` is exported (§3).
-
-## 1. Why KVM/libvirt
-
-KVM is the hypervisor in the Linux kernel. libvirt manages it, `virt-install` creates guests from
-the command line, `virt-manager` gives a GUI and a graphical console, and `virsh` does everything
-else. Nothing here is out-of-tree, licensed, or dependent on a vendor's Linux support.
-
-What the requirements actually need, and where each is met:
-
-| Requirement                                          | Mechanism                                                                     |
-| ---------------------------------------------------- | ----------------------------------------------------------------------------- |
-| a full VM, not a container (§2, §3)                  | KVM hardware virtualization                                                   |
-| cheap to recreate (§3, §13)                          | a baseline qcow2 to clone from, plus optional autoinstall                     |
-| snapshots (§14)                                      | qcow2 snapshots via `virsh snapshot-*`, BIOS firmware keeps them unrestricted |
-| narrow host directory shares (§8)                    | virtiofs, one `<filesystem>` device per share, read-only supported            |
-| VM reaches the host model endpoint (§10)             | the NAT bridge's host address, `192.168.122.1`                                |
-| outbound Internet (§11)                              | the same libvirt NAT network                                                  |
-| runs continuously, survives client disconnects (§14) | `virsh autostart`, the BB server runs as a service                            |
-
-Rejected:
-
-- **VMware Workstation Pro** — the reason this file was rewritten. Out-of-tree kernel modules that
-  break on kernel updates, a vendor account for downloads, and an uncertain future under Broadcom.
-  Nothing it does here is unavailable in KVM.
-- **VirtualBox** — also out-of-tree modules, slower under load, weaker device model.
-- **Incus** — the honest runner-up. Its images, profiles and `incus snapshot` are better ergonomics
-  than libvirt XML, and it uses KVM underneath for VMs. It earns its keep when there are many
-  instances to manage; for one long-lived VM it adds a management layer over the same hypervisor.
-  Revisit if the setup ever grows per-project throwaway VMs.
-- **Containers (Docker, LXC, systemd-nspawn)** — a shared kernel is not the boundary the
-  specification asks for (§2, §3).
-
-## 2. Check the hardware supports it
+## 1. Install KVM/libvirt
 
 ```bash
-sudo apt install -y cpu-checker
+sudo apt install -y cpu-checker qemu-system-x86 libvirt-daemon-system libvirt-clients virtinst \
+  virt-manager virt-viewer virtiofsd libnss-libvirt
 kvm-ok
-grep -c svm /proc/cpuinfo        # AMD-V; a count > 0 means it is enabled
-```
-
-`kvm-ok` must report that KVM acceleration can be used. If not, enable SVM in the firmware setup.
-
-## 3. Install
-
-```bash
-sudo apt install -y qemu-system-x86 libvirt-daemon-system libvirt-clients virtinst virt-manager \
-                    virt-viewer virtiofsd libnss-libvirt
 sudo usermod -aG libvirt,kvm "$USER"
-# qemu-kvm is a virtual package on 26.04; select qemu-system-x86 explicitly.
 ```
 
-Log out and back in for the group change.
-
-### Point `virsh` at the system daemon, once
-
-A normal user's `virsh` defaults to `qemu:///session`, a _different_ hypervisor instance from the
-`qemu:///system` one this setup uses. Without this, `virsh start xmg-evo-agent-vm` reports that the
-domain does not exist while `virt-manager` shows it running. Set it once in the shell config
-([`../common/00-home-environment.md`](../common/00-home-environment.md) symlinks `.bashrc`):
+Log out and back in. Set the system libvirt URI in the shell configuration:
 
 ```bash
 export LIBVIRT_DEFAULT_URI=qemu:///system
-```
-
-It is already in this repo's `.bashrc`. Every `virsh` command in this repo assumes it is set.
-
-Verify:
-
-```bash
-systemctl is-active libvirtd            # or virtqemud on a modular-daemon setup
-virsh uri                               # must print qemu:///system
-virsh list --all                        # must work without sudo
-virsh net-list --all
-# If default is inactive, start it; enable autostart once:
+virsh uri
 virsh net-start default
 virsh net-autostart default
 ```
 
-`libnss-libvirt` lets the host resolve the guest by name, so `ssh xmg-evo-agent-vm` works without
-knowing its DHCP address. Add the two modules to the `hosts:` line of `/etc/nsswitch.conf`:
+Add `libvirt_guest` and `libvirt` after `files` on the `hosts:` line in `/etc/nsswitch.conf`:
 
 ```bash
-# Preserve existing resolver modules; insert libvirt after files.
 sudo python3 - <<'PYCODE'
 from pathlib import Path
-p = Path('/etc/nsswitch.conf')
-lines = p.read_text().splitlines()
-for i, line in enumerate(lines):
+
+path = Path('/etc/nsswitch.conf')
+lines = path.read_text().splitlines()
+for index, line in enumerate(lines):
     if line.startswith('hosts:'):
         fields = line.split()
         for module in ('libvirt_guest', 'libvirt'):
             if module not in fields:
                 fields.insert(2, module)
-        lines[i] = ' '.join(fields)
-p.write_text('\n'.join(lines) + '\n')
+        lines[index] = ' '.join(fields)
+path.write_text('\n'.join(lines) + '\n')
 PYCODE
-getent hosts xmg-evo-agent-vm                   # works once the guest is installed and running
 ```
 
-Name resolution matches the guest's **hostname**, so the guest must be named `xmg-evo-agent-vm` at
-install time (§5).
+## 2. Storage
 
-Versions in Kubuntu 26.04: libvirt 12.0, QEMU 10.2, virt-manager 5.1, virtiofsd 1.13. The virtiofs
-read-only export used in [`../vm/06-shared-folders.md`](../vm/06-shared-folders.md) needs libvirt ≥
-11.0 and virtiofsd ≥ 1.13, so 26.04 is the floor for this setup.
-
-## 4. Storage
-
-Disks stay in libvirt's stock `default` pool, `/var/lib/libvirt/images`. Check whether the pool
-exists; a fresh libvirt installation may have none. Create and activate the directory pool if
-absent. No home-directory permission change is needed.
+Use the `default` pool for VM disks and `~/vms/` for ISO files and domain XML:
 
 ```bash
 virsh pool-list --all
-# Only if the default pool is absent:
 virsh pool-define-as default dir --target /var/lib/libvirt/images
 virsh pool-start default
 virsh pool-autostart default
-# If it already exists, just start it if inactive and enable autostart.
-```
-
-`~/vms/` still exists, but only for host-side text: the dumped domain XML and the virtiofs share
-definitions ([`../vm/06-shared-folders.md`](../vm/06-shared-folders.md)).
-
-Installer ISOs go to `/var/lib/libvirt/boot/`, libvirt's stock location for them. QEMU runs as
-`libvirt-qemu`, which cannot traverse a `750` home directory; letting it in with an ACL on `$HOME`
-would open most of the home directory to the QEMU process, the host side of the boundary.
-
-```bash
 mkdir -p ~/vms
 ```
 
-Back up `/var/lib/libvirt/images/xmg-evo-agent-vm.qcow2` together with `~/vms/`, see
-[`../vm/07-snapshots.md`](../vm/07-snapshots.md).
+Skip the `pool-define-as` command when the `default` pool already exists.
 
-## 5. Create the VM
+## 3. Create the VM
 
-The guest is **Kubuntu 26.04 desktop**, same as the host: Plasma is what the eyes are trained on,
-and a real desktop in the VM means a browser, a file manager and a graphical editor are there when
-an agent's work has to be inspected by hand.
+The VM is `xmg-evo-agent-vm`, with 20 vCPUs, 32 GiB RAM, a 200 GiB sparse qcow2 disk, SeaBIOS,
+shared `memfd` memory, a libvirt NAT network, a local-only SPICE console, and virtio video without
+3D acceleration. The 2D console permits live snapshots.
 
-Two decisions that keep the rest of the setup short:
-
-- **Name `xmg-evo-agent-vm`**, following the pattern `<host>-agent-vm`. Use it for both the libvirt
-  domain (`--name`) and the guest hostname set in the installer. `libnss-libvirt` (§3) resolves the
-  guest by either, so `ssh xmg-evo-agent-vm` works. The host part tells agent VMs on different hosts
-  apart on the tailnet, in BB and among the SSH keys registered with GitHub. This repo is written
-  for the XMG Evo host; on another host, replace `xmg-evo` throughout.
-- **BIOS firmware, not UEFI.** The guest boots nothing that needs Secure Boot. SeaBIOS drops the
-  separate NVRAM file that has to be backed up and restored alongside the disk image
-  ([`../vm/07-snapshots.md`](../vm/07-snapshots.md)), and avoids libvirt's restrictions on
-  snapshotting a pflash domain. Get it by leaving `--boot` out: with no firmware in the domain XML,
-  QEMU loads its built-in SeaBIOS. Do not write `--boot firmware=bios`. That asks libvirt to pick a
-  firmware from the descriptors in `/usr/share/qemu/firmware/`, Ubuntu ships descriptors only for
-  UEFI, and the install fails with
-  `Unable to find 'bios' firmware that is compatible with the current configuration`. `ovmf` gets
-  installed alongside QEMU anyway; it stays unused.
-
-Download the [Kubuntu ISO](https://kubuntu.org/getkubuntu/) to `~/vms/`, verify it, and move it to
-`/var/lib/libvirt/boot/` (§4). Take the newest point release in the release directory, `26.04.1` at
-the time of writing:
+Download and verify the current Kubuntu 26.04 ISO, then move it to `/var/lib/libvirt/boot/`:
 
 ```bash
 cd ~/vms
@@ -182,13 +72,6 @@ sha256sum --check --ignore-missing SHA256SUMS
 sudo mv kubuntu-26.04.1-desktop-amd64.iso /var/lib/libvirt/boot/
 ```
 
-`gpgv` must report a good signature from the Ubuntu CD Image Automatic Signing Key. That key ships
-in `ubuntu-keyring`, so the trust comes from the installed system, not from the download server;
-only after that does the checksum `OK` mean anything. When a newer point release replaces `26.04.1`,
-update the filename here and in the commands below.
-
-### The one command
-
 ```bash
 virt-install --name xmg-evo-agent-vm --osinfo detect=on,name=ubuntu24.04 \
   --vcpus 20 --cpu host-passthrough \
@@ -197,116 +80,42 @@ virt-install --name xmg-evo-agent-vm --osinfo detect=on,name=ubuntu24.04 \
   --disk size=200,format=qcow2,bus=virtio,discard=unmap \
   --network network=default,model=virtio \
   --graphics spice,listen=none \
-  --video virtio \
+  --video virtio,accel3d=no \
   --cdrom /var/lib/libvirt/boot/kubuntu-26.04.1-desktop-amd64.iso --autostart
 ```
 
-What each choice is for:
+| Flag                                                    | Reason                                                                                                    |
+| ------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| `--osinfo detect=on,name=ubuntu24.04`                   | Detects the ISO and uses the available Ubuntu profile when the current release is not yet in `osinfo-db`. |
+| `--vcpus 20 --cpu host-passthrough`                     | Reserves four of the host's 24 threads for the host, QEMU, virtiofsd, and the local model runtime.        |
+| `--memory 32768`                                        | Supports the desktop, browser, and concurrent agent sessions.                                             |
+| `--memorybacking source.type=memfd,access.mode=shared`  | Required by virtiofs shares.                                                                              |
+| `--disk size=200,format=qcow2,bus=virtio,discard=unmap` | Creates a sparse 200 GiB disk and propagates guest TRIM.                                                  |
+| `--network network=default,model=virtio`                | Provides Internet NAT and the host model endpoint on one interface.                                       |
+| no `--boot`                                             | Uses QEMU's built-in SeaBIOS, which supports the live-snapshot flow.                                      |
+| `--graphics spice,listen=none`                          | Provides a host-only graphical console.                                                                   |
+| `--video virtio,accel3d=no`                             | Keeps the console 2D so QEMU can save live snapshots with memory state.                                   |
+| `--autostart`                                           | Starts the VM with the host.                                                                              |
 
-| Flag                                                                        | Reason                                                                                                                                                                                                                     |
-| --------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `--vcpus 20 --cpu host-passthrough`                                         | 20 of 24 threads; idle vCPUs cost nothing, default cgroup weights keep the desktop usable under contention, 4 threads stay free for QEMU, `virtiofsd` and the model runtime ([load test](../../_incoming/vm-load-test.md)) |
-| `--memory 32768`                                                            | desktop, browsers, many parallel agents; the balloon returns only free pages, so count all 32 GiB against host RAM shared with the iGPU model ([load test](../../_incoming/vm-load-test.md))                               |
-| `--memorybacking source.type=memfd,access.mode=shared`                      | **required** for virtiofs shares; adding it later means editing the domain and rebooting                                                                                                                                   |
-| `--disk size=200,...,discard=unmap`                                         | 200 GiB sparse qcow2 in the `default` pool; TRIM reaches the host filesystem                                                                                                                                               |
-| `--network network=default,model=virtio`                                    | outbound NAT and the host model endpoint on one interface ([`../vm/03-networking.md`](../vm/03-networking.md))                                                                                                             |
-| no `--boot`                                                                 | QEMU's built-in SeaBIOS, see above                                                                                                                                                                                         |
-| `--graphics spice,listen=none` + `--video virtio`                           | SPICE console with no listening port. **No `gl.enable=yes` / `accel3d=yes`**: virgl cannot migrate, and QEMU refuses every live snapshot on a domain that has it — `cannot migrate domain: virgl is not yet migratable` ([`../vm/07-snapshots.md`](../vm/07-snapshots.md) §2). Snapshots beat 3D in a console used for occasional inspection |
-| `--autostart`                                                               | the VM comes back with the host (§14)                                                                                                                                                                                      |
+Install Kubuntu with a minimal desktop, one virtual-disk partition, and hostname `xmg-evo-agent-vm`.
+Then continue with [`../vm/01-bootstrap.md`](../vm/01-bootstrap.md).
 
-`--osinfo detect=on,name=ubuntu24.04` detects from the ISO and falls back to the 24.04 profile
-rather than aborting: `osinfo-db` does not always carry the newest release id yet. Check with
-`osinfo-query os | grep ubuntu` if curious.
-
-`virt-manager` can do the same thing through **New VM** → Local install media → **Customize
-configuration before install**, but every setting above then has to be found in the GUI, and shared
-memory in particular is easy to miss. Prefer the command.
-
-### Install the guest
-
-Install Kubuntu normally in the console window that opens: minimal installation, no third-party
-drivers, whole virtual disk as one partition, **hostname `xmg-evo-agent-vm`**. Continue in
-[`../vm/01-bootstrap.md`](../vm/01-bootstrap.md).
-
-To reopen the console later:
-
-```bash
-virt-viewer --attach xmg-evo-agent-vm
-```
-
-### Unattended alternative
-
-The manual installer is the one hand-driven step in an otherwise scripted chain
-([`../vm/07-snapshots.md`](../vm/07-snapshots.md) §4). Ubuntu's Subiquity autoinstall removes it:
-put an `autoinstall` section in a cloud-init user-data file and pass it to the same command.
-
-```bash
-cat > ~/vms/user-data <<'EOF'
-#cloud-config
-autoinstall:
-  version: 1
-  identity:
-    hostname: xmg-evo-agent-vm
-    username: CHANGE-ME
-    password: "CHANGE-ME-MKPASSWD-HASH"
-  ssh:
-    install-server: true
-    authorized-keys:
-      - CHANGE-ME-HOST-PUBLIC-KEY
-  packages:
-    - kubuntu-desktop
-    - qemu-guest-agent
-    - spice-vdagent
-    - unattended-upgrades
-EOF
-touch ~/vms/meta-data
-```
-
-Generate the password hash with `mkpasswd --method=SHA-512`, and use the host key from
-`~/.ssh/id_ed25519.pub`. Then swap `--cdrom` for:
-
-```bash
-  --location /var/lib/libvirt/boot/kubuntu-26.04.1-desktop-amd64.iso,kernel=casper/vmlinuz,initrd=casper/initrd \
-  --cloud-init user-data="$HOME/vms/user-data,meta-data=$HOME/vms/meta-data" \
-  --extra-args 'autoinstall ---'
-```
-
-This is worth doing the _second_ time the VM is built, not the first: it is easier to write the
-user-data once the manual install has shown what the answers are. Either way the baseline image from
-[`../vm/07-snapshots.md`](../vm/07-snapshots.md) is what makes rebuilds cheap.
-
-## 6. Day-to-day
+## 4. Day-to-day
 
 | Task                | Command                                                            |
 | ------------------- | ------------------------------------------------------------------ |
 | Start / stop        | `virsh start xmg-evo-agent-vm` / `virsh shutdown xmg-evo-agent-vm` |
 | Force off           | `virsh destroy xmg-evo-agent-vm`                                   |
-| Serial console      | `virsh console xmg-evo-agent-vm` (leave with `Ctrl+]`)             |
-| Graphical console   | `virt-manager`, or `virt-viewer --attach xmg-evo-agent-vm`         |
+| Graphical console   | `virt-viewer --attach xmg-evo-agent-vm`                            |
 | Edit hardware       | `virsh edit xmg-evo-agent-vm`                                      |
 | Save the definition | `virsh dumpxml xmg-evo-agent-vm > ~/vms/xmg-evo-agent-vm.xml`      |
 
-## 7. Then
+## 5. Checklist
 
-- guest bootstrap: [`../vm/01-bootstrap.md`](../vm/01-bootstrap.md)
-- network path from the VM to the host model endpoint:
-  [`../vm/03-networking.md`](../vm/03-networking.md)
-- sharing selected host directories into the VM:
-  [`../vm/06-shared-folders.md`](../vm/06-shared-folders.md)
-- snapshots and recreation: [`../vm/07-snapshots.md`](../vm/07-snapshots.md)
-
-## 8. Checklist
-
-- [ ] `kvm-ok` reports KVM acceleration usable
-- [ ] `LIBVIRT_DEFAULT_URI=qemu:///system` exported; `virsh uri` confirms it
-- [ ] `virsh list --all` works without sudo
-- [ ] `default` network active and set to autostart
-- [ ] `default` storage pool active at `/var/lib/libvirt/images`
-- [ ] `libvirt`/`libvirt_guest` on the `hosts:` line of `/etc/nsswitch.conf`
-- [ ] Kubuntu 26.04 desktop installed in the guest, hostname `xmg-evo-agent-vm`
-- [ ] guest firmware is BIOS, not UEFI (`virsh dumpxml xmg-evo-agent-vm | grep -c pflash` returns 0)
-- [ ] shared memory backing (`memfd`) present in the domain XML
-- [ ] virtio video with 3D acceleration, Spice listen type `none`
-- [ ] VM autostarts with the host
-- [ ] `getent hosts xmg-evo-agent-vm` resolves, and `ssh xmg-evo-agent-vm` works from the host
-- [ ] domain XML dumped to `~/vms/xmg-evo-agent-vm.xml`
+- [ ] `kvm-ok` reports KVM acceleration
+- [ ] `virsh uri` reports `qemu:///system`
+- [ ] default network and storage pool are active
+- [ ] `libvirt_guest` and `libvirt` are in the host resolver configuration
+- [ ] VM has the configured CPU, memory, disk, SeaBIOS, `memfd`, and 2D virtio video
+- [ ] VM autostarts and `getent hosts xmg-evo-agent-vm` resolves it
+- [ ] domain XML is saved to `~/vms/xmg-evo-agent-vm.xml`

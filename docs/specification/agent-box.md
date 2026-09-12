@@ -25,7 +25,7 @@
 
 4. **BB**
 
-   - Run one BB server inside the VM, headless (no GUI in the guest).
+   - Run one headless BB server inside the VM; retain the guest desktop for console inspection.
    - Run many concurrent agents under that instance.
    - Also run ordinary terminals/processes there: dev servers, test watchers, build processes, etc.
    - Connect to this instance from the Ubuntu host.
@@ -37,11 +37,10 @@
    - Use the npm package and a user service for the headless VM server. Remote access uses an SSH
      tunnel, private Tailscale Serve or BB Connect.
 
-5. **Multiple agents**
+5. **Coding agents**
 
-   - Claude Code, Codex, Pi, etc. should coexist in the VM.
-   - Multiple instances should run simultaneously.
-   - Agent choice should not affect the isolation architecture.
+   - Install Claude Code, Codex, Cursor CLI, and Pi on both host and VM.
+   - Run multiple agent instances in the VM.
 
 6. **Development environment**
 
@@ -103,9 +102,9 @@
 
 12. **Credentials**
 
-    - Maintain agent-specific credentials inside the VM.
-    - Don't share the host's entire `.ssh`, cloud configuration, browser credentials, etc.
-    - Prefer purpose-specific GitHub/SSH/API credentials.
+    - Authenticate GitHub over HTTPS with the VM's full account; rotate it independently of the
+      host.
+    - Keep VM API credentials separate from the host.
     - Treat the VM as an environment in which agents can potentially read credentials available to
       them.
 
@@ -134,6 +133,6 @@ ready
 
 1. **Persistence/recovery**
 
-    - BB sessions and agent processes should survive disconnecting your host-side client.
-    - VM can remain running continuously.
-    - Set up VM snapshots/backups.
+   - BB sessions and agent processes should survive disconnecting your host-side client.
+   - VM can remain running continuously.
+   - Set up VM snapshots/backups.

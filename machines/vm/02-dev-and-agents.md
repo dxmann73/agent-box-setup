@@ -1,8 +1,7 @@
 # 02 – VM development toolchain and agents
 
-The complete development toolchain and every coding agent live in the VM (specification §5, §6).
-Install detail lives once in [`../common/`](../common/); this file is the VM-side order and the
-VM-side deltas.
+The development toolchain and all four coding agents live in the VM. Install detail lives once in
+[`../common/`](../common/); this file supplies the VM order.
 
 ## 1. Development basics
 
@@ -19,20 +18,16 @@ mkdir -p ~/projects
 
 ## 2. Common guides, in order
 
-| Step                         | Guide                                                                  |
-| ---------------------------- | ---------------------------------------------------------------------- |
-| shell/dotfiles               | [`../common/00-home-environment.md`](../common/00-home-environment.md) |
-| core tools                   | [`../common/02-core-tools.md`](../common/02-core-tools.md)             |
-| languages/runtimes           | [`../common/03-dev-environment.md`](../common/03-dev-environment.md)   |
-| coding agents, skills, hooks | [`../../agents/`](../../agents/README.md)                              |
-| editor                       | [`../common/04-ide+tooling.md`](../common/04-ide+tooling.md)           |
-| imaging                      | [`../common/07-imaging-tools.md`](../common/07-imaging-tools.md)       |
-| automatic updates            | [`../common/08-auto-updates.md`](../common/08-auto-updates.md)         |
-| optional                     | [`../common/06-optional.md`](../common/06-optional.md)                 |
-
-Claude Code, Cursor CLI and Codex coexist and run in multiple simultaneous instances. Agent choice
-does not change anything about the isolation architecture — it is the VM that isolates, not the
-agent (specification §5).
+| Step                     | Guide                                                                  |
+| ------------------------ | ---------------------------------------------------------------------- |
+| shell/dotfiles           | [`../common/00-home-environment.md`](../common/00-home-environment.md) |
+| core tools               | [`../common/02-core-tools.md`](../common/02-core-tools.md)             |
+| languages/runtimes       | [`../common/03-dev-environment.md`](../common/03-dev-environment.md)   |
+| coding agents and skills | [`../../agents/`](../../agents/README.md)                              |
+| editor                   | [`../common/04-ide+tooling.md`](../common/04-ide+tooling.md)           |
+| imaging                  | [`../common/07-imaging-tools.md`](../common/07-imaging-tools.md)       |
+| automatic updates        | [`../common/08-auto-updates.md`](../common/08-auto-updates.md)         |
+| optional                 | [`../common/06-optional.md`](../common/06-optional.md)                 |
 
 ## 3. Projects
 
@@ -90,8 +85,8 @@ cd ~/projects/agent-box-setup
 - [ ] markdownlint and firecrawl CLIs available, firecrawl authenticated
 - [ ] Playwright Chromium installed, headless screenshot of `example.com` succeeds
 - [ ] SDKMAN with auto-env, Java 21, Quarkus, Maven
-- [ ] Claude Code / Cursor CLI / Codex installed and authenticated
-- [ ] skills and hooks symlinked
+- [ ] Claude Code, Codex, Cursor CLI, and Pi installed and authenticated
+- [ ] skills symlinked into all four agents
 - [ ] imaging tools installed
 - [ ] `./verify-setup.sh --vm` passes
 

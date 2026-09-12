@@ -127,7 +127,7 @@ Then the separate [local-llm](https://github.com/dxmann73/local-llm) repo for th
 2. [common/02-core-tools.md](machines/common/02-core-tools.md) - GitHub CLI, jq, Docker
 3. [common/03-dev-environment.md](machines/common/03-dev-environment.md) - Node.js and development
    tools
-4. [agents/](agents/README.md) - Claude Code, Cursor CLI, Codex, global rule file, skills, hooks
+4. [agents/](agents/README.md) - Claude Code, Codex, Cursor CLI, Pi, global rules, skills, Caveman
 5. [common/04-ide+tooling.md](machines/common/04-ide+tooling.md) - VS Code
 6. [common/05-bb.md](machines/common/05-bb.md) - BB desktop AppImage and VM server runtime
 7. [common/06-optional.md](machines/common/06-optional.md) - Helm, cloud CLIs, extras
@@ -183,10 +183,9 @@ side by side:
   there is no better home yet: skills in `agents/skills/` and language toolchains that only some
   projects need (SDKMAN, Quarkus, pnpm).
 
-Project-level items are installed globally (symlinked into `~/.claude/skills`, `~/.cursor/skills`)
-as an interim measure so every project gets them. The intended end state is packaging them per
-project type — see the "project setup" entry in [ROADMAP.md](./ROADMAP.md). When adding something,
-decide which scope it belongs to first.
+Project-level items are installed globally in the agent skill directories as an interim measure so
+every project gets them. The intended end state is packaging them per project type — see the
+"project setup" entry in [ROADMAP.md](./ROADMAP.md).
 
 ## Usage
 
@@ -202,11 +201,11 @@ cd ~/projects/agent-box-setup
 
 This checks:
 
-- Agent binaries (Claude Code, Cursor CLI Agent, Codex) and VS Code
+- Claude Code, Codex, Cursor CLI, Pi, and VS Code
 - Home directory symlinks (`.bashrc`, `.bash_aliases`, `.profile`, `.gitconfig`, `.bash_secrets`,
   `ua.sh`, `update-tools.sh`, `.markdownlint.json`)
 - Agent configuration and symlinks
-- Caveman hooks (Codex, Cursor)
+- Claude Code statusline and Caveman hooks/plugins
 - Skills setup, including a `SKILL.md` frontmatter audit (`./audit-skills.sh`)
 - Core tools (GitHub CLI, Docker, jq)
 - Development environment (Node.js, Java, etc.)
@@ -238,3 +237,9 @@ weekly global package update.
 ## Synchronizing settings
 
 TBD, we need a way to sync settings from / to machines.
+
+## Setup checklist
+
+- [ ] the target guide sequence is complete
+- [ ] Claude Code, Codex, Cursor CLI, and Pi are installed and authenticated
+- [ ] the target verification command completes: `./verify-setup.sh --host` or `--vm`

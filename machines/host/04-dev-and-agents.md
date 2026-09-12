@@ -85,8 +85,8 @@ cd ~/projects/agent-box-setup
 - [ ] SDKMAN with auto-env, Java 21, Quarkus, Maven
 - [ ] VS Code installed and configured
 - [ ] BB desktop AppImage installed in a writable user directory and opens normally
-- [ ] Claude Code / Cursor CLI / Codex installed and authenticated
-- [ ] skills and hooks symlinked
+- [ ] Claude Code, Codex, Cursor CLI, and Pi installed and authenticated
+- [ ] skills symlinked into all four agents
 - [ ] imaging tools installed
 - [ ] `./verify-setup.sh --host` passes
 

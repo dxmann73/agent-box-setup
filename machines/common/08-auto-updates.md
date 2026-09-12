@@ -18,7 +18,7 @@ from the host over SSH, and every command below needs `sudo` without a password 
 | Chrome, `gh`, Docker, Node, VS Code  | their own apt repos, same daily run      | no          |
 | Snap packages                        | snapd refreshes itself, four times a day | no          |
 | Flatpak applications                 | user timer added below                   | no          |
-| Global npm CLIs, coding agents       | weekly user timer added below            | no          |
+| Global npm CLIs and coding agents    | weekly user timer added below            | no          |
 | **BB desktop AppImage (host)**       | built-in desktop updater                 | yes         |
 | **BB npm runtime (VM)**              | manual, while agents are idle            | yes         |
 | **Ubuntu release** (26.04 → next)    | **manual `do-release-upgrade`**          | **yes**     |
@@ -94,14 +94,14 @@ moved to publishing `o=. nodistro,a=nodistro,n=nodistro`. The pattern matched no
 received no automatic updates at all, and nothing anywhere reported a problem.
 
 Prefer an **origin-only** matcher when the repo's `codename=` is a distribution release name, e.g.
-`"origin=Dropbox.com"` rather than `"origin=Dropbox.com,codename=resolute"`. A codename matcher stops
-matching after a release upgrade, silently, in exactly the same way. Keep `codename=` only where it
-is a constant of the repo itself, as in Chrome's `stable`.
+`"origin=Dropbox.com"` rather than `"origin=Dropbox.com,codename=resolute"`. A codename matcher
+stops matching after a release upgrade, silently, in exactly the same way. Keep `codename=` only
+where it is a constant of the repo itself, as in Chrome's `stable`.
 
 Three things this file does not cover:
 
-- **Vendor-supplied snippets.** Some packages configure their own unattended upgrades; Claude Desktop
-  ships `/etc/apt/apt.conf.d/50claude-desktop` with `origin=Anthropic,archive=stable`. Check
+- **Vendor-supplied snippets.** Some packages configure their own unattended upgrades; Claude
+  Desktop ships `/etc/apt/apt.conf.d/50claude-desktop` with `origin=Anthropic,archive=stable`. Check
   `apt-config dump | grep Origins-Pattern` for the effective list, not just this file.
 - **Snaps.** snapd refreshes them on its own, so Bitwarden, VS Code and Firefox as snaps need no
   entry here.
@@ -208,8 +208,8 @@ ln -sf ~/projects/agent-box-setup/user-home/update-tools.sh ~/update-tools.sh
 ~/update-tools.sh
 ```
 
-It updates the global npm packages, Claude Code, Cursor CLI, Codex and SDKMAN candidates, and prints
-what changed. It deliberately does **not** touch BB.
+It updates global npm packages, Claude Code, Codex, Cursor CLI, Pi, and SDKMAN candidates. It does
+not update BB.
 
 Run it weekly:
 

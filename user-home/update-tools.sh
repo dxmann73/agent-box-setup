@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #
-# Update the tooling that apt does not manage: global npm packages, the coding
-# agent CLIs, and SDKMAN candidates.
+# Update the tooling that apt does not manage: global npm packages, Claude Code,
+# Codex, Cursor CLI, Pi, and SDKMAN candidates.
 #
 # The host BB AppImage updates itself. The VM npm runtime lives in
 # ~/.local/share/bb-runtime and is updated deliberately; see vm/04-bb.md.
@@ -57,14 +57,19 @@ claude_code() {
 }
 
 cursor_cli() {
-    have cursor-agent || { echo "cursor-agent not installed, skipping"; return 0; }
-    cursor-agent update
+    have agent || { echo "Cursor CLI not installed, skipping"; return 0; }
+    agent update
 }
 
 codex_cli() {
-    have codex || { echo "codex not installed, skipping"; return 0; }
+    have codex || { echo "Codex not installed, skipping"; return 0; }
     have npm || return 1
     npm install -g @openai/codex@latest
+}
+
+pi_cli() {
+    have pi || { echo "Pi not installed, skipping"; return 0; }
+    pi update --self
 }
 
 sdkman() {
@@ -91,8 +96,9 @@ log "$(date '+%Y-%m-%d %H:%M') updating tooling on $(hostname)"
 
 step "global npm packages" npm_globals
 step "Claude Code"         claude_code
-step "Cursor CLI"          cursor_cli
 step "Codex"               codex_cli
+step "Cursor CLI"          cursor_cli
+step "Pi"                  pi_cli
 step "SDKMAN"              sdkman
 step "Playwright browsers" playwright_browsers
 
