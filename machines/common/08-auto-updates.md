@@ -7,6 +7,9 @@ deliberate (BB, and release upgrades).
 Run this early — right after the first `apt full-upgrade` on a new machine — so everything installed
 afterwards is covered from the start.
 
+On the VM, do [`../vm/01-bootstrap.md`](../vm/01-bootstrap.md) §1 and §2 first: this file is driven
+from the host over SSH, and every command below needs `sudo` without a password prompt.
+
 ## What updates itself, and what does not
 
 | Thing                                | How it stays current                     | Deliberate? |

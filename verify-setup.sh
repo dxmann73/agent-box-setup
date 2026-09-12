@@ -603,7 +603,7 @@ if [ "$PROFILE" = "vm" ]; then
         echo "✗ spice-vdagentd not active (sudo apt install -y spice-vdagent)"
     fi
     if dpkg -s krdp >/dev/null 2>&1; then
-        echo "⊗ krdp installed; this setup deliberately exposes no RDP listener (see machines/vm/01-bootstrap.md section 3)"
+        echo "⊗ krdp installed; this setup deliberately exposes no RDP listener (see machines/vm/01-bootstrap.md section 4)"
     fi
     virtiofs_mounts=$(findmnt -t virtiofs -no TARGET 2>/dev/null | tr '\n' ' ')
     if [ -n "$virtiofs_mounts" ]; then

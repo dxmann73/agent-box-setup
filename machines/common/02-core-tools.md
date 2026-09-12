@@ -64,7 +64,7 @@ Expected output: `jq-1.x` or similar
 **VM only.** Membership in the `docker` group is equivalent to root on the machine — the daemon will
 happily bind-mount `/` into a container for any group member. That is an acceptable trade inside the
 agent VM, which is already the boundary and where agents have root anyway
-([`../vm/01-bootstrap.md`](../vm/01-bootstrap.md) §5). It is not an acceptable trade on the host,
+([`../vm/01-bootstrap.md`](../vm/01-bootstrap.md) §2). It is not an acceptable trade on the host,
 which carries personal data and the model runtime. Install it in the VM; on the host, skip this
 section unless a specific host-scoped task needs it.
 
