@@ -30,12 +30,21 @@ Per [`../machines/vm/01-bootstrap.md`](../machines/vm/01-bootstrap.md).
 - done: §2 passwordless sudo (was §5; the file now carries it directly after SSH, because everything
   later is driven from the host over SSH). `/etc/sudoers.d/agent-nopasswd`, mode `440`, single line
   `dave ALL=(ALL) NOPASSWD: ALL`, written with `visudo -f`
-- done: §3 autologin, written as `/etc/sddm.conf.d/99-autologin.conf` with `User=dave`,
+- done and verified: §3 autologin, written as `/etc/sddm.conf.d/99-autologin.conf` with `User=dave`,
   `Session=plasma`, `Relogin=false`. The `99-` prefix matters: Kubuntu's own `20-kubuntu.conf` sets
-  an empty `[Autologin] User=` and `conf.d` is read in lexical order. **Not yet verified** — it takes
-  a guest reboot
-- open: §3 screen blanking off, §4 `spice-vdagent` state, §5 `qemu-guest-agent`, §6 credentials,
-  §7 `git curl` and Chrome, §8 first coding agent
+  an empty `[Autologin] User=` and `conf.d` is read in lexical order. After a reboot, `loginctl`
+  shows session 1 on `seat0`/`tty1` with `Type=wayland`, `Active=yes`
+- done: §4 `spice-vdagent` was already installed and `spice-vdagentd` is active (a `static` unit).
+  The clipboard stays unavailable regardless, because the session is Wayland
+- done and verified: §5 `qemu-guest-agent` installed and active; it survives a reboot without being
+  enabled, and `virsh --connect qemu:///system domifaddr xmg-evo-agent-vm --source agent` answers
+  from the host with `enp1s0 192.168.122.123/24`
+- done: §3 screen blanking and autolock off, set in System Settings and read back. powerdevil 6.6
+  uses `[AC][Display]` with `DimDisplayWhenIdle=false`, `DimDisplayIdleTimeoutSec=-1`,
+  `TurnOffDisplayWhenIdle=false`, `TurnOffDisplayIdleTimeoutSec=-1` — there is no `DPMSControl`
+  group any more, so the Plasma 5 keys would have written dead entries. Screen locking is
+  `[Daemon] Autolock=false`, `LockOnResume=false`, `Timeout=0` in `kscreenlockerrc`
+- open: §6 credentials, §7 `git curl` and Chrome, §8 first coding agent
 
 ### Host SSH agent: done and verified
 
@@ -70,10 +79,10 @@ Per [`../machines/common/08-auto-updates.md`](../machines/common/08-auto-updates
 
 ## Next steps
 
-1. **Rest of `vm/01`**: §3 screen blanking off (autologin is written but unverified), §4
-   `spice-vdagent`, §5 `qemu-guest-agent`, §6 credentials, §7 `git curl` and Chrome, §8 first coding
-   agent and clone of this repo. §1 and §2 are done.
-   Reboot the guest once to confirm autologin lands in a Plasma session without a keyboard.
+1. **Rest of `vm/01`**: §3 screen blanking off — set it in System Settings once and copy the
+   resulting `~/.config/powerdevilrc` keys into the doc, because powerdevil 6.6 exposes no
+   `DPMSControl` key where the Plasma 5 layout had one. Then §6 credentials, §7 `git curl` and
+   Chrome, §8 first coding agent and clone of this repo. §1, §2, §4 and §5 are done.
 2. **Snapshot `clean-guest`** ([`../machines/vm/07-snapshots.md`](../machines/vm/07-snapshots.md)
    §2).
 3. Then, in order: credentials (`vm/05` — pull it ahead of the toolchain, since `vm/02` already

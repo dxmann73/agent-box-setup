@@ -93,8 +93,32 @@ is shared in ([06-shared-folders.md](06-shared-folders.md)), what credentials li
 System Settings:
 
 - **Power Management** → screen energy saving off; the VM must not blank while agents work
+- **Screen Locking** → autolock off; an autologin guest that locks itself just demands a password
+  in front of an already-unlocked agent session
 - **Users** → automatic login for the agent user, so a reboot lands in a session without a keyboard
 - **Display & Monitor** → scale to taste; 100% is usually right in a window
+
+The same two settings without the GUI, for a rebuild. These are the keys Plasma 6.6 actually writes,
+read back from a guest configured through System Settings — re-running them leaves both files
+byte-identical:
+
+```bash
+kwriteconfig6 --file powerdevilrc --group AC --group Display --key DimDisplayWhenIdle false
+kwriteconfig6 --file powerdevilrc --group AC --group Display --key DimDisplayIdleTimeoutSec -- -1
+kwriteconfig6 --file powerdevilrc --group AC --group Display --key TurnOffDisplayWhenIdle false
+kwriteconfig6 --file powerdevilrc --group AC --group Display --key TurnOffDisplayIdleTimeoutSec -- -1
+
+kwriteconfig6 --file kscreenlockerrc --group Daemon --key Autolock false
+kwriteconfig6 --file kscreenlockerrc --group Daemon --key LockOnResume false
+kwriteconfig6 --file kscreenlockerrc --group Daemon --key Timeout 0
+
+systemctl --user restart plasma-powerdevil.service
+```
+
+The `--` before `-1` is required, otherwise `kwriteconfig6` reads the value as an option. Plasma 6.6
+has **no `[AC][DPMSControl]` group**; that was the Plasma 5 layout, and writing it produces entries
+that nothing reads. Verify with `kreadconfig6 --file powerdevilrc --group AC --group Display --key
+TurnOffDisplayWhenIdle` rather than by trusting the file.
 
 Autologin can also be written directly. Kubuntu already ships `/etc/sddm.conf.d/20-kubuntu.conf`
 with an empty `[Autologin] User=`, and SDDM reads `conf.d` in lexical order, so the override needs a
@@ -151,8 +175,20 @@ virt-viewer --connect "qemu+ssh://you@host/system" xmg-evo-agent-vm
 
 ```bash
 sudo apt install -y qemu-guest-agent
-sudo systemctl enable --now qemu-guest-agent
+systemctl is-active qemu-guest-agent
 ```
+
+Do not `systemctl enable` it. The unit is started through the virtio serial port and carries no
+`[Install]` section, so `enable` answers `The unit files have no installation config` and changes
+nothing. It comes up on its own after a reboot.
+
+Check it from the **host**, which is the side that actually depends on it:
+
+```bash
+virsh --connect qemu:///system domifaddr xmg-evo-agent-vm --source agent
+```
+
+That prints the guest's interfaces only if the agent answers.
 
 This is what lets the host shut the VM down gracefully, read its addresses with `virsh domifaddr`,
 and freeze its filesystems while a snapshot is taken. Unrelated to virtiofs shares
