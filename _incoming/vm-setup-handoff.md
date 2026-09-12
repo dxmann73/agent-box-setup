@@ -63,6 +63,12 @@ Per [`../machines/vm/01-bootstrap.md`](../machines/vm/01-bootstrap.md).
   `~/.claude/settings.json` and `~/.claude/statusline-command.sh` into the repo. `settings.json`
   carries `bypassPermissions`, which is deliberate: the guest is the boundary and the agent already
   has passwordless root
+- checkpoint: `./verify-setup.sh --vm` in the guest passes the whole VM sandbox section —
+  passwordless sudo, `sshd`, hostname resolution, `qemu-guest-agent`, SDDM, `spice-vdagent`, VM-own
+  `~/.ssh` — with only `⊗ no virtiofs share mounted`, which is correct until `vm/06`. The remaining
+  `✗` marks are all deferred work, not regressions: Cursor and Codex are not being installed, skills
+  and caveman hooks need `npx` from `vm/02`, and the dotfile symlinks plus `~/.bash_secrets` belong
+  to `common/00`, which `vm/02` §2 runs
 - `vm/01` §6 and §7 were **swapped**: base applications now precede credentials, so the
   `clean-guest` snapshot can sit between them
 

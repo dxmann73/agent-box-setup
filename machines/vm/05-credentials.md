@@ -64,7 +64,10 @@ Two consequences of that, in this order:
 
 1. **This section runs after the repo is cloned**, i.e. after
    [01-bootstrap.md](01-bootstrap.md) §8 — the file lives inside the working tree and is symlinked
-   out of it, so there is nowhere to put it before the clone exists.
+   out of it, so there is nowhere to put it before the clone exists. The symlink itself is part of
+   [`../common/00-home-environment.md`](../common/00-home-environment.md), which runs inside
+   [02-dev-and-agents.md](02-dev-and-agents.md) §2, so this section completes there while §2 and §3
+   above are done earlier.
 2. **The clone will not contain `.bash_secrets`.** It is gitignored, so a fresh clone in the VM has
    only `.bash_secrets.CHANGE-ME`. Create the VM's own from that template. Do not copy the host's
    file in — that is the one move this whole file exists to prevent (§1).
