@@ -115,6 +115,15 @@ code --install-extension editorconfig.editorconfig \
      --install-extension tomchen.paste-markdown-link
 ```
 
+[SCM Tidy](https://github.com/dxmann73/scm-tidy) collapses clean repositories in the Source
+Control view. It is not on the Marketplace; install the `.vsix` from its latest GitHub release.
+Rerun to update:
+
+```bash
+gh release download --repo dxmann73/scm-tidy --pattern '*.vsix' --dir /tmp --clobber
+code --install-extension /tmp/scm-tidy-*.vsix --force
+```
+
 Microsoft-licensed extensions (Remote-SSH, Remote-Containers, C#, Pylance) are available only in
 real VS Code from the Microsoft marketplace, not in forks that use a third-party one.
 

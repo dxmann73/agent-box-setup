@@ -37,6 +37,9 @@ Editor-wide, owned by no single project, installed by `04-ide+tooling.md`:
 - `editorconfig.editorconfig`
 - `moshfeu.compare-folders`
 - `tomchen.paste-markdown-link`
+- `dxmann73.scm-tidy`: own extension, not on the Marketplace. Installed from its
+  [GitHub release](https://github.com/dxmann73/scm-tidy/releases) `.vsix`; see
+  `04-ide+tooling.md`.
 
 Java (`redhat.java`, `vscjava.*`) stays an on-demand install — none of the current projects is a
 Java project.
