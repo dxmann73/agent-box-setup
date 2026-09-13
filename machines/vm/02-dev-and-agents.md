@@ -15,6 +15,14 @@ Playwright Chromium, QEMU/SPICE guest agents, and these CLIs:
 - Cursor CLI Agent
 - Pi
 
+The guest desktop is Plasma on Wayland, but `spice-vdagent` only watches the
+X11 clipboard. The baseline therefore enables the user service
+[`klipper-clipboard-sync`](../../user-home/klipper-clipboard-sync.sh). It
+listens for Klipper's `clipboardHistoryUpdated` DBus signal and copies the
+current text into the XWayland clipboard, so text copied in the guest reaches
+the host through SPICE. Keep Klipper clipboard history enabled; only text
+Klipper records is copied.
+
 It links the shared global instructions, skills, agent configuration, and
 checked-in WezTerm Lua configuration from the guest checkout. It does not
 invoke any CLI interactively, so it cannot create provider credentials.

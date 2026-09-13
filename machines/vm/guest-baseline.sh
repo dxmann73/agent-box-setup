@@ -75,7 +75,7 @@ sudo apt-get install -y \
     ca-certificates curl git gh gnupg jq locales openssh-server \
     build-essential pkg-config python3 python3-pip python3-venv pipx \
     htop btop tmux ripgrep fd-find docker.io \
-    qemu-guest-agent spice-vdagent unattended-upgrades needrestart
+    qemu-guest-agent spice-vdagent xclip unattended-upgrades needrestart
 ensure_nodesource
 ensure_wezterm
 ensure_locale_sources
@@ -165,8 +165,16 @@ npm install -g --prefix "$HOME/.local/share/bb-runtime" \
 ln -sfn "$HOME/.local/share/bb-runtime/bin/bb-app" "$HOME/.local/bin/bb-app"
 ln -sfn "$HOME/.local/share/bb-runtime/bin/bb" "$HOME/.local/bin/bb"
 ln -sfn "$repository_dir/user-home/systemd/bb.service" "$HOME/.config/systemd/user/bb.service"
+ln -sfn "$repository_dir/user-home/klipper-clipboard-sync.sh" "$HOME/.local/bin/klipper-clipboard-sync"
+ln -sfn "$repository_dir/user-home/systemd/klipper-clipboard-sync.service" \
+    "$HOME/.config/systemd/user/klipper-clipboard-sync.service"
 systemctl --user daemon-reload
 systemctl --user enable --now bb.service
+# Starts with the next Plasma login when the baseline runs before a session exists.
+systemctl --user enable klipper-clipboard-sync.service
+if systemctl --user is-active --quiet graphical-session.target; then
+    systemctl --user restart klipper-clipboard-sync.service
+fi
 
 printf '%s\n' 'Guest baseline complete. No provider, GitHub, Firecrawl, Tailscale, model, or share credentials were requested.'
 printf '%s\n' "Run: cd $repository_dir && ./verify-setup.sh --vm --bootstrap"

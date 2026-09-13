@@ -108,6 +108,7 @@ if [[ "$target" == vm ]]; then
     check 'sshd active' systemctl is-active --quiet ssh
     check 'QEMU guest agent active' systemctl is-active --quiet qemu-guest-agent
     check 'SPICE guest agent active' systemctl is-active --quiet spice-vdagentd
+    check 'Klipper clipboard sync enabled' systemctl --user is-enabled --quiet klipper-clipboard-sync.service
     check 'BB service active' systemctl --user is-active --quiet bb.service
     command_check 'BB launcher available' bb-app
     check 'BB listens only locally' curl --fail --silent --max-time 5 http://127.0.0.1:38886/
