@@ -20,8 +20,7 @@ mechanism** — these files exist to bootstrap a fresh box, document intent, and
    `~/.config/Code/User/`
 3. Open each project once so workspace extension recommendations install.
 
-Paths differ under [`../../machines/wsl/README.md`](../../machines/wsl/README.md) (WSL host
-variant).
+Use the native Linux user-configuration path documented below.
 
 ## Known gap
 

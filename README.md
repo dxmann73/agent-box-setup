@@ -100,10 +100,10 @@ Then the separate [local-llm](https://github.com/dxmann73/local-llm) repo for th
 
 ### VM
 
-1. [vm/01-bootstrap.md](machines/vm/01-bootstrap.md) - Kubuntu guest settings, desktop access, first
-   agent
-2. [vm/02-dev-and-agents.md](machines/vm/02-dev-and-agents.md) - Toolchain and agents via
-   `machines/common/`, Playwright
+1. [vm/01-bootstrap.md](machines/vm/01-bootstrap.md) - Console SSH/sudo bootstrap and host-driven
+   credential-free guest baseline
+2. [vm/02-dev-and-agents.md](machines/vm/02-dev-and-agents.md) - Baseline toolchain and deliberate
+   optional guest tooling
 3. [vm/03-networking.md](machines/vm/03-networking.md) - NAT, host model endpoint, Tailscale
 4. [vm/04-bb.md](machines/vm/04-bb.md) - BB server, headless in the VM
 5. [vm/05-credentials.md](machines/vm/05-credentials.md) - VM-only credentials
@@ -185,10 +185,23 @@ its known target.
 
 ```bash
 cd ~/projects/agent-box-setup
-./verify-setup.sh --host     # or --vm
+./verify-setup.sh --host --operational
+# A new guest, before any provider or GitHub login:
+./verify-setup.sh --vm --bootstrap
+# Explicitly enabled credentials and optional capabilities:
+./verify-setup.sh --vm --full
 ```
 
-This checks:
+Profiles are intentionally cumulative:
+
+- `bootstrap` checks credential-free deterministic readiness and is the acceptance gate for a new
+  guest before taking `clean-guest`.
+- `operational` adds the required host-completion gate: host GitHub access, VS Code settings and
+  keybindings, BB AppImage, and the permanent project-manager workspace. It never requires guest
+  provider credentials.
+- `full` checks only credentials and integrations that were explicitly enabled on that target.
+
+The checks cover:
 
 - Claude Code, Codex, Cursor CLI, Pi, and VS Code
 - Home directory symlinks (`.bashrc`, `.bash_aliases`, `.profile`, `.gitconfig`, `.bash_secrets`,
@@ -231,5 +244,6 @@ TBD, we need a way to sync settings from / to machines.
 ## Setup checklist
 
 - [ ] the target guide sequence is complete
-- [ ] Claude Code, Codex, Cursor CLI, and Pi are installed and authenticated
-- [ ] the target verification command completes: `./verify-setup.sh --host` or `--vm`
+- [ ] Claude Code, Codex, Cursor CLI, and Pi are installed on both targets
+- [ ] host providers are authenticated before VM creation; guest providers only after `clean-guest`
+- [ ] the appropriate profiled verification command completes

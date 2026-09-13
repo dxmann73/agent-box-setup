@@ -1,7 +1,8 @@
 # Agents
 
-Install Claude Code, Codex, Cursor CLI, and Pi on both host and VM. The VM bootstrap installs Claude
-Code first; this guide installs the complete agent set during the common toolchain stage.
+Install Claude Code, Codex, Cursor CLI, and Pi on both host and VM. The host completion gate
+authenticates all four. The VM baseline installs and configures all four without authentication;
+guest logins are a later explicit credential phase.
 
 ## Order
 
@@ -84,13 +85,16 @@ codex --version
 agent --version
 pi --version
 cd ~/projects/agent-box-setup
-./verify-setup.sh
+./verify-setup.sh --host --operational   # host completion
+./verify-setup.sh --vm --bootstrap       # guest, before provider login
 ```
 
 ## Checklist
 
-- [ ] Claude Code, Codex, Cursor CLI, and Pi are installed and authenticated
+- [ ] Claude Code, Codex, Cursor CLI, and Pi are installed on both targets
+- [ ] host agents are authenticated for the host completion gate
+- [ ] guest agents are authenticated only after `clean-guest`, when explicitly wanted
 - [ ] global instructions are linked for Claude Code, Codex, and Pi
 - [ ] shared skills are linked for all four agents
 - [ ] Codex and Cursor Caveman hooks are linked
-- [ ] `./verify-setup.sh` completes for the target machine
+- [ ] the target's profiled verification command completes

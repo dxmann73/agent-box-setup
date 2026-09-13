@@ -121,7 +121,7 @@ agent-execution boundary.
 
 ```bash
 cd ~/projects/agent-box-setup
-./verify-setup.sh --host
+./verify-setup.sh --host --operational
 ```
 
 ## 6. Development checklist
@@ -139,6 +139,6 @@ cd ~/projects/agent-box-setup
 - [ ] Claude Code, Codex, Cursor CLI, and Pi installed and authenticated
 - [ ] skills symlinked into all four agents
 - [ ] imaging tools installed
-- [ ] `./verify-setup.sh --host` passes
+- [ ] `./verify-setup.sh --host --operational` passes
 
 Next: [05-hypervisor.md](05-hypervisor.md)

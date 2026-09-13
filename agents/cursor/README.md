@@ -31,8 +31,9 @@ Close Cursor, then apply the repository template:
 agents/cursor/apply-cli-config.sh
 ```
 
-It manages `display`, `editor`, `network`, `attribution`, and `statusLine`, preserving login
-data. Use `--permissions` only for the unrestricted VM profile.
+It initializes an empty local config on a fresh credential-free guest, then manages `display`,
+`editor`, `network`, and `attribution` while preserving login data once present.
+Use `--permissions` only for the unrestricted VM profile.
 
 ## Status line
 

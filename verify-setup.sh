@@ -1,745 +1,159 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-# Agent Box Setup Verification Script
-# Run this to verify all components are properly installed
+# Verification profiles deliberately distinguish credential-free baseline state
+# from host readiness and explicitly enabled integrations.
+set -u -o pipefail
 
-# Target profile: host (Ubuntu desktop) or vm (agent VM). See README.md.
-PROFILE=""
-while [ $# -gt 0 ]; do
+target=""
+profile="bootstrap"
+while (($#)); do
     case "$1" in
-        --host) PROFILE="host" ;;
-        --vm)   PROFILE="vm" ;;
+        --host) target=host ;;
+        --vm) target=vm ;;
+        --bootstrap) profile=bootstrap ;;
+        --operational) profile=operational ;;
+        --full) profile=full ;;
         -h|--help)
-            echo "Usage: $0 [--host|--vm]"
-            echo "  --host  verify the Ubuntu host (GPU, local model runtime)"
-            echo "  --vm    verify the agent VM (Playwright, shared folders)"
-            echo "  (omitted: detected via systemd-detect-virt)"
-            exit 0
-            ;;
-        *)
-            echo "Unknown argument: $1" >&2
-            echo "Usage: $0 [--host|--vm]" >&2
-            exit 2
-            ;;
+            cat <<'USAGE'
+Usage: ./verify-setup.sh [--host|--vm] [--bootstrap|--operational|--full]
+
+bootstrap    Credential-free deterministic readiness (default).
+operational  Required host completion gate; guest credentials remain deferred.
+full         Explicitly enabled credentials and optional capabilities.
+USAGE
+            exit 0 ;;
+        *) printf 'Unknown argument: %s\n' "$1" >&2; exit 2 ;;
     esac
     shift
 done
 
-if [ -z "$PROFILE" ]; then
-    if systemd-detect-virt --quiet 2>/dev/null; then
-        PROFILE="vm"
-    else
-        PROFILE="host"
-    fi
-    DETECTED=" (detected)"
+if [[ -z "$target" ]]; then
+    if systemd-detect-virt --quiet 2>/dev/null; then target=vm; else target=host; fi
+    detected=' (detected)'
 else
-    DETECTED=""
+    detected=''
 fi
 
-echo "========================================="
-echo "  Agent Box Setup Verification"
-echo "  Profile: $PROFILE$DETECTED"
-echo "========================================="
-echo ""
-
-# Set service-compatible paths; system Node takes precedence over old nvm installs.
+repo_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 export PATH="$HOME/.npm-global/bin:$HOME/.local/bin:/usr/local/bin:/usr/bin:/snap/bin:/bin:$PATH"
-export LIBVIRT_DEFAULT_URI="${LIBVIRT_DEFAULT_URI:-qemu:///system}"
-[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ] && . "$HOME/.sdkman/bin/sdkman-init.sh"
+failures=0
 
-# Count top-level entries while excluding known metadata files.
-count_entries() {
-    find "$1" -mindepth 1 -maxdepth 1 ! -name 'AGENTS.md' 2>/dev/null | wc -l
+pass() { printf '✓ %s\n' "$1"; }
+fail() { printf '✗ %s\n' "$1"; failures=$((failures + 1)); }
+skip() { printf '⊗ %s\n' "$1"; }
+check() {
+    local label="$1"; shift
+    if "$@" >/dev/null 2>&1; then pass "$label"; else fail "$label"; fi
 }
-
-# Agent Binaries
-echo "=== Agent Binaries ==="
-claude --version 2>/dev/null && echo "✓ Claude Code installed" || echo "✗ Claude Code missing"
-codex --version 2>/dev/null && echo "✓ Codex installed" || echo "✗ Codex missing"
-agent --version 2>/dev/null && echo "✓ Cursor CLI installed" || echo "✗ Cursor CLI missing"
-pi --version 2>/dev/null && echo "✓ Pi installed" || echo "✗ Pi missing"
-if [ -L ~/.codex/config.toml ]; then
-    echo "✓ ~/.codex/config.toml symlinked"
-elif [ -f ~/.codex/config.toml ]; then
-    echo "✗ ~/.codex/config.toml exists but is NOT a symlink"
-else
-    echo "✗ ~/.codex/config.toml missing"
-fi
-if [ -f ~/.codex/config.toml ]; then
-    if rg -n '^[[:space:]]*codex_hooks[[:space:]]*=' ~/.codex/config.toml >/dev/null 2>&1; then
-        echo "✗ ~/.codex/config.toml uses deprecated [features].codex_hooks"
-    elif rg -n '^[[:space:]]*hooks[[:space:]]*=[[:space:]]*true$' ~/.codex/config.toml >/dev/null 2>&1; then
-        echo "✓ ~/.codex/config.toml enables [features].hooks"
-    else
-        echo "✗ ~/.codex/config.toml missing [features].hooks = true"
-    fi
-fi
-if [ -f ~/.codex/config.toml ]; then
-    python3 - ~/.codex/config.toml <<'PY'
-import sys, tomllib
-
-known = {
-    "project-name", "current-dir", "run-state", "thread-title", "git-branch",
-    "context-remaining", "context-used", "used-tokens",
-    "total-input-tokens", "total-output-tokens",
-    "five-hour-limit", "weekly-limit", "thread-credits", "estimated-thread-cost",
-    "codex-version", "thread-id", "fast-mode", "model-with-reasoning", "reasoning",
-    "task-progress",
-}
-
-try:
-    with open(sys.argv[1], "rb") as handle:
-        items = tomllib.load(handle).get("tui", {}).get("status_line")
-except (OSError, tomllib.TOMLDecodeError) as exc:
-    print(f"✗ ~/.codex/config.toml unreadable for status_line check: {exc}")
-    sys.exit(0)
-
-if items is None:
-    print("⊗ [tui].status_line not configured")
-    sys.exit(0)
-
-unknown = [item for item in items if item not in known]
-if unknown:
-    print(f"✗ [tui].status_line has unknown items: {', '.join(unknown)}")
-else:
-    print(f"✓ [tui].status_line items valid ({len(items)} shown)")
-PY
-fi
-if [ -L ~/.codex/hooks.json ]; then
-    echo "✓ ~/.codex/hooks.json symlinked"
-elif [ -f ~/.codex/hooks.json ]; then
-    echo "✗ ~/.codex/hooks.json exists but is NOT a symlink"
-else
-    echo "✗ ~/.codex/hooks.json missing"
-fi
-echo ""
-
-# Shared terminal and host-only applications
-echo "=== Desktop Applications ==="
-wezterm --version >/dev/null 2>&1 && echo "✓ WezTerm installed" || echo "✗ WezTerm missing"
-if [ "$PROFILE" = "host" ]; then
-    bitwarden --version >/dev/null 2>&1 && echo "✓ Bitwarden installed" || echo "✗ Bitwarden missing"
-    kdenlive --version >/dev/null 2>&1 && echo "✓ Kdenlive installed" || echo "✗ Kdenlive missing"
-    virt-manager --version >/dev/null 2>&1 && echo "✓ Virtual Machine Manager installed" || echo "✗ Virtual Machine Manager missing"
-    claude-desktop --version >/dev/null 2>&1 && echo "✓ Claude Desktop installed" || echo "✗ Claude Desktop missing"
-    chatgpt --version >/dev/null 2>&1 && echo "✓ ChatGPT desktop installed" || echo "✗ ChatGPT desktop missing"
-    if [ -x "$HOME/Applications/VibeTyper.AppImage" ] \
-        && [ -L "$HOME/.local/bin/vibe-typer-launch.sh" ] \
-        && systemctl --user is-enabled --quiet vibe-typer-update-reminder.timer; then
-        echo "✓ VibeTyper AppImage, launcher, and weekly reminder configured"
-    else
-        echo "✗ VibeTyper AppImage, launcher, or weekly reminder missing"
-    fi
-fi
-echo ""
-
-# Locale and Plasma profile
-echo "=== Locale ==="
-if locale -a 2>/dev/null | grep -Eiq '^en_US\.(utf-?8)$'; then
-    echo "✓ en_US.UTF-8 generated"
-else
-    echo "✗ en_US.UTF-8 missing (see machines/common/01-localization.md)"
-fi
-if locale -a 2>/dev/null | grep -Eiq '^de_DE\.(utf-?8)$'; then
-    echo "✓ de_DE.UTF-8 generated"
-else
-    echo "✗ de_DE.UTF-8 missing (see machines/common/01-localization.md)"
-fi
-
-locale_output="$(locale 2>/dev/null || true)"
-if grep -qx 'LANG=en_US.UTF-8' <<<"$locale_output" \
-    && grep -qx 'LANGUAGE=en_US' <<<"$locale_output"; then
-    echo "✓ English UI locale configured"
-else
-    echo "✗ English UI locale not active (log in again after localization setup)"
-fi
-
-regional_categories=(
-    LC_ADDRESS LC_MEASUREMENT LC_MONETARY LC_NAME LC_NUMERIC LC_PAPER
-    LC_TELEPHONE LC_TIME
-)
-regional_locale_ok=1
-for category in "${regional_categories[@]}"; do
-    if ! grep -qx "${category}=de_DE.UTF-8" <<<"$locale_output"; then
-        echo "✗ ${category} is not de_DE.UTF-8"
-        regional_locale_ok=0
-    fi
-done
-if [ "$regional_locale_ok" -eq 1 ]; then
-    echo "✓ German regional locale categories configured"
-fi
-
-locale_profile_source="$(dirname "$0")/user-home/plasma-localerc"
-locale_profile_target="$HOME/.config/plasma-localerc"
-if [ -L "$locale_profile_target" ] \
-    && [ "$(readlink -f "$locale_profile_target")" = "$(readlink -f "$locale_profile_source")" ] \
-    && cmp -s "$locale_profile_source" "$locale_profile_target"; then
-    echo "✓ Plasma locale profile symlinked to repository source"
-else
-    echo "✗ Plasma locale profile missing, changed, or not linked to user-home/plasma-localerc"
-fi
-echo ""
-
-# Home Directory Symlinks
-echo "=== Home Directory Symlinks ==="
-for dotfile in .bashrc .bash_aliases .profile .gitconfig .bash_secrets ua.sh; do
-    if [ -L ~/"$dotfile" ]; then
-        echo "✓ ~/$dotfile symlinked"
-    elif [ -f ~/"$dotfile" ]; then
-        echo "✗ ~/$dotfile exists but is NOT a symlink"
-    else
-        echo "✗ ~/$dotfile missing"
-    fi
-done
-if [ -L ~/projects/.markdownlint.json ]; then
-    echo "✓ ~/projects/.markdownlint.json symlinked"
-elif [ -f ~/projects/.markdownlint.json ]; then
-    echo "✗ ~/projects/.markdownlint.json exists but is NOT a symlink"
-else
-    echo "✗ ~/projects/.markdownlint.json missing"
-fi
-echo ""
-
-# Agent Configuration
-echo "=== Agent Configuration ==="
-test -L ~/AGENTS.md && echo "✓ ~/AGENTS.md symlink exists" || echo "✗ ~/AGENTS.md missing"
-test -L ~/CLAUDE.md && echo "✓ ~/CLAUDE.md symlink exists" || echo "✗ ~/CLAUDE.md missing"
-test -L ~/.claude/settings.json && echo "✓ Claude settings linked" || echo "✗ Claude settings missing"
-if [ -L ~/.cursor/hooks.json ] && [ -L ~/.cursor/hooks ]; then
-    echo "✓ Cursor hooks linked"
-else
-    echo "✗ Cursor hooks missing"
-fi
-if [ -L ~/.pi/agent/AGENTS.md ] && [ -L ~/.pi/agent/skills ]; then
-    echo "✓ Pi instructions and skills linked"
-else
-    echo "✗ Pi instructions or skills missing"
-fi
-if [ -L ~/.claude/statusline-command.sh ]; then
-    echo "✓ Claude statusline script symlinked"
-else
-    echo "✗ Claude statusline script missing or not a symlink (see agents/claude/README.md#statusline)"
-fi
-if jq -e '.statusLine.command // empty' ~/.claude/settings.json > /dev/null 2>&1; then
-    echo "✓ statusLine wired in settings.json"
-else
-    echo "✗ statusLine absent from settings.json"
-fi
-statusline_probe='{"cwd":"'"$HOME"'","model":{"display_name":"Verify"},"context_window":{"used_percentage":42,"total_input_tokens":84000,"context_window_size":200000}}'
-if echo "$statusline_probe" | bash ~/.claude/statusline-command.sh 2>/dev/null | grep -q '42% (84k/200k)'; then
-    echo "✓ Claude statusline renders context bar"
-else
-    echo "✗ Claude statusline produced no context bar (is jq installed?)"
-fi
-if [ -L ~/.agents ]; then
-    echo "✓ ~/.agents symlinked"
-elif [ -d ~/.agents ]; then
-    echo "✗ ~/.agents exists but is NOT a symlink"
-else
-    echo "✗ ~/.agents missing"
-fi
-echo ""
-
-# Caveman hooks
-echo "=== Caveman Hooks ==="
-if [ -L ~/.codex/hooks.json ]; then
-    echo "✓ Codex hooks.json symlinked"
-else
-    echo "✗ Codex hooks.json missing or not a symlink"
-fi
-if [ -L ~/.cursor/hooks.json ] && [ -L ~/.cursor/hooks ]; then
-    echo "✓ Cursor hooks.json + hooks/ symlinked"
-else
-    echo "✗ Cursor hooks.json / hooks/ missing or not symlinks"
-fi
-if [ -x ~/.cursor/hooks/caveman.sh ] &&
-    echo '{"session_id":"verify","is_background_agent":false}' |
-    ~/.cursor/hooks/caveman.sh 2>/dev/null | grep -q additional_context; then
-    echo "✓ Cursor caveman sessionStart hook returns context"
-else
-    echo "✗ Cursor caveman sessionStart hook not working"
-fi
-# Cursor rewrites cli-config.json at runtime, so it cannot be a symlink. The repository owns
-# only the display block; agents/cursor/apply-cli-config.sh re-applies it after drift.
-cursor_template="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/agents/cursor/cli-config.json"
-if [ -f ~/.cursor/cli-config.json ] && [ -f "$cursor_template" ] &&
-    jq -e --slurpfile template "$cursor_template" \
-        '.display == $template[0].display' ~/.cursor/cli-config.json > /dev/null 2>&1; then
-    echo "✓ Cursor display settings match the repository template"
-else
-    echo "✗ Cursor display settings drifted (run agents/cursor/apply-cli-config.sh)"
-fi
-echo ""
-
-# Skills
-echo "=== Skills ==="
-skills_source_dir="$(dirname "$0")/agents/skills"
-expected_skills=()
-for skill_path in "$skills_source_dir"/*/; do
-    [ -d "$skill_path" ] || continue
-    expected_skills+=("$(basename "$skill_path")")
-done
-expected_skill_count=${#expected_skills[@]}
-claude_skills=$(count_entries ~/.claude/skills)
-cursor_skills=$(count_entries ~/.cursor/skills)
-codex_skills=$(count_entries ~/.codex/skills)
-agent_skills=$(count_entries ~/.agents/skills)
-echo "Expected skills from source: $expected_skill_count directories"
-echo "Claude skills: $claude_skills directories"
-echo "Cursor skills: $cursor_skills directories"
-echo "Codex skills: $codex_skills directories"
-echo "Source skills: $agent_skills directories"
-
-skills_missing=0
-for target_dir in ~/.claude/skills ~/.cursor/skills ~/.codex/skills ~/.agents/skills; do
-    for skill in "${expected_skills[@]}"; do
-        if [ ! -e "$target_dir/$skill" ]; then
-            echo "✗ Missing skill '$skill' in $target_dir"
-            skills_missing=1
-        fi
-    done
-    while IFS= read -r broken_link; do
-        [ -n "$broken_link" ] || continue
-        echo "✗ Broken skill link '$(basename "$broken_link")' in $target_dir"
-        skills_missing=1
-    done < <(find "$target_dir" -maxdepth 1 -xtype l 2>/dev/null)
-done
-
-if [ -L ~/.pi/agent/skills ]; then
-    echo "✓ Pi skills linked to source"
-else
-    echo "✗ Pi skills missing or not a symlink"
-    skills_missing=1
-fi
-
-if [ "$expected_skill_count" -eq 0 ]; then
-    echo "✗ No source skills found in $skills_source_dir"
-elif [ "$skills_missing" -eq 0 ]; then
-    echo "✓ Skills configured and synced to source"
-else
-    echo "✗ Skills missing or incomplete vs source"
-fi
-
-skills_audit="$(dirname "$0")/audit-skills.sh"
-if [ -x "$skills_audit" ]; then
-    if "$skills_audit" >/dev/null 2>&1; then
-        echo "✓ Skill frontmatter valid (./audit-skills.sh)"
-    else
-        echo "✗ Skill frontmatter has errors - run ./audit-skills.sh"
-    fi
-else
-    echo "✗ Skill frontmatter audit missing or not executable: $skills_audit"
-fi
-echo ""
-
-# Core Tools
-echo "=== Core Tools ==="
-gh --version >/dev/null 2>&1 && echo "✓ GitHub CLI installed" || echo "✗ GitHub CLI missing"
-gh auth status >/dev/null 2>&1 && echo "✓ GitHub CLI authenticated" || echo "✗ GitHub CLI not authenticated"
-jq --version >/dev/null 2>&1 && echo "✓ jq installed" || echo "✗ jq missing"
-if [ "$PROFILE" = "vm" ]; then
-    docker --version >/dev/null 2>&1 && echo "✓ Docker installed" || echo "✗ Docker missing"
-else
-    echo "⊗ Docker skipped on host (VM only)"
-fi
-echo ""
-
-# Search Tools
-echo "=== Search Tools ==="
-rg --version >/dev/null 2>&1 && echo "✓ ripgrep installed" || echo "✗ ripgrep missing"
-echo ""
-
-# Development Environment
-echo "=== Development Environment ==="
-hash -r 2>/dev/null || true
-if node --version >/dev/null 2>&1; then
-    echo "✓ Node.js installed: $(node --version) ($(command -v node))"
-    case "$(command -v node)" in
-        "$HOME"/.nvm/*)
-            echo "⊗ Node comes from nvm; systemd user services and non-interactive shells will not see it"
-            echo "  (see machines/common/03-dev-environment.md — install Node from apt instead)"
-            ;;
+command_check() { check "$1" command -v "$2"; }
+symlink_check() { check "$1" test -L "$2"; }
+profile_at_least() {
+    case "$profile:$1" in
+        operational:bootstrap|operational:operational|full:bootstrap|full:operational|full:full) return 0 ;;
+        bootstrap:bootstrap) return 0 ;;
+        *) return 1 ;;
     esac
-else
-    echo "✗ Node.js missing"
-fi
-npm_prefix="$(npm config get prefix 2>/dev/null)"
-if [ -n "$npm_prefix" ] && [ -w "$npm_prefix" ]; then
-    echo "✓ npm global prefix writable without sudo: $npm_prefix"
-else
-    echo "✗ npm global prefix needs root: ${npm_prefix:-unknown} (npm config set prefix ~/.npm-global)"
-fi
-npm --version >/dev/null 2>&1 && echo "✓ npm installed" || echo "✗ npm missing"
-tsc --version >/dev/null 2>&1 && echo "✓ TypeScript installed" || echo "✗ TypeScript missing"
-if pnpm --version >/dev/null 2>&1; then
-    echo "✓ pnpm installed: $(pnpm --version) ($(command -v pnpm))"
-elif corepack pnpm --version >/dev/null 2>&1; then
-    echo "⊗ pnpm shim missing (run: corepack enable)"
-else
-    echo "✗ pnpm missing"
-fi
-if markdownlint --version >/dev/null 2>&1; then
-    echo "✓ markdownlint installed"
-elif npx --yes markdownlint-cli --version >/dev/null 2>&1; then
-    echo "⊗ markdownlint not installed globally; npx fallback works"
-else
-    echo "✗ markdownlint unavailable"
-fi
-if firecrawl --version >/dev/null 2>&1; then
-    echo "✓ Firecrawl CLI installed"
-    firecrawl_status="$(firecrawl --status 2>/dev/null || true)"
-    if echo "$firecrawl_status" | grep -qi "not authenticated"; then
-        echo "✗ Firecrawl CLI not authenticated (run: firecrawl login --browser)"
-    elif echo "$firecrawl_status" | grep -qi "authenticated"; then
-        echo "✓ Firecrawl CLI authenticated"
-    else
-        echo "✗ Firecrawl auth status unclear (run: firecrawl --status)"
-    fi
-else
-    echo "✗ Firecrawl CLI missing"
-fi
-if [ "$PROFILE" = "vm" ]; then
-    if npx --yes playwright --version >/dev/null 2>&1; then
-        echo "✓ Playwright installed"
-    else
-        echo "✗ Playwright missing (run: npx --yes playwright@latest install chromium)"
-    fi
-fi
-sdk version >/dev/null 2>&1 && echo "✓ SDKMAN installed" || echo "✗ SDKMAN missing"
-if grep -q "sdkman_auto_env=true" ~/.sdkman/etc/config 2>/dev/null; then
-    echo "✓ SDKMAN auto-env enabled"
-else
-    echo "✗ SDKMAN auto-env disabled (set sdkman_auto_env=true in ~/.sdkman/etc/config)"
-fi
-java --version >/dev/null 2>&1 && echo "✓ Java installed" || echo "✗ Java missing"
-mvn --version >/dev/null 2>&1 && echo "✓ Maven installed" || echo "✗ Maven missing"
-quarkus --version >/dev/null 2>&1 && echo "✓ Quarkus installed" || echo "✗ Quarkus missing"
-if [ -f ~/.redhat/io.quarkus.analytics.localconfig ]; then
-    if grep -q '"disabled":false' ~/.redhat/io.quarkus.analytics.localconfig 2>/dev/null; then
-        echo "✓ Quarkus build analytics enabled"
-    else
-        echo "✗ Quarkus build analytics disabled (enable: echo '{\"disabled\":false}' > ~/.redhat/io.quarkus.analytics.localconfig)"
-    fi
-else
-    echo "✗ Quarkus build analytics not configured (will prompt interactively)"
-fi
-echo ""
+}
 
-# Editor (see machines/common/04-ide+tooling.md)
-echo "=== Editor (VS Code) ==="
-if command -v code >/dev/null 2>&1; then
-    code_version="$(code --version 2>/dev/null | head -1 || true)"
-    if [ -n "$code_version" ]; then
-        echo "✓ VS Code installed: $code_version"
-    else
-        echo "✓ VS Code command installed: $(command -v code) (version probe unavailable)"
-    fi
-else
-    echo "✗ VS Code missing"
-fi
+printf 'Agent Box Setup Verification — %s / %s%s\n\n' "$target" "$profile" "$detected"
 
-# The live user config sits next to the UI: in $HOME natively, on the Windows side under WSL.
-vscode_user_dir=""
-if [ -d "$HOME/.config/Code/User" ]; then
-    vscode_user_dir="$HOME/.config/Code/User"
-else
-    win_code_dirs=(/mnt/c/Users/*/AppData/Roaming/Code/User)
-    if [ "${#win_code_dirs[@]}" -eq 1 ] && [ -d "${win_code_dirs[0]}" ]; then
-        vscode_user_dir="${win_code_dirs[0]}"
-    elif [ "${#win_code_dirs[@]}" -gt 1 ]; then
-        echo "✗ several Windows profiles carry a VS Code config; refusing to guess:"
-        printf '    %s\n' "${win_code_dirs[@]}"
-    fi
-fi
+printf '=== Bootstrap: system and locale ===\n'
+check 'en_US.UTF-8 generated' bash -c "locale -a | grep -Eiq '^en_US\\.(utf-?8)$'"
+check 'de_DE.UTF-8 generated' bash -c "locale -a | grep -Eiq '^de_DE\\.(utf-?8)$'"
+check 'English UI locale configured' grep -qx 'LANG=en_US.UTF-8' /etc/default/locale
+check 'English translation configured' grep -qx 'LANGUAGE=en_US' /etc/default/locale
+for category in LC_ADDRESS LC_MEASUREMENT LC_MONETARY LC_NAME LC_NUMERIC LC_PAPER LC_TELEPHONE LC_TIME; do
+    check "$category is de_DE.UTF-8" grep -qx "$category=de_DE.UTF-8" /etc/default/locale
+done
+symlink_check 'Plasma locale profile linked' "$HOME/.config/plasma-localerc"
+check 'Plasma locale profile is repository source' cmp -s "$repo_dir/user-home/plasma-localerc" "$HOME/.config/plasma-localerc"
+symlink_check 'WezTerm configuration linked' "$HOME/.config/wezterm/wezterm.lua"
+check 'WezTerm configuration is repository source' cmp -s "$repo_dir/user-home/wezterm/wezterm.lua" "$HOME/.config/wezterm/wezterm.lua"
+check 'unattended upgrades enabled' grep -q '^APT::Periodic::Unattended-Upgrade "1"' /etc/apt/apt.conf.d/20auto-upgrades
 
-if [ -z "$vscode_user_dir" ]; then
-    echo "✗ no VS Code user config directory found"
-elif ! command -v jq >/dev/null 2>&1; then
-    echo "✗ jq missing, cannot compare the live VS Code config against the repo copy"
-else
-    echo "✓ VS Code user config: $vscode_user_dir"
-    vscode_ref_dir="$(dirname "$0")/user-home/vscode"
-    # Strip // line comments so the JSONC reference files parse as JSON.
-    strip_jsonc() { sed 's|^[[:space:]]*//.*$||' "$1"; }
+printf '\n=== Bootstrap: toolchain and agents ===\n'
+for binary in git curl jq rg node npm pnpm tsc wezterm claude codex agent pi; do
+    command_check "$binary available" "$binary"
+done
+check 'npm prefix is user writable' test -w "$(npm config get prefix 2>/dev/null || printf /nonexistent)"
+for path in "$HOME/AGENTS.md" "$HOME/CLAUDE.md" "$HOME/.agents" \
+    "$HOME/.codex/config.toml" "$HOME/.codex/hooks.json" \
+    "$HOME/.cursor/hooks.json" "$HOME/.cursor/hooks" \
+    "$HOME/.pi/agent/AGENTS.md" "$HOME/.pi/agent/skills"; do
+    symlink_check "$(basename "$path") linked" "$path"
+done
 
-    if [ ! -f "$vscode_user_dir/settings.json" ]; then
-        echo "✗ settings.json absent from the live config (Settings Sync off and never copied?)"
-    else
-        settings_drift=$(jq -n \
-            --argjson ref  "$(strip_jsonc "$vscode_ref_dir/settings.json")" \
-            --argjson live "$(strip_jsonc "$vscode_user_dir/settings.json")" \
-            '[$ref | to_entries[] | select($live[.key] != .value) | .key] | join(", ")' -r 2>/dev/null)
-        if [ -z "$settings_drift" ]; then
-            echo "✓ live settings.json carries every key from user-home/vscode/settings.json"
-        else
-            echo "✗ settings.json drift, live value missing or different: $settings_drift"
-        fi
-    fi
-
-    if [ ! -f "$vscode_user_dir/keybindings.json" ]; then
-        echo "✗ keybindings.json absent from the live config"
-    else
-        keys_drift=$(jq -n \
-            --argjson ref  "$(strip_jsonc "$vscode_ref_dir/keybindings.json")" \
-            --argjson live "$(strip_jsonc "$vscode_user_dir/keybindings.json")" \
-            '[$ref[] | select(. as $b | ($live | index([$b])) == null) | .key] | join(", ")' -r 2>/dev/null)
-        if [ -z "$keys_drift" ]; then
-            echo "✓ live keybindings.json carries every binding from user-home/vscode/keybindings.json"
-        else
-            echo "✗ keybindings.json drift, binding missing or different: $keys_drift"
-        fi
-    fi
-fi
-echo ""
-
-# BB uses the desktop AppImage on the host and a persistent npm service in the VM.
-echo "=== BB ==="
-if [ "$PROFILE" = "host" ]; then
-    shopt -s nullglob
-    bb_appimages=("$HOME/Applications/bb.AppImage" "$HOME"/Applications/bb-*-x86_64.AppImage)
-    shopt -u nullglob
-    bb_appimage=""
-    for candidate in "${bb_appimages[@]}"; do
-        if [ -x "$candidate" ]; then
-            bb_appimage="$candidate"
-            break
-        fi
+expected_skills=0
+missing_skills=0
+for skill_dir in "$repo_dir"/agents/skills/*/; do
+    [[ -d "$skill_dir" ]] || continue
+    skill_name="$(basename "$skill_dir")"
+    expected_skills=$((expected_skills + 1))
+    for destination in "$HOME/.claude/skills/$skill_name" "$HOME/.cursor/skills/$skill_name" \
+        "$HOME/.codex/skills/$skill_name"; do
+        [[ -e "$destination" ]] || missing_skills=$((missing_skills + 1))
     done
-    if [ -n "$bb_appimage" ]; then
-        echo "✓ BB desktop AppImage installed"
-    else
-        echo "✗ BB desktop AppImage missing or not executable (machines/common/05-bb.md)"
-    fi
-    if [ -f "$HOME/.config/autostart/bb.desktop" ]; then
-        echo "✓ BB desktop starts automatically at login"
-    else
-        echo "⊗ BB desktop autostart not enabled (optional)"
-    fi
+done
+if ((expected_skills > 0 && missing_skills == 0)); then
+    pass "all $expected_skills source skills linked for Claude, Cursor, and Codex"
 else
-    if command -v bb-app >/dev/null 2>&1; then
-        echo "✓ BB launcher installed"
-    else
-        echo "✗ BB launcher missing (machines/common/05-bb.md)"
-    fi
-    if systemctl --user is-active --quiet bb.service; then
-        echo "✓ BB service running"
-    else
-        echo "✗ BB service not running"
-    fi
-    if curl --fail --silent --retry 10 --retry-connrefused --retry-delay 1 \
-        --max-time 5 http://127.0.0.1:38886/ >/dev/null; then
-        echo "✓ BB web UI responds on loopback"
-    else
-        echo "✗ BB web UI unavailable"
-    fi
+    fail "skill links incomplete ($missing_skills missing; source has $expected_skills)"
+fi
+check 'skill frontmatter valid' "$repo_dir/audit-skills.sh"
+
+if [[ "$target" == vm ]]; then
+    printf '\n=== Bootstrap: VM boundary ===\n'
+    check 'guest hostname is xmg-evo-agent-vm' test "$(hostname)" = xmg-evo-agent-vm
+    check 'passwordless guest sudo works' sudo -n true
+    check 'sshd active' systemctl is-active --quiet ssh
+    check 'QEMU guest agent active' systemctl is-active --quiet qemu-guest-agent
+    check 'SPICE guest agent active' systemctl is-active --quiet spice-vdagentd
+    check 'BB service active' systemctl --user is-active --quiet bb.service
+    command_check 'BB launcher available' bb-app
+    check 'BB listens only locally' curl --fail --silent --max-time 5 http://127.0.0.1:38886/
+    check 'Playwright Chromium can capture a page' npx --yes playwright@latest screenshot https://example.com /tmp/agent-box-playwright-check.png
+else
+    check 'host does not have agent NOPASSWD policy' test ! -e /etc/sudoers.d/agent-nopasswd
+    check 'libvirt system URI usable' virsh -c qemu:///system list
 fi
 
-# Automatic updates (see machines/common/08-auto-updates.md)
-echo "=== Automatic Updates ==="
-if dpkg -s unattended-upgrades >/dev/null 2>&1; then
-    echo "✓ unattended-upgrades installed"
-else
-    echo "✗ unattended-upgrades missing (sudo apt install -y unattended-upgrades)"
-fi
-if [ -f /etc/apt/apt.conf.d/20auto-upgrades ] \
-   && grep -q '^APT::Periodic::Unattended-Upgrade "1"' /etc/apt/apt.conf.d/20auto-upgrades; then
-    echo "✓ unattended upgrades enabled"
-else
-    echo "✗ unattended upgrades not enabled (sudo dpkg-reconfigure -plow unattended-upgrades)"
-fi
-if [ -f /etc/apt/apt.conf.d/52unattended-upgrades-local ]; then
-    echo "✓ local unattended-upgrades policy present"
-else
-    echo "✗ /etc/apt/apt.conf.d/52unattended-upgrades-local missing (see machines/common/08-auto-updates.md)"
-fi
-if systemctl is-enabled --quiet apt-daily-upgrade.timer 2>/dev/null; then
-    echo "✓ apt-daily-upgrade.timer enabled"
-else
-    echo "✗ apt-daily-upgrade.timer not enabled"
-fi
-dpkg -s needrestart >/dev/null 2>&1 && echo "✓ needrestart installed" || echo "⊗ needrestart not installed (optional but recommended)"
-if [ -L ~/update-tools.sh ] || [ -x ~/update-tools.sh ]; then
-    echo "✓ update-tools.sh present"
-else
-    echo "✗ ~/update-tools.sh missing (see machines/common/00-home-environment.md)"
-fi
-if systemctl --user is-enabled --quiet update-tools.timer 2>/dev/null; then
-    echo "✓ weekly tooling update timer enabled"
-else
-    echo "✗ update-tools.timer not enabled (see machines/common/08-auto-updates.md section 3)"
-fi
-if [ "$(loginctl show-user "$USER" --property=Linger --value 2>/dev/null)" = "yes" ]; then
-    echo "✓ lingering enabled (user timers run without a login session)"
-else
-    echo "✗ lingering disabled (loginctl enable-linger \"$USER\")"
-fi
-if grep -q '^Prompt=lts' /etc/update-manager/release-upgrades 2>/dev/null; then
-    echo "✓ release upgrades set to Prompt=lts"
-else
-    echo "✗ release upgrades not set to Prompt=lts (see machines/common/08-auto-updates.md section 4)"
-fi
-if [ -f /var/run/reboot-required ]; then
-    echo "⊗ reboot pending: $(tr '\n' ' ' < /var/run/reboot-required.pkgs 2>/dev/null)"
-fi
-if [ "$PROFILE" = "host" ]; then
-    unattended_patterns="$(apt-config dump 2>/dev/null || true)"
-    if grep -Fq 'site=persistent.oaistatic.com,codename=stable' <<<"$unattended_patterns"; then
-        echo "✓ ChatGPT desktop is covered by unattended upgrades"
+if profile_at_least operational; then
+    printf '\n=== Operational: required host readiness ===\n'
+    if [[ "$target" == host ]]; then
+        check 'GitHub CLI authenticated on host' gh auth status
+        check 'Claude host credential state exists' test -f "$HOME/.claude.json"
+        check 'Codex host credential state exists' test -f "$HOME/.codex/auth.json"
+        check 'Cursor CLI configuration exists after login' test -f "$HOME/.cursor/cli-config.json"
+        check 'Pi host credential state exists' test -f "$HOME/.pi/agent/auth.json"
+        check 'VS Code installed' code --version
+        check 'VS Code settings present' test -f "$HOME/.config/Code/User/settings.json"
+        check 'VS Code keybindings present' test -f "$HOME/.config/Code/User/keybindings.json"
+        check 'BB desktop AppImage executable' test -x "$HOME/Applications/bb.AppImage"
+        check 'project-manager checkout exists' test -d "$HOME/projects/clackworks.agents/.git"
     else
-        echo "✗ ChatGPT desktop is not covered by unattended upgrades (see machines/common/08-auto-updates.md)"
+        skip 'host-only completion gate; run --host --operational on the personal host'
     fi
-    if grep -Fq 'origin=repo.radeon.com' <<<"$unattended_patterns"; then
-        echo "✗ Radeon/ROCm is updated unattended; remove it from the policy (local-llm maintenance is deliberate)"
-    else
-        echo "✓ Radeon/ROCm is excluded from unattended upgrades"
-    fi
-fi
-echo ""
-
-# Imaging Tools
-echo "=== Imaging Tools ==="
-if command -v magick >/dev/null 2>&1; then
-    echo "✓ ImageMagick (magick)"
-elif command -v convert >/dev/null 2>&1 && convert -version 2>/dev/null | grep -qi "ImageMagick"; then
-    echo "✓ ImageMagick (convert)"
 else
-    echo "✗ ImageMagick missing"
-fi
-sharp --help >/dev/null 2>&1 && echo "✓ sharp CLI" || echo "✗ sharp CLI missing"
-npm_root="$(npm root -g 2>/dev/null)"
-if [ -n "$npm_root" ] && NODE_PATH="$npm_root" node -e "require('sharp')" >/dev/null 2>&1; then
-    echo "✓ sharp module"
-else
-    echo "✗ sharp module missing"
-fi
-if [ -n "$npm_root" ] && NODE_PATH="$npm_root" node -e "require('@resvg/resvg-js')" >/dev/null 2>&1; then
-    echo "✓ resvg module"
-else
-    echo "✗ resvg module missing"
-fi
-command -v pngquant >/dev/null 2>&1 && echo "✓ pngquant" || echo "⊗ pngquant (optional)"
-command -v exiftool >/dev/null 2>&1 && echo "✓ exiftool" || echo "⊗ exiftool (optional)"
-command -v optipng >/dev/null 2>&1 && echo "✓ optipng" || echo "⊗ optipng (optional)"
-command -v ffmpeg >/dev/null 2>&1 && echo "✓ ffmpeg" || echo "✗ ffmpeg missing"
-command -v inkscape >/dev/null 2>&1 && echo "✓ inkscape" || echo "✗ inkscape missing"
-command -v gm >/dev/null 2>&1 && echo "✓ graphicsmagick (gm)" || echo "✗ graphicsmagick (gm) missing"
-echo ""
-
-# Host-only: GPU stack and local model runtime
-# (see machines/host/01-hardware-validation.md and https://github.com/dxmann73/local-llm)
-if [ "$PROFILE" = "host" ]; then
-    echo "=== Host: GPU and local model ==="
-    if lspci -k 2>/dev/null | grep -A4 -E 'VGA|Display' | grep -q 'amdgpu'; then
-        echo "✓ amdgpu kernel driver in use"
-    else
-        echo "✗ amdgpu kernel driver not reported by lspci"
-    fi
-    if command -v vulkaninfo >/dev/null 2>&1; then
-        if vulkaninfo --summary >/dev/null 2>&1; then
-            echo "✓ Vulkan works"
-        else
-            echo "✗ vulkaninfo present but fails"
-        fi
-    else
-        echo "✗ vulkan-tools missing (sudo apt install -y vulkan-tools)"
-    fi
-    if [ "$LIBVIRT_DEFAULT_URI" = "qemu:///system" ]; then
-        echo "✓ LIBVIRT_DEFAULT_URI=qemu:///system"
-    else
-        echo "✗ LIBVIRT_DEFAULT_URI is '${LIBVIRT_DEFAULT_URI:-unset}'; virsh will address the session daemon (see machines/host/05-hypervisor.md section 3)"
-    fi
-    if command -v virsh >/dev/null 2>&1 && virsh -c qemu:///system list >/dev/null 2>&1; then
-        echo "✓ libvirt reachable without sudo"
-        if virsh -c qemu:///system dominfo xmg-evo-agent-vm >/dev/null 2>&1; then
-            echo "✓ xmg-evo-agent-vm defined: $(virsh -c qemu:///system domstate xmg-evo-agent-vm 2>/dev/null)"
-            if virsh -c qemu:///system dumpxml xmg-evo-agent-vm 2>/dev/null | grep -q pflash; then
-                echo "⊗ xmg-evo-agent-vm boots UEFI; BIOS is assumed by the snapshot/backup steps (machines/host/05-hypervisor.md section 5)"
-            else
-                echo "✓ xmg-evo-agent-vm boots BIOS, no NVRAM file to track"
-            fi
-            if virsh -c qemu:///system dumpxml xmg-evo-agent-vm 2>/dev/null | grep -q "access mode='shared'"; then
-                echo "✓ shared memory backing present (virtiofs shares can attach)"
-            else
-                echo "✗ no shared memory backing; virtiofs shares will not attach (machines/host/05-hypervisor.md section 5)"
-            fi
-        else
-            echo "⊗ xmg-evo-agent-vm not defined yet (see machines/host/05-hypervisor.md)"
-        fi
-    else
-        echo "⊗ libvirt/KVM not usable (sudo apt install -y qemu-system-x86 libvirt-daemon-system virtinst; usermod -aG libvirt,kvm)"
-    fi
-    if command -v virtiofsd >/dev/null 2>&1 || [ -x /usr/libexec/virtiofsd ]; then
-        echo "✓ virtiofsd present"
-    else
-        echo "⊗ virtiofsd missing (needed for shared folders: sudo apt install -y virtiofsd)"
-    fi
-    echo ""
+    skip 'operational checks deferred; run with --operational after host completion'
 fi
 
-# VM-only: sandbox plumbing (see machines/vm/01-bootstrap.md, machines/vm/06-shared-folders.md)
-if [ "$PROFILE" = "vm" ]; then
-    echo "=== VM: sandbox plumbing ==="
-    if [ -f /etc/sudoers.d/agent-nopasswd ]; then
-        echo "✓ passwordless sudo configured (agent user is root in the VM, by design)"
+if profile_at_least full; then
+    printf '\n=== Full: enabled credentials and optional capabilities ===\n'
+    check 'GitHub CLI authenticated' gh auth status
+    if [[ "$target" == vm ]]; then
+        check 'Claude guest credential state exists' test -f "$HOME/.claude.json"
+        check 'Codex guest credential state exists' test -f "$HOME/.codex/auth.json"
+        check 'Cursor CLI configuration exists after login' test -f "$HOME/.cursor/cli-config.json"
+        check 'Pi credential state exists' test -f "$HOME/.pi/agent/auth.json"
+        check 'Firecrawl authentication configured' bash -c 'firecrawl --status 2>/dev/null | grep -qi authenticated'
+        check 'Tailscale installed and connected' tailscale status
+        check 'guest secrets file linked' test -L "$HOME/.bash_secrets"
     else
-        echo "✗ /etc/sudoers.d/agent-nopasswd missing (see machines/vm/01-bootstrap.md)"
+        check 'host Pi credential state exists' test -f "$HOME/.pi/agent/auth.json"
     fi
-    if systemctl is-active --quiet ssh; then
-        echo "✓ sshd running (ssh xmg-evo-agent-vm from the host)"
-    else
-        echo "✗ sshd not running (sudo apt install -y openssh-server)"
-    fi
-    if [ "$(hostname)" = "xmg-evo-agent-vm" ]; then
-        echo "✓ hostname is xmg-evo-agent-vm, so libnss-libvirt resolves it from the host"
-    else
-        echo "⊗ hostname is '$(hostname)', not xmg-evo-agent-vm; ssh xmg-evo-agent-vm will not resolve"
-    fi
-    if systemctl is-active --quiet qemu-guest-agent; then
-        echo "✓ qemu-guest-agent active"
-    else
-        echo "✗ qemu-guest-agent not active (sudo apt install -y qemu-guest-agent)"
-    fi
-    if systemctl is-active --quiet sddm; then
-        echo "✓ Plasma display manager running"
-    else
-        echo "⊗ sddm not active (a desktop guest is expected, see machines/vm/01-bootstrap.md)"
-    fi
-    if systemctl is-active --quiet spice-vdagentd; then
-        echo "✓ spice-vdagent active (SPICE console clipboard)"
-    else
-        echo "✗ spice-vdagentd not active (sudo apt install -y spice-vdagent)"
-    fi
-    if dpkg -s krdp >/dev/null 2>&1; then
-        echo "⊗ krdp installed; this setup deliberately exposes no RDP listener (see machines/vm/01-bootstrap.md section 4)"
-    fi
-    virtiofs_mounts=$(findmnt -t virtiofs -no TARGET 2>/dev/null | tr '\n' ' ')
-    if [ -n "$virtiofs_mounts" ]; then
-        echo "✓ virtiofs shares mounted: $virtiofs_mounts"
-    else
-        echo "⊗ no virtiofs share mounted (no host directories shared)"
-    fi
-    if [ -d ~/.ssh ] && [ -n "$(ls -A ~/.ssh 2>/dev/null)" ]; then
-        echo "✓ VM has its own ~/.ssh contents"
-    else
-        echo "✗ no SSH key in the VM (see machines/vm/05-credentials.md)"
-    fi
-    echo ""
+else
+    skip 'credential and optional-capability checks deferred; run with --full after enabling them'
 fi
 
-# Optional Tools
-echo "=== Optional Tools ==="
-helm version >/dev/null 2>&1 && echo "✓ Helm installed" || echo "⊗ Helm not installed (optional)"
-kubectl version --client >/dev/null 2>&1 && echo "✓ kubectl installed" || echo "⊗ kubectl not installed (optional)"
-minikube version >/dev/null 2>&1 && echo "✓ Minikube installed" || echo "⊗ Minikube not installed (optional)"
-echo ""
-
-echo "========================================="
-echo "  Verification Complete"
-echo "========================================="
-echo ""
-echo "Legend:"
-echo "  ✓ = Installed and configured"
-echo "  ✗ = Missing (required)"
-echo "  ⊗ = Not installed (optional)"
-echo ""
-echo "To fix missing components, see agents/README.md, machines/common/*.md and machines/$PROFILE/*.md"
+printf '\nResult: %d required check(s) failed.\n' "$failures"
+((failures == 0))

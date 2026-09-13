@@ -9,7 +9,7 @@ satisfied. Confirm the host state with:
 
 ```bash
 cd ~/projects/agent-box-setup
-./verify-setup.sh --host
+./verify-setup.sh --host --operational
 ```
 
 Resolve required host failures before creating or restoring a guest. In particular, all four host
@@ -113,7 +113,14 @@ virt-install --name xmg-evo-agent-vm --osinfo detect=on,name=ubuntu24.04 \
 | `--autostart`                                           | Starts the VM with the host.                                                                              |
 
 Install Kubuntu with a minimal desktop, one virtual-disk partition, and hostname `xmg-evo-agent-vm`.
-Then continue with [`../vm/01-bootstrap.md`](../vm/01-bootstrap.md).
+Then perform only the console SSH/key/guest-sudo bootstrap in
+[`../vm/01-bootstrap.md`](../vm/01-bootstrap.md). From the host, stream the
+credential-free baseline into that SSH session:
+
+```bash
+cd ~/projects/agent-box-setup
+ssh xmg-evo-agent-vm 'bash -s' < machines/vm/guest-baseline.sh
+```
 
 ## 4. Day-to-day
 

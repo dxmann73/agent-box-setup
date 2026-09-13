@@ -1,0 +1,172 @@
+#!/usr/bin/env bash
+
+# Credential-free, host-invoked baseline for the agent VM.  Run it as the
+# normal guest user over SSH after the short console bootstrap in 01-bootstrap.
+
+set -Eeuo pipefail
+trap 'printf "ERROR: guest baseline failed at line %s\n" "$LINENO" >&2' ERR
+
+readonly expected_hostname="${AGENT_BOX_VM_HOSTNAME:-xmg-evo-agent-vm}"
+readonly repository_url="https://github.com/dxmann73/agent-box-setup.git"
+readonly repository_dir="$HOME/projects/agent-box-setup"
+
+[[ $EUID -ne 0 ]] || {
+    printf '%s\n' 'Run this as the normal guest user, not as root.' >&2
+    exit 1
+}
+[[ "$(hostname)" = "$expected_hostname" ]] || {
+    printf 'Expected guest hostname %q; got %q. Set AGENT_BOX_VM_HOSTNAME only for a deliberate rebuild.\n' \
+        "$expected_hostname" "$(hostname)" >&2
+    exit 1
+}
+systemd-detect-virt --quiet || {
+    printf '%s\n' 'Refusing to configure a non-virtualized machine as the guest.' >&2
+    exit 1
+}
+sudo -n true || {
+    printf '%s\n' 'Guest passwordless sudo is required before running the baseline.' >&2
+    exit 1
+}
+
+export DEBIAN_FRONTEND=noninteractive
+export PATH="$HOME/.npm-global/bin:$HOME/.local/bin:/usr/local/bin:/usr/bin:/bin"
+
+ensure_locale_sources() {
+    sudo sed -i \
+        -e 's/^[[:space:]#]*en_US.UTF-8[[:space:]]\+UTF-8/en_US.UTF-8 UTF-8/' \
+        -e 's/^[[:space:]#]*de_DE.UTF-8[[:space:]]\+UTF-8/de_DE.UTF-8 UTF-8/' \
+        /etc/locale.gen
+    sudo locale-gen en_US.UTF-8 de_DE.UTF-8
+    sudo update-locale \
+        LANG=en_US.UTF-8 LANGUAGE=en_US \
+        LC_ADDRESS=de_DE.UTF-8 LC_MEASUREMENT=de_DE.UTF-8 LC_MONETARY=de_DE.UTF-8 \
+        LC_NAME=de_DE.UTF-8 LC_NUMERIC=de_DE.UTF-8 LC_PAPER=de_DE.UTF-8 \
+        LC_TELEPHONE=de_DE.UTF-8 LC_TIME=de_DE.UTF-8
+}
+
+ensure_nodesource() {
+    if node --version 2>/dev/null | grep -Eq '^v2[4-9]\.'; then
+        return
+    fi
+    sudo install -d -m 0755 /etc/apt/keyrings
+    curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key |
+        sudo gpg --dearmor --yes -o /etc/apt/keyrings/nodesource.gpg
+    printf '%s\n' \
+        'deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_24.x nodistro main' |
+        sudo tee /etc/apt/sources.list.d/nodesource.list >/dev/null
+    sudo apt-get update
+    sudo apt-get install -y nodejs
+}
+
+ensure_wezterm() {
+    sudo install -d -m 0755 /etc/apt/keyrings
+    curl -fsSL https://apt.fury.io/wez/gpg.key |
+        sudo gpg --dearmor --yes -o /etc/apt/keyrings/wezterm-fury.gpg
+    printf '%s\n' \
+        'deb [signed-by=/etc/apt/keyrings/wezterm-fury.gpg] https://apt.fury.io/wez/ * *' |
+        sudo tee /etc/apt/sources.list.d/wezterm.list >/dev/null
+    sudo chmod 0644 /etc/apt/keyrings/wezterm-fury.gpg
+    sudo apt-get update
+    sudo apt-get install -y wezterm
+}
+
+sudo apt-get update
+sudo apt-get install -y \
+    ca-certificates curl git gh gnupg jq locales openssh-server \
+    build-essential pkg-config python3 python3-pip python3-venv pipx \
+    htop btop tmux ripgrep fd-find docker.io \
+    qemu-guest-agent spice-vdagent unattended-upgrades needrestart
+ensure_nodesource
+ensure_wezterm
+ensure_locale_sources
+
+sudo systemctl enable --now ssh qemu-guest-agent spice-vdagentd
+sudo usermod -aG docker "$USER"
+sudo loginctl enable-linger "$USER"
+sudo tee /etc/apt/apt.conf.d/20auto-upgrades >/dev/null <<'CONFIG'
+APT::Periodic::Update-Package-Lists "1";
+APT::Periodic::Unattended-Upgrade "1";
+CONFIG
+sudo systemctl enable --now apt-daily.timer apt-daily-upgrade.timer
+
+mkdir -p "$HOME/projects" "$HOME/.npm-global" "$HOME/.local/bin" "$HOME/.config"
+npm config set prefix "$HOME/.npm-global"
+
+if [[ ! -d "$repository_dir/.git" ]]; then
+    git clone "$repository_url" "$repository_dir"
+fi
+
+cd "$repository_dir"
+[[ -f user-home/plasma-localerc && -d agents/skills ]] || {
+    printf 'Repository at %s is not an agent-box-setup checkout.\n' "$repository_dir" >&2
+    exit 1
+}
+
+ln -sfn "$repository_dir/user-home/plasma-localerc" "$HOME/.config/plasma-localerc"
+mkdir -p "$HOME/.config/wezterm"
+ln -sfn "$repository_dir/user-home/wezterm/wezterm.lua" "$HOME/.config/wezterm/wezterm.lua"
+for dotfile in .bashrc .bash_aliases .profile .gitconfig; do
+    [[ -e "$HOME/$dotfile" && ! -L "$HOME/$dotfile" ]] &&
+        mv "$HOME/$dotfile" "$HOME/.agent-box-setup-${dotfile#.}" || true
+    ln -sfn "$repository_dir/user-home/$dotfile" "$HOME/$dotfile"
+done
+ln -sfn "$repository_dir/user-home/ua.sh" "$HOME/ua.sh"
+ln -sfn "$repository_dir/user-home/update-tools.sh" "$HOME/update-tools.sh"
+ln -sfn "$repository_dir/.markdownlint.json" "$HOME/projects/.markdownlint.json"
+
+npm install -g corepack typescript ts-node markdownlint-cli firecrawl-cli @openai/codex
+npm install -g --ignore-scripts @earendil-works/pi-coding-agent
+corepack enable --install-directory "$HOME/.local/bin"
+corepack prepare pnpm@latest --activate
+command -v claude >/dev/null 2>&1 || curl -fsSL https://claude.ai/install.sh | bash
+command -v agent >/dev/null 2>&1 || curl -fsS https://cursor.com/install | bash
+hash -r
+
+ln -sfn "$repository_dir/agents/AGENTS.md" "$HOME/AGENTS.md"
+ln -sfn "$HOME/AGENTS.md" "$HOME/CLAUDE.md"
+ln -sfn "$repository_dir/agents" "$HOME/.agents"
+mkdir -p "$HOME/.claude/skills" "$HOME/.cursor/skills" "$HOME/.codex/skills" "$HOME/.pi/agent"
+find "$HOME/.claude/skills" "$HOME/.cursor/skills" "$HOME/.codex/skills" -maxdepth 1 -xtype l -delete
+for skill_dir in "$repository_dir"/agents/skills/*/; do
+    skill_name="$(basename "$skill_dir")"
+    ln -sfn "$skill_dir" "$HOME/.claude/skills/$skill_name"
+    ln -sfn "$skill_dir" "$HOME/.cursor/skills/$skill_name"
+    ln -sfn "$skill_dir" "$HOME/.codex/skills/$skill_name"
+done
+ln -sfn "$repository_dir/agents/AGENTS.md" "$HOME/.pi/agent/AGENTS.md"
+ln -sfn "$repository_dir/agents/skills" "$HOME/.pi/agent/skills"
+mkdir -p "$HOME/.codex" "$HOME/.cursor" "$HOME/.claude"
+ln -sfn "$repository_dir/agents/codex/config.toml" "$HOME/.codex/config.toml"
+ln -sfn "$repository_dir/agents/codex/hooks.json" "$HOME/.codex/hooks.json"
+ln -sfn "$repository_dir/agents/cursor/hooks.json" "$HOME/.cursor/hooks.json"
+ln -sfn "$repository_dir/agents/cursor/hooks" "$HOME/.cursor/hooks"
+ln -sfn "$repository_dir/agents/cursor/statusline.sh" "$HOME/.cursor/statusline.sh"
+ln -sfn "$repository_dir/agents/claude/settings.json" "$HOME/.claude/settings.json"
+ln -sfn "$repository_dir/agents/claude/statusline-command.sh" "$HOME/.claude/statusline-command.sh"
+"$repository_dir/agents/cursor/apply-cli-config.sh" --permissions
+
+sudo npx --yes playwright@latest install-deps chromium
+npx --yes playwright@latest install chromium
+
+kwriteconfig6 --file powerdevilrc --group AC --group Display --key DimDisplayWhenIdle false
+kwriteconfig6 --file powerdevilrc --group AC --group Display --key DimDisplayIdleTimeoutSec -- -1
+kwriteconfig6 --file powerdevilrc --group AC --group Display --key TurnOffDisplayWhenIdle false
+kwriteconfig6 --file powerdevilrc --group AC --group Display --key TurnOffDisplayIdleTimeoutSec -- -1
+kwriteconfig6 --file kscreenlockerrc --group Daemon --key Autolock false
+kwriteconfig6 --file kscreenlockerrc --group Daemon --key LockOnResume false
+kwriteconfig6 --file kscreenlockerrc --group Daemon --key Timeout 0
+sudo install -d -m 0755 /etc/sddm.conf.d
+printf '[Autologin]\nUser=%s\nSession=plasma\nRelogin=false\n' "$USER" |
+    sudo tee /etc/sddm.conf.d/99-autologin.conf >/dev/null
+
+mkdir -p "$HOME/.local/share/bb-runtime" "$HOME/.config/systemd/user"
+npm install -g --prefix "$HOME/.local/share/bb-runtime" \
+    --allow-scripts=better-sqlite3,node-pty,@parcel/watcher bb-app@latest
+ln -sfn "$HOME/.local/share/bb-runtime/bin/bb-app" "$HOME/.local/bin/bb-app"
+ln -sfn "$HOME/.local/share/bb-runtime/bin/bb" "$HOME/.local/bin/bb"
+ln -sfn "$repository_dir/user-home/systemd/bb.service" "$HOME/.config/systemd/user/bb.service"
+systemctl --user daemon-reload
+systemctl --user enable --now bb.service
+
+printf '%s\n' 'Guest baseline complete. No provider, GitHub, Firecrawl, Tailscale, model, or share credentials were requested.'
+printf '%s\n' "Run: cd $repository_dir && ./verify-setup.sh --vm --bootstrap"

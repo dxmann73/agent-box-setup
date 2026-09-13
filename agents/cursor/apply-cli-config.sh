@@ -23,13 +23,19 @@ done
 
 command -v jq > /dev/null || { echo "jq is required" >&2; exit 1; }
 [ -f "$repo_config" ] || { echo "missing template: $repo_config" >&2; exit 1; }
-[ -f "$live_config" ] || { echo "missing live config: $live_config (run 'agent' once first)" >&2; exit 1; }
+if [ ! -f "$live_config" ]; then
+    # A fresh credential-free guest must be configurable before first launch.
+    # Cursor will add its own auth state later; the merge below preserves it.
+    install -d -m 0700 "$(dirname "$live_config")"
+    printf '{}\n' > "$live_config"
+    chmod 0600 "$live_config"
+fi
 jq -e . "$repo_config" > /dev/null || { echo "template is not valid JSON: $repo_config" >&2; exit 1; }
 jq -e . "$live_config" > /dev/null || { echo "live config is not valid JSON: $live_config" >&2; exit 1; }
 
 # Replaced wholesale, not deep-merged: dropping a key from the template must also drop it
 # from the live file, otherwise stale settings such as display.mode=zen survive forever.
-managed_keys=(display editor network attribution statusLine)
+managed_keys=(display editor network attribution)
 if [ "$apply_permissions" = true ]; then
     managed_keys+=(permissions approvalMode sandbox)
 fi

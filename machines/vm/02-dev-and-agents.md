@@ -1,93 +1,61 @@
 # 02 – VM development toolchain and agents
 
-The development toolchain and all four coding agents live in the VM. Install detail lives once in
-[`../common/`](../common/); this file supplies the VM order.
+[`guest-baseline.sh`](guest-baseline.sh) installs the deterministic VM
+toolchain and all four agent CLIs from the host. This guide records the result,
+the deliberate extras, and the separation between installation and login.
 
-## 1. Development basics
+## Baseline contents
 
-```bash
-sudo apt install -y \
-  git curl wget build-essential pkg-config \
-  python3 python3-pip python3-venv pipx jq htop btop tmux \
-  ripgrep fd-find
-```
+The baseline installs development essentials, Docker, Node 24 with a
+user-owned npm prefix, TypeScript, pnpm, Markdownlint, WezTerm, Firecrawl CLI,
+Playwright Chromium, QEMU/SPICE guest agents, and these CLIs:
 
-```bash
-mkdir -p ~/projects
-```
+- Claude Code
+- Codex CLI
+- Cursor CLI Agent
+- Pi
 
-## 2. Common guides, in order
+It links the shared global instructions, skills, agent configuration, and
+checked-in WezTerm Lua configuration from the guest checkout. It does not
+invoke any CLI interactively, so it cannot create provider credentials.
 
-| Step                     | Guide                                                                  |
-| ------------------------ | ---------------------------------------------------------------------- |
-| shell/dotfiles           | [`../common/00-home-environment.md`](../common/00-home-environment.md) |
-| core tools               | [`../common/02-core-tools.md`](../common/02-core-tools.md)             |
-| languages/runtimes       | [`../common/03-dev-environment.md`](../common/03-dev-environment.md)   |
-| coding agents and skills | [`../../agents/`](../../agents/README.md)                              |
-| editor                   | [`../common/04-ide+tooling.md`](../common/04-ide+tooling.md)           |
-| imaging                  | [`../common/07-imaging-tools.md`](../common/07-imaging-tools.md)       |
-| automatic updates        | [`../common/08-auto-updates.md`](../common/08-auto-updates.md)         |
-| optional                 | [`../common/06-optional.md`](../common/06-optional.md)                 |
-
-## 3. Projects
-
-Agent-worked repositories live in `~/projects` **inside the VM** (specification §8). The host
-`$HOME` is not mounted. Individual host directories can be shared in deliberately, see
-[06-shared-folders.md](06-shared-folders.md).
-
-## 4. Browser automation
-
-Agents need a browser for testing and for producing proof of work — screenshots, traces, videos,
-console output (specification §7). Headless is the normal mode.
-
-Install the browser and its system libraries once, machine-wide, so any project can drive it without
-repeating the download:
-
-```bash
-sudo npx --yes playwright@latest install-deps chromium
-npx --yes playwright@latest install chromium
-```
-
-`install-deps` installs apt packages and needs root; `install` downloads the browser into
-`~/.cache/ms-playwright` and must run as your own user, so the two commands differ deliberately.
-Projects that pin their own Playwright version will fetch a matching build on first use.
-
-Verify with a headless screenshot:
-
-```bash
-npx --yes playwright@latest screenshot --viewport-size=1280,720 https://example.com /tmp/pw.png
-```
-
-The Chromium that Playwright downloads is separate from the host's personal Chrome profile, and must
-stay that way. Never mount the host browser profile into the VM.
-
-## 5. Model endpoints
-
-Agents reach the host's local model over the controlled interface described in
-[03-networking.md](03-networking.md). Cloud LLM APIs go out over NAT.
-
-## 6. Verification
+Verify the credential-free state:
 
 ```bash
 cd ~/projects/agent-box-setup
-./verify-setup.sh --vm
+./verify-setup.sh --vm --bootstrap
 ```
 
-## 7. Checklist
+## Shared guidance and intentional extras
 
-- [ ] apt development basics installed
-- [ ] unattended security updates active
-      ([`../common/08-auto-updates.md`](../common/08-auto-updates.md))
-- [ ] dotfiles symlinked, secrets file populated
-- [ ] `gh auth status` shows logged in with the VM's own credentials
-- [ ] Docker works without sudo
-- [ ] Node LTS + pnpm (Corepack shim) + tsc/ts-node
-- [ ] markdownlint and firecrawl CLIs available, firecrawl authenticated
-- [ ] Playwright Chromium installed, headless screenshot of `example.com` succeeds
-- [ ] SDKMAN with auto-env, Java 21, Quarkus, Maven
-- [ ] Claude Code, Codex, Cursor CLI, and Pi installed and authenticated
-- [ ] skills symlinked into all four agents
-- [ ] imaging tools installed
-- [ ] `./verify-setup.sh --vm` passes
+Read the common guides for maintenance and optional choices, not as a second
+mandatory installation pass:
 
-Next: [03-networking.md](03-networking.md)
+| Concern | Guide |
+| --- | --- |
+| locale and managed home links | [`../common/01-localization.md`](../common/01-localization.md), [`../common/00-home-environment.md`](../common/00-home-environment.md) |
+| toolchain detail | [`../common/02-core-tools.md`](../common/02-core-tools.md), [`../common/03-dev-environment.md`](../common/03-dev-environment.md) |
+| agent configuration | [`../../agents/README.md`](../../agents/README.md) |
+| editor, imaging, and update policy | [`../common/04-ide+tooling.md`](../common/04-ide+tooling.md), [`../common/07-imaging-tools.md`](../common/07-imaging-tools.md), [`../common/08-auto-updates.md`](../common/08-auto-updates.md) |
+
+Install SDKMAN, Java, Quarkus, imaging utilities, VS Code, or other optional
+tools only when the guest's projects require them. They belong in the `full`
+verification profile once enabled.
+
+## Projects and credentials
+
+Agent-worked repositories belong under `~/projects` inside the VM. The host
+home directory is never mounted. Clone private projects only after the VM has
+its own GitHub credential in [05-credentials.md](05-credentials.md).
+
+Do not run `claude`, `codex`, `agent`, `pi`, `gh auth`, or `firecrawl login`
+as part of bootstrap. Those commands begin authentication and belong to the
+later credential phase.
+
+## Checklist
+
+- [ ] baseline toolchain and all four CLI binaries are installed
+- [ ] shared instructions, skills, and agent configuration links resolve
+- [ ] Playwright Chromium can take a headless screenshot
+- [ ] no provider, GitHub, Firecrawl, or other credential was created by bootstrap
+- [ ] optional tools are installed only when required and then checked with `--full`

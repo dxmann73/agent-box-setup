@@ -143,7 +143,7 @@ All commands should complete successfully without errors.
 
 ## Verification Checklist
 
-- [ ] GitHub CLI installed and authenticated (`gh auth status` shows ✓)
+- [ ] GitHub CLI installed; authenticate it during host completion or the VM credentials phase
 - [ ] jq installed (`jq --version` shows version)
 - [ ] Docker installed (`docker --version` shows version)
 - [ ] Docker working (`docker run hello-world` succeeds)

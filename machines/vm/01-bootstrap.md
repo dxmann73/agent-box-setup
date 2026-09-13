@@ -1,143 +1,91 @@
 # 01 – VM bootstrap
 
-Prepare the Kubuntu 26.04 guest for agent setup. The VM definition is in
-[`../host/05-hypervisor.md`](../host/05-hypervisor.md).
+The guest console performs only the bootstrap needed to let the completed host
+manage the VM remotely. Everything else is the credential-free host-invoked
+baseline in [`guest-baseline.sh`](guest-baseline.sh).
 
-## 1. First boot and SSH
+## 1. Console bootstrap
 
-In the guest console:
+At the guest console, install SSH, add the host public key, and configure
+passwordless sudo for the guest user only:
 
 ```bash
-sudo apt update && sudo apt full-upgrade
+sudo apt update
 sudo apt install -y openssh-server
-```
-
-Add the host key, then finish the remaining setup from the host:
-
-```bash
-ssh-copy-id xmg-evo-agent-vm
-ssh xmg-evo-agent-vm hostname
-```
-
-If the upgrade installed a kernel, reboot now. Then configure automatic updates in
-[`../common/08-auto-updates.md`](../common/08-auto-updates.md).
-
-## 2. Passwordless sudo
-
-The agent user has unrestricted sudo inside the VM boundary:
-
-```bash
+mkdir -p ~/.ssh && chmod 700 ~/.ssh
+# Paste the public key from the host's ~/.ssh/*.pub file into this file.
+nano ~/.ssh/authorized_keys
+chmod 600 ~/.ssh/authorized_keys
 sudo visudo -f /etc/sudoers.d/agent-nopasswd
 ```
+
+The sudoers file must contain exactly this policy, substituting the guest user
+name:
 
 ```text
 YOUR_USER_NAME ALL=(ALL) NOPASSWD: ALL
 ```
 
-```bash
-sudo -l | grep NOPASSWD
-```
+Do not add a matching rule on the personal host. The VM is the unrestricted
+agent boundary; the host remains supervised.
 
-## 3. Desktop settings
+## 2. Verify the remote boundary
 
-In System Settings, turn off screen energy saving and screen locking, and enable automatic login for
-the agent user. The rebuild commands are:
-
-```bash
-kwriteconfig6 --file powerdevilrc --group AC --group Display --key DimDisplayWhenIdle false
-kwriteconfig6 --file powerdevilrc --group AC --group Display --key DimDisplayIdleTimeoutSec -- -1
-kwriteconfig6 --file powerdevilrc --group AC --group Display --key TurnOffDisplayWhenIdle false
-kwriteconfig6 --file powerdevilrc --group AC --group Display --key TurnOffDisplayIdleTimeoutSec -- -1
-kwriteconfig6 --file kscreenlockerrc --group Daemon --key Autolock false
-kwriteconfig6 --file kscreenlockerrc --group Daemon --key LockOnResume false
-kwriteconfig6 --file kscreenlockerrc --group Daemon --key Timeout 0
-systemctl --user restart plasma-powerdevil.service
-```
-
-Configure SDDM autologin in `/etc/sddm.conf.d/99-autologin.conf`:
-
-```ini
-[Autologin]
-User=YOUR_USER_NAME
-Session=plasma
-Relogin=false
-```
-
-Kubuntu 26.04 uses the Plasma Wayland session. The SPICE clipboard is unavailable, so paste setup
-commands through SSH.
-
-## 4. SPICE console
-
-Use the host console for guest recovery and inspection:
+From the host, verify key authentication and non-interactive guest sudo before
+proceeding:
 
 ```bash
-virt-viewer --attach xmg-evo-agent-vm
+ssh xmg-evo-agent-vm hostname
+ssh xmg-evo-agent-vm 'sudo -n true && echo guest-sudo-ready'
 ```
 
-Install the guest display agent:
+If hostname resolution is not ready yet, use the guest's libvirt address from
+`virsh domifaddr xmg-evo-agent-vm --source lease` instead. Do not use
+`ssh-copy-id`: it needs a guest password and is unnecessary once the key is
+placed in `authorized_keys`.
+
+## 3. Run the guest baseline from the host
+
+The script is streamed from the host so a fresh guest does not need GitHub
+authentication or an existing repository checkout. It clones the public setup
+repository itself and then configures packages, locales, dotfiles, four agent
+CLIs without login, Playwright, the BB service, guest agents, and guest desktop
+defaults.
 
 ```bash
-sudo apt install -y spice-vdagent
-systemctl is-active spice-vdagentd
+cd ~/projects/agent-box-setup
+ssh xmg-evo-agent-vm 'bash -s' < machines/vm/guest-baseline.sh
 ```
 
-## 5. QEMU guest agent
+The script refuses to run outside a virtualized guest, with the wrong hostname,
+or without guest `NOPASSWD` sudo. Re-running it is safe: package installation,
+links, service enablement, and managed desktop settings converge on the same
+state.
+
+It deliberately does not authenticate GitHub, Claude, Codex, Cursor, Pi,
+Firecrawl, Tailscale, model providers, or configure host shares/network
+exposure. Those are later, explicit phases.
+
+## 4. Verify and snapshot
 
 ```bash
-sudo apt install -y qemu-guest-agent
-systemctl is-active qemu-guest-agent
+ssh -t xmg-evo-agent-vm \
+  'cd ~/projects/agent-box-setup && ./verify-setup.sh --vm --bootstrap'
 ```
 
-Verify from the host:
+Once this profile passes, take the credential-free `clean-guest` snapshot as
+described in [07-snapshots.md](07-snapshots.md). Then continue to the optional
+or credentialed phases deliberately.
 
-```bash
-virsh --connect qemu:///system domifaddr xmg-evo-agent-vm --source agent
-```
-
-## 6. Base applications
-
-```bash
-sudo apt install -y git curl gh
-cd /tmp
-curl -fsSLO https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-sudo apt install -y /tmp/google-chrome-stable_current_amd64.deb
-```
-
-Add Chrome's verified origin to unattended upgrades as described in
-[`../common/08-auto-updates.md`](../common/08-auto-updates.md) §1. Then take the credential-free
-`clean-guest` snapshot ([07-snapshots.md](07-snapshots.md) §2).
-
-## 7. GitHub credentials
-
-Complete [05-credentials.md](05-credentials.md) §1 before continuing. The secrets file is created
-after the repository clone and home-environment setup in
-[02-dev-and-agents.md](02-dev-and-agents.md).
-
-## 8. Initial coding agent: Claude Code
-
-In an SSH shell on the guest, clone the configuration repository and install Claude Code:
-
-```bash
-mkdir -p ~/projects
-cd ~/projects
-git clone https://github.com/dxmann73/agent-box-setup
-curl -fsSL https://claude.ai/install.sh | bash
-claude
-```
-
-Authenticate, then run `/exit`. Configure the statusline and install the Caveman plugin from
-[`../../agents/claude/README.md`](../../agents/claude/README.md). Install skills after Node arrives
-in [02-dev-and-agents.md](02-dev-and-agents.md).
-
-## 9. Checklist
+## Checklist
 
 - [ ] guest hostname is `xmg-evo-agent-vm`
-- [ ] SSH from the host uses its key
-- [ ] passwordless sudo, autologin, disabled blanking and disabled locking configured
-- [ ] SPICE console and `qemu-guest-agent` work
-- [ ] automatic updates active
-- [ ] Git, curl, gh and Chrome installed; Chrome origin included in unattended upgrades
-- [ ] `clean-guest` snapshot taken before GitHub and API credentials
-- [ ] GitHub authenticated over HTTPS
-- [ ] Claude Code installed and authenticated; install Codex, Cursor CLI, and Pi in `vm/02`
-- [ ] repository cloned to `~/projects/agent-box-setup`
+- [ ] host public key works over SSH
+- [ ] only the guest user has passwordless sudo
+- [ ] host-driven baseline finishes without provider or GitHub login
+- [ ] SSH, QEMU guest agent, autologin, disabled blanking, and disabled locking work
+- [ ] toolchain, four agent CLIs, Playwright Chromium, and BB service are installed
+- [ ] `./verify-setup.sh --vm --bootstrap` passes before `clean-guest` is taken
+
+Next: [02-dev-and-agents.md](02-dev-and-agents.md) for review and later optional tooling, or
+[05-credentials.md](05-credentials.md) when credentials are explicitly wanted.

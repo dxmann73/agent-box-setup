@@ -6,8 +6,7 @@ VS Code is the primary editor. Settings and keybindings live in
 Cursor CLI is installed with the other agents in
 [`../../agents/cursor/README.md`](../../agents/cursor/README.md).
 
-This guide describes the native Linux install. VS Code runs on the Windows side instead under
-[`../wsl/README.md`](../wsl/README.md) (WSL host variant).
+This guide describes the native Linux install.
 
 ## Prerequisites
 

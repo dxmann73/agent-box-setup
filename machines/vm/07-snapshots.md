@@ -19,8 +19,8 @@ Take these snapshots:
 
 | Snapshot         | When                                                                   |
 | ---------------- | ---------------------------------------------------------------------- |
-| `clean-guest`    | after [01-bootstrap.md](01-bootstrap.md) §6, before credentials        |
-| `toolchain`      | after [02-dev-and-agents.md](02-dev-and-agents.md) passes verification |
+| `clean-guest`    | after [01-bootstrap.md](01-bootstrap.md) passes `--bootstrap`, before credentials |
+| `toolchain`      | after optional guest tooling is deliberately enabled and verified |
 | `pre-experiment` | before an invasive experiment                                          |
 
 Delete a `pre-experiment` snapshot once it is no longer needed.
@@ -44,7 +44,21 @@ virsh define ~/vms/xmg-evo-agent-vm.xml
 
 Keep project work pushed to its remote.
 
-## 3. Rebuild test
+## 3. Acceptance rebuild test
+
+After reviewing a change to `guest-baseline.sh`, restore `clean-guest` and run the
+host-driven baseline as the acceptance test. Do not update `clean-guest` with provider,
+GitHub, Firecrawl, Tailscale, model, or share credentials.
+
+```bash
+virsh snapshot-revert xmg-evo-agent-vm clean-guest
+cd ~/projects/agent-box-setup
+ssh xmg-evo-agent-vm 'bash -s' < machines/vm/guest-baseline.sh
+ssh -t xmg-evo-agent-vm \
+  'cd ~/projects/agent-box-setup && ./verify-setup.sh --vm --bootstrap'
+```
+
+## 4. Rebuild test
 
 Create a clean baseline after the VM is verified:
 
@@ -69,9 +83,9 @@ Give the clone a unique hostname before connecting it to the tailnet. Remove it 
 virsh undefine xmg-evo-agent-vm-rebuild --remove-all-storage
 ```
 
-## 4. Checklist
+## 5. Checklist
 
-- [ ] `clean-guest` and `toolchain` snapshots exist
+- [ ] `clean-guest` is credential-free and passes `--bootstrap` after restore
 - [ ] disk image and domain XML are in host backups
 - [ ] restore and rebuild tests have completed
 - [ ] project work is pushed

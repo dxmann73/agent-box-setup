@@ -35,7 +35,7 @@ refresh_usage() {
     fi
     if ! jq -e '(.billingCycleEnd | tonumber) > 0
                 and (.planUsage.limit | type == "number" and . > 0)
-                and (.planUsage.includedSpend | type == "number")' <<<"$response" >/dev/null 2>&1; then
+                and (.planUsage.totalPercentUsed | type == "number")' <<<"$response" >/dev/null 2>&1; then
         echo "unexpected response shape: ${response:0:300}" > "$error_file"
         return 1
     fi
@@ -84,7 +84,7 @@ jq -rn --argjson p "$payload" --argjson u "$usage" '
               else "ctx \($c.used_percentage | pct) of \($c.context_window_size | tokens)" end),
         (if $u == null then "plan n/a"
          else ($u.planUsage as $pu
-            | "plan \($pu.includedSpend / $pu.limit * 100 | round)% ($\($pu.includedSpend / 100)/$\($pu.limit / 100))"
+            | "plan \($pu.totalPercentUsed | round)% ($\($pu.includedSpend / 100)/$\($pu.limit / 100) included)"
             + " · resets \($u.billingCycleEnd | tonumber / 1000 | strftime("%b %-d"))")
          end)
     ] | join(" · ")'
