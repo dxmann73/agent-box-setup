@@ -45,5 +45,5 @@ sudo passwordless and do not grant unrestricted host-agent permissions.
 
 Once host operational verification succeeds, continue with
 [the hypervisor guide](machines/host/05-hypervisor.md). The host agent creates the guest and
-configures it over SSH. Guest provider, GitHub, Firecrawl, Tailscale, and model credentials are
-deliberately a later phase.
+configures it over SSH. Guest provider, GitHub, Firecrawl, and model credentials are deliberately a
+later phase.

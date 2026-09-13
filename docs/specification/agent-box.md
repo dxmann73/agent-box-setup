@@ -30,8 +30,9 @@
      inside the VM; host execution remains supervised.
    - Run many concurrent agents plus ordinary terminals/processes in the VM: dev servers, test
      watchers, build processes, etc.
-   - Connect desktop and phone clients to the host server over private Tailscale Serve HTTPS. Do not
-     use Funnel or expose the raw BB port.
+   - Authorized desktop and phone clients must be able to reach the host server. That path may be
+     private Tailscale Serve; this box's URLs live in the `infra` project. Do not expose the raw BB
+     port.
    - A headless BB server inside the VM may remain as a temporary standalone fallback with
      independent history. It is not the shared client entry point and can be disabled after the
      central path is proven.
@@ -96,8 +97,8 @@
       etc.
     - VM needs controlled connectivity to the host's local-model endpoint.
     - The host's shared BB server needs to be reachable from authorized external machines.
-    - Reach it from outside the LAN over Tailscale; the tailnet is specified and operated in the
-      `infra` project, not here.
+    - That path may use Tailscale for host URLs and SSH; the tailnet is specified and operated in
+      the `infra` project, not here.
 
 12. **Credentials**
 

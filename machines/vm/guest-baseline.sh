@@ -162,5 +162,5 @@ if systemctl --user is-active --quiet graphical-session.target; then
     systemctl --user restart klipper-clipboard-sync.service
 fi
 
-printf '%s\n' 'Guest baseline complete. No provider, GitHub, Firecrawl, Tailscale, model, or share credentials were requested.'
+printf '%s\n' 'Guest baseline complete. No provider, GitHub, Firecrawl, model, or share credentials were requested.'
 printf '%s\n' "Run: cd $repository_dir && ./verify-setup.sh --vm --bootstrap"

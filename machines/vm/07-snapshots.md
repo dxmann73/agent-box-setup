@@ -179,8 +179,8 @@ the backing file while the overlay runs; confirm `SHA256SUMS` still matches.
 ## 3. Acceptance rebuild test
 
 After reviewing a change to `guest-baseline.sh`, run the host-driven baseline as the acceptance test
-on a credential-free guest. Do not fold provider, GitHub, Firecrawl, Tailscale, model, or share
-credentials into that test.
+on a credential-free guest. Do not fold provider, GitHub, Firecrawl, model, or share credentials
+into that test.
 
 If `clean-guest` is still present:
 

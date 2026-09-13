@@ -54,11 +54,11 @@ password and is unnecessary once the key is placed in `authorized_keys`.
 
 Before disabling SSH passwords, test each approved key in a second session through its intended
 path. Follow the key-only SSH configuration and lockout-safe validation sequence in
-[`../host/03-system-config.md`](../host/03-system-config.md) §5. Lived `from=` addresses and
-MagicDNS names for this box: `~/projects/infra/tailscale/ssh.md`. The guest firewall permits TCP/22
-on `tailscale0` for approved remote clients and from only the physical host's libvirt bridge address
-on the private guest interface. The host retains direct libvirt SSH and console recovery paths.
-Complete the measured guest rules in [03-networking.md](03-networking.md) §4 after Tailscale joins.
+[`../host/03-system-config.md`](../host/03-system-config.md) §5. The guest firewall permits TCP/22
+from only the physical host's libvirt bridge address on the private guest interface. The host
+retains direct libvirt SSH and console recovery paths. Remote clients may use Tailscale; this box's
+`from=` lines live in `~/projects/infra/tailscale/ssh.md`. Complete the libvirt exception in
+[03-networking.md](03-networking.md) §4.
 
 ## 3. Run the guest baseline from the host
 
@@ -76,8 +76,8 @@ The script refuses to run outside a virtualized guest, with the wrong hostname, 
 `NOPASSWD` sudo. Re-running it is safe: package installation, links, service enablement, and managed
 desktop settings converge on the same state.
 
-It deliberately does not authenticate GitHub, Claude, Codex, Cursor, Pi, Firecrawl, Tailscale, model
-providers, or configure host shares/network exposure. Those are later, explicit phases.
+It deliberately does not authenticate GitHub, Claude, Codex, Cursor, Pi, Firecrawl, model providers,
+or configure host shares/network exposure. Those are later, explicit phases.
 
 ## 4. Verify and snapshot
 
@@ -94,9 +94,9 @@ deliberately.
 
 - [ ] guest hostname is `VM_NAME`
 - [ ] host public key works over SSH
-- [ ] approved client public keys work over Tailscale with password fallback disabled
+- [ ] approved client public keys work with password fallback disabled
 - [ ] SSH passwords, keyboard-interactive authentication, and root login are disabled
-- [ ] guest port 22 is reachable through `tailscale0` and the single-host libvirt exception only
+- [ ] guest port 22 is reachable through the single-host libvirt exception only
 - [ ] only the guest user has passwordless sudo
 - [ ] host-driven baseline finishes without provider or GitHub login
 - [ ] SSH, QEMU guest agent, autologin, disabled blanking, and disabled locking work

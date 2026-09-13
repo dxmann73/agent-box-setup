@@ -111,7 +111,7 @@ Then the separate [local-llm](https://github.com/dxmann73/local-llm) repo for th
    credential-free guest baseline
 2. [vm/02-dev-and-agents.md](machines/vm/02-dev-and-agents.md) - Baseline toolchain and deliberate
    optional guest tooling
-3. [vm/03-networking.md](machines/vm/03-networking.md) - NAT, host model endpoint, Tailscale
+3. [vm/03-networking.md](machines/vm/03-networking.md) - NAT, host model endpoint, BB reachability
 4. [vm/04-bb.md](machines/vm/04-bb.md) - BB fallback server and shared-host enrollment
 5. [vm/05-credentials.md](machines/vm/05-credentials.md) - VM-only credentials
 6. [vm/06-shared-folders.md](machines/vm/06-shared-folders.md) - Narrow host directory shares

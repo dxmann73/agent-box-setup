@@ -149,11 +149,8 @@ if profile_at_least full; then
         check 'Cursor CLI configuration exists after login' test -f "$HOME/.cursor/cli-config.json"
         check 'Pi credential state exists' test -f "$HOME/.pi/agent/auth.json"
         check 'Firecrawl authentication configured' bash -c 'firecrawl --status 2>/dev/null | grep -qi authenticated'
-        check 'Tailscale installed and connected' tailscale status
         check 'UFW active with default inbound deny' bash -c \
             "sudo ufw status verbose | grep -q '^Default: deny (incoming)'"
-        check 'guest UFW permits tailnet SSH' bash -c \
-            "sudo ufw status | grep -Eq '^22/tcp on tailscale0[[:space:]]+ALLOW[[:space:]]'"
         check 'guest UFW limits libvirt SSH to the hypervisor' bash -c \
             "sudo ufw status | grep -Eq '^22/tcp on [^[:space:]]+[[:space:]]+ALLOW[[:space:]]+192[.]168[.]122[.]1'"
         check 'guest secrets file linked' test -L "$HOME/.bash_secrets"

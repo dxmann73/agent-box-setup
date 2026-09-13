@@ -108,8 +108,8 @@ systemctl status ssh
 
 Before installing the server, have at least one approved public key ready and confirm that a local
 console or other recovery route works. After installation but before changing the server, inventory
-the current firewall, interfaces, listeners, Tailscale state, SSH drop-ins, effective configuration,
-and host-key fingerprints. Save the latter two:
+the current firewall, interfaces, listeners, SSH drop-ins, effective configuration, and host-key
+fingerprints. Save the latter two:
 
 ```bash
 sudo sshd -T > ~/sshd-effective-before-hardening.txt
@@ -117,34 +117,25 @@ for key in /etc/ssh/ssh_host_*_key.pub; do ssh-keygen -lf "$key"; done \
   > ~/ssh-host-key-fingerprints.txt
 sudo ufw status verbose
 ip -brief address
-tailscale status
 ```
 
 Each approved administration client must use its own dedicated, passphrase-protected Ed25519 key.
 Keep the private key on that client and install only its public key in the target user's
-`~/.ssh/authorized_keys`. Bind a device-specific key to the client's exact Tailscale IPv4 address;
-the resulting line has this form:
+`~/.ssh/authorized_keys`. Remote clients may reach this host over Tailscale; this box's names,
+`from=` lines, and measured sshd/UFW live in `~/projects/infra/tailscale/ssh.md`.
 
-```text
-from="CLIENT_TAILSCALE_IPV4",no-agent-forwarding,no-X11-forwarding ssh-ed25519 PUBLIC_KEY COMMENT
-```
-
-Lived names, IPv4 addresses, `from=` lines, and current sshd/UFW live in
-`~/projects/infra/tailscale/ssh.md`. This section is the reusable procedure.
-
-Substitute the measured address and complete public-key line; never install the placeholders. Do not
-add `restrict`, `command=`, `no-port-forwarding`, or `no-pty`, because interactive shells and IDE
-SSH tunnels require those capabilities. Keep the current session or a local recovery console open,
-then prove that a fresh public-key connection works with IPv4 selected and password fallback
+Do not add `restrict`, `command=`, `no-port-forwarding`, or `no-pty`, because interactive shells and
+IDE SSH tunnels require those capabilities. Keep the current session or a local recovery console
+open, then prove that a fresh public-key connection works with IPv4 selected and password fallback
 disabled:
 
 ```bash
-ssh -4 -o PasswordAuthentication=no -o KbdInteractiveAuthentication=no USER@TAILSCALE_NAME
+ssh -4 -o PasswordAuthentication=no -o KbdInteractiveAuthentication=no USER@HOST
 ```
 
 Do not expose port 22 through the router or permit password, keyboard-interactive, or root login.
 
-Only after that succeeds, create `/etc/ssh/sshd_config.d/90-tailnet-key-only.conf`:
+Only after that succeeds, create `/etc/ssh/sshd_config.d/90-key-only.conf`:
 
 ```text
 PubkeyAuthentication yes
@@ -163,17 +154,10 @@ sudo sshd -t
 sudo systemctl reload ssh
 ```
 
-Restrict inbound port 22 to `tailscale0` with the host firewall. Check existing firewall rules and
-defaults before enabling or changing it; preserve any rules needed by the host. The resulting policy
-must allow TCP/22 on `tailscale0` and deny TCP/22 on LAN, Wi-Fi, and public interfaces. Tailscale
-Funnel and router port forwarding are not used for SSH.
+Check existing firewall rules and defaults before enabling or changing them; preserve any rules
+needed by the host. Do not forward port 22 on the router.
 
-The live access policy and device-specific SSH grant remain in the
-[`infra/tailscale`](https://github.com/dxmann73/infra/tree/main/tailscale) documentation. A narrow
-grant is not effective while a broader allow rule also permits TCP/22, so include both permit and
-deny policy tests there.
-
-From the approved client, open another new connection after both SSH and firewall changes. Keep the
+From the approved client, open another new connection after SSH (and any firewall) changes. Keep the
 original session open until this final test passes.
 
 The host's `~/.ssh` is never shared into the VM. Agents get their own purpose-specific keys, see
@@ -264,9 +248,9 @@ reach inference while the LAN cannot. Rules for that interface are in
 - [ ] backups configured and restore tested, including `~/vms` and `/var/lib/libvirt/images`
 - [ ] packaging rule understood
 - [ ] SSH client/server state decided
-- [ ] if the SSH server is enabled, an approved client's device-bound key-only login works and
-      password fallback fails
-- [ ] inbound SSH is allowed on `tailscale0` only; there is no router forward or Funnel
+- [ ] if the SSH server is enabled, an approved client's key-only login works and password fallback
+      fails
+- [ ] inbound SSH is not forwarded on the router
 - [ ] `~/.ssh` at `700`, private keys at `600`
 - [ ] one SSH agent: gcr masked, `SSH_AUTH_SOCK` on `openssh_agent`, `ssh -v` shows `publickey`
 - [ ] `ufw` enabled, default deny incoming
