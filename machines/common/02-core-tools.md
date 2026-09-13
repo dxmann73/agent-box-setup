@@ -43,19 +43,20 @@ Expected output should show: `✓ Logged in to github.com account ...`
 
 ---
 
-## 2. jq (JSON processor)
+## 2. jq and yq
 
 ```bash
-sudo apt install jq -y
+sudo apt install -y jq yq
 ```
 
 **Verify installation:**
 
 ```bash
 jq --version
+yq --version
 ```
 
-Expected output: `jq-1.x` or similar
+Expected output: version numbers for both.
 
 ---
 
@@ -69,12 +70,11 @@ which carries personal data and the model runtime. Install it in the VM; on the 
 section unless a specific host-scoped task needs it.
 
 ```bash
-sudo apt install -y docker.io docker-compose-v2
+sudo apt install -y docker.io
 sudo usermod -aG docker $USER
 ```
 
-`docker-compose-v2` provides `docker compose` as a plugin. The old `docker-compose` package is
-Compose v1, which is Python-based and end-of-life; do not install it.
+Docker Compose is a deployment overlay choice, not part of the generic baseline.
 
 **Important:** Log out and back in (or restart) for group changes to take effect.
 
@@ -82,10 +82,9 @@ Compose v1, which is Python-based and end-of-life; do not install it.
 
 ```bash
 docker --version
-docker compose version
 ```
 
-Expected output: Version numbers for both commands
+Expected output: Docker version.
 
 **Verify Docker is working:**
 
@@ -124,7 +123,7 @@ wezterm --version
 
 ## Complete Verification
 
-Run all verification commands:
+Run on both targets:
 
 ```bash
 echo "=== GitHub CLI ===" && \
@@ -132,21 +131,26 @@ gh --version && \
 gh auth status && \
 echo -e "\n=== jq ===" && \
 jq --version && \
-echo -e "\n=== Docker ===" && \
-docker --version && \
-docker compose version && \
-echo -e "\n=== Docker Test ===" && \
-docker run --rm hello-world | head -3
+echo -e "\n=== yq ===" && \
+yq --version && \
+echo -e "\n=== WezTerm ===" && \
+wezterm --version
 ```
 
-All commands should complete successfully without errors.
+Run on the VM:
+
+```bash
+docker --version
+docker run --rm hello-world | head -3
+```
 
 ## Verification Checklist
 
 - [ ] GitHub CLI installed; authenticate it during host completion or the VM credentials phase
 - [ ] jq installed (`jq --version` shows version)
-- [ ] Docker installed (`docker --version` shows version)
-- [ ] Docker working (`docker run hello-world` succeeds)
+- [ ] yq installed (`yq --version` shows version)
+- [ ] VM only: Docker installed (`docker --version` shows version)
+- [ ] VM only: Docker working (`docker run hello-world` succeeds)
 - [ ] WezTerm installed (`wezterm --version` succeeds)
 
 **Next:** Continue to `03-dev-environment.md`

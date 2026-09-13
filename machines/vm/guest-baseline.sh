@@ -58,14 +58,30 @@ ensure_wezterm() {
     sudo apt-get install -y wezterm
 }
 
+ensure_vscode() {
+    if command -v code >/dev/null 2>&1; then
+        return
+    fi
+    sudo apt-get install -y wget gpg apt-transport-https
+    wget -qO- https://packages.microsoft.com/keys/microsoft.asc |
+        gpg --dearmor --yes |
+        sudo tee /usr/share/keyrings/microsoft.gpg >/dev/null
+    printf '%s\n' \
+        'deb [arch=amd64,arm64,armhf signed-by=/usr/share/keyrings/microsoft.gpg] https://packages.microsoft.com/repos/code stable main' |
+        sudo tee /etc/apt/sources.list.d/vscode.list >/dev/null
+    sudo apt-get update
+    sudo apt-get install -y code
+}
+
 sudo apt-get update
 sudo apt-get install -y \
-    ca-certificates curl git gh gnupg jq locales openssh-server \
+    ca-certificates curl git gh gnupg jq yq locales openssh-server \
     build-essential pkg-config python3 python3-pip python3-venv pipx \
     htop btop tmux ripgrep fd-find docker.io \
     qemu-guest-agent spice-vdagent xclip unattended-upgrades needrestart
 ensure_nodesource
 ensure_wezterm
+ensure_vscode
 
 sudo systemctl enable --now ssh qemu-guest-agent spice-vdagentd
 sudo usermod -aG docker "$USER"
@@ -91,6 +107,9 @@ cd "$repository_dir"
 
 mkdir -p "$HOME/.config/wezterm"
 ln -sfn "$repository_dir/user-home/wezterm/wezterm.lua" "$HOME/.config/wezterm/wezterm.lua"
+mkdir -p "$HOME/.config/Code/User"
+ln -sfn "$repository_dir/user-home/vscode/settings.json" "$HOME/.config/Code/User/settings.json"
+ln -sfn "$repository_dir/user-home/vscode/keybindings.json" "$HOME/.config/Code/User/keybindings.json"
 for dotfile in .bashrc .bash_aliases .profile .gitconfig; do
     [[ -e "$HOME/$dotfile" && ! -L "$HOME/$dotfile" ]] &&
         mv "$HOME/$dotfile" "$HOME/.agent-box-setup-${dotfile#.}" || true

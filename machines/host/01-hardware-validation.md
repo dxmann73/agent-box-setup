@@ -100,7 +100,7 @@ after testing it in the locations where it will be used.
 
 ## 5. Host desktop, power, and session policy
 
-This is a personal host, not the unrestricted agent VM. Keep the screen lock enabled, require it on
+This is a personal host, not the passwordless agent VM. Keep the screen lock enabled, require it on
 resume, and do not enable automatic login. Start with a 10-minute automatic lock timeout; change
 that only as a deliberate personal security decision.
 

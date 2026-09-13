@@ -2,7 +2,8 @@
 
 Install Claude Code, Codex, Cursor CLI, and Pi on both host and VM. The host completion gate
 authenticates all four. The VM baseline installs and configures all four without authentication;
-guest logins are a later explicit credential phase.
+guest logins are a later explicit credential phase. Host and VM agents use the repo-managed YOLO
+settings.
 
 ## Order
 
@@ -92,6 +93,7 @@ cd ~/projects/agent-box-setup
 ## Checklist
 
 - [ ] Claude Code, Codex, Cursor CLI, and Pi are installed on both targets
+- [ ] repo-managed YOLO settings are applied on both targets
 - [ ] host agents are authenticated for the host completion gate
 - [ ] guest agents are authenticated only after `clean-guest`, when explicitly wanted
 - [ ] global instructions are linked for Claude Code, Codex, and Pi

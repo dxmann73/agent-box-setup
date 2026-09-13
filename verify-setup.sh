@@ -66,9 +66,10 @@ check 'WezTerm configuration is repository source' cmp -s "$repo_dir/user-home/w
 check 'unattended upgrades enabled' grep -q '^APT::Periodic::Unattended-Upgrade "1"' /etc/apt/apt.conf.d/20auto-upgrades
 
 printf '\n=== Bootstrap: toolchain and agents ===\n'
-for binary in git curl jq rg node npm pnpm tsc wezterm claude codex agent pi; do
+for binary in git curl jq yq rg node npm pnpm tsc wezterm claude codex agent pi; do
     command_check "$binary available" "$binary"
 done
+check 'Node.js 24 active' bash -c "node --version | grep -Eq '^v24[.]'"
 check 'npm prefix is user writable' test -w "$(npm config get prefix 2>/dev/null || printf /nonexistent)"
 for path in "$HOME/AGENTS.md" "$HOME/CLAUDE.md" "$HOME/.agents" \
     "$HOME/.codex/config.toml" "$HOME/.codex/hooks.json" \
@@ -116,6 +117,9 @@ if [[ "$target" == vm ]]; then
     command_check 'BB launcher available' bb-app
     check 'BB listens only locally' curl --fail --silent --max-time 5 http://127.0.0.1:38886/
     check 'Playwright Chromium can capture a page' npx --yes playwright@latest screenshot https://example.com /tmp/agent-box-playwright-check.png
+    check 'VS Code installed' code --version
+    check 'VS Code settings present' test -L "$HOME/.config/Code/User/settings.json"
+    check 'VS Code keybindings present' test -L "$HOME/.config/Code/User/keybindings.json"
 else
     check 'host does not have agent NOPASSWD policy' test ! -e /etc/sudoers.d/agent-nopasswd
     check 'libvirt system URI usable' virsh -c qemu:///system list
@@ -129,6 +133,7 @@ if profile_at_least operational; then
         check 'Codex host credential state exists' test -f "$HOME/.codex/auth.json"
         check 'Cursor CLI configuration exists after login' test -f "$HOME/.cursor/cli-config.json"
         check 'Pi host credential state exists' test -f "$HOME/.pi/agent/auth.json"
+        check 'Firecrawl authenticated on host' bash -c 'firecrawl --status 2>/dev/null | grep -qi authenticated'
         check 'VS Code installed' code --version
         check 'VS Code settings present' test -f "$HOME/.config/Code/User/settings.json"
         check 'VS Code keybindings present' test -f "$HOME/.config/Code/User/keybindings.json"

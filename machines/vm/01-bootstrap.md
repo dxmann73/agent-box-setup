@@ -36,16 +36,15 @@ The sudoers file must contain exactly this policy, substituting the guest user n
 YOUR_USER_NAME ALL=(ALL) NOPASSWD: ALL
 ```
 
-Do not add a matching rule on the personal host. The VM is the unrestricted agent boundary; the host
-remains supervised.
+Do not add a matching rule on the personal host. Host sudo stays password-protected.
 
 ## 2. Verify the remote boundary
 
 From the host, verify key authentication and non-interactive guest sudo before proceeding:
 
 ```bash
-ssh VM_NAME hostname
-ssh VM_NAME 'sudo -n true && echo guest-sudo-ready'
+ssh "$AGENT_BOX_VM_HOSTNAME" hostname
+ssh "$AGENT_BOX_VM_HOSTNAME" 'sudo -n true && echo guest-sudo-ready'
 ```
 
 If hostname resolution is not ready yet, use the guest's libvirt address from
@@ -69,7 +68,9 @@ guest desktop defaults.
 
 ```bash
 cd ~/projects/agent-box-setup
-ssh VM_NAME 'bash -s' < machines/vm/guest-baseline.sh
+ssh "$AGENT_BOX_VM_HOSTNAME" \
+  "AGENT_BOX_VM_HOSTNAME='$AGENT_BOX_VM_HOSTNAME' bash -s" \
+  < machines/vm/guest-baseline.sh
 ```
 
 The script refuses to run outside a virtualized guest, with the wrong hostname, or without guest
@@ -82,7 +83,7 @@ or configure host shares/network exposure. Those are later, explicit phases.
 ## 4. Verify and snapshot
 
 ```bash
-ssh -t VM_NAME \
+ssh -t "$AGENT_BOX_VM_HOSTNAME" \
   'cd ~/projects/agent-box-setup && ./verify-setup.sh --vm --bootstrap'
 ```
 

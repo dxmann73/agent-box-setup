@@ -53,12 +53,14 @@ reference.
 
 1. Sign in: `Ctrl-Shift-P` > "Settings Sync: Turn On", authenticate with the GitHub account. Sync
    covers settings, keybindings, extensions, snippets, UI state and profiles.
-2. On a machine where sync is not available, copy the two files into place instead:
+2. On a machine where sync is not available, link the repository files into place instead:
 
    ```bash
    mkdir -p ~/.config/Code/User
-   cp ~/projects/agent-box-setup/user-home/vscode/settings.json    ~/.config/Code/User/
-   cp ~/projects/agent-box-setup/user-home/vscode/keybindings.json ~/.config/Code/User/
+   ln -sfn ~/projects/agent-box-setup/user-home/vscode/settings.json \
+     ~/.config/Code/User/settings.json
+   ln -sfn ~/projects/agent-box-setup/user-home/vscode/keybindings.json \
+     ~/.config/Code/User/keybindings.json
    ```
 
 **Verify:**
@@ -69,11 +71,10 @@ code --list-extensions | head
 
 ### Custom keybindings
 
-| Key                | Command                                            |
-| ------------------ | -------------------------------------------------- |
-| `ctrl+[Semicolon]` | Toggle terminal                                    |
-| `Ctrl-Alt-L`       | Format document                                    |
-| `Ctrl-Shift-T`     | Java: go to test (replaces "reopen closed editor") |
+| Key                | Command         |
+| ------------------ | --------------- |
+| `ctrl+[Semicolon]` | Toggle terminal |
+| `Ctrl-Alt-L`       | Format document |
 
 VS Code has no `ctrl+ö` key name, so the ö key is bound as `ctrl+[Semicolon]`.
 
@@ -134,46 +135,9 @@ private-key paths belong in that client's setup repository, not here.
 
 ---
 
-## 4. Java extensions
+## 4. Dave Overlay Extensions
 
-For Java/Quarkus projects:
-
-```bash
-code --install-extension vscjava.vscode-java-pack \
-     --install-extension redhat.vscode-quarkus \
-     --install-extension vmware.vscode-boot-dev-pack
-```
-
-`vscjava.vscode-java-pack` pulls in `redhat.java`, Maven, Gradle, debugger, test runner and project
-explorer. `vmware.vscode-boot-dev-pack` is the Spring Boot set.
-
-### Java settings
-
-Add to user or workspace settings — the `java.diagnostic.filter` entry
-[silences warnings from generated sources](https://stackoverflow.com/questions/57215534/java-ignore-warnings-on-directory-package-level/79781667#79781667):
-
-```json
-{
-  "java.maven.downloadSources": true,
-  "java.diagnostic.filter": ["**/target/generated-sources/**/*"],
-  "java.completion.importOrder": ["*", "java", "javax"],
-  "java.compile.nullAnalysis.mode": "automatic"
-}
-```
-
-### IntelliJ code style
-
-For reference only, not part of this setup. Where a project has to match an IntelliJ formatting
-profile, export it from IntelliJ as XML and point VS Code at that file:
-
-```json
-{
-  "java.format.settings.url": "file:///home/dave/MHB-IntelliJ-Codestyle.xml",
-  "java.format.settings.profile": "IntelliJ IDEA"
-}
-```
-
----
+Java/Quarkus editor setup belongs to the Dave box setup.
 
 ## Complete Verification
 
@@ -188,10 +152,10 @@ echo "Extensions installed: $(code --list-extensions | wc -l)"
 
 - [ ] VS Code installed: `code --version` shows a version
 - [ ] `code` command works from the terminal
-- [ ] Settings Sync turned on, or `settings.json` / `keybindings.json` copied into place
+- [ ] Settings Sync turned on, or `settings.json` / `keybindings.json` linked
 - [ ] `Ctrl-Alt-L` formats the document
 - [ ] `Ctrl-ö` toggles the terminal
 - [ ] Editor-wide extensions installed
-- [ ] Java extensions installed, if applicable
+- [ ] Dave overlay extensions installed, if applicable
 
-**Next:** Continue to `06-optional.md` or `07-imaging-tools.md`
+**Next:** Continue to `05-bb.md`

@@ -13,7 +13,7 @@ where this repo is edited. Agent work on personal projects still belongs in the 
 ```bash
 sudo apt install -y \
   git curl wget build-essential pkg-config \
-  python3 python3-pip python3-venv pipx jq htop btop tmux \
+  python3 python3-pip python3-venv pipx jq yq htop btop tmux \
   ripgrep fd-find
 ```
 
@@ -30,7 +30,6 @@ mkdir -p ~/projects
 | languages/runtimes           | [`../common/03-dev-environment.md`](../common/03-dev-environment.md)   |
 | coding agents, skills, hooks | [`../../agents/`](../../agents/README.md)                              |
 | editor                       | [`../common/04-ide+tooling.md`](../common/04-ide+tooling.md)           |
-| imaging                      | [`../common/07-imaging-tools.md`](../common/07-imaging-tools.md)       |
 | automatic updates            | [`../common/08-auto-updates.md`](../common/08-auto-updates.md)         |
 | optional                     | [`../common/06-optional.md`](../common/06-optional.md)                 |
 
@@ -90,10 +89,10 @@ manages its bundled server and host daemon, so the host does not need a separate
 in `~/.bb/`, separate from projects in `~/projects`. Remote clients may reach this host origin over
 Tailscale; this box's URL lives in `infra/tailscale/`.
 
-The host server is the shared control plane. Keep host agent permissions supervised and enroll the
-VM as its unrestricted execution machine using [the VM BB guide](../vm/04-bb.md). Remote desktop and
-Android clients connect to that host origin and can then select the host or VM for execution. The
-VM's standalone interface has independent history and is only a temporary fallback.
+The host server is the shared control plane. Host and VM agents use YOLO settings. Enroll the VM as
+an execution machine using [the VM BB guide](../vm/04-bb.md). Remote desktop and Android clients
+connect to that host origin and can then select the host or VM for execution. The VM's standalone
+interface has independent history and is only a temporary fallback.
 
 Applies in the VM and not here:
 
@@ -107,13 +106,13 @@ physical host:
 
 - the shared desktop/session policy is configured;
 - Claude Code, Codex, Cursor CLI, and Pi are installed and authenticated;
+- Firecrawl is installed and authenticated;
 - VS Code settings and keyboard shortcuts are installed and checked;
 - the BB desktop AppImage opens normally;
 - the host verification command below has been reviewed and any required failures have been
   resolved.
 
-Keep normal host-agent permissions supervised throughout this work. The VM is the unrestricted
-agent-execution boundary.
+Host and VM agent CLIs use YOLO settings. Do not make host sudo passwordless.
 
 ## 5. Verification
 
@@ -129,14 +128,13 @@ cd ~/projects/agent-box-setup
       ([`../common/08-auto-updates.md`](../common/08-auto-updates.md))
 - [ ] dotfiles symlinked, secrets file populated
 - [ ] `gh auth status` shows logged in
-- [ ] Node LTS + pnpm (Corepack shim) + tsc/ts-node
-- [ ] markdownlint and firecrawl CLIs available, firecrawl authenticated
-- [ ] SDKMAN with auto-env, Java 21, Quarkus, Maven
+- [ ] Node 24 + pnpm (Corepack shim) + tsc/ts-node
+- [ ] `jq` and `yq` available
+- [ ] markdownlint and Firecrawl CLIs available; Firecrawl authenticated
 - [ ] VS Code installed and configured
 - [ ] BB desktop AppImage installed in a writable user directory and opens normally
 - [ ] Claude Code, Codex, Cursor CLI, and Pi installed and authenticated
 - [ ] skills symlinked into all four agents
-- [ ] imaging tools installed
 - [ ] `./verify-setup.sh --host --operational` passes
 
 Next: [05-hypervisor.md](05-hypervisor.md)

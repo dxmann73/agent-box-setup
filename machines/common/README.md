@@ -11,16 +11,16 @@ Claude Code, Codex, Cursor CLI, Pi, their configuration, the global rule file, a
 live outside this directory in [`../../agents/`](../../agents/README.md); the toolchain guides above
 slot them in after the core tools and Node.js prerequisites.
 
-| File                                             | Description                                                      |
-| ------------------------------------------------ | ---------------------------------------------------------------- |
-| [00-home-environment.md](00-home-environment.md) | Shell config, dotfiles                                           |
-| [02-core-tools.md](02-core-tools.md)             | GitHub CLI, jq, Docker (VM only)                                 |
-| [03-dev-environment.md](03-dev-environment.md)   | Node.js (apt), pnpm, Firecrawl CLI, SDKMAN, Java, Quarkus, Maven |
-| [04-ide+tooling.md](04-ide+tooling.md)           | VS Code, settings sync, keybindings, Java extensions             |
-| [05-bb.md](05-bb.md)                             | BB desktop AppImage and VM server runtime                        |
-| [06-optional.md](06-optional.md)                 | Helm, Minikube, kubectl                                          |
-| [07-imaging-tools.md](07-imaging-tools.md)       | ImageMagick, sharp, resvg, ffmpeg, Inkscape                      |
-| [08-auto-updates.md](08-auto-updates.md)         | Unattended apt upgrades, needrestart, weekly tooling update      |
+| File                                             | Description                                                 |
+| ------------------------------------------------ | ----------------------------------------------------------- |
+| [00-home-environment.md](00-home-environment.md) | Shell config, dotfiles                                      |
+| [02-core-tools.md](02-core-tools.md)             | GitHub CLI, jq/yq, Docker (VM only)                         |
+| [03-dev-environment.md](03-dev-environment.md)   | Node.js 24, pnpm, TypeScript, Markdownlint, Firecrawl CLI   |
+| [04-ide+tooling.md](04-ide+tooling.md)           | VS Code, settings sync, keybindings                         |
+| [05-bb.md](05-bb.md)                             | BB desktop AppImage and VM server runtime                   |
+| [06-optional.md](06-optional.md)                 | Helm, Minikube, kubectl                                     |
+| [07-imaging-tools.md](07-imaging-tools.md)       | Dave overlay imaging tools                                  |
+| [08-auto-updates.md](08-auto-updates.md)         | Unattended apt upgrades, needrestart, weekly tooling update |
 
 ## Deltas
 

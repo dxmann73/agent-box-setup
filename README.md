@@ -69,8 +69,8 @@ grep -rilE 'bitlocker|fast startup|dual.?boot|windows partition|shrink windows|n
 ## Host-first bootstrap
 
 For a fresh Kubuntu host, start with [START-HERE.md](START-HERE.md) in the preinstalled browser. It
-installs and authenticates one supervised local agent; that agent clones this repository and
-completes the physical host before any VM work begins.
+installs and authenticates one local agent; that agent clones this repository and completes the
+physical host before any VM work begins.
 
 Host completion is a checkpoint, not merely a prerequisite install. Before the agent creates the VM,
 it must finish the host baseline, desktop/session settings, all four agent CLIs, VS Code settings
@@ -121,37 +121,35 @@ Then the separate [local-llm](https://github.com/dxmann73/local-llm) repo for th
 
 1. [common/00-home-environment.md](machines/common/00-home-environment.md) - Shell configuration and
    dotfiles
-2. [common/02-core-tools.md](machines/common/02-core-tools.md) - GitHub CLI, jq, Docker
-3. [common/03-dev-environment.md](machines/common/03-dev-environment.md) - Node.js and development
-   tools
+2. [common/02-core-tools.md](machines/common/02-core-tools.md) - GitHub CLI, jq/yq, Docker
+3. [common/03-dev-environment.md](machines/common/03-dev-environment.md) - Node.js 24 and
+   development tools
 4. [agents/](agents/README.md) - Claude Code, Codex, Cursor CLI, Pi, global rules, skills, Caveman
 5. [common/04-ide+tooling.md](machines/common/04-ide+tooling.md) - VS Code
 6. [common/05-bb.md](machines/common/05-bb.md) - BB desktop AppImage and VM server runtime
 7. [common/06-optional.md](machines/common/06-optional.md) - Helm, cloud CLIs, extras
-8. [common/07-imaging-tools.md](machines/common/07-imaging-tools.md) - ImageMagick, sharp, resvg,
-   optional image tools
-9. [common/08-auto-updates.md](machines/common/08-auto-updates.md) - Unattended apt upgrades,
+8. [common/08-auto-updates.md](machines/common/08-auto-updates.md) - Unattended apt upgrades,
    needrestart, weekly tooling update timer
 
 ## Host workspace inventory
 
 Project inventory is a deployment concern. This repository does not track a project list. The
 dave.box overlay requires a private inventory checkout as part of host completion. The VM receives
-separate project clones later for unrestricted agent execution.
+separate project clones later for agent execution.
 
 ## Config files
 
 `user-home/` holds dotfiles that are **symlinked** (not copied) into `~`:
 
-| File              | Purpose                                                                 |
-| ----------------- | ----------------------------------------------------------------------- |
-| `.bashrc`         | Bash shell configuration                                                |
-| `.bash_aliases`   | Custom command aliases                                                  |
-| `.bash_secrets`   | API tokens/secrets, created from the `.bash_secrets.CHANGE-ME` template |
-| `.profile`        | User profile settings                                                   |
-| `.gitconfig`      | Git configuration (`[include]` of `~/.gitconfig.local` for identity)    |
-| `ua.sh`           | Update-all script: fetch/pull all git repos under a root dir            |
-| `update-tools.sh` | Weekly tooling update: npm globals, agent CLIs, SDKMAN                  |
+| File              | Purpose                                                                   |
+| ----------------- | ------------------------------------------------------------------------- |
+| `.bashrc`         | Bash shell configuration                                                  |
+| `.bash_aliases`   | Custom command aliases                                                    |
+| `.bash_secrets`   | API tokens/secrets, created from the `.bash_secrets.CHANGE-ME` template   |
+| `.profile`        | User profile settings                                                     |
+| `.gitconfig`      | Git configuration (`[include]` of `~/.gitconfig.local` for identity)      |
+| `ua.sh`           | Update-all script: fetch/pull all git repos under a root dir              |
+| `update-tools.sh` | Weekly tooling update: npm globals, agent CLIs, overlay SDKMAN if present |
 
 The repo root `.markdownlint.json` is symlinked to `~/projects/.markdownlint.json`. Full symlink
 commands: [machines/common/00-home-environment.md](machines/common/00-home-environment.md).
@@ -161,11 +159,12 @@ commands: [machines/common/00-home-environment.md](machines/common/00-home-envir
 The repo name is historical. Not everything in here is machine setup — two different scopes live
 side by side:
 
-- **Box-level** — installed once per machine: shell/dotfiles, agent binaries, Docker, Node, Java,
-  IDE. These are the `machines/` guides plus `agents/` and `user-home/`.
+- **Box-level** — installed once per machine: shell/dotfiles, agent binaries, Docker, Node, IDE.
+  These are the `machines/` guides plus `agents/` and `user-home/`.
 - **Project-level** — belongs to whatever you are working on, and is only wired globally because
-  there is no better home yet: skills in `agents/skills/` and language toolchains that only some
-  projects need (SDKMAN, Quarkus, pnpm).
+  there is no better home yet: skills in `agents/skills/` and project-specific toolchains.
+  Dave-specific SDKMAN, Java, Quarkus, Maven, Docker Compose, and imaging tools live in the Dave
+  overlay.
 
 Project-level items are installed globally in the agent skill directories as an interim measure so
 every project gets them. The intended end state is packaging them per project type — see the
@@ -192,8 +191,8 @@ Profiles are intentionally cumulative:
 
 - `bootstrap` checks credential-free deterministic readiness and is the acceptance gate for a new
   guest before taking `clean-guest`.
-- `operational` adds the required host-completion gate: host GitHub access, VS Code settings and
-  keybindings, and BB AppImage. It never requires guest provider credentials.
+- `operational` adds the required host-completion gate: host GitHub access, Firecrawl auth, VS Code
+  settings and keybindings, and BB AppImage. It never requires guest provider credentials.
 - `full` checks only credentials and integrations that were explicitly enabled on that target.
 
 The checks cover:
@@ -203,11 +202,9 @@ The checks cover:
   `ua.sh`, `update-tools.sh`, `.markdownlint.json`)
 - Git `user.name` / `user.email` are set (values come from `~/.gitconfig.local`)
 - Agent configuration and symlinks
-- Claude Code statusline and Caveman hooks/plugins
 - Skills setup, including a `SKILL.md` frontmatter audit (`./audit-skills.sh`)
-- Core tools (GitHub CLI, Docker, jq)
-- Development environment (Node.js, Java, etc.)
-- Imaging tools (ImageMagick, sharp, resvg)
+- Core tools (GitHub CLI, Docker, jq, yq)
+- Development environment (Node.js 24, pnpm, TypeScript, Markdownlint, Firecrawl CLI)
 - Target-specific items (Playwright in the VM, GPU stack on the host)
 - Optional tools (if installed)
 

@@ -35,9 +35,6 @@
     "bash": { "path": "/bin/bash", "icon": "terminal-bash" },
   },
 
-  // --- Java ---
-  "java.maven.downloadSources": true,
-  "redhat.telemetry.enabled": true,
+  // --- Startup ---
   "workbench.startupEditor": "none",
-  "quarkus.tools.alwaysShowWelcomePage": false,
 }

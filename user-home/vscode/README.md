@@ -1,23 +1,22 @@
 # VS Code configuration
 
 Reference copy of the VS Code user configuration. **Settings Sync (GitHub account) is the live
-mechanism** — these files exist to bootstrap a fresh box, document intent, and let
-`verify-setup.sh` detect drift.
+mechanism** — these files exist to bootstrap a fresh box, document intent, and let `verify-setup.sh`
+detect drift.
 
 ## Files
 
-| File | Purpose |
-|------|---------|
-| `settings.json` | User settings |
+| File               | Purpose              |
+| ------------------ | -------------------- |
+| `settings.json`    | User settings        |
 | `keybindings.json` | Keybinding overrides |
 
 ## Bootstrap a new machine
 
-1. Install VS Code, sign in, enable **Settings Sync** (Settings, Backup and Sync Settings).
-   Sync covers settings, keybindings, extensions, snippets, UI state and profiles.
-2. If sync is unavailable, copy `settings.json` and `keybindings.json` into the user config
-   directory manually:
-   `~/.config/Code/User/`
+1. Install VS Code, sign in, enable **Settings Sync** (Settings, Backup and Sync Settings). Sync
+   covers settings, keybindings, extensions, snippets, UI state and profiles.
+2. If sync is unavailable, link `settings.json` and `keybindings.json` into the user config
+   directory: `~/.config/Code/User/`
 3. Open each project once so workspace extension recommendations install.
 
 Use the native Linux user-configuration path documented below.
@@ -29,8 +28,8 @@ Use the native Linux user-configuration path documented below.
 
 ## Extensions
 
-Linters, formatters and framework support are declared per repository in
-`.vscode/extensions.json`, so opening a project prompts for exactly what it needs.
+Linters, formatters and framework support are declared per repository in `.vscode/extensions.json`,
+so opening a project prompts for exactly what it needs.
 
 Editor-wide, owned by no single project, installed by `04-ide+tooling.md`:
 
@@ -38,8 +37,6 @@ Editor-wide, owned by no single project, installed by `04-ide+tooling.md`:
 - `moshfeu.compare-folders`
 - `tomchen.paste-markdown-link`
 - `dxmann73.scm-tidy`: own extension, not on the Marketplace. Installed from its
-  [GitHub release](https://github.com/dxmann73/scm-tidy/releases) `.vsix`; see
-  `04-ide+tooling.md`.
+  [GitHub release](https://github.com/dxmann73/scm-tidy/releases) `.vsix`; see `04-ide+tooling.md`.
 
-Java (`redhat.java`, `vscjava.*`) stays an on-demand install — none of the current projects is a
-Java project.
+Java settings and extensions live in the Dave box setup.

@@ -67,6 +67,7 @@ Unattended-Upgrade::Allowed-Origins {
 Unattended-Upgrade::Origins-Pattern {
     "origin=Google LLC,codename=stable";
     "origin=. nodistro";
+    "origin=packages.microsoft.com";
     "origin=wez_apt_fury_io";
 };
 
@@ -97,6 +98,7 @@ Add these patterns after their repositories are installed:
 ```text
 # both host and VM
 "origin=. nodistro";                                      // NodeSource
+"origin=packages.microsoft.com";                          // VS Code
 "origin=wez_apt_fury_io";                                 // WezTerm
 
 # host only
@@ -227,8 +229,8 @@ ln -sf ~/projects/agent-box-setup/user-home/update-tools.sh ~/update-tools.sh
 ~/update-tools.sh
 ```
 
-It updates global npm packages, Claude Code, Codex, Cursor CLI, Pi, and SDKMAN candidates. It does
-not update BB.
+It updates global npm packages, Claude Code, Codex, Cursor CLI, Pi, and SDKMAN candidates when an
+overlay installed SDKMAN. It does not update BB.
 
 Run it weekly:
 
@@ -268,7 +270,7 @@ journalctl --user -u update-tools.service -n 50
 ## 4. Release upgrades stay manual
 
 An LTS-to-LTS upgrade changes the AMDGPU/Mesa stack, the libvirt version the VM depends on, and the
-Node/Java versions under every project. It is not something to wake up to:
+Node release under every project. It is not something to wake up to:
 
 ```bash
 sudo sed -i 's/^Prompt=.*/Prompt=lts/' /etc/update-manager/release-upgrades

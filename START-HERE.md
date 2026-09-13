@@ -1,11 +1,9 @@
 # Start here: fresh Kubuntu host
 
-Use this page only on a new physical Kubuntu host. It starts one supervised local agent; that agent
-then clones this repository and completes the host before it creates an agent VM.
+Use this page only on a new physical Kubuntu host. It starts one local agent; that agent clones this
+repository and completes the host before creating an agent VM.
 
-You need a Claude subscription that includes Claude Code. Do not enable Claude's bypass-permissions
-mode during this bootstrap: keep its normal prompts and enter your password only when you have
-reviewed the command.
+You need a Claude subscription that includes Claude Code.
 
 The dave.box overlay prompt, `box.env`, locale, and project inventory live in
 [dave.box-setup/agent-box/README.md](https://github.com/dxmann73/dave.box-setup/blob/main/agent-box/README.md).
@@ -31,15 +29,15 @@ Complete its sign-in prompts in the browser, then return to the terminal.
 Paste the following into Claude Code:
 
 > Set up this physical Kubuntu host using <https://github.com/dxmann73/agent-box-setup>. First clone
-> it into `~/projects/agent-box-setup`. Work on the **host** path only and keep all permissions
-> supervised. Follow numbered host and shared guides in order; ask me before optional tools,
-> personal applications, or choices that affect my data or security; diagnose failures before
-> continuing. Complete the host baseline, desktop/session settings, all four agent CLIs, VS Code,
-> and the BB desktop application. Run the host operational verification. Do **not** create or change
-> a VM until that host completion checkpoint succeeds.
+> it into `~/projects/agent-box-setup`. Work on the **host** path only. Follow numbered host and
+> shared guides in order; ask me before optional tools, personal applications, or choices that
+> affect my data or security; diagnose failures before continuing. Complete the host baseline,
+> desktop/session settings, all four agent CLIs, Firecrawl auth, VS Code, and the BB desktop
+> application. Run the host operational verification. Do **not** create or change a VM until that
+> host completion checkpoint succeeds.
 
 The agent will ask for normal `sudo` confirmation where host setup requires it. Do not make host
-sudo passwordless and do not grant unrestricted host-agent permissions.
+sudo passwordless.
 
 ## What happens next
 

@@ -70,9 +70,10 @@ Skip the `pool-define-as` command when the `default` pool already exists.
 
 ## 3. Create the VM
 
-Source the deployment overlay's `box.env` so `VM_NAME`, vCPU, RAM, and disk counts are set. Naming
-advice: `<host>-agent-vm` as both libvirt domain and guest hostname. The overlay supplies the live
-line; this section keeps flag _reasons_.
+Source the deployment overlay's `box.env` so `AGENT_BOX_VM_HOSTNAME`, `AGENT_BOX_VM_VCPUS`,
+`AGENT_BOX_VM_MEMORY_MIB`, and `AGENT_BOX_VM_DISK_GIB` are set. Naming advice: `<host>-agent-vm` as
+both libvirt domain and guest hostname. The overlay supplies the live values; this section keeps
+flag notes.
 
 The guest uses SeaBIOS, shared `memfd` memory, a libvirt NAT network, a local-only SPICE console,
 and virtio video without 3D acceleration. The 2D console permits live snapshots.
@@ -91,38 +92,40 @@ sudo mv kubuntu-26.04.1-desktop-amd64.iso /var/lib/libvirt/boot/
 ```
 
 ```bash
-virt-install --name VM_NAME --osinfo detect=on,name=ubuntu24.04 \
-  --vcpus VCPUS --cpu host-passthrough \
-  --memory MEMORY_MIB --memballoon model=virtio,freePageReporting=on \
+virt-install --name "$AGENT_BOX_VM_HOSTNAME" --osinfo detect=on,name=ubuntu24.04 \
+  --vcpus "$AGENT_BOX_VM_VCPUS" --cpu host-passthrough \
+  --memory "$AGENT_BOX_VM_MEMORY_MIB" --memballoon model=virtio,freePageReporting=on \
   --memorybacking source.type=memfd,access.mode=shared \
-  --disk size=DISK_GIB,format=qcow2,bus=virtio,discard=unmap \
+  --disk size="$AGENT_BOX_VM_DISK_GIB",format=qcow2,bus=virtio,discard=unmap \
   --network network=default,model=virtio \
   --graphics spice,listen=none \
   --video virtio,accel3d=no \
   --cdrom /var/lib/libvirt/boot/kubuntu-26.04.1-desktop-amd64.iso --autostart
 ```
 
-| Flag                                                         | Reason                                                                                                    |
-| ------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------- |
-| `--osinfo detect=on,name=ubuntu24.04`                        | Detects the ISO and uses the available Ubuntu profile when the current release is not yet in `osinfo-db`. |
-| `--vcpus VCPUS --cpu host-passthrough`                       | Counts come from the overlay. Leave host threads for QEMU, share daemons, and the local model runtime.    |
-| `--memory MEMORY_MIB`                                        | Counts come from the overlay. Size for desktop, browser, and concurrent agent sessions.                   |
-| `--memorybacking source.type=memfd,access.mode=shared`       | Required by virtiofs shares.                                                                              |
-| `--disk size=DISK_GIB,format=qcow2,bus=virtio,discard=unmap` | Sparse qcow2; `discard=unmap` propagates guest TRIM. Size comes from the overlay.                         |
-| `--network network=default,model=virtio`                     | Provides Internet NAT and the host model endpoint on one interface.                                       |
-| no `--boot`                                                  | Uses QEMU's built-in SeaBIOS, which supports the live-snapshot flow.                                      |
-| `--graphics spice,listen=none`                               | Provides a host-only graphical console.                                                                   |
-| `--video virtio,accel3d=no`                                  | Keeps the console 2D so QEMU can save live snapshots with memory state.                                   |
-| `--autostart`                                                | Starts the VM with the host.                                                                              |
+| Flag                                                    | Reason                                                                                                    |
+| ------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| `--osinfo detect=on,name=ubuntu24.04`                   | Detects the ISO and uses the available Ubuntu profile when the current release is not yet in `osinfo-db`. |
+| `--vcpus ... --cpu host-passthrough`                    | Counts come from the overlay. Leave host threads for QEMU, share daemons, and the local model runtime.    |
+| `--memory ...`                                          | Counts come from the overlay. Size for desktop, browser, and concurrent agent sessions.                   |
+| `--memorybacking source.type=memfd,access.mode=shared`  | Required by virtiofs shares.                                                                              |
+| `--disk size=...,format=qcow2,bus=virtio,discard=unmap` | Sparse qcow2; `discard=unmap` propagates guest TRIM. Size comes from the overlay.                         |
+| `--network network=default,model=virtio`                | Provides Internet NAT and the host model endpoint on one interface.                                       |
+| no `--boot`                                             | Uses QEMU's built-in SeaBIOS, which supports the live-snapshot flow.                                      |
+| `--graphics spice,listen=none`                          | Provides a host-only graphical console.                                                                   |
+| `--video virtio,accel3d=no`                             | Keeps the console 2D so QEMU can save live snapshots with memory state.                                   |
+| `--autostart`                                           | Starts the VM with the host.                                                                              |
 
-Install Kubuntu with a minimal desktop, one virtual-disk partition, and hostname `VM_NAME`. Then
-perform only the console SSH/key/guest-sudo bootstrap in
+Install Kubuntu with a minimal desktop, one virtual-disk partition, and hostname
+`$AGENT_BOX_VM_HOSTNAME`. Then perform only the console SSH/key/guest-sudo bootstrap in
 [`../vm/01-bootstrap.md`](../vm/01-bootstrap.md). From the host, stream the credential-free baseline
 into that SSH session:
 
 ```bash
 cd ~/projects/agent-box-setup
-ssh VM_NAME 'bash -s' < machines/vm/guest-baseline.sh
+ssh "$AGENT_BOX_VM_HOSTNAME" \
+  "AGENT_BOX_VM_HOSTNAME='$AGENT_BOX_VM_HOSTNAME' bash -s" \
+  < machines/vm/guest-baseline.sh
 ```
 
 ## 4. Day-to-day

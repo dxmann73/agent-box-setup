@@ -6,17 +6,17 @@
 # real auth id into git, so this script merges only the keys the repository declares and
 # leaves everything else untouched.
 #
-# Permission-bearing keys (permissions, approvalMode, sandbox) are opt-in via --permissions.
-# The host keeps supervised agent permissions; the unrestricted profile belongs in the VM.
+# Permission-bearing keys (permissions, approvalMode, sandbox) are applied by default.
 set -euo pipefail
 
 repo_config="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/cli-config.json"
 live_config="${CURSOR_CLI_CONFIG:-$HOME/.cursor/cli-config.json}"
 
-apply_permissions=false
+apply_permissions=true
 for arg in "$@"; do
     case "$arg" in
         --permissions) apply_permissions=true ;;
+        --no-permissions) apply_permissions=false ;;
         *) echo "unknown argument: $arg" >&2; exit 2 ;;
     esac
 done
@@ -35,7 +35,7 @@ jq -e . "$live_config" > /dev/null || { echo "live config is not valid JSON: $li
 
 # Replaced wholesale, not deep-merged: dropping a key from the template must also drop it
 # from the live file, otherwise stale settings such as display.mode=zen survive forever.
-managed_keys=(display editor network attribution)
+managed_keys=(display editor network attribution statusLine)
 if [ "$apply_permissions" = true ]; then
     managed_keys+=(permissions approvalMode sandbox)
 fi
@@ -60,5 +60,5 @@ trap - EXIT
 echo "applied [${managed_keys[*]}] from $repo_config"
 echo "previous config saved to $backup"
 if [ "$apply_permissions" = false ]; then
-    echo "permissions/approvalMode/sandbox left as-is (pass --permissions to apply them)"
+    echo "permissions/approvalMode/sandbox left as-is (--no-permissions)"
 fi

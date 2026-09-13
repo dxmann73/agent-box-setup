@@ -11,13 +11,9 @@ the keys exist, not their values.
 
 ```bash
 mkdir -p ~/.agent-box-setup-backup
-mv ~/.bashrc ~/.profile ~/.gitconfig ~/.agent-box-setup-backup/
-```
-
-Move `.bash_aliases` too when it already exists:
-
-```bash
-test ! -e ~/.bash_aliases || mv ~/.bash_aliases ~/.agent-box-setup-backup/
+for file in ~/.bashrc ~/.profile ~/.gitconfig ~/.bash_aliases; do
+  test ! -e "$file" || mv "$file" ~/.agent-box-setup-backup/
+done
 ```
 
 ## 2. Create symlinks

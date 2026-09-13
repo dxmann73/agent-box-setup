@@ -187,8 +187,10 @@ If `clean-guest` is still present:
 ```bash
 virsh snapshot-revert VM_NAME clean-guest
 cd ~/projects/agent-box-setup
-ssh VM_NAME 'bash -s' < machines/vm/guest-baseline.sh
-ssh -t VM_NAME \
+ssh "$AGENT_BOX_VM_HOSTNAME" \
+  "AGENT_BOX_VM_HOSTNAME='$AGENT_BOX_VM_HOSTNAME' bash -s" \
+  < machines/vm/guest-baseline.sh
+ssh -t "$AGENT_BOX_VM_HOSTNAME" \
   'cd ~/projects/agent-box-setup && ./verify-setup.sh --vm --bootstrap'
 ```
 

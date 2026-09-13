@@ -31,9 +31,9 @@ Close Cursor, then apply the repository template:
 agents/cursor/apply-cli-config.sh
 ```
 
-It initializes an empty local config on a fresh credential-free guest, then manages `display`,
-`editor`, `network`, and `attribution` while preserving login data once present.
-Use `--permissions` only for the unrestricted VM profile.
+It initializes an empty local config on a fresh credential-free guest, then manages the repository
+settings while preserving login data once present. Use `--no-permissions` only for a deliberate
+temporary exception.
 
 ## Status line
 
@@ -43,11 +43,11 @@ Use `--permissions` only for the unrestricted VM profile.
 Cursor Grok 4.6 Medium · ctx 42.4% of 200k · plan 33% ($6.51/$20) · resets Sep 28
 ```
 
-Context data comes from Cursor's status line payload. Plan usage does not exist in that
-payload, so the script calls the internal `aiserver.v1.DashboardService/GetCurrentPeriodUsage`
-RPC (the call behind `/usage`) with the token from `~/.config/cursor/auth.json`. The result is
-cached in `~/.cache/cursor-statusline/` and refreshed in the background every 60 seconds. The
-API is undocumented; when it fails, the line shows `plan n/a` and the reason is written to
+Context data comes from Cursor's status line payload. Plan usage does not exist in that payload, so
+the script calls the internal `aiserver.v1.DashboardService/GetCurrentPeriodUsage` RPC (the call
+behind `/usage`) with the token from `~/.config/cursor/auth.json`. The result is cached in
+`~/.cache/cursor-statusline/` and refreshed in the background every 60 seconds. The API is
+undocumented; when it fails, the line shows `plan n/a` and the reason is written to
 `~/.cache/cursor-statusline/usage.error`.
 
 Verify:
