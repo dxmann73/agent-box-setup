@@ -20,10 +20,10 @@ Kubuntu host                                  ← machines/host/
 ├── personal apps and data (Chrome, Dropbox, Steam, documents)
 ├── local model runtime on the GPU            ← local-llm repo (separate)
 ├── development toolchain + coding agents     ← machines/common/ + agents/
-├── BB desktop AppImage                       ← machines/host/04-dev-and-agents.md
+├── BB desktop AppImage + shared server       ← machines/host/04-dev-and-agents.md
 └── KVM/libvirt                               ← machines/host/05-hypervisor.md
     └── agent VM (Kubuntu desktop)            ← machines/vm/
-        ├── BB server + many agents
+        ├── enrolled BB execution machine + many agents
         ├── development toolchain + agents    ← machines/common/ + agents/
         ├── projects agents work on
         └── Playwright / headless Chromium
@@ -31,8 +31,9 @@ Kubuntu host                                  ← machines/host/
 
 The host and the VM share the same development toolchain and the same agent configuration; they
 differ in what is _only_ on one side — GPU and personal data on the host, agent-worked projects in
-the VM. BB runs independently on both machines: the desktop AppImage on the host and a persistent
-headless server in the VM. The host is not enrolled as an execution machine of the VM server.
+the VM. The host AppImage server is the shared BB control plane and lists both the host and the
+enrolled VM as execution machines. A persistent headless VM server may remain temporarily as an
+independent fallback; clients use the host server when both machines must be selectable.
 
 ## Directories
 
@@ -105,10 +106,10 @@ Then the separate [local-llm](https://github.com/dxmann73/local-llm) repo for th
 2. [vm/02-dev-and-agents.md](machines/vm/02-dev-and-agents.md) - Baseline toolchain and deliberate
    optional guest tooling
 3. [vm/03-networking.md](machines/vm/03-networking.md) - NAT, host model endpoint, Tailscale
-4. [vm/04-bb.md](machines/vm/04-bb.md) - BB server, headless in the VM
+4. [vm/04-bb.md](machines/vm/04-bb.md) - BB fallback server and shared-host enrollment
 5. [vm/05-credentials.md](machines/vm/05-credentials.md) - VM-only credentials
 6. [vm/06-shared-folders.md](machines/vm/06-shared-folders.md) - Narrow host directory shares
-7. [vm/07-snapshots.md](machines/vm/07-snapshots.md) - Persistence, snapshots, rebuild test
+7. [vm/07-snapshots.md](machines/vm/07-snapshots.md) - Persistence, snapshots, live backup
 
 ### Shared install detail
 

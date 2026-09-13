@@ -88,13 +88,14 @@ Open **Cursor Agent** from the launcher and pin it to the task manager if wanted
 Use the official [BB](https://getbb.app/) Linux AppImage on the host. It provides the desktop UI and
 manages its bundled server and host daemon, so the host does not need a separate browser tab or
 `bb.service`. Follow the host section of [the shared BB guide](../common/05-bb.md). BB state stays
-in `~/.bb/`, separate from projects in `~/projects`.
-Tailscale Serve on this machine proxies the AppImage listener; see `infra/tailscale/`.
+in `~/.bb/`, separate from projects in `~/projects`. Tailscale Serve on this machine proxies the
+AppImage listener; see `infra/tailscale/`.
 
-The host instance is for host-scoped work only. Keep host agent permissions supervised. Once the VM
-exists, open its independent BB interface through an SSH tunnel or Tailscale Serve as documented in
-[the VM BB guide](../vm/04-bb.md). Do not enroll this personal host as an execution machine
-controlled by the VM.
+The host server is the shared control plane. Keep host agent permissions supervised and enroll the
+VM as its unrestricted execution machine using [the VM BB guide](../vm/04-bb.md). Remote desktop and
+Android clients connect to the host's private Tailscale Serve origin and can then select the host or
+VM for execution. The VM's standalone interface has independent history and is only a temporary
+fallback.
 
 Applies in the VM and not here:
 

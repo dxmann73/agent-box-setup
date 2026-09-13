@@ -115,9 +115,9 @@ code --install-extension editorconfig.editorconfig \
      --install-extension tomchen.paste-markdown-link
 ```
 
-[SCM Tidy](https://github.com/dxmann73/scm-tidy) collapses clean repositories in the Source
-Control view. It is not on the Marketplace; install the `.vsix` from its latest GitHub release.
-Rerun to update:
+[SCM Tidy](https://github.com/dxmann73/scm-tidy) collapses clean repositories in the Source Control
+view. It is not on the Marketplace; install the `.vsix` from its latest GitHub release. Rerun to
+update:
 
 ```bash
 gh release download --repo dxmann73/scm-tidy --pattern '*.vsix' --dir /tmp --clobber

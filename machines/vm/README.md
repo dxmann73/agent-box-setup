@@ -14,28 +14,29 @@ throughout ([`../host/05-hypervisor.md`](../host/05-hypervisor.md) §5).
 | File                                         | Scope                                                                 |
 | -------------------------------------------- | --------------------------------------------------------------------- |
 | [01-bootstrap.md](01-bootstrap.md)           | Console SSH/sudo bootstrap, then host-driven credential-free baseline |
-| [02-dev-and-agents.md](02-dev-and-agents.md) | Baseline result, toolchain maintenance, and deliberate extras          |
+| [02-dev-and-agents.md](02-dev-and-agents.md) | Baseline result, toolchain maintenance, and deliberate extras         |
 | [03-networking.md](03-networking.md)         | NAT, host model endpoint, BB reachability, Tailscale                  |
-| [04-bb.md](04-bb.md)                         | BB server, headless in the VM                                         |
+| [04-bb.md](04-bb.md)                         | BB fallback server and host-server enrollment                         |
 | [05-credentials.md](05-credentials.md)       | VM-only SSH/GitHub/API credentials                                    |
 | [06-shared-folders.md](06-shared-folders.md) | Narrow host directory shares, e.g. Dropbox tax folder                 |
 | [07-snapshots.md](07-snapshots.md)           | Persistence, snapshots, backup, rebuild test                          |
 
-The numbered files describe phases, not an instruction to authenticate early.
-Complete 01 and its `--bootstrap` verification first, then take `clean-guest`.
-Credentials, external exposure, and shares remain later opt-in phases.
+The numbered files describe phases, not an instruction to authenticate early. Complete 01 and its
+`--bootstrap` verification first, then take `clean-guest`. Credentials, external exposure, and
+shares remain later opt-in phases.
 
 ## What lives here and what does not
 
-|                                                 | VM  | Host               |
-| ----------------------------------------------- | --- | ------------------ |
-| coding agents, skills, hooks                    | ✅  | ✅                 |
-| agent-worked projects                           | ✅  | ❌                 |
-| BB server                                       | ✅  | ✅ own environment |
-| Playwright + headless Chromium                  | ✅  | ❌                 |
-| full dev toolchain                              | ✅  | ✅                 |
-| personal apps, Dropbox, personal Chrome profile | ❌  | ✅                 |
-| GPU and local model runtime                     | ❌  | ✅                 |
+|                                                 | VM  | Host             |
+| ----------------------------------------------- | --- | ---------------- |
+| coding agents, skills, hooks                    | ✅  | ✅               |
+| agent-worked projects                           | ✅  | ❌               |
+| BB execution machine                            | ✅  | ✅ shared server |
+| temporary standalone BB fallback                | ✅  | ❌               |
+| Playwright + headless Chromium                  | ✅  | ❌               |
+| full dev toolchain                              | ✅  | ✅               |
+| personal apps, Dropbox, personal Chrome profile | ❌  | ✅               |
+| GPU and local model runtime                     | ❌  | ✅               |
 
 ## Boundary rules
 

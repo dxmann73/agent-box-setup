@@ -25,6 +25,8 @@ reported at completion. Log out and back in after it adds the user to `libvirt` 
 ├── Documents/
 ├── Downloads/
 ├── Dropbox/
+├── backup/
+│   └── vm/              # same-host live VM disk backups (07-snapshots.md)
 ├── projects/            # host-side repos only (this repo, local-llm work)
 ├── models/
 │   ├── 8b/
@@ -68,7 +70,7 @@ recovery material
 
 Large GGUF model downloads can usually be excluded because they are reproducible downloads.
 
-VM disk images are backed up separately as snapshots, see
+VM disk images are backed up separately as live copies under `~/backup/vm/` plus live snapshots, see
 [`../vm/07-snapshots.md`](../vm/07-snapshots.md).
 
 ## 4. Flatpak and Snap

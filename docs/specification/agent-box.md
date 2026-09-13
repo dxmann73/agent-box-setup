@@ -25,17 +25,16 @@
 
 4. **BB**
 
-   - Run one headless BB server inside the VM; retain the guest desktop for console inspection.
-   - Run many concurrent agents under that instance.
-   - Also run ordinary terminals/processes there: dev servers, test watchers, build processes, etc.
-   - Connect to this instance from the Ubuntu host.
-   - Also connect to it from laptops/phones/other machines over the network.
-   - Use the Linux desktop AppImage on the host for host-scoped work that cannot move into the VM.
-     It owns an independent local BB server and daemon while the app is open.
-   - Connect the desktop app to the VM's independent server for VM work; do not enroll the personal
-     host as a VM execution machine.
-   - Use the npm package and a user service for the headless VM server. Remote access uses an SSH
-     tunnel, private Tailscale Serve or BB Connect.
+   - Use the Linux desktop AppImage server on the host as the shared BB control plane.
+   - Enroll the VM into that server as a separate execution machine. Keep unrestricted execution
+     inside the VM; host execution remains supervised.
+   - Run many concurrent agents plus ordinary terminals/processes in the VM: dev servers, test
+     watchers, build processes, etc.
+   - Connect desktop and phone clients to the host server over private Tailscale Serve HTTPS. Do not
+     use Funnel or expose the raw BB port.
+   - A headless BB server inside the VM may remain as a temporary standalone fallback with
+     independent history. It is not the shared client entry point and can be disabled after the
+     central path is proven.
 
 5. **Coding agents**
 
@@ -96,7 +95,7 @@
     - VM needs outbound Internet access for LLM APIs, GitHub, package managers, browser testing,
       etc.
     - VM needs controlled connectivity to the host's local-model endpoint.
-    - The VM's BB server needs to be reachable from authorized external machines.
+    - The host's shared BB server needs to be reachable from authorized external machines.
     - Reach it from outside the LAN over Tailscale; the tailnet is specified and operated in the
       `infra` project, not here.
 

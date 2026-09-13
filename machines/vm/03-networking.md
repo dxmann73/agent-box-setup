@@ -69,21 +69,23 @@ Record the resulting base URL in `~/.bash_secrets` so agents pick it up from one
 
 ## 3. BB reachability
 
-The BB server in the VM must be reachable from the host, from other machines on the network, and
-from outside (specification §4, §11). Tailscale is the route for the last one.
+The host AppImage server is the shared control plane and must be reachable from authorized remote
+clients (specification §4, §11). The VM connects to it as an enrolled execution machine. Tailscale
+carries both paths.
 
 The tailnet itself is not set up here. It is personal network infrastructure (any service, not only
-BB) and lives in the `infra` project in `tailscale/README.md`. Bring
-the VM node up there first; this file only assumes the guest is a tailnet node:
+BB) and lives in the `infra` project in `tailscale/README.md`. Bring the VM node up there first;
+this file only assumes the guest is a tailnet node:
 
 ```bash
 tailscale status
 tailscale ip -4
 ```
 
-Keep BB on loopback and publish it over Tailscale Serve HTTPS, or use an SSH tunnel from the host —
-see [04-bb.md](04-bb.md) §3. The raw BB API is unauthenticated; do not bind it directly to the LAN
-or tailnet.
+Keep every BB listener on loopback and publish the shared host server over Tailscale Serve HTTPS.
+The VM's standalone fallback may also use Serve, or an SSH tunnel from the host; see
+[04-bb.md](04-bb.md). The raw BB API is unauthenticated; do not bind it directly to the LAN or
+tailnet.
 
 The libvirt NAT network hides the guest from the LAN: other machines in the flat cannot reach
 `192.168.122.x` at all, only the host can. That is deliberate. Every other client — laptop, phone —
@@ -92,8 +94,8 @@ macvtap interface is needed. Add one only if a device that cannot join the tailn
 the VM.
 
 - [ ] VM appears in `tailscale status` on the host and on the phone
-- [ ] BB reachable from the host through an SSH tunnel over `virbr0`
-- [ ] BB reachable from the laptop over the tailnet, on the LAN and from outside it
+- [ ] VM enrolled and connected to the host BB server over the tailnet
+- [ ] shared host BB origin reachable from authorized tailnet clients on and outside the LAN
 - [ ] guest not reachable from other LAN machines except through the tailnet
 - [ ] no BB port exposed directly to the public Internet
 

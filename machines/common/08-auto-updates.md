@@ -7,10 +7,9 @@ deliberate (BB, and release upgrades).
 Run this early — right after the first `apt full-upgrade` on a new machine — so everything installed
 afterwards is covered from the start.
 
-On the VM, complete the short console bootstrap in
-[`../vm/01-bootstrap.md`](../vm/01-bootstrap.md) first: the host-driven baseline needs guest
-passwordless sudo. Configure the detailed update policy after baseline review; it is not a reason to
-authenticate a guest provider early.
+On the VM, complete the short console bootstrap in [`../vm/01-bootstrap.md`](../vm/01-bootstrap.md)
+first: the host-driven baseline needs guest passwordless sudo. Configure the detailed update policy
+after baseline review; it is not a reason to authenticate a guest provider early.
 
 ## What updates itself, and what does not
 
@@ -174,7 +173,7 @@ EOF
 ```
 
 In the VM, reboot after taking a snapshot rather than on a whim
-([`../vm/07-snapshots.md`](../vm/07-snapshots.md) §2).
+([`../vm/07-snapshots.md`](../vm/07-snapshots.md) §1).
 
 ## 2. Snap and Flatpak
 
