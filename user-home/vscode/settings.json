@@ -39,4 +39,5 @@
   "java.maven.downloadSources": true,
   "redhat.telemetry.enabled": true,
   "workbench.startupEditor": "none",
+  "quarkus.tools.alwaysShowWelcomePage": false,
 }
