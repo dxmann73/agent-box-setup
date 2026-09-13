@@ -53,7 +53,7 @@ machines/host/backup-agent-vm.sh --label current-credentialed
 becomes the human suffix (`current-credentialed`). Each run creates a non-overwriting set at
 `~/backup/vm/<guest>/<UTC-timestamp>-<label>/`, with a UTC stamp of `YYYY-MM-DDTHHMMSSZ` so lexical
 order is chronological. Example:
-`~/backup/vm/xmg-evo-agent-vm/2026-09-13T104643Z-current-credentialed/`.
+`~/backup/vm/xmg-evo-agent-vm/2026-09-13T115618Z-current-credentialed/`.
 
 The set contains:
 
@@ -66,9 +66,9 @@ The script makes `~/backup/vm` accessible to `libvirt-qemu`, because that QEMU u
 live-backup target. It requires `sudo` for that access setup and for the disk-image validation. Set
 `SUDO_ASKPASS` to a GUI askpass (for example `/usr/bin/ksshaskpass`) when the script has no TTY.
 Before starting the job, it requires free space for the complete virtual disk plus a 1 GiB reserve.
-The first measured credentialed set was about 18 GiB; `qemu-img measure` matched that file, not the
-200 GiB virtual size. Do not shrink from `du` output. Shrinking `vda` is a separate offline
-operation and must not include virtiofs-hosted Dropbox data. A separate `clean-guest` disk backup is
+The first measured credentialed set was about 14 GiB; `qemu-img measure` matched that file, not the
+virtual size. Do not shrink from `du` output. The guest `vda` is 80 GiB
+([`../host/05-hypervisor.md`](../host/05-hypervisor.md)). A separate `clean-guest` disk backup is
 optional and is not required once the credentialed set is proven.
 
 This is deliberately a same-host recovery copy. It protects against a failed guest update or an
@@ -171,30 +171,21 @@ ssh -t xmg-evo-agent-vm \
 ```
 
 If you already deleted `clean-guest`, use a disposable overlay of a retained clean disk backup
-(section 2.1) or a new guest / rebuild clone (section 4). Park the credentialed VM first; do not run
-the baseline against the live credentialed domain.
+(section 2.1) or a new guest (section 4). Park the credentialed VM first; do not run the baseline
+against the live credentialed domain.
 
 ## 4. Rebuild test
 
-Create a clean baseline after the VM is verified. This clone input is separate from the live backup
-in section 2:
+A rebuild is a **new** guest, not a clone of the live disk. Recover the current VM with overlay
+restore (section 2.1). Do not `virt-clone` the primary: that copies credentials and the Tailscale
+node key, needs a shutdown, and is not a clean baseline.
 
-```bash
-virsh shutdown xmg-evo-agent-vm
-sudo cp --sparse=always /var/lib/libvirt/images/xmg-evo-agent-vm.qcow2 \
-  /var/lib/libvirt/images/baseline-clean-guest.qcow2
-virsh dumpxml xmg-evo-agent-vm > ~/vms/xmg-evo-agent-vm.xml
-virsh start xmg-evo-agent-vm
-```
+To prove the setup can be recreated, leave the credentialed VM running and follow
+[`../host/05-hypervisor.md`](../host/05-hypervisor.md) plus [`01-bootstrap.md`](01-bootstrap.md) for
+a second domain with a distinct name, hostname, and MAC. Stream `guest-baseline.sh`, then
+`./verify-setup.sh --vm --bootstrap`. Take `clean-guest` on that new guest before any credentials.
 
-Test the setup on a clone:
-
-```bash
-virt-clone --original xmg-evo-agent-vm --name xmg-evo-agent-vm-rebuild \
-  --file /var/lib/libvirt/images/xmg-evo-agent-vm-rebuild.qcow2
-```
-
-Give the clone a unique hostname before connecting it to the tailnet. Remove it after the test:
+Remove the rebuild guest when finished:
 
 ```bash
 virsh undefine xmg-evo-agent-vm-rebuild --remove-all-storage

@@ -70,7 +70,7 @@ Skip the `pool-define-as` command when the `default` pool already exists.
 
 ## 3. Create the VM
 
-The VM is `xmg-evo-agent-vm`, with 20 vCPUs, 32 GiB RAM, a 200 GiB sparse qcow2 disk, SeaBIOS,
+The VM is `xmg-evo-agent-vm`, with 20 vCPUs, 32 GiB RAM, an 80 GiB sparse qcow2 disk, SeaBIOS,
 shared `memfd` memory, a libvirt NAT network, a local-only SPICE console, and virtio video without
 3D acceleration. The 2D console permits live snapshots.
 
@@ -92,30 +92,30 @@ virt-install --name xmg-evo-agent-vm --osinfo detect=on,name=ubuntu24.04 \
   --vcpus 20 --cpu host-passthrough \
   --memory 32768 --memballoon model=virtio,freePageReporting=on \
   --memorybacking source.type=memfd,access.mode=shared \
-  --disk size=200,format=qcow2,bus=virtio,discard=unmap \
+  --disk size=80,format=qcow2,bus=virtio,discard=unmap \
   --network network=default,model=virtio \
   --graphics spice,listen=none \
   --video virtio,accel3d=no \
   --cdrom /var/lib/libvirt/boot/kubuntu-26.04.1-desktop-amd64.iso --autostart
 ```
 
-| Flag                                                    | Reason                                                                                                    |
-| ------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
-| `--osinfo detect=on,name=ubuntu24.04`                   | Detects the ISO and uses the available Ubuntu profile when the current release is not yet in `osinfo-db`. |
-| `--vcpus 20 --cpu host-passthrough`                     | Reserves four of the host's 24 threads for the host, QEMU, virtiofsd, and the local model runtime.        |
-| `--memory 32768`                                        | Supports the desktop, browser, and concurrent agent sessions.                                             |
-| `--memorybacking source.type=memfd,access.mode=shared`  | Required by virtiofs shares.                                                                              |
-| `--disk size=200,format=qcow2,bus=virtio,discard=unmap` | Creates a sparse 200 GiB disk and propagates guest TRIM.                                                  |
-| `--network network=default,model=virtio`                | Provides Internet NAT and the host model endpoint on one interface.                                       |
-| no `--boot`                                             | Uses QEMU's built-in SeaBIOS, which supports the live-snapshot flow.                                      |
-| `--graphics spice,listen=none`                          | Provides a host-only graphical console.                                                                   |
-| `--video virtio,accel3d=no`                             | Keeps the console 2D so QEMU can save live snapshots with memory state.                                   |
-| `--autostart`                                           | Starts the VM with the host.                                                                              |
+| Flag                                                   | Reason                                                                                                    |
+| ------------------------------------------------------ | --------------------------------------------------------------------------------------------------------- |
+| `--osinfo detect=on,name=ubuntu24.04`                  | Detects the ISO and uses the available Ubuntu profile when the current release is not yet in `osinfo-db`. |
+| `--vcpus 20 --cpu host-passthrough`                    | Reserves four of the host's 24 threads for the host, QEMU, virtiofsd, and the local model runtime.        |
+| `--memory 32768`                                       | Supports the desktop, browser, and concurrent agent sessions.                                             |
+| `--memorybacking source.type=memfd,access.mode=shared` | Required by virtiofs shares.                                                                              |
+| `--disk size=80,format=qcow2,bus=virtio,discard=unmap` | Creates a sparse 80 GiB disk and propagates guest TRIM.                                                   |
+| `--network network=default,model=virtio`               | Provides Internet NAT and the host model endpoint on one interface.                                       |
+| no `--boot`                                            | Uses QEMU's built-in SeaBIOS, which supports the live-snapshot flow.                                      |
+| `--graphics spice,listen=none`                         | Provides a host-only graphical console.                                                                   |
+| `--video virtio,accel3d=no`                            | Keeps the console 2D so QEMU can save live snapshots with memory state.                                   |
+| `--autostart`                                          | Starts the VM with the host.                                                                              |
 
 Install Kubuntu with a minimal desktop, one virtual-disk partition, and hostname `xmg-evo-agent-vm`.
 Then perform only the console SSH/key/guest-sudo bootstrap in
-[`../vm/01-bootstrap.md`](../vm/01-bootstrap.md). From the host, stream the
-credential-free baseline into that SSH session:
+[`../vm/01-bootstrap.md`](../vm/01-bootstrap.md). From the host, stream the credential-free baseline
+into that SSH session:
 
 ```bash
 cd ~/projects/agent-box-setup
