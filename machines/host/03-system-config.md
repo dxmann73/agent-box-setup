@@ -5,10 +5,11 @@ Filesystem layout, backups, packaging, SSH and firewall on the host.
 ## 1. Host baseline
 
 Run the idempotent privileged baseline from the checked-out repository before the detailed host
-configuration. It installs only deterministic host prerequisites, configures locale defaults,
-firewall and automatic-update timers, and prepares libvirt; it never creates a VM or changes
-host-agent permissions. The shared auto-update guide owns the third-party APT-origin policy, so the
-baseline does not overwrite a source that has already been verified for this machine.
+configuration. It installs only deterministic host prerequisites, configures firewall and
+automatic-update timers, and prepares libvirt; it never creates a VM or changes host-agent
+permissions. Locale profiles belong in the deployment overlay, not this script. The shared
+auto-update guide owns the third-party APT-origin policy, so the baseline does not overwrite a
+source that has already been verified for this machine.
 
 ```bash
 cd ~/projects/agent-box-setup
@@ -24,21 +25,18 @@ reported at completion. Log out and back in after it adds the user to `libvirt` 
 /home/you/
 ├── Documents/
 ├── Downloads/
-├── Dropbox/
 ├── backup/
 │   └── vm/              # same-host live VM disk backups (07-snapshots.md)
 ├── projects/            # host-side repos only (this repo, local-llm work)
-├── models/
-│   ├── 8b/
-│   ├── 32b/
-│   └── moe/
-├── llm-bench/
 ├── system-info/         # hardware baselines from 01-hardware-validation.md
-└── vms/                 # ISOs, domain XML, virtiofs share XML (not the disks)
+└── vms/                 # ISOs, domain XML, share XML (not the disks)
 ```
 
+Optional on this host: a sync tree (Dropbox or similar) and a model-download tree. Those paths
+belong in the deployment overlay, not here.
+
 ```bash
-mkdir -p ~/models ~/llm-bench ~/system-info ~/vms
+mkdir -p ~/system-info ~/vms ~/backup/vm
 ```
 
 VM **disk images** live in libvirt's stock pool at `/var/lib/libvirt/images`, not under `$HOME`
@@ -51,16 +49,16 @@ repo and the local-model work.
 
 ## 3. Backups
 
-Current host decision (September 10, 2026): defer host backups. Do not configure a backup service or
-destination during this setup. The guidance below is for later.
+Host backups are a deployment decision. Do not assume a service or destination in this generic
+guide. Record the choice in the overlay. The notes below are for when that choice is made.
 
-Configure Linux backups before moving the only copy of important data to Kubuntu.
+Configure Linux backups before moving the only copy of important data onto this host.
 
 Prioritize:
 
 ```text
 ~/Documents
-~/Dropbox               # if not treated as already-replicated
+optional sync tree        # if not treated as already-replicated
 ~/projects
 ~/.ssh
 ~/vms                   # domain XML and share definitions; small, and painful to rebuild
@@ -131,7 +129,7 @@ the resulting line has this form:
 from="CLIENT_TAILSCALE_IPV4",no-agent-forwarding,no-X11-forwarding ssh-ed25519 PUBLIC_KEY COMMENT
 ```
 
-Lived names, IPv4 addresses, `from=` lines, and current sshd/UFW for Dave's machines are in
+Lived names, IPv4 addresses, `from=` lines, and current sshd/UFW live in
 `~/projects/infra/tailscale/ssh.md`. This section is the reusable procedure.
 
 Substitute the measured address and complete public-key line; never install the placeholders. Do not
@@ -201,7 +199,7 @@ Kubuntu 26.04 starts up to three SSH agents in the user session: OpenSSH's `ssh-
 failed with
 
 ```text
-sign_and_send_pubkey: signing failed for RSA "/home/dave/.ssh/id_rsa" from agent: agent refused operation
+sign_and_send_pubkey: signing failed for RSA from agent: agent refused operation
 ```
 
 and SSH fell back to password authentication, with `ksshaskpass` filling the password from KWallet.
@@ -239,7 +237,7 @@ Verify:
 ```bash
 echo "$SSH_AUTH_SOCK"                                     # …/openssh_agent
 ssh-add -l                                                # the key, after the first ssh
-ssh -v xmg-evo-agent-vm true 2>&1 | grep Authenticated    # … using "publickey"
+ssh -v VM_NAME true 2>&1 | grep Authenticated    # … using "publickey"
 ```
 
 ## 6. Firewall

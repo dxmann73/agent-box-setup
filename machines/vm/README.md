@@ -5,9 +5,10 @@ projects they work on and the browsers they drive all live here (specification ย
 
 Prerequisite: the VM exists, created per [`../host/05-hypervisor.md`](../host/05-hypervisor.md).
 
-Naming: the VM is called `xmg-evo-agent-vm`, as both libvirt domain and guest hostname. The pattern
-is `<host>-agent-vm`, so VMs on different hosts stay apart; on another host, replace `xmg-evo`
-throughout ([`../host/05-hypervisor.md`](../host/05-hypervisor.md) ยง5).
+Naming: use `<host>-agent-vm` as both libvirt domain and guest hostname so VMs on different hosts
+stay apart. Live names and sizes belong in the dave.box overlay
+([agent-box/machines/vm/identity.md](https://github.com/dxmann73/dave.box-setup/blob/main/agent-box/machines/vm/identity.md)).
+Commands in this tree use `VM_NAME`.
 
 ## Order
 

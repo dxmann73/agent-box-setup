@@ -14,7 +14,7 @@ Run:
 lspci -k | grep -EA4 'VGA|Display'
 ```
 
-The Radeon 890M should report:
+The active GPU should report:
 
 ```text
 Kernel driver in use: amdgpu
@@ -45,7 +45,7 @@ vulkaninfo --summary | tee ~/system-info/vulkan.txt
 glxinfo -B | tee ~/system-info/mesa.txt
 ```
 
-The Radeon 890M should appear in Vulkan. This matters for both Steam/Proton and `llama.cpp`.
+The vendor GPU should appear in Vulkan. This matters for both Steam/Proton and `llama.cpp`.
 
 Do not add experimental Mesa PPAs initially.
 
@@ -127,9 +127,9 @@ the session policy as complete.
 
 ## 6. Hardware checklist
 
-- [ ] 96 GB RAM detected
-- [ ] Radeon 890M uses AMDGPU
-- [ ] Vulkan detects Radeon 890M
+- [ ] expected RAM detected (see the deployment overlay)
+- [ ] vendor GPU uses AMDGPU
+- [ ] Vulkan detects the vendor GPU
 - [ ] Wi-Fi stable
 - [ ] Bluetooth stable
 - [ ] speakers work

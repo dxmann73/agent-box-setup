@@ -14,7 +14,6 @@ slot them in after the core tools and Node.js prerequisites.
 | File                                             | Description                                                      |
 | ------------------------------------------------ | ---------------------------------------------------------------- |
 | [00-home-environment.md](00-home-environment.md) | Shell config, dotfiles                                           |
-| [01-localization.md](01-localization.md)         | American-English UI with German regional formats                 |
 | [02-core-tools.md](02-core-tools.md)             | GitHub CLI, jq, Docker (VM only)                                 |
 | [03-dev-environment.md](03-dev-environment.md)   | Node.js (apt), pnpm, Firecrawl CLI, SDKMAN, Java, Quarkus, Maven |
 | [04-ide+tooling.md](04-ide+tooling.md)           | VS Code, settings sync, keybindings, Java extensions             |

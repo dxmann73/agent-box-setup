@@ -9,9 +9,8 @@ makes the task possible, read-only unless writing is the point, and detach it af
 
 Never share: `$HOME`, a sync root, `~/.ssh`, browser profiles, `~/Documents` wholesale.
 
-Concrete source paths, mount tags, writable exceptions, and VM names belong in deployment-specific
-setup documentation. The DaveBox recipe is
-[maintained separately](https://github.com/dxmann73/dave.box-setup/blob/main/setup/11-agent-vm-shared-folders.md).
+Concrete source paths, mount tags, writable exceptions, and VM names belong in the dave.box overlay
+[agent-box/machines/vm/06-shared-folders.md](https://github.com/dxmann73/dave.box-setup/blob/main/agent-box/machines/vm/06-shared-folders.md).
 
 Prerequisite: the domain was created with shared memory backing
 (`<memoryBacking><source type='memfd'/><access mode='shared'/>`), see

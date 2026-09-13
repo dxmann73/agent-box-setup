@@ -44,13 +44,13 @@ remains supervised.
 From the host, verify key authentication and non-interactive guest sudo before proceeding:
 
 ```bash
-ssh xmg-evo-agent-vm hostname
-ssh xmg-evo-agent-vm 'sudo -n true && echo guest-sudo-ready'
+ssh VM_NAME hostname
+ssh VM_NAME 'sudo -n true && echo guest-sudo-ready'
 ```
 
 If hostname resolution is not ready yet, use the guest's libvirt address from
-`virsh domifaddr xmg-evo-agent-vm --source lease` instead. Do not use `ssh-copy-id`: it needs a
-guest password and is unnecessary once the key is placed in `authorized_keys`.
+`virsh domifaddr VM_NAME --source lease` instead. Do not use `ssh-copy-id`: it needs a guest
+password and is unnecessary once the key is placed in `authorized_keys`.
 
 Before disabling SSH passwords, test each approved key in a second session through its intended
 path. Follow the key-only SSH configuration and lockout-safe validation sequence in
@@ -64,12 +64,12 @@ Complete the measured guest rules in [03-networking.md](03-networking.md) §4 af
 
 The script is streamed from the host so a fresh guest does not need GitHub authentication or an
 existing repository checkout. It clones the public setup repository itself and then configures
-packages, locales, dotfiles, four agent CLIs without login, Playwright, the BB service, guest
-agents, and guest desktop defaults.
+packages, dotfiles, four agent CLIs without login, Playwright, the BB service, guest agents, and
+guest desktop defaults.
 
 ```bash
 cd ~/projects/agent-box-setup
-ssh xmg-evo-agent-vm 'bash -s' < machines/vm/guest-baseline.sh
+ssh VM_NAME 'bash -s' < machines/vm/guest-baseline.sh
 ```
 
 The script refuses to run outside a virtualized guest, with the wrong hostname, or without guest
@@ -82,7 +82,7 @@ providers, or configure host shares/network exposure. Those are later, explicit 
 ## 4. Verify and snapshot
 
 ```bash
-ssh -t xmg-evo-agent-vm \
+ssh -t VM_NAME \
   'cd ~/projects/agent-box-setup && ./verify-setup.sh --vm --bootstrap'
 ```
 
@@ -92,7 +92,7 @@ deliberately.
 
 ## Checklist
 
-- [ ] guest hostname is `xmg-evo-agent-vm`
+- [ ] guest hostname is `VM_NAME`
 - [ ] host public key works over SSH
 - [ ] approved client public keys work over Tailscale with password fallback disabled
 - [ ] SSH passwords, keyboard-interactive authentication, and root login are disabled

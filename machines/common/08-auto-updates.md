@@ -123,8 +123,8 @@ Three things this file does not cover:
   `apt-config dump | grep Origins-Pattern` for the effective list, not just this file.
 - **Snaps.** snapd refreshes them on its own, so Bitwarden, VS Code and Firefox as snaps need no
   entry here.
-- **AppImages.** Outside apt entirely. VibeTyper uses a weekly reminder for a reviewed manual
-  replacement; its vendor does not document a signed or self-updating Linux channel.
+- **AppImages.** Outside apt entirely. A reviewed manual replacement is the usual channel when the
+  vendor does not document a signed or self-updating Linux updater.
 - **GPU and accelerator stacks.** `repo.radeon.com` and similar carry Mesa/ROCm, which the host's
   model runtime depends on. Automating them means an unattended change to the GPU stack; if you
   include one, re-run [`../host/01-hardware-validation.md`](../host/01-hardware-validation.md) when

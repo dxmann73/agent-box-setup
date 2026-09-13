@@ -6,7 +6,8 @@
 set -Eeuo pipefail
 trap 'printf "ERROR: guest baseline failed at line %s\n" "$LINENO" >&2' ERR
 
-readonly expected_hostname="${AGENT_BOX_VM_HOSTNAME:-xmg-evo-agent-vm}"
+: "${AGENT_BOX_VM_HOSTNAME:?set AGENT_BOX_VM_HOSTNAME (source the deployment overlay box.env)}"
+readonly expected_hostname="$AGENT_BOX_VM_HOSTNAME"
 readonly repository_url="https://github.com/dxmann73/agent-box-setup.git"
 readonly repository_dir="$HOME/projects/agent-box-setup"
 
@@ -30,19 +31,6 @@ sudo -n true || {
 
 export DEBIAN_FRONTEND=noninteractive
 export PATH="$HOME/.npm-global/bin:$HOME/.local/bin:/usr/local/bin:/usr/bin:/bin"
-
-ensure_locale_sources() {
-    sudo sed -i \
-        -e 's/^[[:space:]#]*en_US.UTF-8[[:space:]]\+UTF-8/en_US.UTF-8 UTF-8/' \
-        -e 's/^[[:space:]#]*de_DE.UTF-8[[:space:]]\+UTF-8/de_DE.UTF-8 UTF-8/' \
-        /etc/locale.gen
-    sudo locale-gen en_US.UTF-8 de_DE.UTF-8
-    sudo update-locale \
-        LANG=en_US.UTF-8 LANGUAGE=en_US \
-        LC_ADDRESS=de_DE.UTF-8 LC_MEASUREMENT=de_DE.UTF-8 LC_MONETARY=de_DE.UTF-8 \
-        LC_NAME=de_DE.UTF-8 LC_NUMERIC=de_DE.UTF-8 LC_PAPER=de_DE.UTF-8 \
-        LC_TELEPHONE=de_DE.UTF-8 LC_TIME=de_DE.UTF-8
-}
 
 ensure_nodesource() {
     if node --version 2>/dev/null | grep -Eq '^v2[4-9]\.'; then
@@ -78,7 +66,6 @@ sudo apt-get install -y \
     qemu-guest-agent spice-vdagent xclip unattended-upgrades needrestart
 ensure_nodesource
 ensure_wezterm
-ensure_locale_sources
 
 sudo systemctl enable --now ssh qemu-guest-agent spice-vdagentd
 sudo usermod -aG docker "$USER"
@@ -97,12 +84,11 @@ if [[ ! -d "$repository_dir/.git" ]]; then
 fi
 
 cd "$repository_dir"
-[[ -f user-home/plasma-localerc && -d agents/skills ]] || {
+[[ -d agents/skills && -f user-home/.gitconfig ]] || {
     printf 'Repository at %s is not an agent-box-setup checkout.\n' "$repository_dir" >&2
     exit 1
 }
 
-ln -sfn "$repository_dir/user-home/plasma-localerc" "$HOME/.config/plasma-localerc"
 mkdir -p "$HOME/.config/wezterm"
 ln -sfn "$repository_dir/user-home/wezterm/wezterm.lua" "$HOME/.config/wezterm/wezterm.lua"
 for dotfile in .bashrc .bash_aliases .profile .gitconfig; do

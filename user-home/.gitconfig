@@ -1,6 +1,5 @@
-[user]
-    name = David Mann
-    email = dxmann73@gmail.com
+[include]
+    path = ~/.gitconfig.local
 
 [core]
     autocrlf = input

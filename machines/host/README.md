@@ -7,22 +7,15 @@ local model runtime, the hypervisor, and a development toolchain for host-scoped
 It does **not** carry agent-driven project work. That lives in the VM, see [`../vm/`](../vm/)
 (specification §2, §8).
 
-Target system:
-
-| Part      | Value                                |
-| --------- | ------------------------------------ |
-| Laptop    | XMG EVO 14 (E25)                     |
-| Processor | AMD Ryzen AI 9 HX 370                |
-| GPU       | Radeon 890M                          |
-| Memory    | 96 GB (2 × 48 GB Kingston DDR5-5600) |
-| OS        | Kubuntu 26.04 LTS                    |
+Hardware BOM, expected validation numbers, and the personal app list live in the dave.box overlay:
+[agent-box/](https://github.com/dxmann73/dave.box-setup/blob/main/agent-box/README.md).
 
 ## Order
 
 | File                                                   | Scope                                                                             |
 | ------------------------------------------------------ | --------------------------------------------------------------------------------- |
 | [01-hardware-validation.md](01-hardware-validation.md) | AMDGPU, Vulkan/Mesa, suspend, displays (power/thermal diagnostics in an appendix) |
-| [02-applications.md](02-applications.md)               | Chrome, Bitwarden, Dropbox, VLC, Office, Kdenlive, Steam, dictation               |
+| [02-applications.md](02-applications.md)               | Personal apps stay on the host; overlay has the install list                      |
 | [03-system-config.md](03-system-config.md)             | Filesystem layout, backups, packaging, SSH, firewall                              |
 | [04-dev-and-agents.md](04-dev-and-agents.md)           | Toolchain and agents via [`../common/`](../common/)                               |
 | [05-hypervisor.md](05-hypervisor.md)                   | KVM/libvirt, agent VM creation                                                    |
@@ -41,7 +34,7 @@ Then:
 ```text
 Kubuntu host
 ├── KDE Plasma, stock AMDGPU + Mesa/RADV
-├── personal apps and data (Chrome profile, Dropbox, documents, Steam)
+├── personal apps and data (browser profile, documents, optional sync)
 ├── local model runtime (llama.cpp, GPU-attached)
 ├── host toolchain + coding agents (host-scoped work)
 └── KVM/libvirt (qemu-system-x86, virt-manager)
@@ -66,30 +59,3 @@ taskbar/application-menu workflow.
 - Ubuntu flavors: <https://ubuntu.com/desktop/flavors>
 - Ubuntu releases: <https://releases.ubuntu.com/>
 - KDE Plasma: <https://kde.org/plasma-desktop/>
-
-### Hardware
-
-- XMG support: <https://www.xmg.gg/en/support/>
-
-### Applications
-
-- Chrome: <https://www.google.com/chrome/>
-- Dropbox: <https://www.dropbox.com/install-linux>
-- Bitwarden: <https://bitwarden.com/download/>
-- WhatsApp Web: <https://web.whatsapp.com/>
-- VLC: <https://www.videolan.org/vlc/>
-- Microsoft 365: <https://www.microsoft365.com/>
-- LibreOffice: <https://www.libreoffice.org/>
-- ONLYOFFICE: <https://www.onlyoffice.com/>
-- Kdenlive: <https://kdenlive.org/>
-- DaVinci Resolve: <https://www.blackmagicdesign.com/products/davinciresolve>
-
-### Gaming
-
-- Steam Support: <https://help.steampowered.com/>
-- ProtonDB: <https://www.protondb.com/>
-
-### Local AI
-
-- AMD ROCm: <https://rocm.docs.amd.com/>
-- llama.cpp: <https://github.com/ggml-org/llama.cpp>

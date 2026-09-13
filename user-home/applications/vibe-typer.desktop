@@ -1,9 +1,0 @@
-[Desktop Entry]
-Type=Application
-Name=Vibe Typer
-Comment=AI voice typing that cleans up speech and types into any application
-Exec=vibe-typer-launch.sh
-Icon=vibe-typer
-Terminal=false
-StartupWMClass=Vibe Typer
-Categories=Utility;

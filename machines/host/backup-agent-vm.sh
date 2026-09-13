@@ -2,12 +2,10 @@
 # Create a full, same-host, live disk backup of the agent VM.
 set -Eeuo pipefail
 
-readonly default_domain='xmg-evo-agent-vm'
-readonly default_backup_root="$HOME/backup/vm"
 readonly label_pattern='^[A-Za-z0-9][A-Za-z0-9._-]*$'
 
-domain="$default_domain"
-backup_root="$default_backup_root"
+domain="${AGENT_BOX_VM_HOSTNAME:-}"
+backup_root="${AGENT_BOX_BACKUP_ROOT:-}"
 label=''
 dry_run=false
 
@@ -16,10 +14,12 @@ usage() {
 Usage: backup-agent-vm.sh --label NAME [--domain NAME] [--destination DIRECTORY] [--dry-run]
 
 Creates a timestamped, full live backup with libvirt's push backup API. The
-default tree is ~/backup/vm/<domain>/<UTC-timestamp>-<label>/. This is a
+tree is <destination>/<domain>/<UTC-timestamp>-<label>/. This is a
 same-host recovery copy, not an off-host backup.
 
---domain names the running libvirt guest. --label is the human suffix
+--domain names the running libvirt guest. If omitted, AGENT_BOX_VM_HOSTNAME
+is required. --destination must be absolute; if omitted,
+AGENT_BOX_BACKUP_ROOT is required. --label is the human suffix
 (current-credentialed). Timestamps are UTC YYYY-MM-DDTHHMMSSZ.
 EOF
 }
@@ -75,7 +75,9 @@ getent passwd libvirt-qemu >/dev/null || die 'the libvirt-qemu user is required'
 
 [[ -n "$label" ]] || die '--label is required'
 [[ "$label" =~ $label_pattern ]] || die "invalid --label: $label"
-[[ "$backup_root" = /* ]] || die '--destination must be an absolute path'
+[[ -n "$domain" ]] || die 'set AGENT_BOX_VM_HOSTNAME or pass --domain'
+[[ -n "$backup_root" ]] || die 'set AGENT_BOX_BACKUP_ROOT or pass --destination'
+[[ "$backup_root" = /* ]] || die '--destination / AGENT_BOX_BACKUP_ROOT must be an absolute path'
 [[ "$(virsh domstate "$domain")" == running ]] || die "domain is not running: $domain"
 
 disk_count="$(virsh domblklist "$domain" --details | awk '$1 == "file" && $2 == "disk" { count++ } END { print count + 0 }')"

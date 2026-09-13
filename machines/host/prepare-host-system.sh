@@ -83,21 +83,6 @@ PY
     rm -f -- "$temporary"
 }
 
-ensure_locale_sources() {
-    local temporary
-
-    temporary="$(mktemp)"
-    sed \
-        -e 's/^[[:space:]#]*en_US.UTF-8[[:space:]]\+UTF-8/en_US.UTF-8 UTF-8/' \
-        -e 's/^[[:space:]#]*de_DE.UTF-8[[:space:]]\+UTF-8/de_DE.UTF-8 UTF-8/' \
-        /etc/locale.gen >"$temporary"
-    if ! cmp -s "$temporary" /etc/locale.gen; then
-        backup_file /etc/locale.gen
-        install -m 0644 "$temporary" /etc/locale.gen
-    fi
-    rm -f -- "$temporary"
-}
-
 export DEBIAN_FRONTEND=noninteractive
 readonly -a baseline_packages=(
     ca-certificates curl gnupg locales openssh-client ufw
@@ -108,21 +93,6 @@ readonly -a baseline_packages=(
 
 apt-get update
 apt-get install -y "${baseline_packages[@]}"
-
-ensure_locale_sources
-locale-gen en_US.UTF-8 de_DE.UTF-8
-write_managed_file /etc/default/locale 0644 <<'CONFIG'
-LANG=en_US.UTF-8
-LC_ADDRESS=de_DE.UTF-8
-LC_MEASUREMENT=de_DE.UTF-8
-LC_MONETARY=de_DE.UTF-8
-LC_NAME=de_DE.UTF-8
-LC_NUMERIC=de_DE.UTF-8
-LC_PAPER=de_DE.UTF-8
-LC_TELEPHONE=de_DE.UTF-8
-LC_TIME=de_DE.UTF-8
-LANGUAGE=en_US
-CONFIG
 
 usermod -aG libvirt,kvm "$setup_user"
 systemctl enable --now libvirtd

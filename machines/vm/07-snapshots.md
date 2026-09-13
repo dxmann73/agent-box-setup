@@ -8,12 +8,12 @@ Use live qcow2 snapshots. The VM uses SeaBIOS and virtio video without 3D accele
 save memory state during a snapshot.
 
 ```bash
-virsh snapshot-create-as xmg-evo-agent-vm clean-guest \
+virsh snapshot-create-as VM_NAME clean-guest \
   --description 'base applications, no credentials' --atomic
-virsh snapshot-create-as xmg-evo-agent-vm credentialed \
+virsh snapshot-create-as VM_NAME credentialed \
   --description 'credentialed live state' --atomic
-virsh snapshot-list xmg-evo-agent-vm --tree
-virsh snapshot-current xmg-evo-agent-vm --name
+virsh snapshot-list VM_NAME --tree
+virsh snapshot-current VM_NAME --name
 ```
 
 Take these snapshots:
@@ -32,8 +32,8 @@ snapshot that includes them.
 Delete children first. Never `virsh snapshot-delete --children` or `--metadata` to force removal.
 
 ```bash
-virsh snapshot-delete xmg-evo-agent-vm pre-experiment
-virsh snapshot-delete xmg-evo-agent-vm clean-guest
+virsh snapshot-delete VM_NAME pre-experiment
+virsh snapshot-delete VM_NAME clean-guest
 ```
 
 ## 2. Live backup
@@ -45,15 +45,15 @@ cold-boots, and RAM is not in the image.
 
 ```bash
 cd ~/projects/agent-box-setup
+# AGENT_BOX_VM_HOSTNAME and AGENT_BOX_BACKUP_ROOT must be set (overlay box.env).
 machines/host/backup-agent-vm.sh --dry-run --label current-credentialed
 machines/host/backup-agent-vm.sh --label current-credentialed
 ```
 
-`--domain` names the running libvirt guest (default `xmg-evo-agent-vm`). `--label` is required and
-becomes the human suffix (`current-credentialed`). Each run creates a non-overwriting set at
-`~/backup/vm/<guest>/<UTC-timestamp>-<label>/`, with a UTC stamp of `YYYY-MM-DDTHHMMSSZ` so lexical
-order is chronological. Example:
-`~/backup/vm/xmg-evo-agent-vm/2026-09-13T115618Z-current-credentialed/`.
+`--domain` names the running libvirt guest (`AGENT_BOX_VM_HOSTNAME` or `--domain`). `--label` is
+required and becomes the human suffix (`current-credentialed`). Each run creates a non-overwriting
+set at `<backup-root>/<guest>/<UTC-timestamp>-<label>/`, with a UTC stamp of `YYYY-MM-DDTHHMMSSZ` so
+lexical order is chronological.
 
 The set contains:
 
@@ -62,30 +62,29 @@ The set contains:
 - `backup.xml`, the libvirt backup request; and
 - `SHA256SUMS`, checksums written after `qemu-img check` succeeds.
 
-The script makes `~/backup/vm` accessible to `libvirt-qemu`, because that QEMU user writes the
+The script makes the backup root accessible to `libvirt-qemu`, because that QEMU user writes the
 live-backup target. It requires `sudo` for that access setup and for the disk-image validation. Set
 `SUDO_ASKPASS` to a GUI askpass (for example `/usr/bin/ksshaskpass`) when the script has no TTY.
 Before starting the job, it requires free space for the complete virtual disk plus a 1 GiB reserve.
-The first measured credentialed set was about 14 GiB; `qemu-img measure` matched that file, not the
-virtual size. Do not shrink from `du` output. The guest `vda` is 80 GiB
-([`../host/05-hypervisor.md`](../host/05-hypervisor.md)). A separate `clean-guest` disk backup is
-optional and is not required once the credentialed set is proven.
+`qemu-img measure` matches the backup file, not the virtual size. Do not shrink from `du` output.
+Disk size is the overlay count. A separate `clean-guest` disk backup is optional and is not required
+once the credentialed set is proven.
 
 This is deliberately a same-host recovery copy. It protects against a failed guest update or an
 accidental change to the VM disk, but not host-disk loss, theft, fire, or ransomware. Keep project
-work pushed to its remote. Geld virtiofs mounts are host data: they are not in the backup.
+work pushed to its remote. Host directory shares are host data: they are not in the backup.
 
 ### 2.1 Prove a backup on a disposable overlay
 
 Do not `virsh define` the saved `domain.xml` onto the primary. Boot a **new** domain from a writable
-overlay whose backing file is the backup. Keep the primary running. Do not attach the Geld virtiofs
+overlay whose backing file is the backup. Keep the primary running. Do not attach host directory
 shares to the test domain (two writers to the same share).
 
 ```bash
-BACKUP="$HOME/backup/vm/xmg-evo-agent-vm/REPLACE-WITH-PRINTED-SET"
+BACKUP="$HOME/backup/vm/VM_NAME/REPLACE-WITH-PRINTED-SET"
 OVERLAY="$BACKUP/overlay-test.qcow2"
 TEST_XML="$BACKUP/restore-test.xml"
-TEST_NAME="xmg-evo-agent-vm-restore-test"
+TEST_NAME="VM_NAME-restore-test"
 
 qemu-img create -f qcow2 -F qcow2 -b "$BACKUP/disk-vda.qcow2" "$OVERLAY"
 chmod 0660 "$OVERLAY"
@@ -151,9 +150,8 @@ virsh domif-setlink "$TEST_NAME" REPLACE_WITH_INTERFACE_TARGET up
 
 Get the interface target from `virsh domiflist "$TEST_NAME"`. Wait for a DHCP lease on `default`
 that matches the new MAC, then SSH **that IP** with a new host key. The hardened host-automation key
-still works because this connection originates from the hypervisor bridge. Do not
-`ssh xmg-evo-agent-vm`: libvirt NSS publishes the clone's DHCP hostname and will steal the name from
-the primary.
+still works because this connection originates from the hypervisor bridge. Do not `ssh VM_NAME`:
+libvirt NSS publishes the clone's DHCP hostname and will steal the name from the primary.
 
 Confirm the identity is still masked and give the clone a distinct hostname:
 
@@ -166,9 +164,8 @@ sudo hostnamectl set-hostname restore-test
 Do **not** join Tailscale. The clone has the primary's node identity and would fight it. Stop
 `tailscaled` as soon as SSH is up.
 
-The clone hostname is `restore-test`, so `./verify-setup.sh --vm --bootstrap` fails the hostname
-check on purpose. Treat the other bootstrap checks as the restore proof. Do not run `--full` on the
-clone.
+The clone hostname is `restore-test`, so an overlay hostname check fails on purpose. Treat generic
+`./verify-setup.sh --vm --bootstrap` as the restore proof. Do not run `--full` on the clone.
 
 ```bash
 virsh destroy "$TEST_NAME"
@@ -188,10 +185,10 @@ credentials into that test.
 If `clean-guest` is still present:
 
 ```bash
-virsh snapshot-revert xmg-evo-agent-vm clean-guest
+virsh snapshot-revert VM_NAME clean-guest
 cd ~/projects/agent-box-setup
-ssh xmg-evo-agent-vm 'bash -s' < machines/vm/guest-baseline.sh
-ssh -t xmg-evo-agent-vm \
+ssh VM_NAME 'bash -s' < machines/vm/guest-baseline.sh
+ssh -t VM_NAME \
   'cd ~/projects/agent-box-setup && ./verify-setup.sh --vm --bootstrap'
 ```
 
@@ -213,7 +210,7 @@ a second domain with a distinct name, hostname, and MAC. Stream `guest-baseline.
 Remove the rebuild guest when finished:
 
 ```bash
-virsh undefine xmg-evo-agent-vm-rebuild --remove-all-storage
+virsh undefine VM_NAME-rebuild --remove-all-storage
 ```
 
 ## 5. Checklist

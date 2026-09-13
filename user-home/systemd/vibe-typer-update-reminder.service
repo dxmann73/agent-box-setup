@@ -1,6 +1,0 @@
-[Unit]
-Description=Remind the user to check for a VibeTyper update
-
-[Service]
-Type=oneshot
-ExecStart=%h/.local/bin/vibe-typer-update-reminder.sh

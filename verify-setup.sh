@@ -57,16 +57,10 @@ profile_at_least() {
 
 printf 'Agent Box Setup Verification — %s / %s%s\n\n' "$target" "$profile" "$detected"
 
-printf '=== Bootstrap: system and locale ===\n'
+printf '=== Bootstrap: system ===\n'
 check 'en_US.UTF-8 generated' bash -c "locale -a | grep -Eiq '^en_US\\.(utf-?8)$'"
-check 'de_DE.UTF-8 generated' bash -c "locale -a | grep -Eiq '^de_DE\\.(utf-?8)$'"
-check 'English UI locale configured' grep -qx 'LANG=en_US.UTF-8' /etc/default/locale
-check 'English translation configured' grep -qx 'LANGUAGE=en_US' /etc/default/locale
-for category in LC_ADDRESS LC_MEASUREMENT LC_MONETARY LC_NAME LC_NUMERIC LC_PAPER LC_TELEPHONE LC_TIME; do
-    check "$category is de_DE.UTF-8" grep -qx "$category=de_DE.UTF-8" /etc/default/locale
-done
-symlink_check 'Plasma locale profile linked' "$HOME/.config/plasma-localerc"
-check 'Plasma locale profile is repository source' cmp -s "$repo_dir/user-home/plasma-localerc" "$HOME/.config/plasma-localerc"
+check 'git user.name is set' git config --includes --global --get user.name
+check 'git user.email is set' git config --includes --global --get user.email
 symlink_check 'WezTerm configuration linked' "$HOME/.config/wezterm/wezterm.lua"
 check 'WezTerm configuration is repository source' cmp -s "$repo_dir/user-home/wezterm/wezterm.lua" "$HOME/.config/wezterm/wezterm.lua"
 check 'unattended upgrades enabled' grep -q '^APT::Periodic::Unattended-Upgrade "1"' /etc/apt/apt.conf.d/20auto-upgrades
@@ -103,7 +97,6 @@ check 'skill frontmatter valid' "$repo_dir/audit-skills.sh"
 
 if [[ "$target" == vm ]]; then
     printf '\n=== Bootstrap: VM boundary ===\n'
-    check 'guest hostname is xmg-evo-agent-vm' test "$(hostname)" = xmg-evo-agent-vm
     check 'passwordless guest sudo works' sudo -n true
     check 'sshd active' systemctl is-active --quiet ssh
     check 'sshd configuration valid' sudo sshd -t
@@ -140,7 +133,6 @@ if profile_at_least operational; then
         check 'VS Code settings present' test -f "$HOME/.config/Code/User/settings.json"
         check 'VS Code keybindings present' test -f "$HOME/.config/Code/User/keybindings.json"
         check 'BB desktop AppImage executable' test -x "$HOME/Applications/bb.AppImage"
-        check 'project-manager checkout exists' test -d "$HOME/projects/clackworks.agents/.git"
     else
         skip 'host-only completion gate; run --host --operational on the personal host'
     fi

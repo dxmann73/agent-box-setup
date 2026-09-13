@@ -45,17 +45,25 @@ independent fallback; clients use the host server when both machines must be sel
 | [machines/host/](machines/host/)           | Ubuntu host: hardware, personal apps, system config, hypervisor     | no         |
 | [machines/vm/](machines/vm/)               | Agent VM: bootstrap, agents, BB, networking, credentials, snapshots | no         |
 | [user-home/](user-home/)                   | Dotfiles and scripts symlinked into `~`                             | no         |
-| [machines/migration/](machines/migration/) | One-time Windows → Kubuntu move                                     | **yes**    |
-| [machines/wsl/](machines/wsl/)             | Deltas for the Windows + WSL host variant                           | **yes**    |
 
-Both are deliberately self-contained so they can be deleted once Windows is gone. Keep them that way
-— no Windows, dual-boot or WSL instruction may appear outside them, beyond the touchpoints
-`machines/wsl/README.md` lists:
+Hardware BOM, locale, personal apps, VM sizes, and this-host migration live in
+[dave.box-setup/agent-box/](https://github.com/dxmann73/dave.box-setup/blob/main/agent-box/README.md).
+
+Grep guard (must stay empty except a pointer to that overlay):
 
 ```bash
-# must stay empty
-grep -rilE 'bitlocker|fast startup|dual.?boot|windows partition|shrink windows|ntfs' \
-  machines/host/ machines/vm/ machines/common/
+grep -rilE 'xmg-evo|890M|HX 370|tailb67542|dxmann73@gmail|clackworks\.agents|/Dropbox/Docs/Geld|de_DE|plasma-localerc|VibeTyper|vibe-typer' \
+  machines/host machines/vm machines/common agents user-home START-HERE.md \
+  docs verify-setup.sh \
+  --exclude-dir=skills
+```
+
+Windows/migration leftover grep (must stay empty; no exemptions):
+
+```bash
+grep -rilE 'bitlocker|fast startup|dual.?boot|windows partition|shrink windows|ntfs|WSL|/mnt/c|winget install|DrvFs' \
+  machines/host machines/vm machines/common agents user-home START-HERE.md docs verify-setup.sh \
+  --exclude-dir=skills
 ```
 
 ## Host-first bootstrap
@@ -65,19 +73,17 @@ installs and authenticates one supervised local agent; that agent clones this re
 completes the physical host before any VM work begins.
 
 Host completion is a checkpoint, not merely a prerequisite install. Before the agent creates the VM,
-it must finish the host baseline, locale and desktop settings, all four agent CLIs, VS Code settings
-and shortcuts, the BB desktop application, and the permanent project workspace from the
-project-manager inventory.
+it must finish the host baseline, desktop/session settings, all four agent CLIs, VS Code settings
+and shortcuts, and the BB desktop application. Deployment overlays may add locale and a project
+inventory.
 
 ## Where to start
 
-| Situation                        | Start at                                                                                           |
-| -------------------------------- | -------------------------------------------------------------------------------------------------- |
-| Coming from Windows              | [machines/migration/](machines/migration/)                                                         |
-| Staying on Windows + WSL for now | [machines/wsl/](machines/wsl/)                                                                     |
-| Fresh Kubuntu host               | [START-HERE.md](START-HERE.md)                                                                     |
-| New agent VM                     | [machines/host/05-hypervisor.md](machines/host/05-hypervisor.md) then [machines/vm/](machines/vm/) |
-| Local model work                 | [local-llm](https://github.com/dxmann73/local-llm) (separate repo)                                 |
+| Situation          | Start at                                                                                           |
+| ------------------ | -------------------------------------------------------------------------------------------------- |
+| Fresh Kubuntu host | [START-HERE.md](START-HERE.md)                                                                     |
+| New agent VM       | [machines/host/05-hypervisor.md](machines/host/05-hypervisor.md) then [machines/vm/](machines/vm/) |
+| Local model work   | [local-llm](https://github.com/dxmann73/local-llm) (separate repo)                                 |
 
 ## Setup order
 
@@ -88,8 +94,8 @@ commands.
 
 1. [host/01-hardware-validation.md](machines/host/01-hardware-validation.md) - AMDGPU, Vulkan,
    power, displays
-2. [host/02-applications.md](machines/host/02-applications.md) - Chrome, Bitwarden, Dropbox, Office,
-   Steam
+2. [host/02-applications.md](machines/host/02-applications.md) - personal apps stay on the host;
+   overlay has the install list
 3. [host/03-system-config.md](machines/host/03-system-config.md) - Filesystem, backups, SSH,
    firewall
 4. [host/04-dev-and-agents.md](machines/host/04-dev-and-agents.md) - Toolchain and agents via
@@ -115,31 +121,22 @@ Then the separate [local-llm](https://github.com/dxmann73/local-llm) repo for th
 
 1. [common/00-home-environment.md](machines/common/00-home-environment.md) - Shell configuration and
    dotfiles
-2. [common/01-localization.md](machines/common/01-localization.md) - English UI, German regional
-   formats, Plasma locale profile
-3. [common/02-core-tools.md](machines/common/02-core-tools.md) - GitHub CLI, jq, Docker
-4. [common/03-dev-environment.md](machines/common/03-dev-environment.md) - Node.js and development
+2. [common/02-core-tools.md](machines/common/02-core-tools.md) - GitHub CLI, jq, Docker
+3. [common/03-dev-environment.md](machines/common/03-dev-environment.md) - Node.js and development
    tools
-5. [agents/](agents/README.md) - Claude Code, Codex, Cursor CLI, Pi, global rules, skills, Caveman
-6. [common/04-ide+tooling.md](machines/common/04-ide+tooling.md) - VS Code
-7. [common/05-bb.md](machines/common/05-bb.md) - BB desktop AppImage and VM server runtime
-8. [common/06-optional.md](machines/common/06-optional.md) - Helm, cloud CLIs, extras
-9. [common/07-imaging-tools.md](machines/common/07-imaging-tools.md) - ImageMagick, sharp, resvg,
+4. [agents/](agents/README.md) - Claude Code, Codex, Cursor CLI, Pi, global rules, skills, Caveman
+5. [common/04-ide+tooling.md](machines/common/04-ide+tooling.md) - VS Code
+6. [common/05-bb.md](machines/common/05-bb.md) - BB desktop AppImage and VM server runtime
+7. [common/06-optional.md](machines/common/06-optional.md) - Helm, cloud CLIs, extras
+8. [common/07-imaging-tools.md](machines/common/07-imaging-tools.md) - ImageMagick, sharp, resvg,
    optional image tools
-10. [common/08-auto-updates.md](machines/common/08-auto-updates.md) - Unattended apt upgrades,
-    needrestart, weekly tooling update timer
+9. [common/08-auto-updates.md](machines/common/08-auto-updates.md) - Unattended apt upgrades,
+   needrestart, weekly tooling update timer
 
 ## Host workspace inventory
 
-The **project-manager** agent in [clackworks.agents](https://github.com/dxmann73/clackworks.agents)
-(private) owns the complete project inventory, `projects.code-workspace`, and periodic project
-review. It is part of host completion, before the hypervisor/VM phase.
-
-After GitHub CLI is authenticated with access to private repositories, the host agent clones or
-updates `~/projects/clackworks.agents`, then follows `clackworks.agents/project-manager/README.md`
-to clone or update every listed repository and add it to `~/projects/projects.code-workspace`.
-
-Nothing in this repository tracks the project list; keep it in the inventory there. The VM receives
+Project inventory is a deployment concern. This repository does not track a project list. The
+dave.box overlay requires a private inventory checkout as part of host completion. The VM receives
 separate project clones later for unrestricted agent execution.
 
 ## Config files
@@ -152,11 +149,9 @@ separate project clones later for unrestricted agent execution.
 | `.bash_aliases`   | Custom command aliases                                                  |
 | `.bash_secrets`   | API tokens/secrets, created from the `.bash_secrets.CHANGE-ME` template |
 | `.profile`        | User profile settings                                                   |
-| `.gitconfig`      | Git configuration                                                       |
-| `plasma-localerc` | American-English UI with German regional formats in Plasma              |
+| `.gitconfig`      | Git configuration (`[include]` of `~/.gitconfig.local` for identity)    |
 | `ua.sh`           | Update-all script: fetch/pull all git repos under a root dir            |
 | `update-tools.sh` | Weekly tooling update: npm globals, agent CLIs, SDKMAN                  |
-| VibeTyper helpers | Host AppImage launcher and weekly reviewed-update reminder              |
 
 The repo root `.markdownlint.json` is symlinked to `~/projects/.markdownlint.json`. Full symlink
 commands: [machines/common/00-home-environment.md](machines/common/00-home-environment.md).
@@ -198,16 +193,15 @@ Profiles are intentionally cumulative:
 - `bootstrap` checks credential-free deterministic readiness and is the acceptance gate for a new
   guest before taking `clean-guest`.
 - `operational` adds the required host-completion gate: host GitHub access, VS Code settings and
-  keybindings, BB AppImage, and the permanent project-manager workspace. It never requires guest
-  provider credentials.
+  keybindings, and BB AppImage. It never requires guest provider credentials.
 - `full` checks only credentials and integrations that were explicitly enabled on that target.
 
 The checks cover:
 
 - Claude Code, Codex, Cursor CLI, Pi, and VS Code
 - Home directory symlinks (`.bashrc`, `.bash_aliases`, `.profile`, `.gitconfig`, `.bash_secrets`,
-  `ua.sh`, `update-tools.sh`, `plasma-localerc`, `.markdownlint.json`)
-- Generated locales, system locale categories, and Plasma translation profile
+  `ua.sh`, `update-tools.sh`, `.markdownlint.json`)
+- Git `user.name` / `user.email` are set (values come from `~/.gitconfig.local`)
 - Agent configuration and symlinks
 - Claude Code statusline and Caveman hooks/plugins
 - Skills setup, including a `SKILL.md` frontmatter audit (`./audit-skills.sh`)

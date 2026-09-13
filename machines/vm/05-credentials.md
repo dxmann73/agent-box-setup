@@ -9,7 +9,7 @@ snapshot are complete.
 Authenticate the VM's full GitHub account over HTTPS:
 
 ```bash
-gh auth login      # needs a TTY: ssh -t xmg-evo-agent-vm gh auth login
+gh auth login      # needs a TTY: ssh -t VM_NAME gh auth login
 gh auth status
 gh config get git_protocol     # https
 git config --get credential.https://github.com.helper
@@ -23,8 +23,8 @@ settings and rotate it independently of the host.
 
 ## 2. Agent providers and Firecrawl
 
-Authenticate each provider intentionally in a TTY on the guest. The CLI install and
-configuration were completed by the baseline; these commands create the private state:
+Authenticate each provider intentionally in a TTY on the guest. The CLI install and configuration
+were completed by the baseline; these commands create the private state:
 
 ```bash
 claude
@@ -34,9 +34,8 @@ pi                 # then /login
 firecrawl login --browser
 ```
 
-Keep `~/.pi/agent/auth.json` Pi-managed and untracked. Do not symlink it from the
-repository. Use the corresponding provider account pages to revoke guest access
-independently from the host.
+Keep `~/.pi/agent/auth.json` Pi-managed and untracked. Do not symlink it from the repository. Use
+the corresponding provider account pages to revoke guest access independently from the host.
 
 ## 3. API tokens
 

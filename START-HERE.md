@@ -7,6 +7,9 @@ You need a Claude subscription that includes Claude Code. Do not enable Claude's
 mode during this bootstrap: keep its normal prompts and enter your password only when you have
 reviewed the command.
 
+The dave.box overlay prompt, `box.env`, locale, and project inventory live in
+[dave.box-setup/agent-box/README.md](https://github.com/dxmann73/dave.box-setup/blob/main/agent-box/README.md).
+
 ## 1. Install Claude Code
 
 Open a terminal and run:
@@ -31,10 +34,9 @@ Paste the following into Claude Code:
 > it into `~/projects/agent-box-setup`. Work on the **host** path only and keep all permissions
 > supervised. Follow numbered host and shared guides in order; ask me before optional tools,
 > personal applications, or choices that affect my data or security; diagnose failures before
-> continuing. Complete the host baseline, locale, desktop/session settings, all four agent CLIs, VS
-> Code, BB desktop application, and the complete `clackworks.agents` project inventory/workspace.
-> Run the host operational verification. Do **not** create or change a VM until that host completion
-> checkpoint succeeds.
+> continuing. Complete the host baseline, desktop/session settings, all four agent CLIs, VS Code,
+> and the BB desktop application. Run the host operational verification. Do **not** create or change
+> a VM until that host completion checkpoint succeeds.
 
 The agent will ask for normal `sudo` confirmation where host setup requires it. Do not make host
 sudo passwordless and do not grant unrestricted host-agent permissions.
