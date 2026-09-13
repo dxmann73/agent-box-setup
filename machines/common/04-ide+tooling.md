@@ -69,12 +69,13 @@ code --list-extensions | head
 
 ### Custom keybindings
 
-Only two overrides are carried; everything else is stock VS Code.
+| Key                | Command                                            |
+| ------------------ | -------------------------------------------------- |
+| `ctrl+[Semicolon]` | Toggle terminal                                    |
+| `Ctrl-Alt-L`       | Format document                                    |
+| `Ctrl-Shift-T`     | Java: go to test (replaces "reopen closed editor") |
 
-| Key            | Command                                            |
-| -------------- | -------------------------------------------------- |
-| `Ctrl-Alt-L`   | Format document                                    |
-| `Ctrl-Shift-T` | Java: go to test (replaces "reopen closed editor") |
+VS Code has no `ctrl+ö` key name, so the ö key is bound as `ctrl+[Semicolon]`.
 
 ### Keyboard shortcuts reference
 
@@ -189,6 +190,7 @@ echo "Extensions installed: $(code --list-extensions | wc -l)"
 - [ ] `code` command works from the terminal
 - [ ] Settings Sync turned on, or `settings.json` / `keybindings.json` copied into place
 - [ ] `Ctrl-Alt-L` formats the document
+- [ ] `Ctrl-ö` toggles the terminal
 - [ ] Editor-wide extensions installed
 - [ ] Java extensions installed, if applicable
 

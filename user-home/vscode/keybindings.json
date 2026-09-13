@@ -1,5 +1,11 @@
 // VS Code keybinding overrides. Cursor-only binds were dropped (see README.md).
+//
+// Toggle terminal on the German ctrl+ö key = ctrl+[Semicolon]
 [
+  {
+    "key": "ctrl+[Semicolon]",
+    "command": "workbench.action.terminal.toggleTerminal"
+  },
   {
     "key": "ctrl+alt+l",
     "command": "editor.action.formatDocument",
