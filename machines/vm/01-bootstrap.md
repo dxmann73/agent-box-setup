@@ -1,38 +1,36 @@
 # 01 – VM bootstrap
 
-The guest console performs only the bootstrap needed to let the completed host
-manage the VM remotely. Everything else is the credential-free host-invoked
-baseline in [`guest-baseline.sh`](guest-baseline.sh).
+The guest console performs only the bootstrap needed to let the completed host manage the VM
+remotely. Everything else is the credential-free host-invoked baseline in
+[`guest-baseline.sh`](guest-baseline.sh).
 
 ## 1. Console bootstrap
 
-At the guest console, install SSH, add the host public key, and configure
-passwordless sudo for the guest user only:
+At the guest console, install SSH, add the physical host key and any approved administration client
+public keys, and configure passwordless sudo for the guest user only:
 
 ```bash
 sudo apt update
 sudo apt install -y openssh-server
 mkdir -p ~/.ssh && chmod 700 ~/.ssh
-# Paste the public key from the host's ~/.ssh/*.pub file into this file.
+# Add one public key per line. Never copy a private key into the guest.
 nano ~/.ssh/authorized_keys
 chmod 600 ~/.ssh/authorized_keys
 sudo visudo -f /etc/sudoers.d/agent-nopasswd
 ```
 
-The sudoers file must contain exactly this policy, substituting the guest user
-name:
+The sudoers file must contain exactly this policy, substituting the guest user name:
 
 ```text
 YOUR_USER_NAME ALL=(ALL) NOPASSWD: ALL
 ```
 
-Do not add a matching rule on the personal host. The VM is the unrestricted
-agent boundary; the host remains supervised.
+Do not add a matching rule on the personal host. The VM is the unrestricted agent boundary; the host
+remains supervised.
 
 ## 2. Verify the remote boundary
 
-From the host, verify key authentication and non-interactive guest sudo before
-proceeding:
+From the host, verify key authentication and non-interactive guest sudo before proceeding:
 
 ```bash
 ssh xmg-evo-agent-vm hostname
@@ -40,31 +38,33 @@ ssh xmg-evo-agent-vm 'sudo -n true && echo guest-sudo-ready'
 ```
 
 If hostname resolution is not ready yet, use the guest's libvirt address from
-`virsh domifaddr xmg-evo-agent-vm --source lease` instead. Do not use
-`ssh-copy-id`: it needs a guest password and is unnecessary once the key is
-placed in `authorized_keys`.
+`virsh domifaddr xmg-evo-agent-vm --source lease` instead. Do not use `ssh-copy-id`: it needs a
+guest password and is unnecessary once the key is placed in `authorized_keys`.
+
+Before disabling SSH passwords, test each approved key in a second session through its intended
+path. Follow the key-only SSH configuration and lockout-safe validation sequence in
+[`../host/03-system-config.md`](../host/03-system-config.md) §5. The guest firewall permits TCP/22
+on `tailscale0` for approved remote clients and from only the physical host's libvirt bridge address
+on the private guest interface. The host retains direct libvirt SSH and console recovery paths.
 
 ## 3. Run the guest baseline from the host
 
-The script is streamed from the host so a fresh guest does not need GitHub
-authentication or an existing repository checkout. It clones the public setup
-repository itself and then configures packages, locales, dotfiles, four agent
-CLIs without login, Playwright, the BB service, guest agents, and guest desktop
-defaults.
+The script is streamed from the host so a fresh guest does not need GitHub authentication or an
+existing repository checkout. It clones the public setup repository itself and then configures
+packages, locales, dotfiles, four agent CLIs without login, Playwright, the BB service, guest
+agents, and guest desktop defaults.
 
 ```bash
 cd ~/projects/agent-box-setup
 ssh xmg-evo-agent-vm 'bash -s' < machines/vm/guest-baseline.sh
 ```
 
-The script refuses to run outside a virtualized guest, with the wrong hostname,
-or without guest `NOPASSWD` sudo. Re-running it is safe: package installation,
-links, service enablement, and managed desktop settings converge on the same
-state.
+The script refuses to run outside a virtualized guest, with the wrong hostname, or without guest
+`NOPASSWD` sudo. Re-running it is safe: package installation, links, service enablement, and managed
+desktop settings converge on the same state.
 
-It deliberately does not authenticate GitHub, Claude, Codex, Cursor, Pi,
-Firecrawl, Tailscale, model providers, or configure host shares/network
-exposure. Those are later, explicit phases.
+It deliberately does not authenticate GitHub, Claude, Codex, Cursor, Pi, Firecrawl, Tailscale, model
+providers, or configure host shares/network exposure. Those are later, explicit phases.
 
 ## 4. Verify and snapshot
 
@@ -73,14 +73,17 @@ ssh -t xmg-evo-agent-vm \
   'cd ~/projects/agent-box-setup && ./verify-setup.sh --vm --bootstrap'
 ```
 
-Once this profile passes, take the credential-free `clean-guest` snapshot as
-described in [07-snapshots.md](07-snapshots.md). Then continue to the optional
-or credentialed phases deliberately.
+Once this profile passes, take the credential-free `clean-guest` snapshot as described in
+[07-snapshots.md](07-snapshots.md). Then continue to the optional or credentialed phases
+deliberately.
 
 ## Checklist
 
 - [ ] guest hostname is `xmg-evo-agent-vm`
 - [ ] host public key works over SSH
+- [ ] approved client public keys work over Tailscale with password fallback disabled
+- [ ] SSH passwords, keyboard-interactive authentication, and root login are disabled
+- [ ] guest port 22 is reachable through `tailscale0` and the single-host libvirt exception only
 - [ ] only the guest user has passwordless sudo
 - [ ] host-driven baseline finishes without provider or GitHub login
 - [ ] SSH, QEMU guest agent, autologin, disabled blanking, and disabled locking work

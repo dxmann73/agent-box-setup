@@ -127,6 +127,10 @@ code --install-extension /tmp/scm-tidy-*.vsix --force
 Microsoft-licensed extensions (Remote-SSH, Remote-Containers, C#, Pylance) are available only in
 real VS Code from the Microsoft marketplace, not in forks that use a third-party one.
 
+Remote SSH is read-write: the VS Code server, Git, terminals, tests, and the working tree run on the
+selected Linux machine. Client-specific key generation, SSH configuration, hostnames, and
+private-key paths belong in that client's setup repository, not here.
+
 ---
 
 ## 4. Java extensions

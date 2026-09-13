@@ -106,6 +106,52 @@ sudo apt install -y openssh-server
 systemctl status ssh
 ```
 
+Each approved administration client must use its own dedicated, passphrase-protected Ed25519 key.
+Keep the private key on that client and install only its public key in the target user's
+`~/.ssh/authorized_keys`. Bind a device-specific key to the client's exact Tailscale IPv4 address;
+the resulting line has this form:
+
+```text
+from="CLIENT_TAILSCALE_IPV4",no-agent-forwarding,no-X11-forwarding ssh-ed25519 PUBLIC_KEY COMMENT
+```
+
+Substitute the measured address and complete public-key line; never install the placeholders. Do not
+add `restrict`, `command=`, `no-port-forwarding`, or `no-pty`, because interactive shells and IDE
+SSH tunnels require those capabilities. Keep the current session or a local recovery console open,
+then prove that a fresh public-key connection works with IPv4 selected and password fallback
+disabled:
+
+```bash
+ssh -4 -o PasswordAuthentication=no -o KbdInteractiveAuthentication=no USER@TAILSCALE_NAME
+```
+
+Do not expose port 22 through the router or permit password, keyboard-interactive, or root login.
+
+Only after that succeeds, create `/etc/ssh/sshd_config.d/90-tailnet-key-only.conf`:
+
+```text
+PubkeyAuthentication yes
+PasswordAuthentication no
+KbdInteractiveAuthentication no
+AuthenticationMethods publickey
+PermitRootLogin no
+```
+
+Validate before reloading. A failed validation must leave the running server untouched:
+
+```bash
+sudo sshd -t
+sudo systemctl reload ssh
+```
+
+Restrict inbound port 22 to `tailscale0` with the host firewall. Check existing firewall rules and
+defaults before enabling or changing it; preserve any rules needed by the host. The resulting policy
+must allow TCP/22 on `tailscale0` and deny TCP/22 on LAN, Wi-Fi, and public interfaces. Tailscale
+Funnel and router port forwarding are not used for SSH.
+
+From the approved client, open another new connection after both SSH and firewall changes. Keep the
+original session open until this final test passes.
+
 The host's `~/.ssh` is never shared into the VM. Agents get their own purpose-specific keys, see
 [`../vm/05-credentials.md`](../vm/05-credentials.md) (specification §12).
 
@@ -194,6 +240,9 @@ reach inference while the LAN cannot. Rules for that interface are in
 - [ ] backups configured and restore tested, including `~/vms` and `/var/lib/libvirt/images`
 - [ ] packaging rule understood
 - [ ] SSH client/server state decided
+- [ ] if the SSH server is enabled, an approved client's device-bound key-only login works and
+      password fallback fails
+- [ ] inbound SSH is allowed on `tailscale0` only; there is no router forward or Funnel
 - [ ] `~/.ssh` at `700`, private keys at `600`
 - [ ] one SSH agent: gcr masked, `SSH_AUTH_SOCK` on `openssh_agent`, `ssh -v` shows `publickey`
 - [ ] `ufw` enabled, default deny incoming
