@@ -74,8 +74,8 @@ clients (specification §4, §11). The VM connects to it as an enrolled executio
 carries both paths.
 
 The tailnet itself is not set up here. It is personal network infrastructure (any service, not only
-BB) and lives in the `infra` project in `tailscale/README.md`. Bring the VM node up there first;
-this file only assumes the guest is a tailnet node:
+BB) and lives in `~/projects/infra/tailscale/` (inventory, join, SSH). Bring the VM node up there
+first; this file only assumes the guest is a tailnet node:
 
 ```bash
 tailscale status
@@ -99,7 +99,44 @@ the VM.
 - [ ] guest not reachable from other LAN machines except through the tailnet
 - [ ] no BB port exposed directly to the public Internet
 
-## 4. What must not happen
+## 4. SSH reachability
+
+The guest accepts standard OpenSSH through exactly two paths:
+
+1. `tailscale0`, for administration clients separately authorized by tailnet policy and their
+   source-bound public keys; and
+2. the private libvirt interface, only from the physical host's single bridge address, for
+   bootstrap, recovery, backup testing, and host automation.
+
+It does not accept SSH from the LAN or public Internet. Do not bridge the guest NIC, forward port 22
+on the router, enable Funnel, or allow the whole libvirt subnet. Tailnet policy and tests live in
+[`infra/tailscale`](https://github.com/dxmann73/infra/tree/main/tailscale), not in this repository.
+
+Resolve the guest interface, guest address, and hypervisor bridge address immediately before
+changing UFW. With the current stock `default` network they are `enp1s0`, the guest's current
+`192.168.122.x` address, and `192.168.122.1`, respectively; measurements override these examples.
+Keep the working libvirt SSH session and graphical console open.
+
+```bash
+ip -brief address
+ip -4 route
+sudo ufw status verbose
+sudo ufw default deny incoming
+sudo ufw default allow outgoing
+sudo ufw allow in on tailscale0 to any port 22 proto tcp comment 'SSH over tailnet'
+sudo ufw allow in on GUEST_LIBVIRT_INTERFACE from HYPERVISOR_BRIDGE_IPV4 \
+  to any port 22 proto tcp comment 'SSH from hypervisor bridge'
+sudo ufw enable
+```
+
+Before `ufw enable`, preserve any required existing rules and account for Docker or other software
+that manages packet-filter chains. Afterward, verify IPv4 and IPv6 rules and open fresh sessions
+through both allowed paths. From the host, the automation key must work when targeting the guest's
+libvirt address and fail when targeting its Tailscale address. Password-only and
+keyboard-interactive attempts must fail. Keep the recovery session open until every positive test
+passes.
+
+## 5. What must not happen
 
 - no route from the VM into the host's personal services beyond the model endpoint
 - no BB port forwarded on the router

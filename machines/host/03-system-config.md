@@ -108,6 +108,20 @@ sudo apt install -y openssh-server
 systemctl status ssh
 ```
 
+Before installing the server, have at least one approved public key ready and confirm that a local
+console or other recovery route works. After installation but before changing the server, inventory
+the current firewall, interfaces, listeners, Tailscale state, SSH drop-ins, effective configuration,
+and host-key fingerprints. Save the latter two:
+
+```bash
+sudo sshd -T > ~/sshd-effective-before-hardening.txt
+for key in /etc/ssh/ssh_host_*_key.pub; do ssh-keygen -lf "$key"; done \
+  > ~/ssh-host-key-fingerprints.txt
+sudo ufw status verbose
+ip -brief address
+tailscale status
+```
+
 Each approved administration client must use its own dedicated, passphrase-protected Ed25519 key.
 Keep the private key on that client and install only its public key in the target user's
 `~/.ssh/authorized_keys`. Bind a device-specific key to the client's exact Tailscale IPv4 address;
@@ -116,6 +130,9 @@ the resulting line has this form:
 ```text
 from="CLIENT_TAILSCALE_IPV4",no-agent-forwarding,no-X11-forwarding ssh-ed25519 PUBLIC_KEY COMMENT
 ```
+
+Lived names, IPv4 addresses, `from=` lines, and current sshd/UFW for Dave's machines are in
+`~/projects/infra/tailscale/ssh.md`. This section is the reusable procedure.
 
 Substitute the measured address and complete public-key line; never install the placeholders. Do not
 add `restrict`, `command=`, `no-port-forwarding`, or `no-pty`, because interactive shells and IDE
@@ -137,9 +154,11 @@ PasswordAuthentication no
 KbdInteractiveAuthentication no
 AuthenticationMethods publickey
 PermitRootLogin no
+PermitEmptyPasswords no
 ```
 
-Validate before reloading. A failed validation must leave the running server untouched:
+Inspect `sudo sshd -T` for settings overridden by vendor or cloud-init drop-ins. Validate before
+reloading; a failed validation must leave the running server untouched:
 
 ```bash
 sudo sshd -t
@@ -150,6 +169,11 @@ Restrict inbound port 22 to `tailscale0` with the host firewall. Check existing 
 defaults before enabling or changing it; preserve any rules needed by the host. The resulting policy
 must allow TCP/22 on `tailscale0` and deny TCP/22 on LAN, Wi-Fi, and public interfaces. Tailscale
 Funnel and router port forwarding are not used for SSH.
+
+The live access policy and device-specific SSH grant remain in the
+[`infra/tailscale`](https://github.com/dxmann73/infra/tree/main/tailscale) documentation. A narrow
+grant is not effective while a broader allow rule also permits TCP/22, so include both permit and
+deny policy tests there.
 
 From the approved client, open another new connection after both SSH and firewall changes. Keep the
 original session open until this final test passes.

@@ -106,6 +106,16 @@ if [[ "$target" == vm ]]; then
     check 'guest hostname is xmg-evo-agent-vm' test "$(hostname)" = xmg-evo-agent-vm
     check 'passwordless guest sudo works' sudo -n true
     check 'sshd active' systemctl is-active --quiet ssh
+    check 'sshd configuration valid' sudo sshd -t
+    check 'sshd requires public-key authentication' bash -c \
+        "sudo sshd -T | grep -qx 'authenticationmethods publickey'"
+    check 'sshd password authentication disabled' bash -c \
+        "sudo sshd -T | grep -qx 'passwordauthentication no'"
+    check 'sshd keyboard-interactive authentication disabled' bash -c \
+        "sudo sshd -T | grep -qx 'kbdinteractiveauthentication no'"
+    check 'sshd root login disabled' bash -c "sudo sshd -T | grep -qx 'permitrootlogin no'"
+    check 'sshd empty passwords disabled' bash -c \
+        "sudo sshd -T | grep -qx 'permitemptypasswords no'"
     check 'QEMU guest agent active' systemctl is-active --quiet qemu-guest-agent
     check 'SPICE guest agent active' systemctl is-active --quiet spice-vdagentd
     check 'Klipper clipboard sync enabled' systemctl --user is-enabled --quiet klipper-clipboard-sync.service
@@ -148,6 +158,12 @@ if profile_at_least full; then
         check 'Pi credential state exists' test -f "$HOME/.pi/agent/auth.json"
         check 'Firecrawl authentication configured' bash -c 'firecrawl --status 2>/dev/null | grep -qi authenticated'
         check 'Tailscale installed and connected' tailscale status
+        check 'UFW active with default inbound deny' bash -c \
+            "sudo ufw status verbose | grep -q '^Default: deny (incoming)'"
+        check 'guest UFW permits tailnet SSH' bash -c \
+            "sudo ufw status | grep -Eq '^22/tcp on tailscale0[[:space:]]+ALLOW[[:space:]]'"
+        check 'guest UFW limits libvirt SSH to the hypervisor' bash -c \
+            "sudo ufw status | grep -Eq '^22/tcp on [^[:space:]]+[[:space:]]+ALLOW[[:space:]]+192[.]168[.]122[.]1'"
         check 'guest secrets file linked' test -L "$HOME/.bash_secrets"
     else
         check 'host Pi credential state exists' test -f "$HOME/.pi/agent/auth.json"

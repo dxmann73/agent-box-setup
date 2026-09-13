@@ -116,6 +116,11 @@ if backing is not None:
     disk.remove(backing)
 mac = devices.find("interface/mac")
 mac.set("address", "52:54:00:%02x:%02x:%02x" % tuple(uuid.uuid4().bytes[:3]))
+interface = devices.find("interface")
+link = interface.find("link")
+if link is None:
+    link = ET.SubElement(interface, "link")
+link.set("state", "down")
 iface_source = devices.find("interface/source")
 for key in ("portid", "bridge"):
     iface_source.attrib.pop(key, None)
@@ -126,15 +131,35 @@ virsh define "$TEST_XML"
 virsh start "$TEST_NAME"
 ```
 
-Wait for a DHCP lease on `default` that matches the new MAC, then SSH **that IP** with a new host
-key. Do not `ssh xmg-evo-agent-vm`: libvirt NSS publishes the clone's DHCP hostname and will steal
-the name from the primary.
-
-First commands in the test guest:
+The cloned network link starts down so its copied Tailscale identity cannot contact the coordination
+server. Wait for the QEMU guest agent, then use its network-independent command channel to stop and
+mask `tailscaled` before raising the link. `guest-exec` is asynchronous: record the returned PID and
+confirm `guest-exec-status` reports `"exited": true` and `"exitcode": 0` for each command.
 
 ```bash
-sudo systemctl stop tailscaled
-sudo systemctl mask tailscaled
+virsh qemu-agent-command "$TEST_NAME" '{"execute":"guest-ping"}'
+virsh qemu-agent-command "$TEST_NAME" \
+  '{"execute":"guest-exec","arguments":{"path":"/usr/bin/systemctl","arg":["stop","tailscaled"],"capture-output":true}}'
+virsh qemu-agent-command "$TEST_NAME" \
+  '{"execute":"guest-exec-status","arguments":{"pid":REPLACE_WITH_RETURNED_PID}}'
+virsh qemu-agent-command "$TEST_NAME" \
+  '{"execute":"guest-exec","arguments":{"path":"/usr/bin/systemctl","arg":["mask","tailscaled"],"capture-output":true}}'
+virsh qemu-agent-command "$TEST_NAME" \
+  '{"execute":"guest-exec-status","arguments":{"pid":REPLACE_WITH_RETURNED_PID}}'
+virsh domif-setlink "$TEST_NAME" REPLACE_WITH_INTERFACE_TARGET up
+```
+
+Get the interface target from `virsh domiflist "$TEST_NAME"`. Wait for a DHCP lease on `default`
+that matches the new MAC, then SSH **that IP** with a new host key. The hardened host-automation key
+still works because this connection originates from the hypervisor bridge. Do not
+`ssh xmg-evo-agent-vm`: libvirt NSS publishes the clone's DHCP hostname and will steal the name from
+the primary.
+
+Confirm the identity is still masked and give the clone a distinct hostname:
+
+```bash
+systemctl is-enabled tailscaled        # masked
+systemctl is-active tailscaled         # inactive
 sudo hostnamectl set-hostname restore-test
 ```
 

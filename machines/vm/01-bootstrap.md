@@ -19,6 +19,17 @@ chmod 600 ~/.ssh/authorized_keys
 sudo visudo -f /etc/sudoers.d/agent-nopasswd
 ```
 
+Restrict the physical host's key to the exact libvirt bridge source while preserving interactive
+shells, forwarding, and sudo automation:
+
+```text
+from="HYPERVISOR_BRIDGE_IPV4",no-agent-forwarding,no-X11-forwarding ssh-ed25519 PUBLIC_KEY COMMENT
+```
+
+Use the key type already generated on the host; `ssh-ed25519` is illustrative. Measure the bridge
+address with `ip -4 addr show virbr0` on the host and replace every placeholder. Do not authorize
+the whole libvirt subnet.
+
 The sudoers file must contain exactly this policy, substituting the guest user name:
 
 ```text
@@ -43,9 +54,11 @@ guest password and is unnecessary once the key is placed in `authorized_keys`.
 
 Before disabling SSH passwords, test each approved key in a second session through its intended
 path. Follow the key-only SSH configuration and lockout-safe validation sequence in
-[`../host/03-system-config.md`](../host/03-system-config.md) §5. The guest firewall permits TCP/22
+[`../host/03-system-config.md`](../host/03-system-config.md) §5. Lived `from=` addresses and
+MagicDNS names for this box: `~/projects/infra/tailscale/ssh.md`. The guest firewall permits TCP/22
 on `tailscale0` for approved remote clients and from only the physical host's libvirt bridge address
 on the private guest interface. The host retains direct libvirt SSH and console recovery paths.
+Complete the measured guest rules in [03-networking.md](03-networking.md) §4 after Tailscale joins.
 
 ## 3. Run the guest baseline from the host
 
