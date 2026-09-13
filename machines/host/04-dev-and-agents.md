@@ -89,6 +89,7 @@ Use the official [BB](https://getbb.app/) Linux AppImage on the host. It provide
 manages its bundled server and host daemon, so the host does not need a separate browser tab or
 `bb.service`. Follow the host section of [the shared BB guide](../common/05-bb.md). BB state stays
 in `~/.bb/`, separate from projects in `~/projects`.
+Tailscale Serve on this machine proxies the AppImage listener; see `infra/tailscale/`.
 
 The host instance is for host-scoped work only. Keep host agent permissions supervised. Once the VM
 exists, open its independent BB interface through an SSH tunnel or Tailscale Serve as documented in

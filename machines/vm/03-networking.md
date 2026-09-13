@@ -72,9 +72,9 @@ Record the resulting base URL in `~/.bash_secrets` so agents pick it up from one
 The BB server in the VM must be reachable from the host, from other machines on the network, and
 from outside (specification §4, §11). Tailscale is the route for the last one.
 
-The tailnet itself is not set up here. It is a piece of personal network infrastructure that spans
-host, VM, laptop and phone, and it is documented in the `infra` project (`docs/spec/tailscale.md`).
-Bring it up there first; this file only assumes the VM is a tailnet node:
+The tailnet itself is not set up here. It is personal network infrastructure (any service, not only
+BB) and lives in the `infra` project in `tailscale/README.md`. Bring
+the VM node up there first; this file only assumes the guest is a tailnet node:
 
 ```bash
 tailscale status
