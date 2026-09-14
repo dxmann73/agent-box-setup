@@ -10,8 +10,9 @@ install. The live install list for this laptop is the dave.box overlay:
 
 ## Policy
 
-- Keep the personal browser profile on the host. Agents never use it. Browser automation runs on a
-  separate Chromium inside the VM, see [`../vm/02-dev-and-agents.md`](../vm/02-dev-and-agents.md)
+- Keep personal browser profiles outside the agent VM. The deployment overlay selects a host browser
+  or a separate personal browser guest. Agents never use those profiles. Automation uses a separate
+  Chromium inside the VM, see [`../vm/02-dev-and-agents.md`](../vm/02-dev-and-agents.md)
   (specification §7).
 - Sync daemons, account credentials, and full sync trees stay outside the VM. Share only a narrow
   subdirectory when an agent must work on it; see
@@ -21,9 +22,14 @@ install. The live install list for this laptop is the dave.box overlay:
 Ask before installing optional personal software. Prefer the application's documented Linux channel
 (apt, Snap, Flatpak, or official package).
 
+Review browser placement now, then continue to host baseline and early virtualization preparation.
+If the overlay selects a personal browser guest, complete it before remaining account logins. Finish
+the other selected apps during later host completion; the checklist below is not a gate before the
+host baseline or browser guest.
+
 ## Checklist
 
-- [ ] personal apps stay on the host; agents do not use the personal browser profile
+- [ ] personal apps follow the overlay; agents do not use the personal browser profile
 - [ ] the deployment overlay's install list, if any, is complete
 
 Next: [03-system-config.md](03-system-config.md)

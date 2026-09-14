@@ -2,20 +2,15 @@
 
 The host runs a KVM/libvirt VM as the agent boundary.
 
-## Host completion preflight
+## Two phases
 
-This guide starts only after [04-dev-and-agents.md](04-dev-and-agents.md)'s host completion gate is
-satisfied. Confirm the host state with:
+Sections 1–3 prepare virtualization and installation media after the host baseline. They require no
+coding-agent authentication, editor, project inventory or existing guest. Check installed state
+first; `prepare-host-system.sh` may already have completed infrastructure setup.
 
-```bash
-cd ~/projects/agent-box-setup
-./verify-setup.sh --host --operational
-```
-
-Resolve required host failures before creating or restoring a guest. In particular, all four host
-agent CLIs, VS Code settings/shortcuts, the BB desktop AppImage, and the permanent host project
-workspace must be ready. The baseline script can prepare KVM/libvirt prerequisites, but it does not
-create a domain.
+A deployment may now create a separate personal browser guest before the remaining host logins. Use
+that overlay's guest configuration and acceptance checks; do not run the agent-VM baseline in it.
+Section 4 is the later **agent-VM** branch, after host tooling completion.
 
 ## 1. Install KVM/libvirt
 
@@ -31,7 +26,7 @@ Log out and back in. Set the system libvirt URI in the shell configuration:
 ```bash
 export LIBVIRT_DEFAULT_URI=qemu:///system
 virsh uri
-virsh net-start default
+virsh net-list --name | grep -Fxq default || virsh net-start default
 virsh net-autostart default
 ```
 
@@ -60,25 +55,19 @@ Use the `default` pool for VM disks and `~/vms/` for ISO files and domain XML:
 
 ```bash
 virsh pool-list --all
-virsh pool-define-as default dir --target /var/lib/libvirt/images
-virsh pool-start default
+virsh pool-info default >/dev/null 2>&1 || \
+  virsh pool-define-as default dir --target /var/lib/libvirt/images
+virsh pool-list --name | grep -Fxq default || virsh pool-start default
 virsh pool-autostart default
 mkdir -p ~/vms
 ```
 
 Skip the `pool-define-as` command when the `default` pool already exists.
 
-## 3. Create the VM
+## 3. Installation media
 
-Source the deployment overlay's `box.env` so `AGENT_BOX_VM_HOSTNAME`, `AGENT_BOX_VM_VCPUS`,
-`AGENT_BOX_VM_MEMORY_MIB`, and `AGENT_BOX_VM_DISK_GIB` are set. Naming advice: `<host>-agent-vm` as
-both libvirt domain and guest hostname. The overlay supplies the live values; this section keeps
-flag notes.
-
-The guest uses SeaBIOS, shared `memfd` memory, a libvirt NAT network, a local-only SPICE console,
-and virtio video without 3D acceleration. The 2D console permits live snapshots.
-
-Download and verify the current Kubuntu 26.04 ISO, then move it to `/var/lib/libvirt/boot/`:
+Reuse an existing verified ISO. For a fresh installation, download and verify the Kubuntu ISO, then
+move it to `/var/lib/libvirt/boot/`:
 
 ```bash
 cd ~/vms
@@ -88,8 +77,37 @@ curl -fLO "$BASE/SHA256SUMS"
 curl -fLO "$BASE/SHA256SUMS.gpg"
 gpgv --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg SHA256SUMS.gpg SHA256SUMS
 sha256sum --check --ignore-missing SHA256SUMS
+sudo install -d -m 0755 /var/lib/libvirt/boot
 sudo mv kubuntu-26.04.1-desktop-amd64.iso /var/lib/libvirt/boot/
 ```
+
+Run the read-only infrastructure check, then confirm the chosen guest's CPU/RAM/disk requirements
+and network policy:
+
+```bash
+~/projects/agent-box-setup/machines/host/verify-virtualization.sh
+```
+
+For a personal browser guest, return to the deployment overlay here. Do not continue into the
+agent-VM branch or reuse its resource variables unchanged.
+
+## 4. Create the agent VM
+
+Complete [04-dev-and-agents.md](04-dev-and-agents.md), including its operational verification,
+before this branch. A personal browser guest uses the earlier infrastructure checkpoint instead.
+
+```bash
+cd ~/projects/agent-box-setup
+./verify-setup.sh --host --operational
+```
+
+Source the deployment overlay's `box.env` so `AGENT_BOX_VM_HOSTNAME`, `AGENT_BOX_VM_VCPUS`,
+`AGENT_BOX_VM_MEMORY_MIB`, and `AGENT_BOX_VM_DISK_GIB` are set. Naming advice: `<host>-agent-vm` as
+both libvirt domain and guest hostname. The overlay supplies the live values; this section keeps
+flag notes.
+
+The guest uses SeaBIOS, shared `memfd` memory, a libvirt NAT network, a local-only SPICE console,
+and virtio video without 3D acceleration. The 2D console permits live snapshots.
 
 ```bash
 virt-install --name "$AGENT_BOX_VM_HOSTNAME" --osinfo detect=on,name=ubuntu24.04 \
@@ -128,7 +146,7 @@ ssh "$AGENT_BOX_VM_HOSTNAME" \
   < machines/vm/guest-baseline.sh
 ```
 
-## 4. Day-to-day
+## 5. Day-to-day
 
 | Task                | Command                                          |
 | ------------------- | ------------------------------------------------ |
@@ -138,7 +156,7 @@ ssh "$AGENT_BOX_VM_HOSTNAME" \
 | Edit hardware       | `virsh edit VM_NAME`                             |
 | Save the definition | `virsh dumpxml VM_NAME > ~/vms/VM_NAME.xml`      |
 
-## 5. Checklist
+## 6. Checklist
 
 - [ ] `kvm-ok` reports KVM acceleration
 - [ ] `virsh uri` reports `qemu:///system`

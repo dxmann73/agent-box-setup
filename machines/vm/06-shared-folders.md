@@ -15,7 +15,7 @@ Concrete source paths, mount tags, writable exceptions, and VM names belong in t
 Prerequisite: the domain was created with shared memory backing
 (`<memoryBacking><source type='memfd'/><access mode='shared'/>`), see
 [`../host/05-hypervisor.md`](../host/05-hypervisor.md). Without it virtiofs devices cannot attach.
-Every `virsh` below assumes `LIBVIRT_DEFAULT_URI=qemu:///system` is exported (same file, §3).
+Every `virsh` below assumes `LIBVIRT_DEFAULT_URI=qemu:///system` is exported (same file, §1).
 Replace `VM_NAME` below with the deployment's libvirt domain name.
 
 ## 1. Host side

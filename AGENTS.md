@@ -46,8 +46,8 @@ Hardware BOM, locale, personal apps, and VM sizes live in
 
 - **Determine the target first** - host or VM. They share `machines/common/` but differ in what each
   one additionally installs.
-- **Follow the numbered files in order** within each directory; each includes its own verification
-  commands.
+- **Follow the phased setup order in README.md**; numeric filenames identify guides, while the host
+  sequence revisits hypervisor setup before agent-VM creation. Each guide has verification.
 - **Don't run everything blindly** - ask the user before installing optional tools.
 - **Check existing installations** - many tools may already be installed; verify first.
 - **Respect user preferences** - these are defaults; the user may want variations.

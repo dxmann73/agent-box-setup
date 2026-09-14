@@ -40,7 +40,7 @@ mkdir -p ~/system-info ~/vms ~/backup/vm
 ```
 
 VM **disk images** live in libvirt's stock pool at `/var/lib/libvirt/images`, not under `$HOME`
-([05-hypervisor.md](05-hypervisor.md) §4). `~/vms/` holds only the text that describes them.
+([05-hypervisor.md](05-hypervisor.md) §2). `~/vms/` holds only the text that describes them.
 
 Large downloaded model files are replaceable, so decide whether they are worth including in backups.
 
@@ -259,4 +259,5 @@ reach inference while the LAN cannot. Rules for that interface are in
 - [ ] local model endpoint not exposed to the LAN
 - [ ] `prepare-host-system.sh` completes with no VM creation and no host `NOPASSWD` sudo rule
 
-Next: [04-dev-and-agents.md](04-dev-and-agents.md)
+Next: [hypervisor infrastructure and media](05-hypervisor.md), then the overlay browser phase if
+selected. Return to [04-dev-and-agents.md](04-dev-and-agents.md) for later host completion.

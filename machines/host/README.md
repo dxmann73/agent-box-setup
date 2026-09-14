@@ -12,6 +12,13 @@ Hardware BOM, expected validation numbers, and the personal app list live in the
 
 ## Order
 
+Follow the [phased host sequence](../../README.md#host): review hardware/browser placement, prepare
+the host baseline and hypervisor infrastructure, complete any overlay personal-browser phase, then
+finish host tooling and create the agent VM if needed. The table below is a file index, not a
+requirement to finish all apps and logins before preparing virtualization.
+
+### Guide index
+
 | File                                                   | Scope                                                                             |
 | ------------------------------------------------------ | --------------------------------------------------------------------------------- |
 | [01-hardware-validation.md](01-hardware-validation.md) | AMDGPU, Vulkan/Mesa, suspend, displays (power/thermal diagnostics in an appendix) |
@@ -19,6 +26,10 @@ Hardware BOM, expected validation numbers, and the personal app list live in the
 | [03-system-config.md](03-system-config.md)             | Filesystem layout, backups, packaging, SSH, firewall                              |
 | [04-dev-and-agents.md](04-dev-and-agents.md)           | Toolchain and agents via [`../common/`](../common/)                               |
 | [05-hypervisor.md](05-hypervisor.md)                   | KVM/libvirt, agent VM creation                                                    |
+
+Optional browser-network enforcement lives in
+[isolated-browser-network.md](isolated-browser-network.md). Its deployment-specific values and rules
+come from the overlay. Infrastructure checks: [verify-virtualization.sh](verify-virtualization.sh).
 
 Automatic patching applies to both machines and lives in
 [`../common/08-auto-updates.md`](../common/08-auto-updates.md); do it as part of step 04.
@@ -34,7 +45,7 @@ Then:
 ```text
 Kubuntu host
 ├── KDE Plasma, stock AMDGPU + Mesa/RADV
-├── personal apps and data (browser profile, documents, optional sync)
+├── personal apps and data (browser placement from overlay, documents, optional sync)
 ├── local model runtime (llama.cpp, GPU-attached)
 ├── host toolchain + coding agents (host-scoped work)
 └── KVM/libvirt (qemu-system-x86, virt-manager)

@@ -8,6 +8,11 @@ Why agents run here too: the host is where the local model is built, benchmarked
 where this repo is edited. Agent work on personal projects still belongs in the VM (specification
 §2, §8) — the host agent is for host-scoped tasks.
 
+Complete the host baseline and, when selected, the overlay's personal browser phase first. Use that
+browser for the remaining account setup. Existing working CLI credentials stay in place; installing
+a new browser does not require repeating CLI login. The early virtualization phase is independent of
+this guide's later tooling-completion checkpoint.
+
 ## 1. Development basics
 
 ```bash
@@ -29,6 +34,7 @@ mkdir -p ~/projects
 | core tools                   | [`../common/02-core-tools.md`](../common/02-core-tools.md)             |
 | languages/runtimes           | [`../common/03-dev-environment.md`](../common/03-dev-environment.md)   |
 | coding agents, skills, hooks | [`../../agents/`](../../agents/README.md)                              |
+| imaging overlay              | [`../common/07-imaging-tools.md`](../common/07-imaging-tools.md)       |
 | editor                       | [`../common/04-ide+tooling.md`](../common/04-ide+tooling.md)           |
 | automatic updates            | [`../common/08-auto-updates.md`](../common/08-auto-updates.md)         |
 | optional                     | [`../common/06-optional.md`](../common/06-optional.md)                 |
@@ -45,8 +51,8 @@ Applies on the host and not in the VM:
 - GPU/compute stack and the local model runtime: the separate
   [local-llm](https://github.com/dxmann73/local-llm) repo
 - the hypervisor and the agent VM itself: [05-hypervisor.md](05-hypervisor.md)
-- the personal Chrome profile: agents on the host must not drive it either; use a separate profile
-  or the VM's Chromium
+- the personal browser profile stays outside the agent VM, at the location selected by the overlay;
+  host agents must not drive it either
 - personal desktop applications stay on the host ([02-applications.md](02-applications.md)); the
   overlay has the install list
 
@@ -68,9 +74,13 @@ Install the icon and link the desktop entry:
 mkdir -p ~/.local/share/icons/hicolor/scalable/apps ~/.local/share/applications
 curl -fsSL https://cursor.com/favicon.svg \
   -o ~/.local/share/icons/hicolor/scalable/apps/cursor-agent.svg
+image_converter="$(command -v magick || command -v convert)" || {
+  echo 'Install ImageMagick via the imaging overlay before generating this launcher icon.' >&2
+  exit 1
+}
 for s in 16 24 32 48 64 128 256 512; do
   mkdir -p ~/.local/share/icons/hicolor/${s}x${s}/apps
-  magick -background none ~/.local/share/icons/hicolor/scalable/apps/cursor-agent.svg \
+  "${image_converter}" -background none ~/.local/share/icons/hicolor/scalable/apps/cursor-agent.svg \
     -resize ${s}x${s} ~/.local/share/icons/hicolor/${s}x${s}/apps/cursor-agent.png
 done
 gtk-update-icon-cache -f -t ~/.local/share/icons/hicolor
@@ -101,8 +111,9 @@ Applies in the VM and not here:
 
 ## 4. Host completion gate
 
-Do not begin [05-hypervisor.md](05-hypervisor.md) until all of the following are true on the
-physical host:
+Before the **agent-VM creation branch** of [05-hypervisor.md](05-hypervisor.md), complete the
+following on the physical host. This gate does not apply to early virtualization preparation or an
+overlay's personal browser guest:
 
 - the shared desktop/session policy is configured;
 - Claude Code, Codex, Cursor CLI, and Pi are installed and authenticated;
@@ -137,4 +148,4 @@ cd ~/projects/agent-box-setup
 - [ ] skills symlinked into all four agents
 - [ ] `./verify-setup.sh --host --operational` passes
 
-Next: [05-hypervisor.md](05-hypervisor.md)
+Next: the [agent-VM creation branch](05-hypervisor.md#4-create-the-agent-vm), if needed.

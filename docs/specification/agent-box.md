@@ -4,7 +4,9 @@
 
    - Ubuntu is the primary desktop OS.
    - as a laptop it can be used when travelling so it will contain personal apps
-   - Normal personal apps and data remain on the host: Chrome, Dropbox, documents, etc.
+   - Normal personal apps and data remain outside the agent VM. The deployment may place personal
+     browsing on the host or in a separate personal browser guest; sync clients and documents stay
+     on the host. Prepare the selected browser before remaining account setup.
    - A local LLM/model runtime runs directly on the host so it can efficiently use the GPU. Its
      setup is out of scope here and lives in a separate repo:
      <https://github.com/dxmann73/local-llm>.

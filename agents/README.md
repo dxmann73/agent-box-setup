@@ -5,6 +5,9 @@ authenticates all four. The VM baseline installs and configures all four without
 guest logins are a later explicit credential phase. Host and VM agents use the repo-managed YOLO
 settings.
 
+Use [the browser login handoff](browser-login.md) when the personal browser runs on a different
+machine. Prepare that browser before remaining host logins; preserve existing credentials.
+
 ## Order
 
 1. [Global rule file](#global-rule-file)

@@ -17,7 +17,7 @@ Everything in this repo should be traceable back to it.
 
 ```text
 Kubuntu host                                  ← machines/host/
-├── personal apps and data (Chrome, Dropbox, Steam, documents)
+├── personal apps and data (browser placement from overlay, sync, documents)
 ├── local model runtime on the GPU            ← local-llm repo (separate)
 ├── development toolchain + coding agents     ← machines/common/ + agents/
 ├── BB desktop AppImage + shared server       ← machines/host/04-dev-and-agents.md
@@ -68,14 +68,16 @@ grep -rilE 'bitlocker|fast startup|dual.?boot|windows partition|shrink windows|n
 
 ## Host-first bootstrap
 
-For a fresh Kubuntu host, start with [START-HERE.md](START-HERE.md) in the preinstalled browser. It
-installs and authenticates one local agent; that agent clones this repository and completes the
-physical host before any VM work begins.
+On a fresh Kubuntu host, start with [START-HERE.md](START-HERE.md). Bootstrap one local agent and
+obtain the setup repository plus any deployment overlay. Reuse working installations and logins.
 
-Host completion is a checkpoint, not merely a prerequisite install. Before the agent creates the VM,
-it must finish the host baseline, desktop/session settings, all four agent CLIs, VS Code settings
-and shortcuts, and the BB desktop application. Deployment overlays may add locale and a project
-inventory.
+Prepare the host baseline and virtualization first. If the overlay selects a separate personal
+browser guest, establish it before the remaining account logins, host tooling and project inventory.
+One initial setup-agent login and repository access are the bootstrap exceptions. Keep personal
+browser profiles outside the agent VM.
+
+Full host completion remains a checkpoint before creating the **agent VM**, not before preparing
+virtualization or an overlay's personal browser guest.
 
 ## Where to start
 
@@ -87,23 +89,28 @@ inventory.
 
 ## Setup order
 
-Each directory's files are numbered; follow them in order. Every file carries its own verification
-commands.
+Numeric filenames identify guides; follow this phased order. Apply matching overlays at the step
+that consumes them, and explicit overlay-only insertions from the deployment's sequence.
 
 ### Host
 
-1. [host/01-hardware-validation.md](machines/host/01-hardware-validation.md) - AMDGPU, Vulkan,
-   power, displays
-2. [host/02-applications.md](machines/host/02-applications.md) - personal apps stay on the host;
-   overlay has the install list
-3. [host/03-system-config.md](machines/host/03-system-config.md) - Filesystem, backups, SSH,
-   firewall
-4. [host/04-dev-and-agents.md](machines/host/04-dev-and-agents.md) - Toolchain and agents via
-   `machines/common/`
-5. [host/05-hypervisor.md](machines/host/05-hypervisor.md) - KVM/libvirt, agent VM
+1. [host/01-hardware-validation.md](machines/host/01-hardware-validation.md): hardware and
+   desktop/session review; honor explicit deployment preferences.
+2. [host/02-applications.md](machines/host/02-applications.md): decide personal browser placement
+   and the later personal-app list. Installation of all personal apps is not a prerequisite.
+3. [host/03-system-config.md](machines/host/03-system-config.md): host baseline, required paths,
+   update policy and firewall review. Apply the locale overlay here.
+4. [host/05-hypervisor.md](machines/host/05-hypervisor.md): infrastructure and installation media
+   only, then `machines/host/verify-virtualization.sh`. Follow the overlay's personal browser guest
+   insertion, if selected; verify its isolation and browser handoff before remaining account logins.
+5. [host/04-dev-and-agents.md](machines/host/04-dev-and-agents.md): shared tooling, remaining
+   authentication, editor, BB and deployment inventory. Finish selected personal apps. Link overlay
+   git identity with common 00 before its identity checks. Run host operational verification.
+6. [host/05-hypervisor.md](machines/host/05-hypervisor.md#4-create-the-agent-vm): agent-VM creation
+   and the VM sequence below. Existing working VMs do not need to be rebuilt.
 
-Then the separate [local-llm](https://github.com/dxmann73/local-llm) repo for the GPU model runtime
-(host-only).
+The separate [local-llm](https://github.com/dxmann73/local-llm) runtime is optional host-only work;
+it does not gate a personal browser guest.
 
 ### VM
 
@@ -127,8 +134,9 @@ Then the separate [local-llm](https://github.com/dxmann73/local-llm) repo for th
 4. [agents/](agents/README.md) - Claude Code, Codex, Cursor CLI, Pi, global rules, skills, Caveman
 5. [common/04-ide+tooling.md](machines/common/04-ide+tooling.md) - VS Code
 6. [common/05-bb.md](machines/common/05-bb.md) - BB desktop AppImage and VM server runtime
-7. [common/06-optional.md](machines/common/06-optional.md) - Helm, cloud CLIs, extras
-8. [common/08-auto-updates.md](machines/common/08-auto-updates.md) - Unattended apt upgrades,
+7. [common/07-imaging-tools.md](machines/common/07-imaging-tools.md) - Deployment imaging overlay
+8. [common/06-optional.md](machines/common/06-optional.md) - Helm, cloud CLIs, extras
+9. [common/08-auto-updates.md](machines/common/08-auto-updates.md) - Unattended apt upgrades,
    needrestart, weekly tooling update timer
 
 ## Host workspace inventory
@@ -180,6 +188,9 @@ its known target.
 
 ```bash
 cd ~/projects/agent-box-setup
+# Before creating a personal browser guest; no agent credentials required:
+./machines/host/verify-virtualization.sh
+# Later, after completing host tooling and authentication:
 ./verify-setup.sh --host --operational
 # A new guest, before any provider or GitHub login:
 ./verify-setup.sh --vm --bootstrap
@@ -187,7 +198,10 @@ cd ~/projects/agent-box-setup
 ./verify-setup.sh --vm --full
 ```
 
-Profiles are intentionally cumulative:
+The separate virtualization check covers infrastructure only; guest-specific resources, ISO
+integrity and network policy need their own checks. It does not replace browser acceptance.
+
+Toolchain verification profiles are intentionally cumulative:
 
 - `bootstrap` checks credential-free deterministic readiness and is the acceptance gate for a new
   guest before taking `clean-guest`.
@@ -237,5 +251,6 @@ TBD, we need a way to sync settings from / to machines.
 
 - [ ] the target guide sequence is complete
 - [ ] Claude Code, Codex, Cursor CLI, and Pi are installed on both targets
-- [ ] host providers are authenticated before VM creation; guest providers only after `clean-guest`
+- [ ] personal browser is ready before remaining host logins; agent-VM credentials follow
+      `clean-guest`
 - [ ] the appropriate profiled verification command completes
