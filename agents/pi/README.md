@@ -1,18 +1,17 @@
 # Pi
 
-Install Pi and link its instructions and skills:
+Install Pi and link its instructions. Pi discovers shared skills through `~/.agents/skills`.
 
 ```bash
 npm install -g --ignore-scripts @earendil-works/pi-coding-agent
 mkdir -p ~/.pi/agent
 ln -sfn ~/projects/agent-box-setup/agents/AGENTS.md ~/.pi/agent/AGENTS.md
-ln -sfn ~/projects/agent-box-setup/agents/skills ~/.pi/agent/skills
 ```
 
-Authentication is target-specific. During host completion, start `pi` and run `/login`.
-The guest baseline installs Pi and the links but must not run `/login`; do so later from
-[`machines/vm/05-credentials.md`](../../machines/vm/05-credentials.md) after the
-credential-free snapshot. Pi manages `~/.pi/agent/auth.json`; never track or symlink it.
+Authentication is target-specific. During host completion, start `pi` and run `/login`. The guest
+baseline installs Pi and the links but must not run `/login`; do so later from
+[`machines/vm/05-credentials.md`](../../machines/vm/05-credentials.md) after the credential-free
+snapshot. Pi manages `~/.pi/agent/auth.json`; never track or symlink it.
 
 The optional Plasma launcher opens Pi in WezTerm:
 
@@ -30,4 +29,5 @@ See the [Pi quickstart](https://pi.dev/docs/latest/quickstart).
 
 - [ ] `pi --version` succeeds
 - [ ] Pi is authenticated when the target's credentials phase requires it
-- [ ] global instructions and skills are symlinked under `~/.pi/agent/`
+- [ ] global instructions are symlinked under `~/.pi/agent/`
+- [ ] shared skills resolve through `~/.agents/skills`

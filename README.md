@@ -40,7 +40,7 @@ independent fallback; clients use the host server when both machines must be sel
 | Directory                                  | Scope                                                               | Disposable |
 | ------------------------------------------ | ------------------------------------------------------------------- | ---------- |
 | [docs/specification/](docs/specification/) | What the setup has to achieve                                       | no         |
-| [agents/](agents/)                         | Agent CLIs: instructions, config, shared skills                     | no         |
+| [agents/](agents/)                         | Agent CLIs: instructions, config, global skill index                | no         |
 | [machines/common/](machines/common/)       | Install guides used by both host and VM                             | no         |
 | [machines/host/](machines/host/)           | Ubuntu host: hardware, personal apps, system config, hypervisor     | no         |
 | [machines/vm/](machines/vm/)               | Agent VM: bootstrap, agents, BB, networking, credentials, snapshots | no         |
@@ -170,13 +170,14 @@ side by side:
 - **Box-level** — installed once per machine: shell/dotfiles, agent binaries, Docker, Node, IDE.
   These are the `machines/` guides plus `agents/` and `user-home/`.
 - **Project-level** — belongs to whatever you are working on, and is only wired globally because
-  there is no better home yet: skills in `agents/skills/` and project-specific toolchains.
+  there is no better home yet: skills indexed by `agents/skills/` and project-specific toolchains.
   Dave-specific SDKMAN, Java, Quarkus, Maven, Docker Compose, and imaging tools live in the Dave
   overlay.
 
-Project-level items are installed globally in the agent skill directories as an interim measure so
-every project gets them. The intended end state is packaging them per project type — see the
-"project setup" entry in [ROADMAP.md](./ROADMAP.md).
+Project-level items are installed globally through the agent skill index as an interim measure so
+every project gets them. Some index entries may symlink to skills owned by follow-up repositories.
+The intended end state is packaging them per project type — see the "project setup" entry in
+[ROADMAP.md](./ROADMAP.md).
 
 ## Usage
 
@@ -226,11 +227,11 @@ Fixes for anything it flags live in the guide the line names — `agents/README.
 `machines/common/*.md` or `machines/<target>/*.md`.
 
 `./audit-skills.sh` also runs standalone and prints one line per finding. It is directory-driven:
-every `agents/skills/*/SKILL.md` is checked against the
-[frontmatter reference](https://code.claude.com/docs/en/skills#frontmatter-reference) — unknown
-keys, missing `description`, duplicate `name`, `name` differing from the directory name, `metadata`
-shadowing a reserved field, and the `description` listing cap. Errors exit non-zero; `--strict` also
-fails on warnings.
+every reachable `agents/skills/*/SKILL.md`, including symlinked skill directories, is checked
+against the [frontmatter reference](https://code.claude.com/docs/en/skills#frontmatter-reference) —
+unknown keys, missing `description`, duplicate `name`, `name` differing from the directory name,
+`metadata` shadowing a reserved field, and the `description` listing cap. Errors exit non-zero;
+`--strict` also fails on warnings.
 
 ## Staying current
 

@@ -130,16 +130,13 @@ hash -r
 ln -sfn "$repository_dir/agents/AGENTS.md" "$HOME/AGENTS.md"
 ln -sfn "$HOME/AGENTS.md" "$HOME/CLAUDE.md"
 ln -sfn "$repository_dir/agents" "$HOME/.agents"
-mkdir -p "$HOME/.claude/skills" "$HOME/.cursor/skills" "$HOME/.codex/skills" "$HOME/.pi/agent"
-find "$HOME/.claude/skills" "$HOME/.cursor/skills" "$HOME/.codex/skills" -maxdepth 1 -xtype l -delete
-for skill_dir in "$repository_dir"/agents/skills/*/; do
+mkdir -p "$HOME/.claude/skills" "$HOME/.pi/agent"
+find "$HOME/.claude/skills" -maxdepth 1 -xtype l -delete
+while IFS= read -r -d '' skill_dir; do
     skill_name="$(basename "$skill_dir")"
     ln -sfn "$skill_dir" "$HOME/.claude/skills/$skill_name"
-    ln -sfn "$skill_dir" "$HOME/.cursor/skills/$skill_name"
-    ln -sfn "$skill_dir" "$HOME/.codex/skills/$skill_name"
-done
+done < <(find -L "$repository_dir/agents/skills" -mindepth 1 -maxdepth 1 -type d -print0)
 ln -sfn "$repository_dir/agents/AGENTS.md" "$HOME/.pi/agent/AGENTS.md"
-ln -sfn "$repository_dir/agents/skills" "$HOME/.pi/agent/skills"
 mkdir -p "$HOME/.codex" "$HOME/.cursor" "$HOME/.claude"
 ln -sfn "$repository_dir/agents/codex/config.toml" "$HOME/.codex/config.toml"
 ln -sfn "$repository_dir/agents/codex/hooks.json" "$HOME/.codex/hooks.json"

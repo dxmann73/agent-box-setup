@@ -74,25 +74,33 @@ check 'npm prefix is user writable' test -w "$(npm config get prefix 2>/dev/null
 for path in "$HOME/AGENTS.md" "$HOME/CLAUDE.md" "$HOME/.agents" \
     "$HOME/.codex/config.toml" "$HOME/.codex/hooks.json" \
     "$HOME/.cursor/hooks.json" "$HOME/.cursor/hooks" \
-    "$HOME/.pi/agent/AGENTS.md" "$HOME/.pi/agent/skills"; do
+    "$HOME/.pi/agent/AGENTS.md"; do
     symlink_check "$(basename "$path") linked" "$path"
 done
+check '.agents skills resolves to repository index' \
+    test "$(readlink -f "$HOME/.agents/skills" 2>/dev/null)" = "$repo_dir/agents/skills"
 
 expected_skills=0
 missing_skills=0
-for skill_dir in "$repo_dir"/agents/skills/*/; do
+missing_skill_md=0
+while IFS= read -r -d '' skill_dir; do
     [[ -d "$skill_dir" ]] || continue
     skill_name="$(basename "$skill_dir")"
     expected_skills=$((expected_skills + 1))
-    for destination in "$HOME/.claude/skills/$skill_name" "$HOME/.cursor/skills/$skill_name" \
-        "$HOME/.codex/skills/$skill_name"; do
+    [[ -e "$skill_dir/SKILL.md" ]] || missing_skill_md=$((missing_skill_md + 1))
+    for destination in "$HOME/.claude/skills/$skill_name"; do
         [[ -e "$destination" ]] || missing_skills=$((missing_skills + 1))
     done
-done
+done < <(find -L "$repo_dir/agents/skills" -mindepth 1 -maxdepth 1 -type d -print0)
 if ((expected_skills > 0 && missing_skills == 0)); then
-    pass "all $expected_skills source skills linked for Claude, Cursor, and Codex"
+    pass "all $expected_skills indexed skills linked for Claude Code compatibility"
 else
-    fail "skill links incomplete ($missing_skills missing; source has $expected_skills)"
+    fail "skill links incomplete ($missing_skills missing; index has $expected_skills)"
+fi
+if ((expected_skills > 0 && missing_skill_md == 0)); then
+    pass "all $expected_skills indexed skills have reachable SKILL.md"
+else
+    fail "indexed skill SKILL.md files incomplete ($missing_skill_md missing; index has $expected_skills)"
 fi
 check 'skill frontmatter valid' "$repo_dir/audit-skills.sh"
 

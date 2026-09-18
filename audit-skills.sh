@@ -2,7 +2,8 @@
 # Audit SKILL.md frontmatter in agents/skills/ against the Claude Code frontmatter reference.
 # https://code.claude.com/docs/en/skills#frontmatter-reference
 #
-# Directory-driven: every skill directory under agents/skills/ is checked, no hardcoded list.
+# Directory-driven: every reachable skill directory under agents/skills/ is checked, no hardcoded
+# list. Symlinked skill directories are followed.
 # Exits non-zero when any ERROR is found. Use --strict to also fail on WARN.
 set -euo pipefail
 
@@ -18,7 +19,9 @@ if ! command -v python3 >/dev/null 2>&1; then
     exit 1
 fi
 
-python3 - "$skills_dir" "$@" <<'PYEOF'
+mapfile -d '' skill_dirs < <(find -L "$skills_dir" -mindepth 1 -maxdepth 1 -type d -print0)
+
+python3 - "$skills_dir" "$@" -- "${skill_dirs[@]}" <<'PYEOF'
 import sys
 from pathlib import Path
 
@@ -28,7 +31,9 @@ except ImportError:
     sys.exit("✗ PyYAML is required: sudo apt install python3-yaml")
 
 skills_dir = Path(sys.argv[1])
-strict = "--strict" in sys.argv[2:]
+separator = sys.argv.index("--")
+strict = "--strict" in sys.argv[2:separator]
+skill_dirs = [Path(value) for value in sys.argv[separator + 1:]]
 
 # Every field Claude Code accepts (frontmatter reference, 2026-08).
 KNOWN = {
@@ -65,7 +70,7 @@ def load(skill_md):
     return data, None
 
 
-for skill_dir in sorted(p for p in skills_dir.iterdir() if p.is_dir()):
+for skill_dir in sorted(skill_dirs):
     rel = skill_dir.name
     skill_md = skill_dir / "SKILL.md"
     if not skill_md.is_file():
@@ -131,7 +136,7 @@ for name, dirs in sorted(names.items()):
     if len(dirs) > 1:
         errors.append(f"duplicate name '{name}' declared by: {', '.join(dirs)}")
 
-total = sum(1 for p in skills_dir.iterdir() if p.is_dir())
+total = len(skill_dirs)
 print(f"=== Skill frontmatter audit ({total} skills in {skills_dir}) ===")
 for e in errors:
     print(f"✗ ERROR {e}")

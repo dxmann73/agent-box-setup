@@ -27,22 +27,21 @@ ln -sfn ~/AGENTS.md ~/CLAUDE.md
 
 ## Skills
 
-The repository's `agents/skills/` directory is the source of truth. Link it into every agent:
+The repository's `agents/skills/` directory is the global skill index. Entries may be real skill
+directories or symlinks to skill directories owned by other repositories. `~/.agents/skills` is the
+canonical local skill path for Codex, Cursor, and Pi. Claude Code still documents
+`~/.claude/skills`, so keep Claude-only compatibility links:
 
 ```bash
 ln -sfn ~/projects/agent-box-setup/agents ~/.agents
-ln -sfn ~/projects/agent-box-setup/agents ~/agents
-mkdir -p ~/.claude/skills ~/.cursor/skills ~/.codex/skills ~/.pi/agent
-find ~/.claude/skills ~/.cursor/skills ~/.codex/skills -maxdepth 1 -xtype l -delete
-find ~/projects/agent-box-setup/agents/skills -mindepth 1 -maxdepth 1 -type d -print0 |
+mkdir -p ~/.claude/skills ~/.pi/agent
+find ~/.claude/skills -maxdepth 1 -xtype l -delete
+find -L ~/projects/agent-box-setup/agents/skills -mindepth 1 -maxdepth 1 -type d -print0 |
   while IFS= read -r -d '' skill_dir; do
     skill_name="$(basename "$skill_dir")"
     ln -sfn "$skill_dir" ~/.claude/skills/"$skill_name"
-    ln -sfn "$skill_dir" ~/.cursor/skills/"$skill_name"
-    ln -sfn "$skill_dir" ~/.codex/skills/"$skill_name"
   done
 ln -sfn ~/projects/agent-box-setup/agents/AGENTS.md ~/.pi/agent/AGENTS.md
-ln -sfn ~/projects/agent-box-setup/agents/skills ~/.pi/agent/skills
 ```
 
 Install upstream skills into the source directory:
@@ -65,6 +64,9 @@ npx skills add elastic/agent-skills -g \
   -s elasticsearch-security-troubleshooting -y
 ```
 
+After base box setup, deployment-specific or project-owned skills can add symlinks into
+`agents/skills/`.
+
 Audit and update upstream skills:
 
 ```bash
@@ -75,9 +77,9 @@ npx skills update
 
 ## Caveman
 
-Caveman lives in `agents/skills/` with the rest of the shared skills. Codex and Cursor use the
-repo-managed skill symlinks plus their hook files; they do not need a separate checkout of
-`JuliusBrussee/caveman`.
+Caveman lives in `agents/skills/` with the rest of the shared skills. Codex, Cursor, and Pi use
+`~/.agents/skills`; Claude Code uses the compatibility links above. Codex and Cursor still use their
+hook files; they do not need a separate checkout of `JuliusBrussee/caveman`.
 
 Configure the Claude Code plugin and the Codex/Cursor hooks in the individual agent guides.
 
@@ -100,6 +102,6 @@ cd ~/projects/agent-box-setup
 - [ ] host agents are authenticated for the host completion gate
 - [ ] guest agents are authenticated only after `clean-guest`, when explicitly wanted
 - [ ] global instructions are linked for Claude Code, Codex, and Pi
-- [ ] shared skills are linked for all four agents
+- [ ] shared skills resolve through `~/.agents/skills`, with Claude Code compatibility links
 - [ ] Codex and Cursor Caveman hooks are linked
 - [ ] the target's profiled verification command completes
