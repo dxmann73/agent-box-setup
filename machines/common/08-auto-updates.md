@@ -104,10 +104,7 @@ Add these patterns after their repositories are installed:
 # host only
 "origin=Google LLC,codename=stable";                      // Chrome
 "origin=Dropbox.com";                                    // Dropbox
-"site=persistent.oaistatic.com,codename=stable";          // ChatGPT desktop
 ```
-
-Claude Desktop supplies its own `origin=Anthropic` rule. Do not add `repo.radeon.com`.
 
 A real example of why: this host carried `"origin=Node Source"` for a long time while nodesource had
 moved to publishing `o=. nodistro,a=nodistro,n=nodistro`. The pattern matched nothing, so Node
@@ -120,9 +117,8 @@ where it is a constant of the repo itself, as in Chrome's `stable`.
 
 Three things this file does not cover:
 
-- **Vendor-supplied snippets.** Some packages configure their own unattended upgrades; Claude
-  Desktop ships `/etc/apt/apt.conf.d/50claude-desktop` with `origin=Anthropic,archive=stable`. Check
-  `apt-config dump | grep Origins-Pattern` for the effective list, not just this file.
+- **Vendor-supplied snippets.** Some packages configure their own unattended upgrades. Check `apt-config dump | grep Origins-Pattern` for the effective list, not just
+  this file.
 - **Snaps.** snapd refreshes them on its own, so Bitwarden, VS Code and Firefox as snaps need no
   entry here.
 - **AppImages.** Outside apt entirely. A reviewed manual replacement is the usual channel when the

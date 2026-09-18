@@ -37,4 +37,5 @@
 
   // --- Startup ---
   "workbench.startupEditor": "none",
+  "quarkus.tools.alwaysShowWelcomePage": false,
 }

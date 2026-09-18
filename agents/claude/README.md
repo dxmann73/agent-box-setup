@@ -1,5 +1,8 @@
 # Claude Code
 
+Claude Code is the terminal CLI named `claude`. It is separate from the optional Claude Desktop APT
+package (`claude-desktop`).
+
 ## Installation
 
 Claude should already be installed. If not, install [Claude](https://code.claude.com/docs/en/setup)
@@ -33,9 +36,14 @@ Current settings:
 | `permissions.defaultMode` | `bypassPermissions` | YOLO mode - (no confirmation prompts) |
 | `spinnerVerbs`            | `["Working"]`       | Simplified spinner text               |
 
+Link the repo-managed settings as the source of truth:
+
 ```bash
 ln -sf ~/projects/agent-box-setup/agents/claude/settings.json ~/.claude/settings.json
 ```
+
+Do not replace this with a host-local settings file. If host behavior needs to change, update the
+tracked setup intentionally so the repo and verification stay aligned.
 
 **Verify settings:**
 

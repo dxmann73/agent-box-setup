@@ -5,6 +5,27 @@ authenticates all four. The VM baseline installs and configures all four without
 guest logins are a later explicit credential phase. Host and VM agents use the repo-managed YOLO
 settings.
 
+These are CLI installs, not desktop application packages:
+
+- Claude Code is installed by Anthropic's native user installer under `~/.local/`.
+- Codex and Pi are installed from the user-owned npm prefix under `~/.npm-global/`.
+- Cursor CLI is installed by Cursor's user installer under `~/.local/`.
+
+Do not install the ChatGPT or Claude Desktop APT packages merely to get the CLIs. If those desktop
+apps are present on the host, they are personal host applications and can be removed independently
+from the CLI installs. The tracked files in this repo are the source of truth for agent
+configuration; do not introduce host-local replacements.
+
+To decommission the optional desktop apps on a host:
+
+```bash
+sudo apt remove chatgpt claude-desktop
+claude --version
+codex --version
+agent --version
+pi --version
+```
+
 Use [the browser login handoff](browser-login.md) when the personal browser runs on a different
 machine. Prepare that browser before remaining host logins; preserve existing credentials.
 
