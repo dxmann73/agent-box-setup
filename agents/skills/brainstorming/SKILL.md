@@ -1,31 +1,42 @@
 ---
 name: brainstorming
-description: "Use this when creating or changing a plan/design — exploring requirements, options, and approach before or during planning."
+description: >
+  Explore requirements, options, and approach before implementation. Use when creating or changing
+  a plan or design. Does not write plan files.
 ---
 
 # Brainstorming
 
-Turn ideas into agreed design before implementation. Engineering style, plans, repo conventions live in **AGENTS.md**, **README.md**, and (per project) **SDDs, PRDs, ADRs, specs, use cases** — read those first, not restate here.
+Turn ideas into agreed design before implementation. Engineering style, repo conventions, and
+existing specs live in **AGENTS.md**, **README.md**, and (per project) **SDDs, PRDs, ADRs, use
+cases** — read those first, not restate here.
 
-Example (nomap): planning/design artifacts live under repo-root `plans/`; checked-in system description lives under `docs/sdd/`. Follow target project layout when different.
+This skill does not write plans. Plans live in `_plans/` when they exist; other skills own that
+tree. Do not create, move, or edit files under `_plans/`, `plans/`, `incoming/`, or `_incoming/`.
 
-Plans describe required changes only. Do not pad plans with statements about behavior that already exists, things that stay unchanged, or work that does not need doing.
+Plans and designs describe required changes only. Do not pad with behavior that already exists,
+things that stay unchanged, or work that does not need doing.
 
 ## Hard gate
 
-No implement, scaffold, or invoke implementation skills until design presented and approved. Applies even to "small" work; design may be few sentences.
+No implement, scaffold, or invoke implementation skills until the design is presented and approved
+in conversation. Applies even to "small" work; design may be few sentences.
 
 ## Flow (in order)
 
-1. **Context** — Repo state, docs above, code layout; if ask is multiple independent systems, decompose before detail work.
-2. **Visual companion** — If visuals help soon, offer in **own message** (see `visual-companion.md`). Else skip.
-3. **Questions** — One per message; prefer multiple choice; nail purpose, constraints, success criteria.
-4. **Options** — Two or three approaches with trade-offs and recommendation; cut scope with YAGNI unless user insists.
-5. **Design** — Sections scaled to complexity; confirm as you go (architecture, data flow, errors, testing at level appropriate to work).
-6. **Written artifact** — Default location: `plans/YYYY-MM-DD-<topic>-design.md` at repo root (same folder as implementation plans in `~/AGENTS.md`, which use `YYYY-MM-DD-<topic>-plan.md`). Obey project rules if specify another path or naming.
-7. **Self-review the file** — Fix placeholders/TODOs, internal contradictions, ambiguous requirements, scope that should split into multiple specs.
-8. **User review** — Ask user to read committed file and approve or request edits before planning.
-9. **Next** — Invoke **writing-plans** only. No jump to frontend-design, MCP builders, or other implementation skills.
+1. **Context** — Repo state, docs above, code layout; if the ask is multiple independent systems,
+   decompose before detail work.
+2. **Visual companion** — If visuals help soon, offer in **own message** (see `visual-companion.md`).
+   Else skip.
+3. **Questions** — One per message; prefer multiple choice; nail purpose, constraints, success
+   criteria.
+4. **Options** — Two or three approaches with trade-offs and recommendation; cut scope with YAGNI
+   unless the user insists.
+5. **Design** — Present in conversation, scaled to complexity (architecture, data flow, errors,
+   testing at a level appropriate to the work). Do not write a plan or spec file.
+6. **Approval** — Ask the user to approve or request edits. Stay in chat until they do.
+7. **Stop** — After approval, wait. Do not invoke writing-plans or any other skill that creates
+   plan files.
 
 ## Visual companion
 

@@ -27,3 +27,5 @@ expect; do not substitute silent defaults or empty placeholders that hide bad in
 Do not publish artifacts. Deliverables stay as local files in the project directory.
 Never upload project content to claude.ai or any other external service without being
 asked for that specific upload.
+
+Plans live in `_plans/`.

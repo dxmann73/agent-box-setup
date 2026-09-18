@@ -26,11 +26,12 @@ instructions for the first time.
      directories the stack produces (`node_modules`, `dist`, `build`, `coverage`, `target`):
 
      ```text
-     plans/
+     _plans/
      *-plan.md
      ```
 
    - Add a `.gitignore` matching the stack before the first commit.
+   - run the plan-init skill to scaffold the \_plans directory
 
 3. Repo visibility:
    - Create GitHub repos private by default.

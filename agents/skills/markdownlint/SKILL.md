@@ -37,7 +37,8 @@ For `MD013` line length, read `.markdownlint.json` and follow that value. No con
 
 ## Workflow
 
-> **Note:** Never apply to plan artifacts (`plans/**/*.md`, `**/*-plan.md`). Plans exempt from linting and wrapping.
+> **Note:** Never apply to plan artifacts (`_plans/**/*.md`, `plans/**/*.md`, `**/*-plan.md`).
+> Plans exempt from linting and wrapping.
 
 1. Edit Markdown per core rules.
 1. Wrap/reflow prose with Prettier (line width from `.markdownlint.json`):
@@ -83,5 +84,5 @@ npm install -g markdownlint-cli
 
 - Never hardcode line length; always defer to `.markdownlint.json`.
 - Always respect `.markdownlintignore` during lint runs.
-- Never lint plan artifacts: skip `plans/**/*.md` and `**/*-plan.md`.
+- Never lint plan artifacts: skip `_plans/**/*.md`, `plans/**/*.md`, and `**/*-plan.md`.
 - Don't change `.markdownlint.json` or `.markdownlintignore` unless user asks.
