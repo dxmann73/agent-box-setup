@@ -10,7 +10,9 @@ first; `prepare-host-system.sh` may already have completed infrastructure setup.
 
 A deployment may now create a separate personal browser guest before the remaining host logins. Use
 that overlay's guest configuration and acceptance checks; do not run the agent-VM baseline in it.
-Section 4 is the later **agent-VM** branch, after host tooling completion.
+Do not copy this file's 2D `accel3d=no` video flags into that guest; its overlay enables SPICE GL
+when browser and video playback need it. Section 4 is the later **agent-VM** branch, after host
+tooling completion.
 
 ## 1. Install KVM/libvirt
 
@@ -106,8 +108,9 @@ Source the deployment overlay's `box.env` so `AGENT_BOX_VM_HOSTNAME`, `AGENT_BOX
 both libvirt domain and guest hostname. The overlay supplies the live values; this section keeps
 flag notes.
 
-The guest uses SeaBIOS, shared `memfd` memory, a libvirt NAT network, a local-only SPICE console,
-and virtio video without 3D acceleration. The 2D console permits live snapshots.
+This agent VM uses SeaBIOS, shared `memfd` memory, a libvirt NAT network, a local-only SPICE
+console, and virtio video without 3D acceleration. The 2D console permits live snapshots. A personal
+browser guest is a different domain and does not use these video flags.
 
 ```bash
 virt-install --name "$AGENT_BOX_VM_HOSTNAME" --osinfo detect=on,name=ubuntu24.04 \

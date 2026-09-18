@@ -4,8 +4,9 @@ The VM stays running while clients disconnect. BB sessions and agent processes c
 
 ## 1. Live snapshots
 
-Use live qcow2 snapshots. The VM uses SeaBIOS and virtio video without 3D acceleration so QEMU can
-save memory state during a snapshot.
+Use live qcow2 snapshots. This agent VM uses SeaBIOS and virtio video without 3D acceleration so
+QEMU can save memory state during a snapshot. A 3D SPICE-GL browser guest cannot; snapshot that
+domain while it is shut off, as its overlay describes.
 
 ```bash
 virsh snapshot-create-as VM_NAME clean-guest \
