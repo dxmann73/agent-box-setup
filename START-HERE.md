@@ -23,10 +23,26 @@ Start Claude Code:
 claude
 ```
 
-Complete its sign-in prompts in the browser, then return to the terminal. `git` is not needed yet;
-the `clone-agent-box-setup` module installs it before cloning.
+Complete its sign-in prompts in the browser, then return to the terminal.
 
-## 2. Give the agent this task
+## 2. Clone the setup repository
+
+Kubuntu Desktop may not ship `git`. Install it and place this repository under
+`~/projects/agent-box-setup` before handing the task to the agent:
+
+```bash
+sudo apt-get update
+sudo apt-get install -y git
+mkdir -p ~/projects
+cd ~/projects
+git clone https://github.com/dxmann73/agent-box-setup.git
+```
+
+This is the module `clone-agent-box-setup` executed by hand; its `apply.sh` covers only the
+`git`-install half, because the clone must exist before `apply.sh` can be reached on disk. An
+overlay is a separate module (`clone-dave-box-setup`) and is not cloned here.
+
+## 3. Give the agent this task
 
 Paste the following into Claude Code:
 
