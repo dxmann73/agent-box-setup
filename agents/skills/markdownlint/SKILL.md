@@ -18,6 +18,17 @@ Use for all Markdown authoring and markdownlint workflows except plans. Single s
 
 For `MD013` line length, read `.markdownlint.json` and follow that value. No config → `prettier-wrap.sh` defaults to `100`.
 
+Every project should ship a `.markdownlintignore` (see the `new-project` skill). If it is missing
+at the repo root, create one with the plan-artifact defaults before the first lint run:
+
+```text
+_plans/
+*-plan.md
+```
+
+Extend with stack-generated directories (`node_modules`, `dist`, `build`, `coverage`, `target`) as
+needed.
+
 ## Core Rules
 
 - MD001: heading levels increment by one.

@@ -18,18 +18,19 @@ instructions for the first time.
    - Keep global preferences out of it; those live in `~/AGENTS.md`.
 
 2. Scaffolding files:
-   - Copy the canonical markdownlint config into the repo root:
-     `cp ~/projects/agent-box-setup/.markdownlint.json .markdownlint.json`
-   - It is the source of truth for `MD013` line length (100) and the repo-wide rule set; the
-     `markdownlint` skill reads it. Do not hand-write a variant.
-   - Add a `.markdownlintignore` exempting plan artifacts, plus any generated or vendored
-     directories the stack produces (`node_modules`, `dist`, `build`, `coverage`, `target`):
+   - Copy the canonical markdownlint scaffolding from this skill's `assets/` directory into the
+     repo root:
 
-     ```text
-     _plans/
-     *-plan.md
+     ```bash
+     cp ~/projects/agent-box-setup/agents/skills/new-project/assets/.markdownlint.json .
+     cp ~/projects/agent-box-setup/agents/skills/new-project/assets/.markdownlintignore .
      ```
 
+   - `.markdownlint.json` is the source of truth for `MD013` line length (100) and the repo-wide
+     rule set; the `markdownlint` skill reads it. Do not hand-write a variant.
+   - `.markdownlintignore` starts with plan artifacts (`_plans/`, `*-plan.md`). Extend it with any
+     generated or vendored directories the stack produces (`node_modules`, `dist`, `build`,
+     `coverage`, `target`, `.astro`, …).
    - Add a `.gitignore` matching the stack before the first commit.
    - run the plan-init skill to scaffold the \_plans directory
 
