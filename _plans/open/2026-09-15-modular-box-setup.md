@@ -50,7 +50,7 @@ catalog.
 - [x] `claude-code-bootstrap`
 - [x] `home-dotfiles`
 - [x] `update-tools-timer`
-- [ ] `markdownlint`
+- [x] `markdownlint`
 
 ### 1.3 Hypervisor and guests
 
