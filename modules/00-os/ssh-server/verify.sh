@@ -39,7 +39,7 @@ sudo -n true 2>/dev/null || {
     exit 1
 }
 
-drop_in_path='/etc/ssh/sshd_config.d/90-key-only.conf'
+drop_in_path='/etc/ssh/sshd_config.d/10-key-only.conf'
 readonly drop_in_path
 
 check() {

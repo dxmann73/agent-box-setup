@@ -43,7 +43,7 @@ catalog.
 - [x] `hardware-review`
 - [x] `ssh-client`
 - [x] `ssh-server`
-- [ ] `ufw-firewall`
+- [x] `ufw-firewall`
 
 ### 1.2 Repos and home
 
