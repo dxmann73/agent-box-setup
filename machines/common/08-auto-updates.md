@@ -2,7 +2,7 @@
 
 Both machines should stay close to the current patch state without being asked. This file sets that
 up once per machine; after it, the only updates you type by hand are the two that must stay
-deliberate (BB, and release upgrades).
+deliberate (host BB AppImage, and release upgrades).
 
 Run this early — right after the first `apt full-upgrade` on a new machine — so everything installed
 afterwards is covered from the start.
@@ -21,13 +21,11 @@ after baseline review; it is not a reason to authenticate a guest provider early
 | Flatpak applications                 | user timer added below                   | no          |
 | Global npm CLIs and coding agents    | weekly user timer added below            | no          |
 | **BB desktop AppImage (host)**       | built-in desktop updater                 | yes         |
-| **BB npm runtime (VM)**              | manual, while agents are idle            | yes         |
 | **Ubuntu release** (26.04 → next)    | **manual `do-release-upgrade`**          | **yes**     |
 
 Keep the host AppImage in a writable user directory so its built-in updater can replace it. Apply an
-offered update after host work is idle. The VM runtime uses a dedicated npm prefix,
-`~/.local/share/bb-runtime`, outside `npm update -g`; update it deliberately after its running
-agents finish.
+offered update after host work is idle. VM enrollment daemons are installed and maintained by BB
+machine enrollment, not by this repo's weekly tooling update.
 
 ## 1. apt: unattended upgrades
 
@@ -117,8 +115,8 @@ where it is a constant of the repo itself, as in Chrome's `stable`.
 
 Three things this file does not cover:
 
-- **Vendor-supplied snippets.** Some packages configure their own unattended upgrades. Check `apt-config dump | grep Origins-Pattern` for the effective list, not just
-  this file.
+- **Vendor-supplied snippets.** Some packages configure their own unattended upgrades. Check
+  `apt-config dump | grep Origins-Pattern` for the effective list, not just this file.
 - **Snaps.** snapd refreshes them on its own, so Bitwarden, VS Code and Firefox as snaps need no
   entry here.
 - **AppImages.** Outside apt entirely. A reviewed manual replacement is the usual channel when the
@@ -299,4 +297,4 @@ systemctl --user list-timers
 - [ ] `~/update-tools.sh` symlinked, run once by hand, weekly timer enabled
 - [ ] lingering enabled so user timers run without a login session
 - [ ] release upgrades set to `Prompt=lts`
-- [ ] host BB AppImage stored in a writable directory; VM BB runtime kept outside global npm updates
+- [ ] host BB AppImage stored in a writable directory

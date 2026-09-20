@@ -17,7 +17,7 @@ slot them in after the core tools and Node.js prerequisites.
 | [02-core-tools.md](02-core-tools.md)             | GitHub CLI, jq/yq, Docker (VM only)                         |
 | [03-dev-environment.md](03-dev-environment.md)   | Node.js 24, pnpm, TypeScript, Markdownlint, Firecrawl CLI   |
 | [04-ide+tooling.md](04-ide+tooling.md)           | VS Code, settings sync, keybindings                         |
-| [05-bb.md](05-bb.md)                             | BB desktop AppImage and VM server runtime                   |
+| [05-bb.md](05-bb.md)                             | BB desktop AppImage and shared access                       |
 | [06-optional.md](06-optional.md)                 | Helm, Minikube, kubectl                                     |
 | [07-imaging-tools.md](07-imaging-tools.md)       | Dave overlay imaging tools                                  |
 | [08-auto-updates.md](08-auto-updates.md)         | Unattended apt upgrades, needrestart, weekly tooling update |
@@ -31,7 +31,7 @@ Not covered here, because it belongs to one target only:
 | GPU stack, local model runtime | [local-llm](https://github.com/dxmann73/local-llm) (separate repo), host |
 | agent CLIs, config, skills     | [`../../agents/`](../../agents/README.md)                                |
 | hypervisor and VM creation     | [`../host/05-hypervisor.md`](../host/05-hypervisor.md)                   |
-| BB server in the VM            | [`../vm/04-bb.md`](../vm/04-bb.md)                                       |
+| BB VM enrollment               | [`../vm/04-bb.md`](../vm/04-bb.md)                                       |
 | Playwright browser binaries    | [`../vm/02-dev-and-agents.md`](../vm/02-dev-and-agents.md)               |
 | agent-specific credentials     | [`../vm/05-credentials.md`](../vm/05-credentials.md)                     |
 | personal applications          | [`../host/02-applications.md`](../host/02-applications.md)               |

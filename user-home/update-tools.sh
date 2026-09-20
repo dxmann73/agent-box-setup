@@ -3,8 +3,7 @@
 # Update the tooling that apt does not manage: global npm packages, Claude Code,
 # Codex, Cursor CLI, Pi, and SDKMAN candidates.
 #
-# The host BB AppImage updates itself. The VM npm runtime lives in
-# ~/.local/share/bb-runtime and is updated deliberately; see vm/04-bb.md.
+# The host BB AppImage updates itself. VM enrollment daemons are managed by BB.
 #
 # Symlinked to ~/update-tools.sh; run weekly by a systemd user timer.
 
@@ -101,8 +100,6 @@ step "Cursor CLI"          cursor_cli
 step "Pi"                  pi_cli
 step "SDKMAN"              sdkman
 step "Playwright browsers" playwright_browsers
-
-log "BB: separate runtime; update deliberately while agents are idle"
 
 if [ ${#failed[@]} -gt 0 ]; then
     log "FAILED: ${failed[*]}"

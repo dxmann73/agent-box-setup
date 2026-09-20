@@ -112,7 +112,7 @@ it does not gate a personal browser guest.
 2. [vm/02-dev-and-agents.md](machines/vm/02-dev-and-agents.md) - Baseline toolchain and deliberate
    optional guest tooling
 3. [vm/03-networking.md](machines/vm/03-networking.md) - NAT, host model endpoint, BB reachability
-4. [vm/04-bb.md](machines/vm/04-bb.md) - BB fallback server and shared-host enrollment
+4. [vm/04-bb.md](machines/vm/04-bb.md) - BB host-server enrollment
 5. [vm/05-credentials.md](machines/vm/05-credentials.md) - VM-only credentials
 6. [vm/06-shared-folders.md](machines/vm/06-shared-folders.md) - Narrow host directory shares
 7. [vm/07-snapshots.md](machines/vm/07-snapshots.md) - Persistence, snapshots, live backup
@@ -126,7 +126,7 @@ it does not gate a personal browser guest.
    development tools
 4. [agents/](agents/README.md) - Claude Code, Codex, Cursor CLI, Pi, global rules, skills, Caveman
 5. [common/04-ide+tooling.md](machines/common/04-ide+tooling.md) - VS Code
-6. [common/05-bb.md](machines/common/05-bb.md) - BB desktop AppImage and VM server runtime
+6. [common/05-bb.md](machines/common/05-bb.md) - BB desktop AppImage and shared access
 7. [common/07-imaging-tools.md](machines/common/07-imaging-tools.md) - Deployment imaging overlay
 8. [common/06-optional.md](machines/common/06-optional.md) - Helm, cloud CLIs, extras
 9. [common/08-auto-updates.md](machines/common/08-auto-updates.md) - Unattended apt upgrades,

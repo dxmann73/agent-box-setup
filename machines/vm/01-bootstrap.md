@@ -63,8 +63,8 @@ retains direct libvirt SSH and console recovery paths. Remote clients may use Ta
 
 The script is streamed from the host so a fresh guest does not need GitHub authentication or an
 existing repository checkout. It clones the public setup repository itself and then configures
-packages, dotfiles, four agent CLIs without login, Playwright, the BB service, guest agents, and
-guest desktop defaults.
+packages, dotfiles, four agent CLIs without login, Playwright, guest agents, and guest desktop
+defaults.
 
 ```bash
 cd ~/projects/agent-box-setup
@@ -104,7 +104,7 @@ deliberately.
 - [ ] host-driven baseline finishes without provider or GitHub login
 - [ ] SSH, QEMU guest agent, autologin, disabled blanking, disabled locking, and disabled top-left
       hot corner work
-- [ ] toolchain, four agent CLIs, Playwright Chromium, and BB service are installed
+- [ ] toolchain, four agent CLIs, and Playwright Chromium are installed
 - [ ] `./verify-setup.sh --vm --bootstrap` passes before `clean-guest` is taken
 
 Next: [02-dev-and-agents.md](02-dev-and-agents.md) for review and later optional tooling, or

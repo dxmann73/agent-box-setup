@@ -58,18 +58,6 @@ ensure_wezterm() {
     sudo apt-get install -y wezterm
 }
 
-wait_for_local_bb() {
-    local attempt
-    for attempt in $(seq 1 30); do
-        if curl --fail --silent --max-time 1 http://127.0.0.1:38886/ >/dev/null; then
-            return 0
-        fi
-        sleep 1
-    done
-    printf '%s\n' 'BB server did not become reachable on 127.0.0.1:38886.' >&2
-    return 1
-}
-
 ensure_vscode() {
     if command -v code >/dev/null 2>&1; then
         return
@@ -179,19 +167,11 @@ sudo install -d -m 0755 /etc/sddm.conf.d
 printf '[Autologin]\nUser=%s\nSession=plasma\nRelogin=false\n' "$USER" |
     sudo tee /etc/sddm.conf.d/99-autologin.conf >/dev/null
 
-mkdir -p "$HOME/.local/share/bb-runtime" "$HOME/.config/systemd/user"
-npm install -g --prefix "$HOME/.local/share/bb-runtime" \
-    --allow-scripts=better-sqlite3,node-pty,@parcel/watcher bb-app@latest
-ln -sfn "$HOME/.local/share/bb-runtime/bin/bb-app" "$HOME/.local/bin/bb-app"
-ln -sfn "$HOME/.local/share/bb-runtime/bin/bb" "$HOME/.local/bin/bb"
-ln -sfn "$repository_dir/user-home/systemd/bb.service" "$HOME/.config/systemd/user/bb.service"
+mkdir -p "$HOME/.config/systemd/user"
 ln -sfn "$repository_dir/user-home/klipper-clipboard-sync.sh" "$HOME/.local/bin/klipper-clipboard-sync"
 ln -sfn "$repository_dir/user-home/systemd/klipper-clipboard-sync.service" \
     "$HOME/.config/systemd/user/klipper-clipboard-sync.service"
 systemctl --user daemon-reload
-systemctl --user enable --now bb.service
-wait_for_local_bb
-bb plugin enable provider-usage
 # Starts with the next Plasma login when the baseline runs before a session exists.
 systemctl --user enable klipper-clipboard-sync.service
 if systemctl --user is-active --quiet graphical-session.target; then

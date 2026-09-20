@@ -73,9 +73,8 @@ The host AppImage server is the shared control plane and must be reachable from 
 clients (specification §4, §11). The VM connects to it as an enrolled execution machine.
 
 Keep every BB listener on loopback. Remote clients may reach the host origin over Tailscale; this
-box's URLs live in `~/projects/infra/tailscale/`. The VM's standalone fallback may use an SSH tunnel
-from the host; see [04-bb.md](04-bb.md). The raw BB API is unauthenticated; do not bind it directly
-to the LAN.
+box's URLs live in `~/projects/infra/tailscale/`. The VM connects back to the host origin through
+its enrolled host-daemon service.
 
 The libvirt NAT network hides the guest from the LAN: other machines in the flat cannot reach
 `192.168.122.x` at all, only the host can. That is deliberate.

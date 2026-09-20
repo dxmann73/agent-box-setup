@@ -126,10 +126,6 @@ if [[ "$target" == vm ]]; then
     check 'QEMU guest agent active' systemctl is-active --quiet qemu-guest-agent
     check 'SPICE guest agent active' systemctl is-active --quiet spice-vdagentd
     check 'Klipper clipboard sync enabled' systemctl --user is-enabled --quiet klipper-clipboard-sync.service
-    check 'BB service active' systemctl --user is-active --quiet bb.service
-    command_check 'BB launcher available' bb-app
-    check 'BB listens only locally' curl --fail --silent --max-time 5 http://127.0.0.1:38886/
-    check 'BB Provider usage plugin enabled' bb_plugin_enabled provider-usage
     check 'Playwright Chromium can capture a page' npx --yes playwright@latest screenshot https://example.com /tmp/agent-box-playwright-check.png
     check 'VS Code installed' code --version
     check 'VS Code settings present' test -L "$HOME/.config/Code/User/settings.json"

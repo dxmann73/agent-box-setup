@@ -17,7 +17,7 @@ Commands in this tree use `VM_NAME`.
 | [01-bootstrap.md](01-bootstrap.md)           | Console SSH/sudo bootstrap, then host-driven credential-free baseline |
 | [02-dev-and-agents.md](02-dev-and-agents.md) | Baseline result, toolchain maintenance, and deliberate extras         |
 | [03-networking.md](03-networking.md)         | NAT, host model endpoint, BB reachability                             |
-| [04-bb.md](04-bb.md)                         | BB fallback server and host-server enrollment                         |
+| [04-bb.md](04-bb.md)                         | BB host-server enrollment                                             |
 | [05-credentials.md](05-credentials.md)       | VM-only SSH/GitHub/API credentials                                    |
 | [06-shared-folders.md](06-shared-folders.md) | Narrow host directory shares, e.g. Dropbox tax folder                 |
 | [07-snapshots.md](07-snapshots.md)           | Persistence, snapshots, backup, rebuild test                          |
@@ -33,7 +33,6 @@ shares remain later opt-in phases.
 | coding agents, skills, hooks                    | ✅  | ✅               |
 | agent-worked projects                           | ✅  | ❌               |
 | BB execution machine                            | ✅  | ✅ shared server |
-| temporary standalone BB fallback                | ✅  | ❌               |
 | Playwright + headless Chromium                  | ✅  | ❌               |
 | full dev toolchain                              | ✅  | ✅               |
 | personal apps, Dropbox, personal Chrome profile | ❌  | ✅               |

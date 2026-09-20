@@ -101,8 +101,7 @@ Tailscale; this box's URL lives in `infra/tailscale/`.
 
 The host server is the shared control plane. Host and VM agents use YOLO settings. Enroll the VM as
 an execution machine using [the VM BB guide](../vm/04-bb.md). Remote desktop and Android clients
-connect to that host origin and can then select the host or VM for execution. The VM's standalone
-interface has independent history and is only a temporary fallback.
+connect to that host origin and can then select the host or VM for execution.
 
 Applies in the VM and not here:
 
