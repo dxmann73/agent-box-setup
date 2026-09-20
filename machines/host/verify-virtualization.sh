@@ -50,6 +50,8 @@ for package in virtiofsd libnss-libvirt; do
 done
 check 'domain-definition directory exists' test -d "$HOME/vms"
 check 'domain-definition directory writable' test -w "$HOME/vms"
+check 'libvirt-guests saves VMs on host shutdown' \
+    grep -qx 'ON_SHUTDOWN=suspend' /etc/default/libvirt-guests
 printf '\nResult: %d infrastructure check(s) failed.\n' "$failures"
 printf '%s\n' 'Also verify guest-specific resources, signed ISO checksum and network policy before installation.'
 ((failures == 0))

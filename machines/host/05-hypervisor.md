@@ -9,10 +9,10 @@ coding-agent authentication, editor, project inventory or existing guest. Check 
 first; `prepare-host-system.sh` may already have completed infrastructure setup.
 
 A deployment may now create a separate personal browser guest before the remaining host logins. Use
-that overlay's guest configuration and acceptance checks; do not run the agent-VM baseline in it.
-Do not copy this file's 2D `accel3d=no` video flags into that guest; its overlay enables SPICE GL
-when browser and video playback need it. Section 4 is the later **agent-VM** branch, after host
-tooling completion.
+that overlay's guest configuration and acceptance checks; do not run the agent-VM baseline in it. Do
+not copy this file's 2D `accel3d=no` video flags into that guest; its overlay enables SPICE GL when
+browser and video playback need it. Section 4 is the later **agent-VM** branch, after host tooling
+completion.
 
 ## 1. Install KVM/libvirt
 
@@ -151,13 +151,20 @@ ssh "$AGENT_BOX_VM_HOSTNAME" \
 
 ## 5. Day-to-day
 
-| Task                | Command                                          |
-| ------------------- | ------------------------------------------------ |
-| Start / stop        | `virsh start VM_NAME` / `virsh shutdown VM_NAME` |
-| Force off           | `virsh destroy VM_NAME`                          |
-| Graphical console   | `virt-viewer --attach VM_NAME`                   |
-| Edit hardware       | `virsh edit VM_NAME`                             |
-| Save the definition | `virsh dumpxml VM_NAME > ~/vms/VM_NAME.xml`      |
+| Task                | Command                                             |
+| ------------------- | --------------------------------------------------- |
+| Start / stop        | `virsh start VM_NAME` / `virsh shutdown VM_NAME`    |
+| Hibernate / restore | `virsh managedsave VM_NAME` / `virsh start VM_NAME` |
+| Force off           | `virsh destroy VM_NAME`                             |
+| Graphical console   | `virt-viewer --attach VM_NAME`                      |
+| Edit hardware       | `virsh edit VM_NAME`                                |
+| Save the definition | `virsh dumpxml VM_NAME > ~/vms/VM_NAME.xml`         |
+
+Host poweroff must not ACPI-stop the agent VM. Set `ON_SHUTDOWN=suspend` in
+`/etc/default/libvirt-guests` so `libvirt-guests.service` runs `virsh managedsave` on every running
+domain. Leave `ON_BOOT=ignore`. The agent VM's libvirt autostart restores that save, so in-guest
+processes resume. A 3D SPICE-GL guest cannot save (`virgl is not yet migratable`); leave its
+autostart off and accept a cold start.
 
 ## 6. Checklist
 
@@ -167,4 +174,5 @@ ssh "$AGENT_BOX_VM_HOSTNAME" \
 - [ ] `libvirt_guest` and `libvirt` are in the host resolver configuration
 - [ ] VM has the overlay CPU, memory, disk, SeaBIOS, `memfd`, and 2D virtio video
 - [ ] VM autostarts and `getent hosts VM_NAME` resolves it
+- [ ] `/etc/default/libvirt-guests` has `ON_SHUTDOWN=suspend`
 - [ ] domain XML is saved to `~/vms/VM_NAME.xml`
