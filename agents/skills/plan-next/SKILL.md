@@ -1,12 +1,12 @@
 ---
 name: plan-next
-description: Review _plans/drafts/ and recommend the top five draft plans that are
-  ready and logical to work on next.
+description: Review _plans/drafts/ and recommend the top five draft plans to
+  select for planning and refinement next.
 ---
 
 # Plan next
 
-Pick the next likely work item from a ranked choice set of draft plans.
+Pick the next likely draft to select for planning and refinement.
 
 This skill reads plans and project direction only.
 
@@ -14,8 +14,8 @@ This skill reads plans and project direction only.
 
 - Target is the current workspace unless the user names another existing repository.
 - Read `_plans/drafts/` completely.
-- Read context from `_plans/README.md`, root `ROADMAP.md`, `VISION.md`, and `README.md` when they
-  exist.
+- Read `_plans/README.md`; it is the source of truth for plan stages and repository rules.
+- Read context from root `ROADMAP.md`, `VISION.md`, and `README.md` when they exist.
 - Read filenames and titles in `_plans/next/`, `_plans/open/`, `_plans/done/`, and
   `_plans/discarded/` to detect sequencing, duplicates, active work, or already-finished work.
 - Do not read other sources unless the user explicitly names them.
@@ -38,15 +38,15 @@ Down-rank or exclude:
 
 ## Output
 
-Return a pick list of up to five drafts, sorted best first. If fewer than five look ready, return
-only the ready set and mention the count. For each item include:
+Return a pick list of up to five drafts, sorted best first. If fewer than five look ready to select
+for refinement, return only that set and mention the count. For each item include:
 
 - Rank number.
 - Draft path.
 - Title.
 - Priority, if the draft states one.
 - Why it is a logical next item.
-- Readiness notes: what makes it executable now, plus any blocker or assumption.
+- Readiness notes: what makes it worth selecting now, plus any blocker or assumption.
 
 End by asking the user to choose by rank, title, or path. Do not invoke another skill until the user
 chooses.

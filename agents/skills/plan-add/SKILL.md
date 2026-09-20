@@ -15,8 +15,10 @@ This skill writes into `drafts/` only.
 ## Scope
 
 - Target is the current workspace.
-- Read only `_plans/`, the current repository name and branch, plus the cheap git signals
-  named under "Surroundings"
+- Read `_plans/README.md` when present; it is the source of truth for plan stages and repository
+  rules.
+- Otherwise read only `_plans/`, the current repository name and branch, plus the cheap git signals
+  named under "Surroundings".
 
 ## Steps
 
@@ -58,7 +60,7 @@ unix-milliseconds stamp to the new one.
 
 ---
 
-Also see `_plans/README.md` and the the project `README.md`for any rules that apply.
+Also see `_plans/README.md` and the project `README.md` for any rules that apply.
 ```
 
 - Preserve the captured text verbatim. It is evidence of what was actually said. Add a title and
@@ -66,7 +68,8 @@ Also see `_plans/README.md` and the the project `README.md`for any rules that ap
 - Write `source` only when the origin is actually known, such as a Slack message the user pasted
   in. If it is unknown, omit the field.
 - Write the `Related` section only when the scan found a real match.
-- Write the `Observations` section only when the surroundings check found something real; see "Surroundings" below.
+- Write the `Observations` section only when the surroundings check found something real; see
+  "Surroundings" below.
 
 ## Priority
 
@@ -86,7 +89,8 @@ refactor, no stated consequence. Words such as "someday", "at some point", or "n
 explicit deferral and mean `p4`.
 
 Always write the evidence next to the value. A bare `priority: p0` cannot be reviewed.
-`priority: p0 (urgent) — alert firing, clients already receiving 500` can be argued with.
+`priority: p0 (urgent) — alert firing, clients already receiving 500` can be argued
+with.
 
 When the text carries no urgency signal at all, write
 `priority: p3 (low) — no urgency signal in the text`. State the absence. Do not quietly pick a
@@ -98,7 +102,8 @@ the file. Do not stop and ask.
 
 ## Scan
 
-Before finishing, scan `_plans/` for a plan covering the same ground: filenames and titles across. If nothing matches, write the draft and finish.
+Before finishing, scan `_plans/` for a plan covering the same ground: filenames and titles across.
+If nothing matches, write the draft and finish.
 
 ## Overlap
 
@@ -127,7 +132,8 @@ Cheap signals only (this is capture, not research):
 - `_plans/` filenames and titles (already read for the scan).
 - The root `docs/` tree, if present
 
-Record a signal under `Observations` only when real and relevant — one plain line, signal plus why it matters.
+Record a signal under `Observations` only when real and relevant — one plain line, signal plus why
+it matters.
 
 ## Uninitialized repository
 

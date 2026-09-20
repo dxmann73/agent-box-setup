@@ -22,11 +22,11 @@ _plans/
   discarded/
 ```
 
-- `README.md` — index of the stage descriptions and a `Repository rules` section for rules that apply to this repository only.
-- `drafts/` — not ready to queue.
-- `next/` — queued. Listed in the README.
-- `open/` — in flight. Listed in the README.
-- `done/` — finished.
+- `README.md` — source of truth for plan stages, transitions, indexes, and repository rules.
+- `drafts/` — captured ideas, not selected yet.
+- `next/` — selected for planning and refinement. Listed in the README.
+- `open/` — actively being implemented. Listed in the README.
+- `done/` — finished and verified.
 - `discarded/` — abandoned.
 
 ## Workflow
@@ -45,8 +45,8 @@ _plans/
 
 ## Completion
 
-Done when `_plans/` matches the layout above, `_plans/README.md` is the next/open index with its
-stage descriptions and an empty `Repository rules` section, and the five stage directories exist.
+Done when `_plans/` matches the layout above, `_plans/README.md` contains the shared lifecycle,
+next/open indexes, and an empty `Repository rules` section, and the five stage directories exist.
 Files that lived in `plans/`, `_incoming/`, or `incoming/` now live in
 `_plans/drafts/`, and those source directories are gone. No extra top-level files. No placeholder
 plans.
