@@ -1,0 +1,46 @@
+# kubuntu-baseline recipe
+
+Run this module after `kubuntu-desktop` and before tool, SSH, firewall, VM integration, agent, or
+credential modules.
+
+## Targets
+
+Use one target per run:
+
+- `daily-host`: protected personal host session, no autologin, no passwordless sudo, host layout
+  directories under `$HOME`
+- `guest`: passwordless guest sudo, SDDM autologin, screen lock and display blanking disabled
+
+## Apply
+
+```bash
+cd ~/projects/agent-box-setup/modules/00-os/kubuntu-baseline
+sudo ./apply.sh --target daily-host
+```
+
+or:
+
+```bash
+cd ~/projects/agent-box-setup/modules/00-os/kubuntu-baseline
+sudo ./apply.sh --target guest
+```
+
+Locale defaults to `en_US.UTF-8`. Add profile locales without storing private profile data here:
+
+```bash
+KUBUNTU_BASELINE_LOCALES="en_US.UTF-8 extra_LOCALE.UTF-8" \
+KUBUNTU_BASELINE_LANG=en_US.UTF-8 \
+sudo ./apply.sh --target daily-host
+```
+
+## Verify
+
+```bash
+./verify.sh --target daily-host
+```
+
+or:
+
+```bash
+./verify.sh --target guest
+```

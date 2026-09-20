@@ -38,7 +38,7 @@ catalog.
 ### 1.1 OS and host baseline
 
 - [x] `kubuntu-desktop`
-- [ ] `kubuntu-baseline`
+- [x] `kubuntu-baseline`
 - [ ] `host-sudo-session`
 - [ ] `hardware-review`
 - [ ] `git-identity`
