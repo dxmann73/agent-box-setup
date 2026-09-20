@@ -41,7 +41,7 @@ catalog.
 - [x] `kubuntu-baseline`
 - [x] `host-sudo-session`
 - [x] `hardware-review`
-- [ ] `ssh-client`
+- [x] `ssh-client`
 - [ ] `ssh-server`
 - [ ] `ufw-firewall`
 
