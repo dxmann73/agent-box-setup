@@ -29,6 +29,7 @@ We are currently using the following skills:
 - local: `new-project`
 - local: `sync-repo-setup`
 - local: `plan-init`
+- local: `plan-add`
 
 On demand:
 
