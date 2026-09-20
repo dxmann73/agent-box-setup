@@ -24,9 +24,10 @@ possible; do not grow it into a guide.
 Each module also gets its own verify (this tick only). Daily-host bootstrap (`START-HERE` on `xhost`
 / `bhost`) runs `host-sudo-session` before rootful module work.
 
-Do not delete `machines/` yet. Dual tree is expected. Do not change live boxes.
+Keep the existing big `verify-setup.sh` as the repo safety net while module recipes and per-module
+verifies are being built. Do not replace or delete it during recipe work.
 
-**Done:** every catalog module has a short README, apply artifacts, and a per-tick verify.
+Do not delete `machines/` yet. Dual tree is expected. Do not change live boxes.
 
 ## 2. Cutover
 
@@ -39,8 +40,10 @@ For each slice:
 2. Delete the overlapping `machines/` text.
 3. Update `README.md`, `START-HERE.md`, and `AGENTS.md` as needed.
 
-Replace `verify-setup.sh` with a thin runner: given a box id, run each ticked module’s verify.
-`--host`, `--vm`, and `--bootstrap|--operational|--full` are not the source of truth.
+Replace `verify-setup.sh` only at the end of cutover, after module verifies cover the ticked
+catalog modules. The replacement is a thin runner: given a box id, run each ticked module’s verify.
+`--host`, `--vm`, and `--bootstrap|--operational|--full` are compatibility aliases at most, not the
+source of truth.
 
 Delete spec §4 standalone VM BB fallback when the BB slice cuts over.
 
