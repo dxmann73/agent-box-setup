@@ -10,4 +10,4 @@ Drafts, done, and discarded stay in their folders and are not listed here.
 
 ## Open
 
-(none)
+- [Modular box setup — implementation plan](open/2026-09-15-modular-box-setup.md)
