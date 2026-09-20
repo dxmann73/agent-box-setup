@@ -216,9 +216,11 @@ fi
 systemctl enable --now apt-daily.timer apt-daily-upgrade.timer
 loginctl enable-linger "$setup_user"
 
+install -d -o "$setup_user" -g "$setup_group" "$setup_home/system-info"
+
 if [[ "$target" == "daily-host" ]]; then
     install -d -o "$setup_user" -g "$setup_group" \
-        "$setup_home/projects" "$setup_home/vms" "$setup_home/system-info" "$setup_home/backup/vm"
+        "$setup_home/projects" "$setup_home/vms" "$setup_home/backup/vm"
     remove_if_present /etc/sudoers.d/agent-nopasswd
     write_desktop_policy protected
 else

@@ -42,7 +42,7 @@ catalog.
 - [x] `host-sudo-session`
 - [x] `hardware-review`
 - [x] `ssh-client`
-- [ ] `ssh-server`
+- [x] `ssh-server`
 - [ ] `ufw-firewall`
 
 ### 1.2 Repos and home

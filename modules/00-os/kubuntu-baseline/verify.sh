@@ -89,8 +89,11 @@ release_prompt_lts() {
 }
 
 host_dirs_exist() {
-    [[ -d "$HOME/projects" && -d "$HOME/vms" && -d "$HOME/system-info" &&
-        -d "$HOME/backup/vm" ]]
+    [[ -d "$HOME/projects" && -d "$HOME/vms" && -d "$HOME/backup/vm" ]]
+}
+
+system_info_dir_exists() {
+    [[ -d "$HOME/system-info" ]]
 }
 
 screen_lock_value_is() {
@@ -127,6 +130,7 @@ check 'apt daily timers enabled' systemctl is-enabled --quiet apt-daily.timer
 check 'apt daily upgrade timer enabled' systemctl is-enabled --quiet apt-daily-upgrade.timer
 check 'needrestart restarts services automatically' needrestart_auto
 check 'release upgrades prompt for LTS' release_prompt_lts
+check '~/system-info directory exists' system_info_dir_exists
 
 if [[ "$target" == "daily-host" ]]; then
     check 'host layout directories exist' host_dirs_exist
