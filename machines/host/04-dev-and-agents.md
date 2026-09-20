@@ -144,6 +144,7 @@ cd ~/projects/agent-box-setup
 - [ ] markdownlint and Firecrawl CLIs available; Firecrawl authenticated
 - [ ] VS Code installed and configured
 - [ ] BB desktop AppImage installed in a writable user directory and opens normally
+- [ ] Provider usage plugin enabled on the host BB server
 - [ ] Claude Code, Codex, Cursor CLI, and Pi installed and authenticated
 - [ ] skills symlinked into all four agents
 - [ ] `./verify-setup.sh --host --operational` passes

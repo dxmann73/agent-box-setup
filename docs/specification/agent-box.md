@@ -31,6 +31,8 @@
    - Authorized desktop and phone clients must be able to reach the host server. That path may be
      private Tailscale Serve; this box's URLs live in the `infra` project. Do not expose the raw BB
      port.
+   - Enable the built-in Provider usage plugin on each BB server so clients can see provider limits
+     in the sidebar footer.
 
 5. **Coding agents**
    - Install Claude Code, Codex, Cursor CLI, and Pi on both host and VM.

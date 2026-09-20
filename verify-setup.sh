@@ -47,6 +47,11 @@ check() {
 }
 command_check() { check "$1" command -v "$2"; }
 symlink_check() { check "$1" test -L "$2"; }
+bb_plugin_enabled() {
+    local plugin_id="$1"
+    bb plugin list --json | jq -e --arg id "$plugin_id" \
+        '.plugins[] | select(.id == $id and .enabled == true)' >/dev/null
+}
 profile_at_least() {
     case "$profile:$1" in
         operational:bootstrap|operational:operational|full:bootstrap|full:operational|full:full) return 0 ;;
@@ -124,6 +129,7 @@ if [[ "$target" == vm ]]; then
     check 'BB service active' systemctl --user is-active --quiet bb.service
     command_check 'BB launcher available' bb-app
     check 'BB listens only locally' curl --fail --silent --max-time 5 http://127.0.0.1:38886/
+    check 'BB Provider usage plugin enabled' bb_plugin_enabled provider-usage
     check 'Playwright Chromium can capture a page' npx --yes playwright@latest screenshot https://example.com /tmp/agent-box-playwright-check.png
     check 'VS Code installed' code --version
     check 'VS Code settings present' test -L "$HOME/.config/Code/User/settings.json"
@@ -146,6 +152,11 @@ if profile_at_least operational; then
         check 'VS Code settings present' test -f "$HOME/.config/Code/User/settings.json"
         check 'VS Code keybindings present' test -f "$HOME/.config/Code/User/keybindings.json"
         check 'BB desktop AppImage executable' test -x "$HOME/Applications/bb.AppImage"
+        if bb plugin list --json >/dev/null 2>&1; then
+            check 'BB Provider usage plugin enabled' bb_plugin_enabled provider-usage
+        else
+            skip 'BB Provider usage plugin (BB server not reachable)'
+        fi
     else
         skip 'host-only completion gate; run --host --operational on the personal host'
     fi

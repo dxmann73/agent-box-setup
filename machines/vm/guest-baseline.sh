@@ -58,6 +58,18 @@ ensure_wezterm() {
     sudo apt-get install -y wezterm
 }
 
+wait_for_local_bb() {
+    local attempt
+    for attempt in $(seq 1 30); do
+        if curl --fail --silent --max-time 1 http://127.0.0.1:38886/ >/dev/null; then
+            return 0
+        fi
+        sleep 1
+    done
+    printf '%s\n' 'BB server did not become reachable on 127.0.0.1:38886.' >&2
+    return 1
+}
+
 ensure_vscode() {
     if command -v code >/dev/null 2>&1; then
         return
@@ -178,6 +190,8 @@ ln -sfn "$repository_dir/user-home/systemd/klipper-clipboard-sync.service" \
     "$HOME/.config/systemd/user/klipper-clipboard-sync.service"
 systemctl --user daemon-reload
 systemctl --user enable --now bb.service
+wait_for_local_bb
+bb plugin enable provider-usage
 # Starts with the next Plasma login when the baseline runs before a session exists.
 systemctl --user enable klipper-clipboard-sync.service
 if systemctl --user is-active --quiet graphical-session.target; then

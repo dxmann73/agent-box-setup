@@ -2,7 +2,8 @@
 
 What: BB shared control-plane server.
 
-Does: Provides the host AppImage server role and compatibility expectations.
+Does: Provides the host AppImage server role and compatibility expectations. Enable the built-in
+Provider usage plugin after first launch (`bb plugin enable provider-usage`).
 
 Catalog metadata: see [Modular machine catalog](../../README.md) for typ, sit, scp, requires, and
 ticks.
