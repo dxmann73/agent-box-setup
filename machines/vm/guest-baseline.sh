@@ -157,6 +157,12 @@ kwriteconfig6 --file powerdevilrc --group AC --group Display --key TurnOffDispla
 kwriteconfig6 --file kscreenlockerrc --group Daemon --key Autolock false
 kwriteconfig6 --file kscreenlockerrc --group Daemon --key LockOnResume false
 kwriteconfig6 --file kscreenlockerrc --group Daemon --key Timeout 0
+kwriteconfig6 --file kwinrc --group ElectricBorders --key TopLeft None
+kwriteconfig6 --file kwinrc --group Effect-overview --key BorderActivate ''
+kwriteconfig6 --file kwinrc --group Effect-PresentWindows --key BorderActivate ''
+kwriteconfig6 --file kwinrc --group Effect-PresentWindows --key BorderActivateAll ''
+kwriteconfig6 --file kwinrc --group Effect-PresentWindows --key BorderActivateClass ''
+qdbus6 org.kde.KWin /KWin org.kde.KWin.reconfigure >/dev/null 2>&1 || true
 sudo install -d -m 0755 /etc/sddm.conf.d
 printf '[Autologin]\nUser=%s\nSession=plasma\nRelogin=false\n' "$USER" |
     sudo tee /etc/sddm.conf.d/99-autologin.conf >/dev/null

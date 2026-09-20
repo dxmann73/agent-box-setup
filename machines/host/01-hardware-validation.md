@@ -114,6 +114,17 @@ Use Kubuntu's stock power profile and display energy-saving settings initially. 
 and AC/battery display timeout after measuring suspend, battery life, and dock behavior. Do not use
 VM settings that disable blanking, locking, or autologin on the host.
 
+Disable the top-left Plasma hot corner that opens the overview/all-windows effect:
+
+```bash
+kwriteconfig6 --file kwinrc --group ElectricBorders --key TopLeft None
+kwriteconfig6 --file kwinrc --group Effect-overview --key BorderActivate ''
+kwriteconfig6 --file kwinrc --group Effect-PresentWindows --key BorderActivate ''
+kwriteconfig6 --file kwinrc --group Effect-PresentWindows --key BorderActivateAll ''
+kwriteconfig6 --file kwinrc --group Effect-PresentWindows --key BorderActivateClass ''
+qdbus6 org.kde.KWin /KWin org.kde.KWin.reconfigure || true
+```
+
 Verify in System Settings:
 
 ```text
@@ -123,7 +134,7 @@ System Settings
 ```
 
 Confirm automatic locking and lock-on-resume are enabled, then log out and back in before treating
-the session policy as complete.
+the session policy as complete. Also confirm the top-left corner no longer opens the overview.
 
 ## 6. Hardware checklist
 

@@ -22,6 +22,9 @@ baseline therefore enables the user service
 text copied in the guest reaches the host through SPICE. Keep Klipper clipboard history enabled;
 only text Klipper records is copied.
 
+The baseline also disables the top-left Plasma hot corner that opens the overview/all-windows
+effect.
+
 It links the shared global instructions, skills, agent configuration, and checked-in WezTerm Lua
 configuration from the guest checkout. It does not invoke any CLI interactively, so it cannot create
 provider credentials.

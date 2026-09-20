@@ -75,7 +75,9 @@ ssh "$AGENT_BOX_VM_HOSTNAME" \
 
 The script refuses to run outside a virtualized guest, with the wrong hostname, or without guest
 `NOPASSWD` sudo. Re-running it is safe: package installation, links, service enablement, and managed
-desktop settings converge on the same state.
+desktop settings converge on the same state. Managed desktop settings include disabled display
+blanking, disabled screen locking, automatic login, and disabling the top-left Plasma hot corner
+that opens the overview/all-windows effect.
 
 It deliberately does not authenticate GitHub, Claude, Codex, Cursor, Pi, Firecrawl, model providers,
 or configure host shares/network exposure. Those are later, explicit phases.
@@ -100,7 +102,8 @@ deliberately.
 - [ ] guest port 22 is reachable through the single-host libvirt exception only
 - [ ] only the guest user has passwordless sudo
 - [ ] host-driven baseline finishes without provider or GitHub login
-- [ ] SSH, QEMU guest agent, autologin, disabled blanking, and disabled locking work
+- [ ] SSH, QEMU guest agent, autologin, disabled blanking, disabled locking, and disabled top-left
+      hot corner work
 - [ ] toolchain, four agent CLIs, Playwright Chromium, and BB service are installed
 - [ ] `./verify-setup.sh --vm --bootstrap` passes before `clean-guest` is taken
 
