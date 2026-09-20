@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=BB
+Comment=Agent development environment
+Exec=/home/dave/Applications/bb.AppImage
+Icon=bb
+Terminal=false
+StartupWMClass=bb
+Categories=Development;

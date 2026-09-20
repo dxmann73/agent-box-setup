@@ -255,7 +255,9 @@ separate ticks (`claude-code`, `codex-cli`, `cursor-cli`, `pi`).
 
 No standalone BB npm fallback on the agent VM. Shared control plane is the host AppImage
 (`bb-server`). The VM is only an enrolled execution machine (`bb-enroll-execution-machine`). Spec §4
-fallback bullet dies with this module. `bb-server` includes the AppImage/FUSE compatibility check.
+fallback bullet dies with this module. `bb-server` includes the AppImage/FUSE compatibility check
+plus the KDE autostart entry, the application-menu entry and its icon; the AppImage download itself
+stays manual.
 `bb-client` depends on the Tailscale path; the remote `bb-server` must already be reachable from
 `infra`. `bb-server` / `bb-client` install unattended; human BB UI is `bb-enroll-execution-machine`.
 Remote BB is Tailscale Serve (`infra`), not BB Connect. `bb-connect` dropped. `tailscale` install is
