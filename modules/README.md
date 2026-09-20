@@ -141,10 +141,9 @@ daily-host START-HERE only (`xhost` `bhost`). The agent VM installs the binary a
 §5 via host-streamed guest baseline. Re-auth is `claude-login`; no `clone-dave-box-setup` on the
 guest. `markdownlint` is its own module: symlink `.markdownlint.json` into `~/projects/` and
 `npm i -g markdownlint-cli`. The skill needs the CLI; this is not folded into `home-dotfiles`.
-Requires Node, so it runs after `node-24` even though it sits in this cluster. `home-dotfiles`
-copies the `.bash_secrets` template and symlinks it; tokens get filled later (login stage)
-`update-tools-timer` stays its own module (weekly systemd user timer; the script symlink is already
-`home-dotfiles`).
+Requires Node, so it runs after `node-24` even though it sits in this cluster. `home-dotfiles` keeps
+shell dotfiles generic; secrets are created later during the login stage. `update-tools-timer` stays
+its own module (weekly systemd user timer; the script symlink is already `home-dotfiles`).
 
 Section 1 closed.
 
@@ -285,8 +284,7 @@ bitwarden-chrome             cred  login  dave   -     -    Y    -      personal
 personal-browser-logins is one module. The URL list is a per-host value, not 30 ticks. Credential
 modules that require a web or device-code flow use the browser available from `kubuntu-desktop`; on
 guests they run in the `gcred` window. `FIRECRAWL_API_KEY` is written during `firecrawl-login` into
-the `.bash_secrets` file that `home-dotfiles` already linked. No `bb-connect`: remotes use Tailscale
-Serve.
+`~/.bash_secrets`. No `bb-connect`: remotes use Tailscale Serve.
 
 ### 7. Personal host apps (dave)
 

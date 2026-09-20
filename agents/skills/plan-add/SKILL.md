@@ -10,16 +10,13 @@ description: Capture a thought as a draft plan under _plans/drafts/ so it is not
 Capture a thought and save it as a draft. Make no decisions about the work itself. The user wants
 it out of their head, not solved.
 
-This skill writes into `drafts/` only. It never queues a plan, never promotes one, and never moves
-a plan between stages.
+This skill writes into `drafts/` only.
 
 ## Scope
 
-- Target is the current workspace. Never infer another repository from the text. Never write
-  outside the current workspace.
-- Read only `_plans/`, plus the current repository name and branch.
-- Do not grep the codebase. Do not fetch a pull request. Do not follow links. Deeper research
-  belongs to promotion, not capture. A capture must feel instant.
+- Target is the current workspace.
+- Read only `_plans/`, the current repository name and branch, plus the cheap git signals
+  named under "Surroundings"
 
 ## Steps
 
@@ -29,13 +26,15 @@ a plan between stages.
 4. Scan `_plans/` for an overlapping plan.
 5. If a plan overlaps, follow "Overlap" below and stop.
 6. Otherwise write `_plans/drafts/<slug>.md` in the format below.
-7. Report the path written, the inferred priority with its basis, and any `Related` link added.
+7. Check the surroundings per "Surroundings" below. Record what you find in the draft's
+   `Observations` section, if anything.
+8. Report the path written, the inferred priority with its basis, any `Related` link added, and any
+   observation surfaced.
 
 ## Naming
 
-If `_plans/drafts/<slug>.md` already exists, keep the existing file untouched and append a
-unix-milliseconds stamp to the new one (`note.md` becomes `note-1730000000123.md`). This matches
-what `plan-init` does.
+If `_plans/drafts/<slug>.md` already exists, do keep the existing file untouched and append a
+unix-milliseconds stamp to the new one.
 
 ## File format
 
@@ -53,6 +52,9 @@ what `plan-init` does.
 
 - `_plans/next/some-other-plan.md` — <one line on how it overlaps>
 
+## Observations
+
+- <a cheap signal the plan creator may not know, one line each>
 
 ---
 
@@ -62,22 +64,19 @@ Also see `_plans/README.md` and the the project `README.md`for any rules that ap
 - Preserve the captured text verbatim. It is evidence of what was actually said. Add a title and
   metadata around it. Do not paraphrase it, summarize it, or correct it.
 - Write `source` only when the origin is actually known, such as a Slack message the user pasted
-  in. If it is unknown, omit the field. Never write `source: unknown`. Never guess an origin.
-- Write the `Related` section only when the scan found a real match. Never emit an empty `Related`
-  heading.
-- Write no other headings. Empty headings invite filler. A draft with little to say stays short.
-- End every draft with the footer, verbatim, after `## Related` when that section exists. See
-  "Footer" below.
+  in. If it is unknown, omit the field.
+- Write the `Related` section only when the scan found a real match.
+- Write the `Observations` section only when the surroundings check found something real; see "Surroundings" below.
 
 ## Priority
 
-| Level | Name | Means |
-| --- | --- | --- |
-| `p0` | urgent | Happening now, users affected, drop other work. |
-| `p1` | high | Real damage or a hard deadline, but not this minute. |
-| `p2` | medium | Should happen, nothing breaks if it slips a week. |
-| `p3` | low | Wanted, no urgency attached. |
-| `p4` | later | Explicitly deferred. Someday, nice to have. |
+| Level | Name   | Means                                                |
+| ----- | ------ | ---------------------------------------------------- |
+| `p0`  | urgent | Happening now, users affected, drop other work.      |
+| `p1`  | high   | Real damage or a hard deadline, but not this minute. |
+| `p2`  | medium | Should happen, nothing breaks if it slips a week.    |
+| `p3`  | low    | Wanted, no urgency attached.                         |
+| `p4`  | later  | Explicitly deferred. Someday, nice to have.          |
 
 Write the code and the word together. `p1` alone is opaque to a person skimming the file.
 
@@ -95,13 +94,11 @@ middle value, and do not use `p4`: `p4` means the user deferred the work, and yo
 on the user's behalf.
 
 Report the inferred priority and its basis in the final output, and say the value can be edited in
-the file. Do not stop and ask. Priority is cheap to fix later. Interrupting the capture is not.
+the file. Do not stop and ask.
 
 ## Scan
 
-Before finishing, scan `_plans/` for a plan covering the same ground: filenames and titles across
-`drafts/`, `next/`, `open/`, `done/`, and `discarded/`. This is a cheap local read, not a research
-task. If nothing matches, write the draft and finish.
+Before finishing, scan `_plans/` for a plan covering the same ground: filenames and titles across. If nothing matches, write the draft and finish.
 
 ## Overlap
 
@@ -117,11 +114,26 @@ choices:
 
 This is the only point where this skill interrupts. Everywhere else it completes silently.
 
+## Surroundings
+
+The creator captures from memory. The workspace may already contradict or pre-empt the thought.
+Look, record what matters. Observe only — never act, never touch the verbatim captured text.
+
+Cheap signals only (this is capture, not research):
+
+- Repository name and current branch.
+- `git status --porcelain` — dirty or untracked files.
+- `git log --oneline -20` — recent commit subjects.
+- `_plans/` filenames and titles (already read for the scan).
+- The root `docs/` tree, if present
+
+Record a signal under `Observations` only when real and relevant — one plain line, signal plus why it matters.
+
 ## Uninitialized repository
 
 Never run `plan-init`. Other agents may be working in the repository right now, and `plan-init`
 moves `plans/`, `_incoming/`, and `incoming/` contents into `_plans/drafts/` and removes those
-directories. A capture command does not restructure a repository under another agent.
+directories.
 
 Never create a partial `_plans/` either. `plan-init` refuses any `_plans/` that is not its exact
 layout:

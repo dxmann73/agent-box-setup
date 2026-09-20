@@ -24,28 +24,17 @@ ln -sf "$PWD/user-home/update-tools.sh" ~/update-tools.sh
 ln -sf "$PWD/.markdownlint.json" ~/projects/.markdownlint.json
 ```
 
-## 3. Create the secrets file
+## 3. Verify
 
 ```bash
-cd ~/projects/agent-box-setup
-cp user-home/.bash_secrets.CHANGE-ME user-home/.bash_secrets
-nano user-home/.bash_secrets
-ln -sf "$PWD/user-home/.bash_secrets" ~/.bash_secrets
-source ~/.bashrc
-```
-
-## 4. Verify
-
-```bash
-ls -l ~/.bashrc ~/.bash_aliases ~/.profile ~/.bash_secrets ~/ua.sh ~/update-tools.sh
+ls -l ~/.bashrc ~/.bash_aliases ~/.profile ~/ua.sh ~/update-tools.sh
 ls -l ~/projects/.markdownlint.json
 ```
 
-## 5. Checklist
+## 4. Checklist
 
 - [ ] existing dotfiles are backed up
 - [ ] managed dotfiles and scripts are symlinked
-- [ ] `~/.bash_secrets` is created from the template and symlinked
 - [ ] shell configuration loads
 
 Next: [02-core-tools.md](02-core-tools.md)

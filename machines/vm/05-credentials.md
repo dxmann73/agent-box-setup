@@ -39,14 +39,12 @@ the corresponding provider account pages to revoke guest access independently fr
 
 ## 3. API tokens
 
-Create the VM's secrets file after cloning this repository and running
-[`../common/00-home-environment.md`](../common/00-home-environment.md):
+Create the VM's secrets file from the template:
 
 ```bash
 cd ~/projects/agent-box-setup
-cp user-home/.bash_secrets.CHANGE-ME user-home/.bash_secrets
-nano user-home/.bash_secrets
-ln -sf ~/projects/agent-box-setup/user-home/.bash_secrets ~/.bash_secrets
+install -m 0600 user-home/.bash_secrets.CHANGE-ME ~/.bash_secrets
+nano ~/.bash_secrets
 ```
 
 Add the VM's model-provider keys, `FIRECRAWL_API_KEY`, `HF_TOKEN`, and the local model base URL.
@@ -57,7 +55,7 @@ Create the Hugging Face token at <https://huggingface.co/settings/tokens> with R
 - [ ] `gh auth status` reports the VM account and HTTPS Git operations
 - [ ] Git uses the GitHub CLI credential helper
 - [ ] required guest provider CLIs and Firecrawl are authenticated intentionally
-- [ ] `~/.bash_secrets` is populated from the template and symlinked
+- [ ] `~/.bash_secrets` is populated from the template
 - [ ] VM credentials have their own revocation path
 
 Next: [06-shared-folders.md](06-shared-folders.md)

@@ -6,8 +6,8 @@
 set -Eeuo pipefail
 trap 'printf "ERROR: guest baseline failed at line %s\n" "$LINENO" >&2' ERR
 
-: "${AGENT_BOX_VM_HOSTNAME:?set AGENT_BOX_VM_HOSTNAME (source the deployment overlay box.env)}"
-readonly expected_hostname="$AGENT_BOX_VM_HOSTNAME"
+expected_hostname="${AGENT_BOX_VM_HOSTNAME:-$(hostname)}"
+readonly expected_hostname
 readonly repository_url="https://github.com/dxmann73/agent-box-setup.git"
 readonly repository_dir="$HOME/projects/agent-box-setup"
 
@@ -16,7 +16,7 @@ readonly repository_dir="$HOME/projects/agent-box-setup"
     exit 1
 }
 [[ "$(hostname)" = "$expected_hostname" ]] || {
-    printf 'Expected guest hostname %q; got %q. Set AGENT_BOX_VM_HOSTNAME only for a deliberate rebuild.\n' \
+    printf 'Expected guest hostname %q; got %q. Set AGENT_BOX_VM_HOSTNAME only when checking a specific guest.\n' \
         "$expected_hostname" "$(hostname)" >&2
     exit 1
 }

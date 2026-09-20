@@ -68,16 +68,15 @@ defaults.
 
 ```bash
 cd ~/projects/agent-box-setup
-ssh "$AGENT_BOX_VM_HOSTNAME" \
-  "AGENT_BOX_VM_HOSTNAME='$AGENT_BOX_VM_HOSTNAME' bash -s" \
-  < machines/vm/guest-baseline.sh
+ssh "$AGENT_BOX_VM_HOSTNAME" 'bash -s' < machines/vm/guest-baseline.sh
 ```
 
-The script refuses to run outside a virtualized guest, with the wrong hostname, or without guest
-`NOPASSWD` sudo. Re-running it is safe: package installation, links, service enablement, and managed
-desktop settings converge on the same state. Managed desktop settings include disabled display
-blanking, disabled screen locking, automatic login, and disabling the top-left Plasma hot corner
-that opens the overview/all-windows effect.
+The script refuses to run outside a virtualized guest or without guest `NOPASSWD` sudo. If
+`AGENT_BOX_VM_HOSTNAME` is set, it also checks that value against the guest hostname. Re-running it
+is safe: package installation, links, service enablement, and managed desktop settings converge on
+the same state. Managed desktop settings include disabled display blanking, disabled screen locking,
+automatic login, and disabling the top-left Plasma hot corner that opens the overview/all-windows
+effect.
 
 It deliberately does not authenticate GitHub, Claude, Codex, Cursor, Pi, Firecrawl, model providers,
 or configure host shares/network exposure. Those are later, explicit phases.

@@ -46,7 +46,6 @@ cold-boots, and RAM is not in the image.
 
 ```bash
 cd ~/projects/agent-box-setup
-# AGENT_BOX_VM_HOSTNAME and AGENT_BOX_BACKUP_ROOT must be set (overlay box.env).
 machines/host/backup-agent-vm.sh --dry-run --label current-credentialed
 machines/host/backup-agent-vm.sh --label current-credentialed
 ```
@@ -188,9 +187,7 @@ If `clean-guest` is still present:
 ```bash
 virsh snapshot-revert VM_NAME clean-guest
 cd ~/projects/agent-box-setup
-ssh "$AGENT_BOX_VM_HOSTNAME" \
-  "AGENT_BOX_VM_HOSTNAME='$AGENT_BOX_VM_HOSTNAME' bash -s" \
-  < machines/vm/guest-baseline.sh
+ssh "$AGENT_BOX_VM_HOSTNAME" 'bash -s' < machines/vm/guest-baseline.sh
 ssh -t "$AGENT_BOX_VM_HOSTNAME" \
   'cd ~/projects/agent-box-setup && ./verify-setup.sh --vm --bootstrap'
 ```

@@ -4,6 +4,12 @@ set -Eeuo pipefail
 
 readonly label_pattern='^[A-Za-z0-9][A-Za-z0-9._-]*$'
 
+profile_env="${AGENT_BOX_PROFILE_ENV:-$HOME/projects/dave.box-setup/agent-box/box.env}"
+if [[ -f "$profile_env" ]]; then
+    # shellcheck disable=SC1090
+    source "$profile_env"
+fi
+
 domain="${AGENT_BOX_VM_HOSTNAME:-}"
 backup_root="${AGENT_BOX_BACKUP_ROOT:-}"
 label=''
@@ -18,9 +24,10 @@ tree is <destination>/<domain>/<UTC-timestamp>-<label>/. This is a
 same-host recovery copy, not an off-host backup.
 
 --domain names the running libvirt guest. If omitted, AGENT_BOX_VM_HOSTNAME
-is required. --destination must be absolute; if omitted,
-AGENT_BOX_BACKUP_ROOT is required. --label is the human suffix
-(current-credentialed). Timestamps are UTC YYYY-MM-DDTHHMMSSZ.
+is used. --destination must be absolute; if omitted, AGENT_BOX_BACKUP_ROOT is
+used. If ~/projects/dave.box-setup/agent-box/box.env exists, it is loaded
+automatically. --label is the human suffix (current-credentialed). Timestamps
+are UTC YYYY-MM-DDTHHMMSSZ.
 EOF
 }
 

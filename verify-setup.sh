@@ -179,7 +179,7 @@ if profile_at_least full; then
             "sudo ufw status verbose | grep -q '^Default: deny (incoming)'"
         check 'guest UFW limits libvirt SSH to the hypervisor' bash -c \
             "sudo ufw status | grep -Eq '^22/tcp on [^[:space:]]+[[:space:]]+ALLOW[[:space:]]+192[.]168[.]122[.]1'"
-        check 'guest secrets file linked' test -L "$HOME/.bash_secrets"
+        check 'guest secrets file exists' test -f "$HOME/.bash_secrets"
     else
         check 'host Pi credential state exists' test -f "$HOME/.pi/agent/auth.json"
     fi

@@ -144,9 +144,7 @@ into that SSH session:
 
 ```bash
 cd ~/projects/agent-box-setup
-ssh "$AGENT_BOX_VM_HOSTNAME" \
-  "AGENT_BOX_VM_HOSTNAME='$AGENT_BOX_VM_HOSTNAME' bash -s" \
-  < machines/vm/guest-baseline.sh
+ssh "$AGENT_BOX_VM_HOSTNAME" 'bash -s' < machines/vm/guest-baseline.sh
 ```
 
 ## 5. Day-to-day
