@@ -3,15 +3,11 @@
 Run this after cloning the repository. Back up the Kubuntu-created dotfiles, then replace them with
 the repository-managed symlinks.
 
-Git identity is not in this repository. After linking `.gitconfig`, provide `~/.gitconfig.local`
-with `[user] name` and `email` (the dave.box overlay tracks that file). Generic verify checks that
-the keys exist, not their values.
-
 ## 1. Back up existing files
 
 ```bash
 mkdir -p ~/.agent-box-setup-backup
-for file in ~/.bashrc ~/.profile ~/.gitconfig ~/.bash_aliases; do
+for file in ~/.bashrc ~/.profile ~/.bash_aliases; do
   test ! -e "$file" || mv "$file" ~/.agent-box-setup-backup/
 done
 ```
@@ -23,7 +19,6 @@ cd ~/projects/agent-box-setup
 ln -sf "$PWD/user-home/.bashrc" ~/.bashrc
 ln -sf "$PWD/user-home/.bash_aliases" ~/.bash_aliases
 ln -sf "$PWD/user-home/.profile" ~/.profile
-ln -sf "$PWD/user-home/.gitconfig" ~/.gitconfig
 ln -sf "$PWD/user-home/ua.sh" ~/ua.sh
 ln -sf "$PWD/user-home/update-tools.sh" ~/update-tools.sh
 ln -sf "$PWD/.markdownlint.json" ~/projects/.markdownlint.json
@@ -42,19 +37,15 @@ source ~/.bashrc
 ## 4. Verify
 
 ```bash
-ls -l ~/.bashrc ~/.bash_aliases ~/.profile ~/.gitconfig ~/.bash_secrets ~/ua.sh ~/update-tools.sh
+ls -l ~/.bashrc ~/.bash_aliases ~/.profile ~/.bash_secrets ~/ua.sh ~/update-tools.sh
 ls -l ~/projects/.markdownlint.json
-git config --includes --global --get user.name
-git config --includes --global --get user.email
-git config --global --list
 ```
 
 ## 5. Checklist
 
 - [ ] existing dotfiles are backed up
 - [ ] managed dotfiles and scripts are symlinked
-- [ ] `~/.gitconfig.local` supplies `user.name` and `user.email`
 - [ ] `~/.bash_secrets` is created from the template and symlinked
-- [ ] shell configuration and Git configuration load
+- [ ] shell configuration loads
 
 Next: [02-core-tools.md](02-core-tools.md)

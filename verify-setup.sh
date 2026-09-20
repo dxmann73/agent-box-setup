@@ -64,8 +64,6 @@ printf 'Agent Box Setup Verification — %s / %s%s\n\n' "$target" "$profile" "$d
 
 printf '=== Bootstrap: system ===\n'
 check 'en_US.UTF-8 generated' bash -c "locale -a | grep -Eiq '^en_US\\.(utf-?8)$'"
-check 'git user.name is set' git config --includes --global --get user.name
-check 'git user.email is set' git config --includes --global --get user.email
 symlink_check 'WezTerm configuration linked' "$HOME/.config/wezterm/wezterm.lua"
 check 'WezTerm configuration is repository source' cmp -s "$repo_dir/user-home/wezterm/wezterm.lua" "$HOME/.config/wezterm/wezterm.lua"
 check 'unattended upgrades enabled' grep -q '^APT::Periodic::Unattended-Upgrade "1"' /etc/apt/apt.conf.d/20auto-upgrades

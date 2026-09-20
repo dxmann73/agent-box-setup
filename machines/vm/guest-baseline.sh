@@ -100,7 +100,7 @@ if [[ ! -d "$repository_dir/.git" ]]; then
 fi
 
 cd "$repository_dir"
-[[ -d agents/skills && -f user-home/.gitconfig ]] || {
+[[ -d agents/skills && -f user-home/.bashrc ]] || {
     printf 'Repository at %s is not an agent-box-setup checkout.\n' "$repository_dir" >&2
     exit 1
 }
@@ -110,7 +110,7 @@ ln -sfn "$repository_dir/user-home/wezterm/wezterm.lua" "$HOME/.config/wezterm/w
 mkdir -p "$HOME/.config/Code/User"
 ln -sfn "$repository_dir/user-home/vscode/settings.json" "$HOME/.config/Code/User/settings.json"
 ln -sfn "$repository_dir/user-home/vscode/keybindings.json" "$HOME/.config/Code/User/keybindings.json"
-for dotfile in .bashrc .bash_aliases .profile .gitconfig; do
+for dotfile in .bashrc .bash_aliases .profile; do
     [[ -e "$HOME/$dotfile" && ! -L "$HOME/$dotfile" ]] &&
         mv "$HOME/$dotfile" "$HOME/.agent-box-setup-${dotfile#.}" || true
     ln -sfn "$repository_dir/user-home/$dotfile" "$HOME/$dotfile"

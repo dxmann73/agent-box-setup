@@ -111,7 +111,6 @@ kubuntu-desktop              role  iso    gen    Y     Y    Y    Y
 kubuntu-baseline             cfg   -      both   Y     Y    Y    Y      kubuntu-desktop
 host-sudo-session            cfg   boot   gen    Y     -    -    Y      kubuntu-desktop
 hardware-review              cfg   -      both   Y     -    -    Y      kubuntu-desktop
-git-identity                 cfg   -      dave   Y     Y    -    Y      kubuntu-baseline
 ssh-client                   cfg   -      gen    Y     Y    -    Y      kubuntu-baseline
 ssh-server                   tool  -      gen    Y     Y    Y    Y      kubuntu-baseline
 ufw-firewall                 cfg   -      gen    Y     Y    -    Y      kubuntu-baseline
@@ -139,13 +138,13 @@ markdownlint                 tool  -      gen    Y     Y    -    Y      clone-ag
 
 Chrome VM must not clone these repos (current guest-setup rule). `claude-code-bootstrap` is
 daily-host START-HERE only (`xhost` `bhost`). The agent VM installs the binary as `claude-code` in
-§5 via host-streamed guest baseline. Re-auth is `claude-login`. `git-identity` on `xagt` is streamed
-from the overlay; no `clone-dave-box-setup` on the guest. `markdownlint` is its own module: symlink
-`.markdownlint.json` into `~/projects/` and `npm i -g markdownlint-cli`. The skill needs the CLI;
-this is not folded into `home-dotfiles`. Requires Node, so it runs after `node-24` even though it
-sits in this cluster. `home-dotfiles` copies the `.bash_secrets` template and symlinks it; tokens
-get filled later (login stage) `update-tools-timer` stays its own module (weekly systemd user timer;
-the script symlink is already `home-dotfiles`).
+§5 via host-streamed guest baseline. Re-auth is `claude-login`; no `clone-dave-box-setup` on the
+guest. `markdownlint` is its own module: symlink `.markdownlint.json` into `~/projects/` and
+`npm i -g markdownlint-cli`. The skill needs the CLI; this is not folded into `home-dotfiles`.
+Requires Node, so it runs after `node-24` even though it sits in this cluster. `home-dotfiles`
+copies the `.bash_secrets` template and symlinks it; tokens get filled later (login stage)
+`update-tools-timer` stays its own module (weekly systemd user timer; the script symlink is already
+`home-dotfiles`).
 
 Section 1 closed.
 

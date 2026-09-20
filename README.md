@@ -97,8 +97,8 @@ that consumes them, and explicit overlay-only insertions from the deployment's s
    only, then `machines/host/verify-virtualization.sh`. Follow the overlay's personal browser guest
    insertion, if selected; verify its isolation and browser handoff before remaining account logins.
 5. [host/04-dev-and-agents.md](machines/host/04-dev-and-agents.md): shared tooling, remaining
-   authentication, editor, BB and deployment inventory. Finish selected personal apps. Link overlay
-   git identity with common 00 before its identity checks. Run host operational verification.
+   authentication, editor, BB and deployment inventory. Finish selected personal apps. Run host
+   operational verification.
 6. [host/05-hypervisor.md](machines/host/05-hypervisor.md#4-create-the-agent-vm): agent-VM creation
    and the VM sequence below. Existing working VMs do not need to be rebuilt.
 
@@ -148,7 +148,6 @@ receives separate project clones later for agent execution.
 | `.bash_aliases`   | Custom command aliases                                                    |
 | `.bash_secrets`   | API tokens/secrets, created from the `.bash_secrets.CHANGE-ME` template   |
 | `.profile`        | User profile settings                                                     |
-| `.gitconfig`      | Git configuration (`[include]` of `~/.gitconfig.local` for identity)      |
 | `ua.sh`           | Update-all script: fetch/pull all git repos under a root dir              |
 | `update-tools.sh` | Weekly tooling update: npm globals, agent CLIs, overlay SDKMAN if present |
 
