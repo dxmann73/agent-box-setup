@@ -48,7 +48,7 @@ catalog.
 ### 1.2 Repos and home
 
 - [x] `claude-code-bootstrap`
-- [ ] `home-dotfiles`
+- [x] `home-dotfiles`
 - [ ] `update-tools-timer`
 - [ ] `markdownlint`
 

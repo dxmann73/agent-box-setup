@@ -111,8 +111,10 @@ mkdir -p "$HOME/.config/Code/User"
 ln -sfn "$repository_dir/user-home/vscode/settings.json" "$HOME/.config/Code/User/settings.json"
 ln -sfn "$repository_dir/user-home/vscode/keybindings.json" "$HOME/.config/Code/User/keybindings.json"
 for dotfile in .bashrc .bash_aliases .profile; do
-    [[ -e "$HOME/$dotfile" && ! -L "$HOME/$dotfile" ]] &&
-        mv "$HOME/$dotfile" "$HOME/.agent-box-setup-${dotfile#.}" || true
+    if [[ -e "$HOME/$dotfile" && ! -L "$HOME/$dotfile" ]]; then
+        mkdir -p "$HOME/.agent-box-setup-backup"
+        mv "$HOME/$dotfile" "$HOME/.agent-box-setup-backup/"
+    fi
     ln -sfn "$repository_dir/user-home/$dotfile" "$HOME/$dotfile"
 done
 ln -sfn "$repository_dir/user-home/ua.sh" "$HOME/ua.sh"
