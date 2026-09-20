@@ -9,14 +9,11 @@ You need a Claude subscription that includes Claude Code.
 The dave.box overlay prompt, `box.env`, locale, and project inventory live in
 [dave.box-setup/agent-box/README.md](https://github.com/dxmann73/dave.box-setup/blob/main/agent-box/README.md).
 
-## 1. Install bootstrap prerequisites and Claude Code
+## 1. Install Claude Code
 
-On a fresh install, ensure the tools needed to download the agent and clone the repositories exist.
-Reuse them when already installed. Open a terminal and run:
+Kubuntu Desktop ships `curl` and `ca-certificates` already. Open a terminal and run:
 
 ```bash
-sudo apt update
-sudo apt install -y ca-certificates curl git
 curl -fsSL https://claude.ai/install.sh | bash
 ```
 
@@ -26,7 +23,8 @@ Start Claude Code:
 claude
 ```
 
-Complete its sign-in prompts in the browser, then return to the terminal.
+Complete its sign-in prompts in the browser, then return to the terminal. `git` is not needed yet;
+the `clone-agent-box-setup` module installs it before cloning.
 
 ## 2. Give the agent this task
 

@@ -47,7 +47,7 @@ catalog.
 
 ### 1.2 Repos and home
 
-- [ ] `claude-code-bootstrap`
+- [x] `claude-code-bootstrap`
 - [ ] `clone-agent-box-setup`
 - [ ] `clone-dave-box-setup`
 - [ ] `home-dotfiles`
