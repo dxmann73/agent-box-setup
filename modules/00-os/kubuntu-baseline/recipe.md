@@ -7,8 +7,8 @@ credential modules.
 
 Use one target per run:
 
-- `daily-host`: protected personal host session, no autologin, no passwordless sudo, host layout
-  directories under `$HOME`
+- `daily-host`: no idle screen lock while working, lock on resume/lid reopen, no autologin, no
+  passwordless sudo, host layout directories under `$HOME`
 - `guest`: passwordless guest sudo, SDDM autologin, screen lock and display blanking disabled
 
 ## Apply

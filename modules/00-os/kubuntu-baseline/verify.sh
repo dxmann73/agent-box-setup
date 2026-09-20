@@ -131,7 +131,7 @@ check 'release upgrades prompt for LTS' release_prompt_lts
 if [[ "$target" == "daily-host" ]]; then
     check 'host layout directories exist' host_dirs_exist
     check 'host autologin disabled' host_autologin_disabled
-    check 'host screen autolock enabled' screen_lock_value_is Autolock true
+    check 'host screen autolock disabled' screen_lock_value_is Autolock false
     check 'host locks on resume' screen_lock_value_is LockOnResume true
     check 'host has no agent NOPASSWD sudoers file' host_sudo_protected
 else

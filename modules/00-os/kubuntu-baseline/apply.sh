@@ -122,9 +122,9 @@ write_desktop_policy() {
     local -r mode="$1"
 
     if [[ "$mode" == "protected" ]]; then
-        run_user kwriteconfig6 --file kscreenlockerrc --group Daemon --key Autolock true
+        run_user kwriteconfig6 --file kscreenlockerrc --group Daemon --key Autolock false
         run_user kwriteconfig6 --file kscreenlockerrc --group Daemon --key LockOnResume true
-        run_user kwriteconfig6 --file kscreenlockerrc --group Daemon --key Timeout 10
+        run_user kwriteconfig6 --file kscreenlockerrc --group Daemon --key Timeout 0
         remove_if_present /etc/sddm.conf.d/99-autologin.conf
     else
         run_user kwriteconfig6 --file powerdevilrc --group AC --group Display \

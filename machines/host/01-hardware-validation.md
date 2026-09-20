@@ -100,14 +100,14 @@ after testing it in the locations where it will be used.
 
 ## 5. Host desktop, power, and session policy
 
-This is a personal host, not the passwordless agent VM. Keep the screen lock enabled, require it on
-resume, and do not enable automatic login. Start with a 10-minute automatic lock timeout; change
-that only as a deliberate personal security decision.
+This is a personal host, not the passwordless agent VM. Keep resume locking enabled, so closing the
+lid and reopening it requires unlock. While plugged in and working, do not idle-lock the screen. Do
+not enable automatic login.
 
 ```bash
-kwriteconfig6 --file kscreenlockerrc --group Daemon --key Autolock true
+kwriteconfig6 --file kscreenlockerrc --group Daemon --key Autolock false
 kwriteconfig6 --file kscreenlockerrc --group Daemon --key LockOnResume true
-kwriteconfig6 --file kscreenlockerrc --group Daemon --key Timeout 10
+kwriteconfig6 --file kscreenlockerrc --group Daemon --key Timeout 0
 ```
 
 Use Kubuntu's stock power profile and display energy-saving settings initially. Choose the profile
@@ -134,7 +134,8 @@ System Settings
 ```
 
 Confirm automatic locking and lock-on-resume are enabled, then log out and back in before treating
-the session policy as complete. Also confirm the top-left corner no longer opens the overview.
+Confirm automatic locking is disabled, lock-on-resume is enabled, and the top-left corner no longer
+opens the overview. Log out and back in before treating the session policy as complete.
 
 ## 6. Hardware checklist
 
@@ -153,7 +154,7 @@ the session policy as complete. Also confirm the top-left corner no longer opens
 - [ ] USB-C works
 - [ ] external display works
 - [ ] dock works if applicable
-- [ ] host screen lock is enabled, locks on resume, and automatic login is disabled
+- [ ] host idle screen lock is disabled, locks on resume, and automatic login is disabled
 
 ## 7. Appendix: power and thermal diagnostics (optional)
 
