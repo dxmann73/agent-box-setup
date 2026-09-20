@@ -31,9 +31,8 @@ Kubuntu host                                  ← machines/host/
 
 The host and the VM share the same development toolchain and the same agent configuration; they
 differ in what is _only_ on one side — GPU and personal data on the host, agent-worked projects in
-the VM. The host AppImage server is the shared BB control plane and lists both the host and the
-enrolled VM as execution machines. A persistent headless VM server may remain temporarily as an
-independent fallback; clients use the host server when both machines must be selectable.
+the VM. The host is the shared BB control plane and lists both the host and the enrolled VM as
+execution machines.
 
 ## Directories
 
@@ -47,7 +46,7 @@ independent fallback; clients use the host server when both machines must be sel
 | [modules/](modules/)                       | Modular target catalog, ticks, profile values and module scaffolds  | no         |
 | [user-home/](user-home/)                   | Dotfiles and scripts symlinked into `~`                             | no         |
 
-Hardware BOM, locale, personal apps, VM sizes, and this-host migration live in
+Hardware BOM, locale, personal apps, VM sizes, and custom settings live in
 [dave.box-setup/agent-box/](https://github.com/dxmann73/dave.box-setup/blob/main/agent-box/README.md).
 
 Grep guard (must stay empty except a pointer to that overlay):
@@ -70,15 +69,8 @@ grep -rilE 'bitlocker|fast startup|dual.?boot|windows partition|shrink windows|n
 ## Host-first bootstrap
 
 On a fresh Kubuntu host, start with [START-HERE.md](START-HERE.md). Bootstrap one local agent and
-obtain the setup repository plus any deployment overlay. Reuse working installations and logins.
-
-Prepare the host baseline and virtualization first. If the overlay selects a separate personal
-browser guest, establish it before the remaining account logins, host tooling and project inventory.
-One initial setup-agent login and repository access are the bootstrap exceptions. Keep personal
-browser profiles outside the agent VM.
-
-Full host completion remains a checkpoint before creating the **agent VM**, not before preparing
-virtualization or an overlay's personal browser guest.
+obtain the setup repository plus any deployment overlay. Then follow the catalog to set up the
+system.
 
 ## Where to start
 
@@ -143,8 +135,8 @@ it does not gate a personal browser guest.
 ## Host workspace inventory
 
 Project inventory is a deployment concern. This repository does not track a project list. The
-dave.box overlay requires a private inventory checkout as part of host completion. The VM receives
-separate project clones later for agent execution.
+dave.box-setup overlay requires a private inventory checkout as part of host completion. The VM
+receives separate project clones later for agent execution.
 
 ## Config files
 
@@ -162,29 +154,6 @@ separate project clones later for agent execution.
 
 The repo root `.markdownlint.json` is symlinked to `~/projects/.markdownlint.json`. Full symlink
 commands: [machines/common/00-home-environment.md](machines/common/00-home-environment.md).
-
-## Scope: box-level vs. project-level
-
-The repo name is historical. Not everything in here is machine setup — two different scopes live
-side by side:
-
-- **Box-level** — installed once per machine: shell/dotfiles, agent binaries, Docker, Node, IDE.
-  These are the `machines/` guides plus `agents/` and `user-home/`.
-- **Project-level** — belongs to whatever you are working on, and is only wired globally because
-  there is no better home yet: skills indexed by `agents/skills/` and project-specific toolchains.
-  Dave-specific SDKMAN, Java, Quarkus, Maven, Docker Compose, and imaging tools live in the Dave
-  overlay.
-
-Project-level items are installed globally through the agent skill index as an interim measure so
-every project gets them. Some index entries may symlink to skills owned by follow-up repositories.
-The intended end state is packaging them per project type — see the "project setup" entry in
-[ROADMAP.md](./ROADMAP.md).
-
-## Usage
-
-This repo is designed to work with coding agents. On a fresh physical host, begin at
-[START-HERE.md](START-HERE.md). For an existing machine, begin with the numbered guide sequence for
-its known target.
 
 ## Verification
 
@@ -211,29 +180,6 @@ Toolchain verification profiles are intentionally cumulative:
   settings and keybindings, and BB AppImage. It never requires guest provider credentials.
 - `full` checks only credentials and integrations that were explicitly enabled on that target.
 
-The checks cover:
-
-- Claude Code, Codex, Cursor CLI, Pi, and VS Code
-- Home directory symlinks (`.bashrc`, `.bash_aliases`, `.profile`, `.gitconfig`, `.bash_secrets`,
-  `ua.sh`, `update-tools.sh`, `.markdownlint.json`)
-- Git `user.name` / `user.email` are set (values come from `~/.gitconfig.local`)
-- Agent configuration and symlinks
-- Skills setup, including a `SKILL.md` frontmatter audit (`./audit-skills.sh`)
-- Core tools (GitHub CLI, Docker, jq, yq)
-- Development environment (Node.js 24, pnpm, TypeScript, Markdownlint, Firecrawl CLI)
-- Target-specific items (Playwright in the VM, GPU stack on the host)
-- Optional tools (if installed)
-
-Fixes for anything it flags live in the guide the line names — `agents/README.md`,
-`machines/common/*.md` or `machines/<target>/*.md`.
-
-`./audit-skills.sh` also runs standalone and prints one line per finding. It is directory-driven:
-every reachable `agents/skills/*/SKILL.md`, including symlinked skill directories, is checked
-against the [frontmatter reference](https://code.claude.com/docs/en/skills#frontmatter-reference) —
-unknown keys, missing `description`, duplicate `name`, `name` differing from the directory name,
-`metadata` shadowing a reserved field, and the `description` listing cap. Errors exit non-zero;
-`--strict` also fails on warnings.
-
 ## Staying current
 
 Both machines patch themselves: `unattended-upgrades` for everything apt reaches (including Chrome,
@@ -244,10 +190,6 @@ Two things stay deliberate on purpose: **BB updates**, so running agent sessions
 interrupted, and **Ubuntu release upgrades**, because they move the GPU stack and libvirt. The host
 AppImage uses its built-in updater; the VM runtime lives in a dedicated npm prefix outside the
 weekly global package update.
-
-## Synchronizing settings
-
-TBD, we need a way to sync settings from / to machines.
 
 ## Setup checklist
 
