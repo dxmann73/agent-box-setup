@@ -40,7 +40,7 @@ catalog.
 - [x] `kubuntu-desktop`
 - [x] `kubuntu-baseline`
 - [x] `host-sudo-session`
-- [ ] `hardware-review`
+- [x] `hardware-review`
 - [ ] `git-identity`
 - [ ] `ssh-client`
 - [ ] `ssh-server`

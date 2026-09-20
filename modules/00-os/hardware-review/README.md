@@ -6,3 +6,9 @@ Does: Checks that daily-host hardware and session assumptions match the selected
 
 Catalog metadata: see [Modular machine catalog](../../README.md) for typ, sit, scp, requires, and
 ticks.
+
+Recipe: [recipe.md](recipe.md)
+
+Collect baseline: `./collect-baseline.sh`
+
+Verify: `./verify.sh`
