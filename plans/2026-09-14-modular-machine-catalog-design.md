@@ -25,15 +25,17 @@ xchr chrome-vm guest role (today: xmg's guest). Blade's guest uses the same gues
 ticks until a `bchr` column is needed.
 bhost blade-14 Kubuntu
 
-Y present - not present N decided no . TBD
+Tick values: `Y` present, `-` not present, `N` decided no, `.` TBD.
 
-typ role | tool | cfg | cred | app
-sit - unattended | boot bootstrap | iso guest ISO | login login cluster | gcred guest creds
-login on a guest is the gcred window.
-scp gen agent-box-setup | dave overlay | infra | both gen and dave
+`typ`: `role`, `tool`, `cfg`, `cred`, `app`.
+`sit`: `-` unattended, `boot` bootstrap, `iso` guest ISO, `login` login cluster,
+`gcred` guest credentials. Login modules ticked on a guest run in the `gcred` window.
+`scp`: `gen` agent-box-setup, `dave` overlay, `infra`, `both` gen and dave.
 
-Requires maps topological dependency. The catalog unit is a module (`node-24`, `kvm`, …).
-Sit is the human window. Do not install-then-auth on every tool.
+`requires` maps topological dependency and contains only catalog module IDs
+(`node-24`, `kvm`, …). Human preconditions such as browser/device-code access,
+reachable remote services, or "guest exists" live in prose, not the graph. The catalog
+unit is a module. Sit is the human window. Do not install-then-auth on every tool.
 
 Daily-host exception: on `xhost` and `bhost` an agent does provisioning. Claude may be
 signed in with Google on the fly in the stock browser so that agent can run. That is not
@@ -175,13 +177,13 @@ isolated-agent-net           cfg   -      both   Y     -    -    N      kvm
 isolated-browser-net         cfg   -      both   Y     -    -    Y      kvm
 chrome-vm                    role  iso    both   Y     -    Y    Y      kvm isolated-browser-net kubuntu-iso
 agent-vm                     role  iso    both   Y     Y    -    N      kvm isolated-agent-net kubuntu-iso
-guest-ssh-sudo-bootstrap     cfg   iso    gen    -     Y    Y    -      guest exists
+guest-ssh-sudo-bootstrap     cfg   iso    gen    -     Y    Y    -      kubuntu-desktop
 guest-integration            cfg   -      gen    -     Y    Y    -      guest-ssh-sudo-bootstrap
 chrome-vm-packages           tool  -      dave   -     -    Y    -      chrome-vm guest-integration
 host-url-launcher            cfg   -      dave   Y     -    -    Y      chrome-vm guest-integration
 virtiofs-desktop-share       cfg   -      dave   Y     -    Y    Y      chrome-vm
 virtiofs-user-data-shares    cfg   -      dave   Y     Y    -    N      agent-vm
-vm-snapshots                 cfg   -      gen    Y     Y    Y    Y      guest exists
+vm-snapshots                 cfg   -      gen    Y     Y    Y    Y      kubuntu-desktop
 vm-disk-backup               cfg   -      both   Y     Y    Y    Y      vm-snapshots
 ```
 
@@ -192,6 +194,8 @@ Agent (`isolated-agent-net`): NAT + host nft — guest cannot reach host service
 bridge except DHCP/DNS; bootstrap SSH is host-initiated. Host services (local-llm) bind
 on the tailnet, not virbr0. ACLs in `infra`. `guest-integration` is qemu-guest-agent,
 spice-vdagent, and the host clipboard bridge (always together on both guests).
+`guest-ssh-sudo-bootstrap` runs after the guest role module has produced an installed
+Kubuntu guest. `vm-snapshots` snapshots whichever guest role exists for the profile.
 `host-url-launcher` is the pinned Chrome-VM opener. `chrome-vm-packages` is Google
 Chrome on `xchr` only, with unattended-upgrades for `origin=Google LLC`. Daily hosts
 keep stock Firefox (`firefox-stock`); do not install Chrome there. Playwright
@@ -256,12 +260,12 @@ claude-code                  tool  -      gen    Y     Y    -    Y      kubuntu-
 codex-cli                    tool  -      gen    Y     Y    -    Y      node-24
 cursor-cli                   tool  -      gen    Y     Y    -    Y      kubuntu-desktop
 pi                           tool  -      gen    Y     Y    -    Y      node-24
-agent-config                 cfg   -      gen    Y     Y    -    Y      clone-agent-box-setup ticked CLIs
+agent-config                 cfg   -      gen    Y     Y    -    Y      clone-agent-box-setup claude-code codex-cli cursor-cli pi
 playwright-chromium          tool  -      gen    -     Y    -    N      node-24
-bb-server                    role  -      gen    Y     -    -    N      libfuse
+bb-server                    role  -      gen    Y     -    -    N      kubuntu-baseline
 bb-enroll-execution-machine  cfg   login  gen    Y     Y    -    N      bb-server agent-vm
-bb-client                    role  -      gen    -     -    -    Y      bb-server reachable
 tailscale                    tool  -      infra  Y     Y    -    Y      kubuntu-desktop
+bb-client                    role  -      gen    -     -    -    Y      tailscale
 ```
 
 Remote SSH: VS Code stays on the daily host (`xhost`, `bhost`). Remote clients install `~/.vscode-server` over SSH.
@@ -270,6 +274,8 @@ Remote SSH: VS Code stays on the daily host (`xhost`, `bhost`). Remote clients i
 separate ticks (`claude-code`, `codex-cli`, `cursor-cli`, `pi`).
 
 No standalone BB npm fallback on the agent VM. Shared control plane is the host AppImage (`bb-server`). The VM is only an enrolled execution machine (`bb-enroll-execution-machine`). Spec §4 fallback bullet dies with this module.
+`bb-server` includes the AppImage/FUSE compatibility check. `bb-client` depends on the
+Tailscale path; the remote `bb-server` must already be reachable from `infra`.
 `bb-server` / `bb-client` install unattended; human BB UI is `bb-enroll-execution-machine`.
 Remote BB is Tailscale Serve (`infra`), not BB Connect. `bb-connect` dropped.
 `tailscale` install is unattended; account is `tailscale-login`. Playwright Chromium stays
@@ -283,19 +289,21 @@ Section 5 closed.
 module                       typ   sit    scp    xhost xagt xchr bhost  requires
 ---------------------------  ----  -----  -----  ----- ---- ---- -----  ------------------------------------
 setup-agent-login            cred  boot   gen    Y     -    -    Y      claude-code-bootstrap
-github-auth                  cred  login  gen    Y     Y    -    Y      github-cli browser
-claude-login                 cred  login  gen    Y     Y    -    Y      claude-code browser
-codex-login                  cred  login  gen    Y     Y    -    Y      codex-cli browser
-cursor-login                 cred  login  gen    Y     Y    -    Y      cursor-cli browser
-pi-login                     cred  login  gen    Y     Y    -    Y      pi browser
-firecrawl-login              cred  login  gen    Y     Y    -    Y      firecrawl-cli browser
+github-auth                  cred  login  gen    Y     Y    -    Y      github-cli kubuntu-desktop
+claude-login                 cred  login  gen    Y     Y    -    Y      claude-code kubuntu-desktop
+codex-login                  cred  login  gen    Y     Y    -    Y      codex-cli kubuntu-desktop
+cursor-login                 cred  login  gen    Y     Y    -    Y      cursor-cli kubuntu-desktop
+pi-login                     cred  login  gen    Y     Y    -    Y      pi kubuntu-desktop
+firecrawl-login              cred  login  gen    Y     Y    -    Y      firecrawl-cli kubuntu-desktop
 vscode-settings-sync         cred  login  gen    Y     -    -    Y      vscode github-auth
-tailscale-login              cred  login  infra  Y     Y    -    Y      tailscale browser
+tailscale-login              cred  login  infra  Y     Y    -    Y      tailscale kubuntu-desktop
 personal-browser-logins      cred  login  dave   -     -    Y    -      chrome-vm-packages
 bitwarden-chrome             cred  login  dave   -     -    Y    -      personal-browser-logins
 ```
 
 personal-browser-logins is one module. The URL list is a per-host value, not 30 ticks.
+Credential modules that require a web or device-code flow use the browser available from
+`kubuntu-desktop`; on guests they run in the `gcred` window.
 `FIRECRAWL_API_KEY` is written during `firecrawl-login` into the `.bash_secrets` file
 that `home-dotfiles` already linked. No `bb-connect`: remotes use Tailscale Serve.
 
@@ -349,8 +357,7 @@ Unattended batches first. Not install then auth then next tool.
 3  iso    Chrome guest ISO / desktop; stream guest packages
 4  auto   remaining unattended installs (tools, BB AppImage, CLIs)
 5  login  Chrome URLs + Bitwarden, then gh/agents/Firecrawl/Tailscale/VS Sync
-6  iso    agent VM ISO + baseline when ticked; gcred (incl. BB enroll) after clean-guest
-6  iso    agent VM ISO + baseline when ticked; gcred only after clean-guest
+6  iso    agent VM ISO + baseline when ticked; gcred incl. BB enroll only after clean-guest
 ```
 
 blade-14 Kubuntu skips step 6, `bb-server`, and `agent-vm`.
