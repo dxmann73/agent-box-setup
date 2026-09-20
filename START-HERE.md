@@ -25,22 +25,25 @@ claude
 
 Complete its sign-in prompts in the browser, then return to the terminal.
 
-## 2. Clone the setup repository
+## 2. Clone the setup repositories
 
-Kubuntu Desktop may not ship `git`. Install it and place this repository under
-`~/projects/agent-box-setup` before handing the task to the agent:
+Kubuntu Desktop may not ship `git`. Install it and place both the public repository and the private
+overlay under `~/projects/` before handing the task to the agent. The overlay is private, so it
+needs a GitHub credential; the simplest bootstrap is `gh auth login` via HTTPS.
 
 ```bash
 sudo apt-get update
-sudo apt-get install -y git
+sudo apt-get install -y git gh
 mkdir -p ~/projects
 cd ~/projects
 git clone https://github.com/dxmann73/agent-box-setup.git
+gh auth login
+gh repo clone dxmann73/dave.box-setup
 ```
 
-This is the module `clone-agent-box-setup` executed by hand; its `apply.sh` covers only the
-`git`-install half, because the clone must exist before `apply.sh` can be reached on disk. An
-overlay is a separate module (`clone-dave-box-setup`) and is not cloned here.
+Both checkouts are preconditions for the modules that follow; they are not modules themselves.
+Downstream modules assume `~/projects/agent-box-setup` and `~/projects/dave.box-setup` are present
+and treat them as inputs.
 
 ## 3. Give the agent this task
 

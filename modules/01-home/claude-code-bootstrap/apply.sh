@@ -11,7 +11,7 @@ Installs Claude Code (`claude`) via the official installer.
 Idempotent: skips the installer when `claude` is already on PATH.
 
 Kubuntu Desktop ships `curl` and `ca-certificates` by default; verify.sh asserts them.
-This module does not install `git`; that belongs to `clone-agent-box-setup`.
+This module does not install `git`; that happens by hand in START-HERE.md §2 alongside the repo clones.
 
 Options:
   -h, --help   Show this help

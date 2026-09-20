@@ -48,8 +48,6 @@ catalog.
 ### 1.2 Repos and home
 
 - [x] `claude-code-bootstrap`
-- [x] `clone-agent-box-setup`
-- [ ] `clone-dave-box-setup`
 - [ ] `home-dotfiles`
 - [ ] `update-tools-timer`
 - [ ] `markdownlint`

@@ -16,4 +16,4 @@ Verify: `./verify.sh`
 
 The first-ever run happens before the repo is cloned; the operator types the equivalent commands
 from [`START-HERE.md`](../../../START-HERE.md). `apply.sh` and `verify.sh` are for re-runs after
-`clone-agent-box-setup`.
+the START-HERE checkouts are in place.

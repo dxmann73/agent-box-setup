@@ -129,17 +129,18 @@ daily hosts: Tailscale/admin). Chrome has no `ssh-client` and no guest UFW (isol
 module                       typ   sit    scp    xhost xagt xchr bhost  requires
 ---------------------------  ----  -----  -----  ----- ---- ---- -----  ------------------------------------
 claude-code-bootstrap        tool  boot   gen    Y     -    -    Y      kubuntu-desktop
-clone-agent-box-setup        cfg   boot   gen    Y     Y    -    Y      kubuntu-desktop
-clone-dave-box-setup         cfg   boot   dave   Y     -    -    Y      kubuntu-desktop
-home-dotfiles                cfg   -      gen    Y     Y    -    Y      clone-agent-box-setup
+home-dotfiles                cfg   -      gen    Y     Y    -    Y      kubuntu-desktop
 update-tools-timer           cfg   -      gen    Y     Y    -    Y      home-dotfiles
-markdownlint                 tool  -      gen    Y     Y    -    Y      clone-agent-box-setup node-24
+markdownlint                 tool  -      gen    Y     Y    -    Y      node-24
 ```
 
-Chrome VM must not clone these repos (current guest-setup rule). `claude-code-bootstrap` is
-daily-host START-HERE only (`xhost` `bhost`). The agent VM installs the binary as `claude-code` in
-§5 via host-streamed guest baseline. Re-auth is `claude-login`; no `clone-dave-box-setup` on the
-guest. `markdownlint` is its own module: symlink `.markdownlint.json` into `~/projects/` and
+Repo checkouts (`agent-box-setup` public, `dave.box-setup` private overlay) are START-HERE
+preconditions on daily hosts (`xhost`, `bhost`), not catalog modules — see
+[`START-HERE.md`](../START-HERE.md) §2. Chrome VM must not clone them. The agent VM has the public
+repo placed by the host-streamed guest baseline; the overlay is not present on the guest.
+`claude-code-bootstrap` is daily-host START-HERE only (`xhost` `bhost`). The agent VM installs the
+binary as `claude-code` in §5 via host-streamed guest baseline. Re-auth is `claude-login`.
+`markdownlint` is its own module: symlink `.markdownlint.json` into `~/projects/` and
 `npm i -g markdownlint-cli`. The skill needs the CLI; this is not folded into `home-dotfiles`.
 Requires Node, so it runs after `node-24` even though it sits in this cluster. `home-dotfiles` keeps
 shell dotfiles generic; secrets are created later during the login stage. `update-tools-timer` stays
@@ -240,7 +241,7 @@ claude-code                  tool  -      gen    Y     Y    -    Y      kubuntu-
 codex-cli                    tool  -      gen    Y     Y    -    Y      node-24
 cursor-cli                   tool  -      gen    Y     Y    -    Y      kubuntu-desktop
 pi                           tool  -      gen    Y     Y    -    Y      node-24
-agent-config                 cfg   -      gen    Y     Y    -    Y      clone-agent-box-setup claude-code codex-cli cursor-cli pi
+agent-config                 cfg   -      gen    Y     Y    -    Y      claude-code codex-cli cursor-cli pi
 playwright-chromium          tool  -      gen    -     Y    -    N      node-24
 bb-server                    role  -      gen    Y     -    -    N      kubuntu-baseline
 bb-enroll-execution-machine  cfg   login  gen    Y     Y    -    N      bb-server agent-vm

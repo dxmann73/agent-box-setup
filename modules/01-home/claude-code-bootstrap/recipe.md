@@ -7,7 +7,8 @@ Do not run this on `xchr` (Chrome VM has no repo clones and no agent CLIs). The 
 gets the binary later, streamed from the host during guest baseline; it is not this module.
 
 Kubuntu Desktop ships `curl` and `ca-certificates` by default; this module relies on them and
-`verify.sh` asserts them. `git` is not needed here — it belongs to `clone-agent-box-setup`.
+`verify.sh` asserts them. `git` is not needed here — it is installed by hand in
+[`START-HERE.md`](../../../START-HERE.md) §2 alongside the two repo clones.
 
 ## First-run: repo is not yet cloned
 
