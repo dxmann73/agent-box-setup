@@ -44,6 +44,7 @@ independent fallback; clients use the host server when both machines must be sel
 | [machines/common/](machines/common/)       | Install guides used by both host and VM                             | no         |
 | [machines/host/](machines/host/)           | Ubuntu host: hardware, personal apps, system config, hypervisor     | no         |
 | [machines/vm/](machines/vm/)               | Agent VM: bootstrap, agents, BB, networking, credentials, snapshots | no         |
+| [modules/](modules/)                       | Modular target catalog, ticks, profile values and module scaffolds  | no         |
 | [user-home/](user-home/)                   | Dotfiles and scripts symlinked into `~`                             | no         |
 
 Hardware BOM, locale, personal apps, VM sizes, and this-host migration live in
