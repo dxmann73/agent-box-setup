@@ -34,7 +34,10 @@ _plans/
 1. Target is the current repo root unless the user names another existing directory.
 2. Execute this skill's `scripts/init-plans.sh` with that directory. Do not create the tree by hand.
 3. If the script reports already initialized, stop. Do not run it again. Do not import leftover
-   `plans/`, `_incoming/`, or `incoming/` after that.
+   `plans/`, `_incoming/`, or `incoming/` after that. If it reports that `_plans/README.md`
+   differs from the current template, relay the reconciliation suggestion so lifecycle phases,
+   transitions, indexes, and repository rules can be reviewed manually. Do not overwrite the
+   existing README.
 4. If the script refuses because `_plans/` exists with a different layout, stop. Do not merge,
    migrate, overwrite, or delete it.
 5. On first init, if `plans/`, `_incoming/`, or `incoming/` exist, their contents are moved into

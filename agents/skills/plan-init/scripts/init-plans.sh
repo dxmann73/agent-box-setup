@@ -70,6 +70,11 @@ is_initialized() (
 if [[ -e "$plans_dir" ]]; then
   if is_initialized; then
     echo "_plans/ already initialized at $plans_dir"
+    if ! cmp -s "$plans_dir/README.md" "$asset_readme"; then
+      echo "note: _plans/README.md differs from the current plan-init template"
+      echo "suggestion: reconcile lifecycle phases, transitions, indexes, and repository rules"
+      echo "init-plans: review manually; existing _plans/README.md left unchanged"
+    fi
     exit 0
   fi
   die "$plans_dir exists but is not the plan-init layout; refusing to change it"
