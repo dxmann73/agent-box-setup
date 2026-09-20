@@ -37,7 +37,7 @@ catalog.
 
 ### 1.1 OS and host baseline
 
-- [ ] `kubuntu-desktop`
+- [x] `kubuntu-desktop`
 - [ ] `kubuntu-baseline`
 - [ ] `host-sudo-session`
 - [ ] `hardware-review`
