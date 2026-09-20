@@ -129,15 +129,26 @@ hash -r
 
 ln -sfn "$repository_dir/agents/AGENTS.md" "$HOME/AGENTS.md"
 ln -sfn "$HOME/AGENTS.md" "$HOME/CLAUDE.md"
+mkdir -p "$HOME/.codex" "$HOME/.cursor" "$HOME/.claude" "$HOME/.pi/agent"
+
+# Claude Code reads only ~/.claude/skills; Codex, Cursor and Pi read the canonical ~/.agents/skills.
+# Both must reach the index through one directory-level symlink, so that every skill root underneath
+# stays a real directory. BB and Codex reject a skill whose own root path is a symlink, while claude
+# and cursor-agent resolve it through the kernel, making the breakage silent and partial.
+# See agents/README.md.
 ln -sfn "$repository_dir/agents" "$HOME/.agents"
-mkdir -p "$HOME/.claude/skills" "$HOME/.pi/agent"
-find "$HOME/.claude/skills" -maxdepth 1 -xtype l -delete
-while IFS= read -r -d '' skill_dir; do
-    skill_name="$(basename "$skill_dir")"
-    ln -sfn "$skill_dir" "$HOME/.claude/skills/$skill_name"
-done < <(find -L "$repository_dir/agents/skills" -mindepth 1 -maxdepth 1 -type d -print0)
+ln -sfn "$repository_dir/agents/skills" "$HOME/.claude/skills"
+
+# Nothing may reintroduce a per-skill symlink inside the index.
+symlinked_skills="$(find "$repository_dir/agents/skills" -mindepth 1 -maxdepth 1 -type l \
+    -printf '%f ')"
+if [ -n "$symlinked_skills" ]; then
+    printf 'ERROR: skill root(s) in agents/skills are symlinks: %s\n' "$symlinked_skills" >&2
+    printf 'Replace each with a real directory; BB and Codex skip symlinked roots.\n' >&2
+    exit 1
+fi
+
 ln -sfn "$repository_dir/agents/AGENTS.md" "$HOME/.pi/agent/AGENTS.md"
-mkdir -p "$HOME/.codex" "$HOME/.cursor" "$HOME/.claude"
 ln -sfn "$repository_dir/agents/codex/config.toml" "$HOME/.codex/config.toml"
 ln -sfn "$repository_dir/agents/codex/hooks.json" "$HOME/.codex/hooks.json"
 ln -sfn "$repository_dir/agents/cursor/hooks.json" "$HOME/.cursor/hooks.json"

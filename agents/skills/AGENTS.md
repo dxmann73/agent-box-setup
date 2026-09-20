@@ -26,10 +26,12 @@ We are currently using the following skills:
 - https://skills.sh/obra/superpowers/verification-before-completion
 - https://skills.sh/wshobson/agents/tailwind-design-system
 - local: `markdownlint`
-- local: `new-project` (repo-owned; replaces the former `new-projects` user rule)
-- local: `sync-repo-setup` (repo-owned; replaces the former `sync-repo-setup` user rule)
+- local: `new-project`
+- local: `sync-repo-setup`
+- local: `plan-init`
 
 On demand:
+
 - https://skills.sh/wshobson/agents/typescript-advanced-types
 - https://skills.sh/wshobson/agents/react-modernization
 - https://skills.sh/jezweb/claude-skills/tailwind-v4-shadcn

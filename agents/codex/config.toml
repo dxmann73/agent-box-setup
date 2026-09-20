@@ -27,7 +27,7 @@ status_line = [
 "gpt-5.3-codex-spark" = 4
 "gpt-5.5" = 4
 "gpt-5.6-sol" = 2
-gpt-6-astra = 1
+gpt-6-astra = 4
 
 [projects."/home/dave/projects/nomap"]
 trust_level = "trusted"

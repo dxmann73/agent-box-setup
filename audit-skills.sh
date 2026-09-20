@@ -2,8 +2,8 @@
 # Audit SKILL.md frontmatter in agents/skills/ against the Claude Code frontmatter reference.
 # https://code.claude.com/docs/en/skills#frontmatter-reference
 #
-# Directory-driven: every reachable skill directory under agents/skills/ is checked, no hardcoded
-# list. Symlinked skill directories are followed.
+# Directory-driven: every skill directory under agents/skills/ is checked, no hardcoded list.
+# synced/ is skipped: Claude Code owns it for claude.ai account skills and it is not a skill itself.
 # Exits non-zero when any ERROR is found. Use --strict to also fail on WARN.
 set -euo pipefail
 
@@ -19,7 +19,8 @@ if ! command -v python3 >/dev/null 2>&1; then
     exit 1
 fi
 
-mapfile -d '' skill_dirs < <(find -L "$skills_dir" -mindepth 1 -maxdepth 1 -type d -print0)
+mapfile -d '' skill_dirs < <(find -L "$skills_dir" -mindepth 1 -maxdepth 1 -type d \
+    -not -name synced -print0)
 
 python3 - "$skills_dir" "$@" -- "${skill_dirs[@]}" <<'PYEOF'
 import sys

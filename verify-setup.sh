@@ -84,28 +84,36 @@ for path in "$HOME/AGENTS.md" "$HOME/CLAUDE.md" "$HOME/.agents" \
 done
 check '.agents skills resolves to repository index' \
     test "$(readlink -f "$HOME/.agents/skills" 2>/dev/null)" = "$repo_dir/agents/skills"
+check '.claude skills resolves to repository index' \
+    test "$(readlink -f "$HOME/.claude/skills" 2>/dev/null)" = "$repo_dir/agents/skills"
 
+# BB and Codex refuse a skill whose root path is a symlink ("Root path ... must not be a symlink"),
+# so the index must hold real directories. Both agent homes reach them through one directory-level
+# symlink instead, which leaves each skill root a real directory. See agents/README.md.
 expected_skills=0
-missing_skills=0
 missing_skill_md=0
+symlinked_skills=0
 while IFS= read -r -d '' skill_dir; do
-    [[ -d "$skill_dir" ]] || continue
     skill_name="$(basename "$skill_dir")"
+    # Claude Code owns this directory; it holds claude.ai account skills, not a skill itself.
+    [[ "$skill_name" == synced ]] && continue
     expected_skills=$((expected_skills + 1))
-    [[ -e "$skill_dir/SKILL.md" ]] || missing_skill_md=$((missing_skill_md + 1))
-    for destination in "$HOME/.claude/skills/$skill_name"; do
-        [[ -e "$destination" ]] || missing_skills=$((missing_skills + 1))
-    done
-done < <(find -L "$repo_dir/agents/skills" -mindepth 1 -maxdepth 1 -type d -print0)
-if ((expected_skills > 0 && missing_skills == 0)); then
-    pass "all $expected_skills indexed skills linked for Claude Code compatibility"
-else
-    fail "skill links incomplete ($missing_skills missing; index has $expected_skills)"
-fi
+    if [[ -L "$skill_dir" ]]; then
+        symlinked_skills=$((symlinked_skills + 1))
+    fi
+    if [[ ! -e "$skill_dir/SKILL.md" ]]; then
+        missing_skill_md=$((missing_skill_md + 1))
+    fi
+done < <(find "$repo_dir/agents/skills" -mindepth 1 -maxdepth 1 \( -type d -o -type l \) -print0)
 if ((expected_skills > 0 && missing_skill_md == 0)); then
     pass "all $expected_skills indexed skills have reachable SKILL.md"
 else
     fail "indexed skill SKILL.md files incomplete ($missing_skill_md missing; index has $expected_skills)"
+fi
+if ((symlinked_skills == 0)); then
+    pass "all $expected_skills skill roots are real directories"
+else
+    fail "$symlinked_skills skill root(s) are symlinks; BB and Codex will skip them"
 fi
 check 'skill frontmatter valid' "$repo_dir/audit-skills.sh"
 

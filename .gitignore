@@ -5,5 +5,5 @@ CLAUDE.md
 .quarkus/
 .firecrawl/
 
-# Local project-owned skill index links
-agents/skills/plan-init
+# Claude Code writes claude.ai account-synced skills into the index root
+agents/skills/synced/

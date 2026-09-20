@@ -11,23 +11,8 @@ These are CLI installs, not desktop application packages:
 - Codex and Pi are installed from the user-owned npm prefix under `~/.npm-global/`.
 - Cursor CLI is installed by Cursor's user installer under `~/.local/`.
 
-Do not install the ChatGPT or Claude Desktop APT packages merely to get the CLIs. If those desktop
-apps are present on the host, they are personal host applications and can be removed independently
-from the CLI installs. The tracked files in this repo are the source of truth for agent
+The tracked files in this repo are the source of truth for agent
 configuration; do not introduce host-local replacements.
-
-To decommission the optional desktop apps on a host:
-
-```bash
-sudo apt remove chatgpt claude-desktop
-claude --version
-codex --version
-agent --version
-pi --version
-```
-
-Use [the browser login handoff](browser-login.md) when the personal browser runs on a different
-machine. Prepare that browser before remaining host logins; preserve existing credentials.
 
 ## Order
 
@@ -48,22 +33,36 @@ ln -sfn ~/AGENTS.md ~/CLAUDE.md
 
 ## Skills
 
-The repository's `agents/skills/` directory is the global skill index. Entries may be real skill
-directories or symlinks to skill directories owned by other repositories. `~/.agents/skills` is the
-canonical local skill path for Codex, Cursor, and Pi. Claude Code still documents
-`~/.claude/skills`, so keep Claude-only compatibility links:
+The repository's `agents/skills/` directory is the global skill index. `~/.agents/skills` is the
+canonical local skill path for Codex, Cursor, and Pi. Claude Code reads only `~/.claude/skills`; as
+of v2.1.278 it does not support the canonical path, so it needs a compatibility link. Both agent
+homes reach the index through a single directory-level symlink:
 
 ```bash
 ln -sfn ~/projects/agent-box-setup/agents ~/.agents
-mkdir -p ~/.claude/skills ~/.pi/agent
-find ~/.claude/skills -maxdepth 1 -xtype l -delete
-find -L ~/projects/agent-box-setup/agents/skills -mindepth 1 -maxdepth 1 -type d -print0 |
-  while IFS= read -r -d '' skill_dir; do
-    skill_name="$(basename "$skill_dir")"
-    ln -sfn "$skill_dir" ~/.claude/skills/"$skill_name"
-  done
+mkdir -p ~/.claude ~/.pi/agent
+ln -sfn ~/projects/agent-box-setup/agents/skills ~/.claude/skills
 ln -sfn ~/projects/agent-box-setup/agents/AGENTS.md ~/.pi/agent/AGENTS.md
 ```
+
+Link the directory, never the individual skills. BB and Codex reject a skill whose own root path is
+a symlink:
+
+```text
+Root path "/home/dave/.agents/skills/<skill>" must not be a symlink
+```
+
+Such a skill still appears in `claude` and `cursor-agent`, which resolve symlinks through the
+kernel, so the breakage is silent and partial. Linking one level up keeps every skill root a real
+directory, so all four agents and the BB skills panel see the same index.
+
+The invariant is therefore: `~/.agents` and `~/.claude/skills` are symlinks, and nothing inside
+`agents/skills/` is. `verify-setup.sh` checks both halves, and `machines/vm/guest-baseline.sh` fails
+after linking if a per-skill symlink has crept back into the index.
+
+Claude Code writes claude.ai account-synced skills into `~/.claude/skills/synced/`, so they land in
+`agents/skills/synced/`. That path is gitignored, and `verify-setup.sh` and `audit-skills.sh` skip
+it because it holds skills rather than being one.
 
 Install upstream skills into the source directory:
 
@@ -84,9 +83,6 @@ npx skills add elastic/agent-skills -g \
   -s elasticsearch-esql -s elasticsearch-file-ingest -s elasticsearch-onboarding \
   -s elasticsearch-security-troubleshooting -y
 ```
-
-After base box setup, deployment-specific or project-owned skills can add symlinks into
-`agents/skills/`.
 
 Audit and update upstream skills:
 
