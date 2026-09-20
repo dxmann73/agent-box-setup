@@ -30,6 +30,7 @@ We are currently using the following skills:
 - local: `sync-repo-setup`
 - local: `plan-init`
 - local: `plan-add`
+- local: `bb-sudo-terminal`
 
 On demand:
 
