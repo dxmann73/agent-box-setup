@@ -4,8 +4,7 @@
 - priority: p3 (low) — wording preference, no urgency signal in the text
 - branch: main
 
-also add a plan regarding the wording. I want to use another term for babysit/sit and also for
-overlay.
+also add a plan regarding the wording.
 
 ## Terms currently in use
 
@@ -17,27 +16,7 @@ overlay.
 - `overlay` — used across `README.md`, `START-HERE.md`, `AGENTS.md`, `modules/README.md`, and
   many module docs. Refers to the private deployment repo (`dave.box-setup`) that layers on top
   of the public `agent-box-setup` base.
-
-## Work to do (not yet designed)
-
-1. Pick a replacement for `babysit`/`sit`. Candidates to weigh: `attend` (`att`),
-   `supervise` (`sup`), `stage` (`stg`), `phase` (`phs`), `session` (`ses`).
-   Constraint: the catalog column is 3-4 chars wide; the noun must fit.
-2. Pick a replacement for `overlay`. Candidates to weigh: `deployment`, `profile`, `variant`,
-   `personalization`, `personal-layer`, `flavor`.
-3. Confirm both replacements read well in a full sentence (`babysit: ask the user…` and
-   `the dave.box overlay` are the current shapes) — not just in isolation.
-4. Sweep both repos (`agent-box-setup` and `dave.box-setup`) — the term lives in both.
-5. Do the rename in one commit per term, not mixed, to keep the diff reviewable.
-6. Update the catalog column header + every module's row when `sit` is renamed. Keep the
-   value shorthand (`-`, `boot`, `iso`, `gcred`, `login`) unless a value should also change.
-7. Consider whether `sit` values themselves need updating (`iso`, `gcred`, `login` all read
-   fine independent of the header name).
-
-## Related
-
-(none — scan of `_plans/drafts/`, `_plans/next/`, `_plans/open/` found no naming or wording
-plan)
+- `daily hosts` - the hosts are not "daily" but just different host machines
 
 ## Observations
 
