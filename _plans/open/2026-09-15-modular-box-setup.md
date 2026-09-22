@@ -54,7 +54,7 @@ catalog.
 
 ### 1.3 Hypervisor and guests
 
-- [ ] `kvm`
+- [x] `kvm`
 - [ ] `kubuntu-iso`
 - [ ] `isolated-agent-net`
 - [ ] `isolated-browser-net`
