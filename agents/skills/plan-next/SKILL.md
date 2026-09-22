@@ -1,6 +1,6 @@
 ---
 name: plan-next
-description: Review _plans/drafts/ and recommend the top five draft plans to
+description: Review _plans/drafts/ and recommend the top three draft plans to
   select for planning and refinement next.
 ---
 
@@ -38,23 +38,24 @@ Down-rank or exclude:
 
 ## Output
 
-Return a pick list of up to five drafts, sorted best first. If fewer than five look ready to select
-for refinement, return only that set and mention the count. For each item include:
+Return a compact pick list of up to three drafts, sorted best first. If fewer than three look ready
+to select for refinement, return only that set. Keep the whole response short.
+
+For each item include only:
 
 - Rank number.
-- Draft path.
-- Title.
-- Priority, if the draft states one.
-- Why it is a logical next item.
-- Readiness notes: what makes it worth selecting now, plus any blocker or assumption.
+- Plan name or title.
+- Priority, if the draft states one; otherwise write `priority unstated`.
+- One very short reason it is a good next plan to do.
 
-End by asking the user to choose by rank, title, or path. Do not invoke another skill until the user
+End by asking the user to choose by rank or title. Do not invoke another skill until the user
 chooses.
 
 ## No Ready Drafts
 
 If no draft is ready, say so plainly. List the closest candidates with the missing decision or
-context needed to make each one ready. Do not invent missing requirements to force a pick.
+context needed to make each one ready. Keep this compact, too. Do not invent missing requirements to
+force a pick.
 
 ## Handoff
 
