@@ -71,14 +71,14 @@ catalog.
 
 ### 1.4 Core tools
 
-- [ ] `build-essential`
-- [ ] `jq`
-- [ ] `yq`
-- [ ] `ripgrep`
-- [ ] `fd-find`
-- [ ] `github-cli`
-- [ ] `wezterm`
-- [ ] `docker`
+- [x] `build-essential`
+- [x] `jq`
+- [x] `yq`
+- [x] `ripgrep`
+- [x] `fd-find`
+- [x] `github-cli`
+- [x] `wezterm`
+- [x] `docker`
 
 ### 1.5 Languages and JS CLIs
 
