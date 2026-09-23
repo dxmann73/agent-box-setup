@@ -2,7 +2,8 @@
 
 What: Browser guest application set.
 
-Does: Tracks browser packages and update policy for the Chrome VM role.
+Does: Installs Google Chrome inside the Chrome VM role and adds the Google apt origin to unattended
+upgrades.
 
 Catalog metadata: see [Modular machine catalog](../../../README.md) for typ, sit, scp, requires, and
 ticks.

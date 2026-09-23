@@ -62,7 +62,7 @@ catalog.
 - [x] `agent-vm`
 - [x] `guest-ssh-sudo-bootstrap`
 - [x] `guest-integration`
-- [ ] `chrome-vm-packages`
+- [x] `chrome-vm-packages`
 - [ ] `host-url-launcher`
 - [ ] `virtiofs-desktop-share`
 - [ ] `virtiofs-user-data-shares`
