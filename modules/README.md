@@ -300,6 +300,7 @@ dropbox-client               app   login  dave   Y     -    -    Y      kubuntu-
 libreoffice                  app   -      dave   Y     -    -    Y      kubuntu-desktop
 kdenlive                     app   -      dave   Y     -    -    Y      kubuntu-desktop
 vibe-typer                   app   -      dave   Y     -    -    Y      kubuntu-desktop
+losslesscut                  app   -      dave   Y     -    -    Y      kubuntu-desktop
 ```
 
 ## Out of this catalog

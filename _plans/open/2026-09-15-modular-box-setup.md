@@ -129,6 +129,7 @@ catalog.
 - [ ] `libreoffice`
 - [ ] `kdenlive`
 - [ ] `vibe-typer`
+- [ ] `losslesscut`
 
 ## 2. Cutover
 
