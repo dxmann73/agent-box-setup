@@ -9,3 +9,9 @@ must not download or verify installation media itself.
 
 Catalog metadata: see [Modular machine catalog](../../../README.md) for typ, sit, scp, requires, and
 ticks.
+
+Recipe: [recipe.md](recipe.md)
+
+Apply: `./apply.sh`
+
+Verify: `./verify.sh`

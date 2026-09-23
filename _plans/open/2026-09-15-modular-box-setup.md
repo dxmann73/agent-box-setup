@@ -59,7 +59,7 @@ catalog.
 - [x] `isolated-agent-net`
 - [x] `isolated-browser-net`
 - [x] `chrome-vm`
-- [ ] `agent-vm`
+- [x] `agent-vm`
 - [ ] `guest-ssh-sudo-bootstrap`
 - [ ] `guest-integration`
 - [ ] `chrome-vm-packages`
