@@ -82,13 +82,13 @@ catalog.
 
 ### 1.5 Languages and JS CLIs
 
-- [ ] `node-24`
-- [ ] `pnpm`
-- [ ] `typescript`
-- [ ] `firecrawl-cli`
-- [ ] `java-stack`
-- [ ] `imaging`
-- [ ] `k8s-stack`
+- [x] `node-24`
+- [x] `pnpm`
+- [x] `typescript`
+- [x] `firecrawl-cli`
+- [x] `java-stack`
+- [x] `imaging`
+- [x] `k8s-stack`
 
 ### 1.6 Editor, agents, BB, browser automation
 

@@ -219,13 +219,13 @@ typescript                   tool  -      gen    Y     Y    -    Y      node-24
 firecrawl-cli                tool  -      gen    Y     Y    -    Y      node-24
 java-stack                   tool  -      dave   -     Y    -    N      kubuntu-desktop
 imaging                      tool  -      dave   Y     -    -    Y      kubuntu-desktop node-24
-k8s-stack                    tool  -      gen    -     Y    -    N      kubuntu-desktop
+k8s-stack                    tool  -      gen    -     Y    -    N      kubuntu-desktop docker
 ```
 
 `typescript` includes `ts-node`. `java-stack` is SDKMAN + Java 21 + Maven + Quarkus on `xagt` only.
 `imaging` is daily-host only: apt (ImageMagick, ffmpeg, Inkscape, …), npm (sharp, resvg), and Python
-imaging (Pillow / python3-pil). `k8s-stack` is Helm + kubectl + Minikube on `xagt` only. `node-24`
-includes the user npm prefix (`~/.npm-global`).
+imaging (Pillow / python3-pil). `k8s-stack` is Helm + kubectl + Minikube on `xagt` only; Docker is
+its intended Minikube driver. `node-24` includes the user npm prefix (`~/.npm-global`).
 
 Section 4 closed.
 
