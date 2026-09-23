@@ -66,7 +66,7 @@ catalog.
 - [x] `chrome-vm-launcher`
 - [x] `virtiofs-desktop-share`
 - [x] `virtiofs-user-data-shares`
-- [ ] `vm-snapshots`
+- [x] `vm-snapshots`
 - [ ] `vm-disk-backup`
 
 ### 1.4 Core tools
