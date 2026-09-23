@@ -63,7 +63,7 @@ catalog.
 - [x] `guest-ssh-sudo-bootstrap`
 - [x] `guest-integration`
 - [x] `chrome-vm-packages`
-- [ ] `host-url-launcher`
+- [x] `chrome-vm-launcher`
 - [ ] `virtiofs-desktop-share`
 - [ ] `virtiofs-user-data-shares`
 - [ ] `vm-snapshots`

@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=Chrome VM
+Comment=Show the personal browser VM
+Exec=show-chrome-vm.sh
+Icon=virt-manager
+Terminal=false
+Categories=Network;WebBrowser;
+StartupNotify=false
+StartupWMClass=virt-viewer

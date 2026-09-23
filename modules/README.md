@@ -53,7 +53,7 @@ modules/
   01-home/     clones, dotfiles, timers, markdownlint
   02-virt/     kvm, ISO, shared guest integration, snapshots
     agent/     agent net, agent-vm, agent shares
-    chrome/    browser net, chrome-vm, browser packages, URL launcher, Desktop share
+    chrome/    browser net, chrome-vm, browser packages, Chrome VM launcher, Desktop share
   03-tools/    jq, yq, rg, gh, wezterm, docker, …
   04-lang/     node, pnpm, java-stack, k8s-stack, imaging
   05-dev/      vscode, agent CLIs, BB, playwright, tailscale
@@ -162,7 +162,7 @@ agent-vm                     role  iso    both   Y     Y    -    N      kvm isol
 guest-ssh-sudo-bootstrap     cfg   iso    gen    -     Y    Y    -      kubuntu-desktop
 guest-integration            cfg   -      gen    -     Y    Y    -      guest-ssh-sudo-bootstrap
 chrome-vm-packages           tool  -      dave   -     -    Y    -      chrome-vm guest-integration
-host-url-launcher            cfg   -      dave   Y     -    -    Y      chrome-vm guest-integration
+chrome-vm-launcher           cfg   -      dave   Y     -    -    Y      chrome-vm guest-integration
 virtiofs-desktop-share       cfg   -      dave   Y     -    Y    Y      chrome-vm
 virtiofs-user-data-shares    cfg   -      dave   Y     Y    -    N      agent-vm
 vm-snapshots                 cfg   -      gen    Y     Y    Y    Y      kubuntu-desktop
@@ -178,10 +178,11 @@ DHCP/DNS; bootstrap SSH is host-initiated. Host services (local-llm) bind on the
 virbr0. ACLs in `infra`. `guest-integration` is qemu-guest-agent, spice-vdagent, and the host
 clipboard bridge (always together on both guests). `guest-ssh-sudo-bootstrap` runs after the guest
 role module has produced an installed Kubuntu guest. `vm-snapshots` snapshots whichever guest role
-exists for the profile. `host-url-launcher` is the pinned Chrome-VM opener. `chrome-vm-packages` is
-Google Chrome on `xchr` only, with unattended-upgrades for `origin=Google LLC`. Daily hosts keep
-stock Firefox (`firefox-stock`); do not install Chrome there. Playwright Chromium on `xagt` is not
-Chrome. Shares: Desktop → Chrome guest; user-data → agent VM (overlay supplies the path).
+exists for the profile. `chrome-vm-launcher` is the pinned Chrome-VM opener.
+`chrome-vm-packages` is Google Chrome on `xchr` only, with unattended-upgrades for
+`origin=Google LLC`. Daily hosts keep stock Firefox (`firefox-stock`); do not install Chrome there.
+Playwright Chromium on `xagt` is not Chrome. Shares: Desktop → Chrome guest; user-data → agent VM
+(overlay supplies the path).
 `vm-snapshots` and `vm-disk-backup` stay separate (rollback vs disk copies; Chrome 3D guest is
 offline-only backup).
 
