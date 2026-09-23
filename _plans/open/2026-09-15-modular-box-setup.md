@@ -56,7 +56,7 @@ catalog.
 
 - [x] `kvm`
 - [x] `kubuntu-iso`
-- [ ] `isolated-agent-net`
+- [x] `isolated-agent-net`
 - [ ] `isolated-browser-net`
 - [ ] `chrome-vm`
 - [ ] `agent-vm`
