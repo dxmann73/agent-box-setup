@@ -64,7 +64,7 @@ catalog.
 - [x] `guest-integration`
 - [x] `chrome-vm-packages`
 - [x] `chrome-vm-launcher`
-- [ ] `virtiofs-desktop-share`
+- [x] `virtiofs-desktop-share`
 - [ ] `virtiofs-user-data-shares`
 - [ ] `vm-snapshots`
 - [ ] `vm-disk-backup`
