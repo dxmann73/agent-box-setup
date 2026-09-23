@@ -60,7 +60,7 @@ catalog.
 - [x] `isolated-browser-net`
 - [x] `chrome-vm`
 - [x] `agent-vm`
-- [ ] `guest-ssh-sudo-bootstrap`
+- [x] `guest-ssh-sudo-bootstrap`
 - [ ] `guest-integration`
 - [ ] `chrome-vm-packages`
 - [ ] `host-url-launcher`
@@ -154,5 +154,5 @@ ticks; spec does not mention the VM npm BB server.
 Last. After phase 3, apply the catalog’s current live-vs-catalog table. Do not use this phase to
 change ticks.
 
-**Done when:** the live-vs-catalog table is empty; each drifted tick’s verify matches the catalog on the
-live boxes.
+**Done when:** the live-vs-catalog table is empty; each drifted tick’s verify matches the catalog
+on the live boxes.

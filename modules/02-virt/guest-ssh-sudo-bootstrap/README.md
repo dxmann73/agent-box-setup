@@ -4,5 +4,14 @@ What: Guest bootstrap access configuration.
 
 Does: Enables host-streamed guest setup with SSH and passwordless sudo on guest machines.
 
+Use this after a Kubuntu guest is installed and before any host-streamed package or integration
+work. The recipe is role-neutral: it applies to the agent guest and the browser guest.
+
 Catalog metadata: see [Modular machine catalog](../../README.md) for typ, sit, scp, requires, and
 ticks.
+
+Recipe: [recipe.md](recipe.md)
+
+Apply: `./apply.sh`
+
+Verify: `./verify.sh`
