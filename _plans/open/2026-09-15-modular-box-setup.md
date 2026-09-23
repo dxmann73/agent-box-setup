@@ -58,7 +58,7 @@ catalog.
 - [x] `kubuntu-iso`
 - [x] `isolated-agent-net`
 - [x] `isolated-browser-net`
-- [ ] `chrome-vm`
+- [x] `chrome-vm`
 - [ ] `agent-vm`
 - [ ] `guest-ssh-sudo-bootstrap`
 - [ ] `guest-integration`
