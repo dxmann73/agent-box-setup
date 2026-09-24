@@ -1,8 +1,14 @@
 # libreoffice
 
-What: LibreOffice suite.
+What: LibreOffice suite for daily hosts.
 
-Does: Provides host-side office document editing.
+Does: Installs Ubuntu's LibreOffice suite for local document editing.
 
 Catalog metadata: see [Modular machine catalog](../../README.md) for typ, sit, scp, requires, and
 ticks.
+
+Recipe: [recipe.md](recipe.md)
+
+Apply: `sudo ./apply.sh`
+
+Verify: `./verify.sh`

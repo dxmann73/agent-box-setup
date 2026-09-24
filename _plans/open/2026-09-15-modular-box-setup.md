@@ -123,13 +123,13 @@ catalog.
 
 ### 1.8 Personal host apps
 
-- [ ] `firefox-stock`
-- [ ] `bitwarden-snap`
-- [ ] `dropbox-client`
-- [ ] `libreoffice`
-- [ ] `kdenlive`
-- [ ] `vibe-typer`
-- [ ] `losslesscut`
+- [x] `firefox-stock`
+- [x] `bitwarden-snap`
+- [x] `dropbox-client`
+- [x] `libreoffice`
+- [x] `kdenlive`
+- [x] `vibe-typer`
+- [x] `losslesscut`
 
 ## 2. Cutover
 
