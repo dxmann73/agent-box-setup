@@ -24,7 +24,7 @@ Port `38886` is the BB service; `38887` is the host daemon. A process already li
 `127.0.0.1:38886` explains `EADDRINUSE` and prevents BB from starting.
 
 `./verify.sh` requires BB to be running, then checks the health endpoint and expected BB processes.
-It does not start or stop BB. During the modular move, the large top-level `verify-setup.sh` remains
+It does not start or stop BB. The catalog runner remains separate from BB lifecycle management.
 untouched.
 
 ## Upstream reference

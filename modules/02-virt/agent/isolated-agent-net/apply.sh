@@ -99,7 +99,7 @@ done
 
 script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 repo_dir="$(cd -- "$script_dir/../../../../.." && pwd)"
-hook_source="${repo_dir}/machines/host/network-guard-hook.sh"
+hook_source="${repo_dir}/modules/02-virt/network-guard-hook.sh"
 [[ -r "$hook_source" ]] || die "Missing network guard hook source: ${hook_source}"
 
 workdir="$(mktemp -d)"

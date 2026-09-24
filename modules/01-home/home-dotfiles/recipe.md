@@ -3,10 +3,9 @@
 Run this after the repo is cloned so the managed shell dotfiles replace the ones
 Kubuntu creates on first login. Ticked on `xhost`, `xagt`, `bhost`; not on `xchr`.
 
-The agent VM (`xagt`) currently receives the same symlinks from
-[`machines/vm/guest-baseline.sh`](../../../machines/vm/guest-baseline.sh) during
-the host-streamed guest baseline. After the module cutover phase this module
-becomes the single source of truth on both host and guest.
+The agent VM (`xagt`) receives these links from this module after its guest
+access bootstrap. This module is the single source of truth on both host and
+guest.
 
 ## Apply
 

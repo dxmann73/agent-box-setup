@@ -2,7 +2,7 @@
 
 Run this module on `xhost`, `bhost`, and `xagt`. Not on `xchr`: the Chrome VM is isolated by the
 host-side nft policy in `02-virt/chrome/isolated-browser-net` (see the catalog and
-`dave.box-setup/agent-box/machines/host/chrome-firewall.nft`); a guest UFW would only duplicate that
+the Dave overlay's Chrome firewall policy); a guest UFW would only duplicate that
 policy and add drift risk.
 
 `kubuntu-baseline` must have run first. On daily hosts (`xhost`, `bhost`) `host-sudo-session`
@@ -11,12 +11,11 @@ provides the cached sudo the script needs.
 Scope is the baseline only: default deny incoming, default allow outgoing, enable, survive reboot.
 Per-service allow rules live in the modules that own the exposed service:
 
-- Agent-VM SSH from the hypervisor bridge: `guest-ssh-sudo-bootstrap` (currently drafted in
-  `machines/vm/03-networking.md`).
+- Agent-VM SSH from the hypervisor bridge: `guest-ssh-sudo-bootstrap`.
 - Host inference endpoint on `virbr0`: the `local-llm` repo.
 
 Do not add those rules here. `libvirt` installs its own chains for guest NAT, so the `default`
-network keeps working with UFW up (see `machines/host/03-system-config.md` §6).
+network keeps working with UFW up.
 
 ## Lockout safety
 

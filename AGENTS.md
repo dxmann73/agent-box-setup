@@ -1,55 +1,47 @@
 # Agent rules for agent-box-setup
 
-This repository contains instructions for setting up machines that run agents in YOLO mode: an
-Ubuntu host and one or more persistent agent VMs on it.
+This repository configures machines that run coding agents in YOLO mode. The agent VM is the
+security boundary. [docs/specification/agent-box.md](docs/specification/agent-box.md) is the
+architecture source of truth; [modules/README.md](modules/README.md) is the capability catalog.
 
-[docs/specification/agent-box.md](docs/specification/agent-box.md) is the source of truth for the
-architecture. Check changes against it. [README.md](./README.md) holds the setup order, directory
-map and config-file list; read it when you need those details.
+Hardware, locale, personal applications, machine sizes, identities, and remote URLs live in the
+[deployment overlay](https://github.com/dxmann73/dave.box-setup/tree/main/agent-box).
 
-Hardware BOM, locale, personal apps, and VM sizes live in
-[dave.box-setup/agent-box/](https://github.com/dxmann73/dave.box-setup/blob/main/agent-box/README.md).
+## Project rules
 
-## Project Rules
-
-- Every guide belongs to exactly one target: `machines/host/`, `machines/vm/`, or `machines/common/`
-  when it applies to both. Agent-CLI instructions live in `agents/<agent>/README.md`. Classify
-  before adding.
-- No dual-boot, migration or WSL instruction may live in this tree. Those notes, if any, belong in
-  the dave.box overlay. Both greps must stay empty:
+- Every setup capability belongs to exactly one catalog module under `modules/`. Classify it before
+  adding files; keep each module's README short and put implementation in adjacent scripts,
+  configuration, or unit files.
+- Do not add dual-boot, migration, or WSL instructions. This grep must stay empty:
 
   ```bash
   grep -rilE 'bitlocker|fast startup|dual.?boot|windows partition|shrink windows|ntfs|WSL|/mnt/c|winget install|DrvFs' \
-    machines/host machines/vm machines/common agents user-home START-HERE.md docs verify-setup.sh \
-    --exclude-dir=skills
-  grep -rilE 'xmg-evo|890M|HX 370|tailb67542|dxmann73@gmail|clackworks\.agents|/Dropbox/Docs/Geld|de_DE|plasma-localerc|VibeTyper|vibe-typer' \
-    machines/host machines/vm machines/common agents user-home START-HERE.md \
-    docs verify-setup.sh \
-    --exclude-dir=skills
+    modules agents user-home START-HERE.md docs verify-setup.sh --exclude-dir=skills
   ```
 
-- Two scopes live in this repo: **box-level** (machine setup under `machines/`, plus `agents/` and
-  `user-home/`) and **project-level** (skills, per-language toolchains). Project-level items are
-  installed globally as an interim measure; classify new additions before adding them. See "Scope"
-  in `README.md`.
-- The local LLM/model runtime is **out of scope**. It lives in a separate repo:
-  <https://github.com/dxmann73/local-llm>. Reference it by URL; do not add llama.cpp, model,
-  benchmark or Ollama instructions here.
-- Treat `agents/skills/` as the single source of truth for installed skills.
-- Keep setup docs/scripts in sync with that directory (`agents/README.md`, `verify-setup.sh`).
-- Verification must be directory-driven (derive expected skills from `agents/skills/`), not
-  hardcoded skill-name lists.
-- Everything in `user-home/` is **symlinked** into `~`, never copied. Same for the repo root
-  `.markdownlint.json` → `~/projects/.markdownlint.json`.
+- Do not put deployment-specific identities or values in reusable payload trees. This grep must
+  stay empty:
 
-## When Running Setup
+  ```bash
+  grep -rilE 'xmg-evo|890M|HX 370|tailb67542|dxmann73@gmail|clackworks\.agents|/Dropbox/Docs/Geld|de_DE|plasma-localerc|VibeTyper|vibe-typer' \
+    agents user-home START-HERE.md docs verify-setup.sh --exclude-dir=skills
+  ```
 
-- **Determine the target first** - host or VM. They share `machines/common/` but differ in what each
-  one additionally installs.
-- **Follow the phased setup order in README.md**; numeric filenames identify guides, while the host
-  sequence revisits hypervisor setup before agent-VM creation. Each guide has verification.
-- **Don't run everything blindly** - ask the user before installing optional tools.
-- **Check existing installations** - many tools may already be installed; verify first.
-- **Respect user preferences** - these are defaults; the user may want variations.
-- **Handle errors gracefully** - if a step fails, diagnose before continuing.
-- **Verify at the end** - `./verify-setup.sh --host` or `--vm`.
+- Box-level work lives in `modules/`, `agents/`, and `user-home/`. Project-level skills and
+  language toolchains are installed globally as an interim measure.
+- The local LLM/model runtime is out of scope; reference
+  <https://github.com/dxmann73/local-llm> instead.
+- `agents/skills/` is the single source of truth for installed skills. Keep `agents/README.md` and
+  the relevant module verifier in sync with it.
+- Everything in `user-home/` is symlinked into `~`, never copied. The repository-root
+  `.markdownlint.json` is symlinked to `~/projects/.markdownlint.json`.
+
+## Running setup
+
+- Choose the catalog box ID before applying any recipe. Read its tick, requirements, and `sit`.
+- Follow the catalog operator schedule. On daily hosts, start `host-sudo-session` before rootful
+  work.
+- Check existing installation state. Ask before optional tools or unapproved data/security choices.
+- Never embed secrets in recipes. Diagnose failures before continuing.
+- Verify with `./modules/verify-box.sh BOX --bootstrap|--operational|--full`; use `--list` to
+  preview the exact catalog-derived commands.

@@ -12,7 +12,7 @@ writable_roots = ["/home/dave"]
 [tui]
 # Mirrors the Claude Code statusline order: location -> model -> context -> rate limits.
 # Item identifiers are a fixed built-in set; unknown entries are silently ignored, so
-# verify-setup.sh validates this list. `/statusline` in the TUI edits it and writes back here.
+# The agent-config module validates this list. `/statusline` in the TUI edits it and writes back here.
 status_line = [
   "current-dir",
   "git-branch",

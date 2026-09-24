@@ -4,9 +4,8 @@ Run this module on the host that owns the BB control plane (`xhost`). The host r
 Linux desktop AppImage; it bundles the BB UI, server and host daemon. The agent VM is only an
 enrolled execution machine (`bb-enroll-execution-machine`).
 
-Full prose, VM enrollment and shared-access notes live in
-[`machines/common/05-bb.md`](../../../machines/common/05-bb.md). This recipe is the repeatable part.
-For AppImage updates and failed-start recovery, see [appimage-updates.md](appimage-updates.md).
+VM enrollment belongs to `bb-enroll-execution-machine`; remote access belongs to `bb-client`. For
+AppImage updates and failed-start recovery, see [appimage-updates.md](appimage-updates.md).
 
 ## Prerequisite: the AppImage itself
 
@@ -45,10 +44,9 @@ cd ~/projects/agent-box-setup/modules/05-dev/bb-appimage
 - Refreshes `update-desktop-database`, `gtk-update-icon-cache` and `kbuildsycoca6` when those tools
   are present.
 
-The menu entry is the part that used to be missing. `machines/common/05-bb.md` only said to accept
-AppImage menu integration if the desktop offers it. Kubuntu does not offer it without `appimaged`,
-so the entry never appeared and `bb` in KRunner started the CLI (`~/.local/bin/bb`) instead, which
-prints help and exits 1.
+Kubuntu does not offer AppImage menu integration without `appimaged`, so this module creates the
+entry explicitly. Otherwise `bb` in KRunner starts the CLI (`~/.local/bin/bb`), which prints help
+and exits 1.
 
 The desktop entry keeps `Icon=bb` and `StartupWMClass=bb`, matching the entry bundled inside the
 AppImage. `StartupWMClass` is what lets KDE map the running window to the launcher on Wayland.

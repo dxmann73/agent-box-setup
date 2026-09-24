@@ -4,7 +4,7 @@ Status: open
 
 The target state lives in the catalog:
 
-[modular machine catalog](../modules/README.md)
+[modular machine catalog](../../modules/README.md)
 
 This file tracks only the remaining implementation phases. Do not duplicate catalog ticks, values,
 module definitions, operator schedule, or live-drift details here. If a catalog tick or value
@@ -131,7 +131,7 @@ catalog.
 - [x] `vibe-typer`
 - [x] `losslesscut`
 
-## 2. Cutover
+## 2. Cutover [x]
 
 Step by step, one module at a time. Virt guest modules may move as a section if KVM, nets, and ISO
 are too coupled to move safely one-by-one.
@@ -147,8 +147,8 @@ catalog modules. The replacement is a thin runner: given a box id, run each tick
 `--host`, `--vm`, and `--bootstrap|--operational|--full` are compatibility aliases at most, not the
 source of truth.
 
-**Done when:** `machines/` bundles gone; no giant verify script; per-box verification follows catalog
-ticks.
+**Done:** `machines/` bundles gone; the root verifier is a thin catalog-runner entry point; per-box
+verification follows catalog ticks.
 
 ## 3. Reconcile live boxes
 

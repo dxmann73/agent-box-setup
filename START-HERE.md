@@ -1,35 +1,28 @@
 # Start here: fresh Kubuntu host
 
-Use this page only on a new physical Kubuntu host. It starts one local agent; that agent clones this
-repository and prepares the host. An overlay may insert a personal browser guest before the
-remaining logins; full host completion precedes agent-VM creation.
+Use this page only on a new physical Kubuntu host. It starts one local agent, which clones this
+repository and prepares the host from the modular catalog. An overlay may insert a browser guest
+before remaining logins; host completion precedes agent-VM creation.
 
-You need a Claude subscription that includes Claude Code.
-
-The dave.box overlay prompt, `box.env`, locale, and project inventory live in
-[dave.box-setup/agent-box/README.md](https://github.com/dxmann73/dave.box-setup/blob/main/agent-box/README.md).
+You need a Claude subscription that includes Claude Code. The deployment prompt, profile values,
+locale, and project inventory live in the
+[deployment overlay](https://github.com/dxmann73/dave.box-setup/tree/main/agent-box).
 
 ## 1. Install Claude Code
 
-Kubuntu Desktop ships `curl` and `ca-certificates` already. Open a terminal and run:
+Kubuntu Desktop ships `curl` and `ca-certificates`. Open a terminal:
 
 ```bash
 curl -fsSL https://claude.ai/install.sh | bash
-```
-
-Start Claude Code:
-
-```bash
 claude
 ```
 
-Complete its sign-in prompts in the browser, then return to the terminal.
+Complete sign-in in the browser, then return to the terminal.
 
-## 2. Clone the setup repositories
+## 2. Clone setup inputs
 
-Kubuntu Desktop may not ship `git`. Install it and place both the public repository and the private
-overlay under `~/projects/` before handing the task to the agent. The overlay is private, so it
-needs a GitHub credential; the simplest bootstrap is `gh auth login` via HTTPS.
+Install Git and GitHub CLI, then clone the public repository and selected private overlay under
+`~/projects/`:
 
 ```bash
 sudo apt-get update
@@ -41,31 +34,25 @@ gh auth login
 gh repo clone dxmann73/dave.box-setup
 ```
 
-Both checkouts are preconditions for the modules that follow; they are not modules themselves.
-Downstream modules assume `~/projects/agent-box-setup` and `~/projects/dave.box-setup` are present
-and treat them as inputs.
+Both checkouts are inputs to later recipes, not catalog modules.
 
 ## 3. Give the agent this task
 
-Paste the following into Claude Code:
+Paste this into Claude Code:
 
-> Set up this physical Kubuntu host using <https://github.com/dxmann73/agent-box-setup>. Obtain it
-> under `~/projects/agent-box-setup` and obtain any selected deployment overlay before starting.
-> Follow the phased host order in README.md. Check existing installations and reuse working logins.
-> Complete the host baseline and virtualization prerequisites first. If the overlay selects a
-> personal browser guest, set up and verify that browser before the remaining authentication,
-> development tools and personal apps. Ask before optional tools or unapproved data/security
-> choices; diagnose failures before continuing. Then complete all four agent CLIs, Firecrawl, VS
-> Code and BB, and run host operational verification. That later checkpoint gates agent-VM creation;
-> it does not block an overlay's earlier personal-browser phase.
+> Set up this daily Kubuntu host with the modular catalog in
+> `~/projects/agent-box-setup/modules/README.md`. Obtain the selected deployment overlay first.
+> Determine the catalog box ID, follow its ticked module dependencies and operator schedule, and
+> reuse existing working state. Run `host-sudo-session` before rootful work. If the overlay selects
+> a browser guest, complete and verify it before remaining authentication. Ask before optional tools
+> or unapproved data/security choices; diagnose failures before continuing. Verify with
+> `./modules/verify-box.sh BOX --operational`; create an agent guest only after that gate passes.
 
-The agent will ask for normal `sudo` confirmation where host setup requires it. Do not make host
-sudo passwordless.
+The agent will request normal sudo confirmation where needed. Do not make host sudo passwordless.
 
 ## What happens next
 
-Follow the [host sequence](README.md#host), including the deployment's browser insertion if any. The
-early [virtualization check](machines/host/verify-virtualization.sh) needs no provider logins. Once
-the browser is ready, finish host tooling and authentication. Host operational verification then
-gates the agent-VM creation section of [the hypervisor guide](machines/host/05-hypervisor.md). Guest
-provider, GitHub, Firecrawl, and model credentials are deliberately a later phase.
+Read the selected box column in the [module catalog](modules/README.md). Run each module's recipe
+in dependency and schedule order. Use `./modules/verify-box.sh BOX --list` before the final
+verification to see the exact catalog-derived checks. Guest provider, GitHub, Firecrawl, and model
+credentials stay in their later login window.

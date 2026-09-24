@@ -4,8 +4,8 @@ Run this module on any box that accepts incoming SSH: `xhost`, `bhost`, agent VM
 `kubuntu-baseline` and `host-sudo-session` (on daily hosts) run first.
 
 This module is the key-only sshd configuration, not `authorized_keys` material. Key placement lives
-in `06-cred/setup-agent-login`, `06-cred/github-auth`, and the guest-side bootstrap in
-`machines/vm/01-bootstrap.md`. The `from=` source restrictions and Tailscale grants live in
+in `06-cred/setup-agent-login`, `06-cred/github-auth`, and
+`guest-ssh-sudo-bootstrap`. The `from=` source restrictions and Tailscale grants live in
 `~/projects/infra/tailscale/ssh.md`.
 
 ## Trust map
@@ -19,7 +19,7 @@ in `06-cred/setup-agent-login`, `06-cred/github-auth`, and the guest-side bootst
 | `xhost`, `xagt`      | GitHub             | Internet                    | n/a                           |
 
 `xchr` has no `ssh-client` and initiates no SSH. `xagt` initiates only to GitHub over Tailscale, not
-back to `xhost`. Live `from=` values live in `~/projects/infra/tailscale/ssh.md`.
+back to `xhost`. Live `from=` values live in the infrastructure checkout.
 
 ## What apply does
 

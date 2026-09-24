@@ -87,7 +87,7 @@ ln -sf ~/projects/agent-box-setup/agents/claude/statusline-command.sh ~/.claude/
 ls -l ~/.claude/statusline-command.sh
 ```
 
-`verify-setup.sh` also covers this: it checks the symlink, that `statusLine` is wired in
+The `agent-config` module also covers this: it checks the symlink, that `statusLine` is wired in
 `settings.json`, and that the script renders a context bar for a probe payload.
 
 **Re-sync after changes** (or on a new machine after pulling the repo):

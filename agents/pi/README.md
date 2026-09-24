@@ -8,10 +8,10 @@ mkdir -p ~/.pi/agent
 ln -sfn ~/projects/agent-box-setup/agents/AGENTS.md ~/.pi/agent/AGENTS.md
 ```
 
-Authentication is target-specific. During host completion, start `pi` and run `/login`. The guest
-baseline installs Pi and the links but must not run `/login`; do so later from
-[`machines/vm/05-credentials.md`](../../machines/vm/05-credentials.md) after the credential-free
-snapshot. Pi manages `~/.pi/agent/auth.json`; never track or symlink it.
+Authentication is target-specific. During host completion, start `pi` and run `/login`. Guest
+modules install Pi and its links but must not run `/login`; do so only in the later catalog login
+window after the credential-free snapshot. Pi manages `~/.pi/agent/auth.json`; never track or
+symlink it.
 
 The optional Plasma launcher opens Pi in WezTerm:
 

@@ -67,6 +67,19 @@ are. Tick-sets, host/VM values stay in this repo.
 Overlay keeps Windows, keys, and Dave-only values (identity, locale, URL lists). Sit is schedule
 metadata, not a second folder tree.
 
+## Verification runner
+
+Run the ticked module verifiers for one box with:
+
+```bash
+./modules/verify-box.sh BOX --bootstrap|--operational|--full
+```
+
+`BOX` is one of `xhost`, `xagt`, `xchr`, or `bhost`. The runner reads these grids, rather than a
+separate tick manifest. `--list` previews the catalog-derived commands. Host-owned lifecycle checks
+are skipped in a guest; run them on the daily host that owns the guest. Snapshot, backup, remote-BB,
+and overlay verifiers require the non-secret context documented by `--help`.
+
 ## Current profile values (not ticks)
 
 ### chrome-vm (KVM module; Windows VMware guest is a different recipe)

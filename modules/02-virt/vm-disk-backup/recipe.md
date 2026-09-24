@@ -71,8 +71,8 @@ The Dave overlay currently schedules the browser guest weekly with four retained
 
 Do not define the saved XML over the primary. Boot a new domain from a writable qcow2 overlay of
 `disk-vda.qcow2`, with a new UUID and MAC; remove host filesystem shares and keep networking down
-until copied service identity is disabled. The legacy agent-VM guide contains the detailed
-disposable-overlay acceptance procedure while cutover is in progress.
+until copied service identity is disabled. Record the disposable-overlay acceptance in the
+deployment overlay.
 
 ## Simplification candidate
 

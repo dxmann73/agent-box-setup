@@ -1,8 +1,8 @@
 # VS Code configuration
 
 Reference copy of the VS Code user configuration. **Settings Sync (GitHub account) is the live
-mechanism** — these files exist to bootstrap a fresh box, document intent, and let `verify-setup.sh`
-detect drift.
+mechanism** — these files exist to bootstrap a fresh box, document intent, and let the `vscode`
+module detect drift.
 
 ## Files
 
@@ -31,12 +31,12 @@ Use the native Linux user-configuration path documented below.
 Linters, formatters and framework support are declared per repository in `.vscode/extensions.json`,
 so opening a project prompts for exactly what it needs.
 
-Editor-wide, owned by no single project, installed by `04-ide+tooling.md`:
+Editor-wide extensions belong to the `vscode` and `vscode-java-extensions` modules:
 
 - `editorconfig.editorconfig`
 - `moshfeu.compare-folders`
 - `tomchen.paste-markdown-link`
 - `dxmann73.scm-tidy`: own extension, not on the Marketplace. Installed from its
-  [GitHub release](https://github.com/dxmann73/scm-tidy/releases) `.vsix`; see `04-ide+tooling.md`.
+  [GitHub release](https://github.com/dxmann73/scm-tidy/releases) `.vsix`.
 
 Java settings and extensions live in the Dave box setup.

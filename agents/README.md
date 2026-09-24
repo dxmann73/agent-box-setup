@@ -57,12 +57,11 @@ kernel, so the breakage is silent and partial. Linking one level up keeps every 
 directory, so all four agents and the BB skills panel see the same index.
 
 The invariant is therefore: `~/.agents` and `~/.claude/skills` are symlinks, and nothing inside
-`agents/skills/` is. `verify-setup.sh` checks both halves, and `machines/vm/guest-baseline.sh` fails
-after linking if a per-skill symlink has crept back into the index.
+`agents/skills/` is. The `agent-config` module checks both halves after linking.
 
 Claude Code writes claude.ai account-synced skills into `~/.claude/skills/synced/`, so they land in
-`agents/skills/synced/`. That path is gitignored, and `verify-setup.sh` and `audit-skills.sh` skip
-it because it holds skills rather than being one.
+`agents/skills/synced/`. That path is gitignored, and `audit-skills.sh` skips it because it holds
+skills rather than being one.
 
 Install upstream skills into the source directory:
 
@@ -108,8 +107,8 @@ codex --version
 agent --version
 pi --version
 cd ~/projects/agent-box-setup
-./verify-setup.sh --host --operational   # host completion
-./verify-setup.sh --vm --bootstrap       # guest, before provider login
+./modules/verify-box.sh xhost --operational  # host completion
+./modules/verify-box.sh xagt --bootstrap     # guest, before provider login
 ```
 
 ## Checklist

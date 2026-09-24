@@ -90,8 +90,8 @@ virsh domifaddr VM_NAME --source lease
 
 ## Next Steps
 
-For the agent VM, stream the agent baseline only after this verify passes. For the browser guest,
-stream the browser package setup instead; do not run the agent baseline or `verify-setup.sh --vm`.
+For the agent VM, run the ticked guest modules only after this verify passes. For the browser guest,
+run the browser package module instead; do not apply agent-only modules.
 
 Guest firewall and host bridge exceptions are intentionally later networking/integration work. This
 module proves host-initiated SSH and sudo only.
@@ -100,5 +100,4 @@ module proves host-initiated SSH and sudo only.
 
 - `ssh-server` and this module now share the same key-only sshd policy shape. Consider moving the
   drop-in and effective-configuration assertions to a common helper when cutover starts.
-- The repo-wide `verify-setup.sh --vm --bootstrap` repeats several checks from this module. During
-  cutover, make the root verifier call module verifies rather than keeping duplicate assertions.
+- The catalog runner deliberately keeps this boundary verifier separate from later guest modules.

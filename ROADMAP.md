@@ -5,8 +5,8 @@
   Reinforces the MCP-off policy; no action beyond keeping skills small and script-backed.
 - [LSP / code intelligence plugins](https://code.claude.com/docs/en/discover-plugins#code-intelligence)
   — install `typescript-lsp` + `jdtls-lsp` (and the `typescript-language-server` / `jdtls` binaries,
-  which the plugins do *not* install) for post-edit diagnostics and real code navigation; add to
-  `machines/common/` and `verify-setup.sh`.
+  which the plugins do *not* install) for post-edit diagnostics and real code navigation; add a
+  module and its verifier.
 - Rules/skills still missing for our stack: playwright scripting (quarkus and tanstack skills are
   already installed; playwright exists only as the MCP plugin, which the MCP-off policy excludes).
 - [Jeffrey Emanuel's skills portfolio](https://github.com/dicklesworthstone) —

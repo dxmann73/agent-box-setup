@@ -54,5 +54,4 @@ journalctl --user -u update-tools.service -n 50
 
 - In: install and enable the user timer + its service unit.
 - Out: `~/update-tools.sh` symlink (home-dotfiles), lingering (kubuntu-baseline), apt / flatpak
-  auto-updates (future modules carved from `machines/common/08-auto-updates.md`), BB updates (not
-  automated on purpose).
+  auto-updates, and BB updates (not automated on purpose).

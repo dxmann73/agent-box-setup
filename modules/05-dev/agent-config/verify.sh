@@ -16,4 +16,5 @@ check "$HOME/.codex/config.toml" "$repo/agents/codex/config.toml"
 check "$HOME/.cursor/hooks" "$repo/agents/cursor/hooks"
 check "$HOME/.cursor/statusline.sh" "$repo/agents/cursor/statusline.sh"
 ! find "$repo/agents/skills" -mindepth 1 -maxdepth 1 -type l -print -quit | grep -q .
+"$repo/audit-skills.sh"
 echo 'agent-config verify passed'
