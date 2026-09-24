@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=LosslessCut
+Comment=The swiss army knife of lossless video/audio editing
+Exec=/home/dave/Applications/LosslessCut.AppImage --no-sandbox %U
+Icon=losslesscut
+Terminal=false
+StartupWMClass=LosslessCut
+Categories=AudioVideo;

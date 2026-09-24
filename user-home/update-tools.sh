@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #
 # Update the tooling that apt does not manage: global npm packages, Claude Code,
-# Codex, Cursor CLI, Pi, and SDKMAN candidates.
+# Codex, Cursor CLI, Pi, SDKMAN candidates, and the LosslessCut AppImage.
 #
 # The host BB AppImage manages its own updates.
 #
@@ -12,6 +12,9 @@ set -Eeuo pipefail
 # Non-interactive shells (systemd timers) get none of ~/.bashrc, so put the
 # usual tool locations on PATH explicitly.
 export PATH="$HOME/.npm-global/bin:$HOME/.local/bin:/usr/local/bin:/usr/bin:/snap/bin:/bin:$PATH"
+
+# This script is symlinked into ~; resolve the repo through the link.
+repo_dir="$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/.." && pwd)"
 
 failed=()
 
@@ -91,6 +94,12 @@ playwright_browsers() {
     npx --yes playwright@latest install chromium
 }
 
+losslesscut_appimage() {
+    [ -f "$HOME/Applications/LosslessCut.AppImage" ] || { echo "LosslessCut AppImage not installed, skipping"; return 0; }
+    # LosslessCut has no built-in updater; see modules/07-apps/losslesscut.
+    "$repo_dir/modules/07-apps/losslesscut/update.sh"
+}
+
 log "$(date '+%Y-%m-%d %H:%M') updating tooling on $(hostname)"
 
 step "global npm packages" npm_globals
@@ -100,6 +109,7 @@ step "Cursor CLI"          cursor_cli
 step "Pi"                  pi_cli
 step "SDKMAN"              sdkman
 step "Playwright browsers" playwright_browsers
+step "LosslessCut AppImage" losslesscut_appimage
 
 if [ ${#failed[@]} -gt 0 ]; then
     log "FAILED: ${failed[*]}"

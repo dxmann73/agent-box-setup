@@ -142,14 +142,14 @@ receives separate project clones later for agent execution.
 
 `user-home/` holds dotfiles that are **symlinked** (not copied) into `~`:
 
-| File              | Purpose                                                                   |
-| ----------------- | ------------------------------------------------------------------------- |
-| `.bashrc`         | Bash shell configuration                                                  |
-| `.bash_aliases`   | Custom command aliases                                                    |
-| `.bash_secrets`   | API tokens/secrets, created from the `.bash_secrets.CHANGE-ME` template   |
-| `.profile`        | User profile settings                                                     |
-| `ua.sh`           | Update-all script: fetch/pull all git repos under a root dir              |
-| `update-tools.sh` | Weekly tooling update: npm globals, agent CLIs, overlay SDKMAN if present |
+| File              | Purpose                                                                                         |
+| ----------------- | ----------------------------------------------------------------------------------------------- |
+| `.bashrc`         | Bash shell configuration                                                                        |
+| `.bash_aliases`   | Custom command aliases                                                                          |
+| `.bash_secrets`   | API tokens/secrets, created from the `.bash_secrets.CHANGE-ME` template                         |
+| `.profile`        | User profile settings                                                                           |
+| `ua.sh`           | Update-all script: fetch/pull all git repos under a root dir                                    |
+| `update-tools.sh` | Weekly tooling update: npm globals, agent CLIs, overlay SDKMAN if present, LosslessCut AppImage |
 
 The repo root `.markdownlint.json` is symlinked to `~/projects/.markdownlint.json`. Full symlink
 commands: [machines/common/00-home-environment.md](machines/common/00-home-environment.md).

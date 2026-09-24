@@ -21,6 +21,7 @@ after baseline review; it is not a reason to authenticate a guest provider early
 | Flatpak applications                 | user timer added below                   | no          |
 | Global npm CLIs and coding agents    | weekly user timer added below            | no          |
 | **BB desktop AppImage (host)**       | built-in desktop updater                 | yes         |
+| LosslessCut AppImage (host)          | weekly user timer added below            | no          |
 | **Ubuntu release** (26.04 → next)    | **manual `do-release-upgrade`**          | **yes**     |
 
 Keep the host AppImage in a writable user directory so its built-in updater can replace it. Apply an
@@ -223,8 +224,10 @@ ln -sf ~/projects/agent-box-setup/user-home/update-tools.sh ~/update-tools.sh
 ~/update-tools.sh
 ```
 
-It updates global npm packages, Claude Code, Codex, Cursor CLI, Pi, and SDKMAN candidates when an
-overlay installed SDKMAN. It does not update BB.
+It updates global npm packages, Claude Code, Codex, Cursor CLI, Pi, SDKMAN candidates when an
+overlay installed SDKMAN, and the LosslessCut AppImage when `~/Applications/LosslessCut.AppImage`
+exists ([`../../modules/07-apps/losslesscut/`](../../modules/07-apps/losslesscut/README.md)). It
+does not update BB.
 
 Run it weekly:
 
