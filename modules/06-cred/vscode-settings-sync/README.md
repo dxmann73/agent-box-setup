@@ -6,3 +6,7 @@ Does: Tracks Settings Sync enablement for daily-host VS Code installs.
 
 Catalog metadata: see [Modular machine catalog](../../README.md) for typ, sit, scp, requires, and
 ticks.
+
+Recipe: [recipe.md](recipe.md)
+
+Verify: `./verify.sh --target daily-host --confirmed`

@@ -109,17 +109,17 @@ catalog.
 
 ### 1.7 Credentials
 
-- [ ] `setup-agent-login`
-- [ ] `github-auth`
-- [ ] `claude-login`
-- [ ] `codex-login`
-- [ ] `cursor-login`
-- [ ] `pi-login`
-- [ ] `firecrawl-login`
-- [ ] `vscode-settings-sync`
-- [ ] `tailscale-login`
-- [ ] `personal-browser-logins`
-- [ ] `bitwarden-chrome`
+- [x] `setup-agent-login`
+- [x] `github-auth`
+- [x] `claude-login`
+- [x] `codex-login`
+- [x] `cursor-login`
+- [x] `pi-login`
+- [x] `firecrawl-login`
+- [x] `vscode-settings-sync`
+- [x] `tailscale-login`
+- [x] `personal-browser-logins`
+- [x] `bitwarden-chrome`
 
 ### 1.8 Personal host apps
 

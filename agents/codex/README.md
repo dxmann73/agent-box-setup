@@ -36,5 +36,6 @@ ls -l ~/.codex/config.toml ~/.codex/hooks.json
 - [ ] Codex is authenticated
 - [ ] configuration and Caveman hook files are symlinked
 
-When the personal browser runs in a separate guest, prefer `codex login --device-auth` and follow
-[the browser login handoff](../browser-login.md). Keep existing authenticated sessions.
+When the personal browser runs in a separate guest, prefer `codex login --device-auth`. Open the
+printed URL yourself and enter its one-time device code; never share that code or copy the resulting
+credential state between targets. Keep existing authenticated sessions.
