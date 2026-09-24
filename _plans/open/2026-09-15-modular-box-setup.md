@@ -92,20 +92,20 @@ catalog.
 
 ### 1.6 Editor, agents, BB, browser automation
 
-- [ ] `vscode`
-- [ ] `vscode-java-extensions`
-- [ ] `vscode-remote-ssh`
-- [ ] `cursor-agent-launcher`
-- [ ] `claude-code`
-- [ ] `codex-cli`
-- [ ] `cursor-cli`
-- [ ] `pi`
-- [ ] `agent-config`
-- [ ] `playwright-chromium`
-- [ ] `bb-server`
-- [ ] `bb-enroll-execution-machine`
-- [ ] `tailscale`
-- [ ] `bb-client`
+- [x] `vscode`
+- [x] `vscode-java-extensions`
+- [x] `vscode-remote-ssh`
+- [x] `cursor-agent-launcher`
+- [x] `claude-code`
+- [x] `codex-cli`
+- [x] `cursor-cli`
+- [x] `pi`
+- [x] `agent-config`
+- [x] `playwright-chromium`
+- [x] `bb-server`
+- [x] `bb-enroll-execution-machine`
+- [x] `tailscale`
+- [x] `bb-client`
 
 ### 1.7 Credentials
 

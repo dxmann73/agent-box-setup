@@ -239,7 +239,7 @@ vscode-java-extensions       tool  -      dave   Y     -    -    Y      vscode
 vscode-remote-ssh            cfg   -      gen    Y     -    -    Y      vscode ssh-client
 cursor-agent-launcher        cfg   -      gen    Y     -    -    Y      cursor-cli imaging
 claude-code                  tool  -      gen    Y     Y    -    Y      kubuntu-desktop
-codex-cli                    tool  -      gen    Y     Y    -    Y      node-24
+codex-cli                    tool  -      gen    Y     Y    -    Y      kubuntu-desktop
 cursor-cli                   tool  -      gen    Y     Y    -    Y      kubuntu-desktop
 pi                           tool  -      gen    Y     Y    -    Y      node-24
 agent-config                 cfg   -      gen    Y     Y    -    Y      claude-code codex-cli cursor-cli pi
