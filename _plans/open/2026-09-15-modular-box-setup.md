@@ -102,7 +102,7 @@ catalog.
 - [x] `pi`
 - [x] `agent-config`
 - [x] `playwright-chromium`
-- [x] `bb-server`
+- [x] `bb-appimage`
 - [x] `bb-enroll-execution-machine`
 - [x] `tailscale`
 - [x] `bb-client`
@@ -148,7 +148,7 @@ catalog modules. The replacement is a thin runner: given a box id, run each tick
 source of truth.
 
 **Done when:** `machines/` bundles gone; no giant verify script; per-box verification follows catalog
-ticks; spec does not mention the VM npm BB server.
+ticks.
 
 ## 3. Reconcile live boxes
 

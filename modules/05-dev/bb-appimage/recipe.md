@@ -1,4 +1,4 @@
-# bb-server recipe
+# bb-appimage recipe
 
 Run this module on the host that owns the BB control plane (`xhost`). The host runs the official
 Linux desktop AppImage; it bundles the BB UI, server and host daemon. The agent VM is only an
@@ -6,6 +6,7 @@ enrolled execution machine (`bb-enroll-execution-machine`).
 
 Full prose, VM enrollment and shared-access notes live in
 [`machines/common/05-bb.md`](../../../machines/common/05-bb.md). This recipe is the repeatable part.
+For AppImage updates and failed-start recovery, see [appimage-updates.md](appimage-updates.md).
 
 ## Prerequisite: the AppImage itself
 
@@ -23,7 +24,7 @@ chmod +x ~/Applications/bb.AppImage
 ## Apply
 
 ```bash
-cd ~/projects/agent-box-setup/modules/05-dev/bb-server
+cd ~/projects/agent-box-setup/modules/05-dev/bb-appimage
 ./apply.sh
 ```
 
@@ -54,12 +55,8 @@ AppImage. `StartupWMClass` is what lets KDE map the running window to the launch
 
 ## Post-install, once the app runs
 
-These are server-backed settings, not files. Run them after the first launch:
-
-```bash
-bb settings ui set sidebar.organizationMode project
-bb plugin enable provider-usage
-```
+After first launch, use the BB settings UI to set the sidebar organization to project and enable the
+Provider usage plugin.
 
 ## Verify
 
@@ -69,6 +66,7 @@ bb plugin enable provider-usage
 
 Checks: the AppImage is present and executable; `libfuse2t64` installed; autostart entry present and
 pointing at the AppImage; the menu entry is the symlink into this repo and passes
-`desktop-file-validate`; the `bb` icon is installed; `bb` CLI on `PATH`.
+`desktop-file-validate`; the `bb` icon is installed.
 
-`verify.sh` does not require the app to be running, and does not start it.
+`verify.sh` requires BB to be running. It checks the health endpoint and expected BB processes. It
+does not start or stop BB.

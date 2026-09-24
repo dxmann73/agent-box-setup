@@ -1,10 +1,10 @@
-# bb-server
+# bb-appimage
 
-What: BB shared control-plane server.
+What: BB shared control-plane AppImage.
 
-Does: Provides the host AppImage server role and compatibility expectations. Wires the AppImage into
-the session: FUSE 2 package, KDE autostart entry, application-menu entry and menu icon. Enable the
-built-in Provider usage plugin after first launch (`bb plugin enable provider-usage`).
+Does: Wires the host AppImage into the session: FUSE 2 package, KDE autostart entry,
+application-menu entry and menu icon. The AppImage bundles the BB UI, server, and host daemon.
+Enable the built-in Provider usage plugin after first launch (`bb plugin enable provider-usage`).
 
 Catalog metadata: see [Modular machine catalog](../../README.md) for typ, sit, scp, requires, and
 ticks.

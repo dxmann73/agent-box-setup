@@ -178,11 +178,10 @@ DHCP/DNS; bootstrap SSH is host-initiated. Host services (local-llm) bind on the
 virbr0. ACLs in `infra`. `guest-integration` is qemu-guest-agent, spice-vdagent, and the host
 clipboard bridge (always together on both guests). `guest-ssh-sudo-bootstrap` runs after the guest
 role module has produced an installed Kubuntu guest. `vm-snapshots` snapshots whichever guest role
-exists for the profile. `chrome-vm-launcher` is the pinned Chrome-VM opener.
-`chrome-vm-packages` is Google Chrome on `xchr` only, with unattended-upgrades for
-`origin=Google LLC`. Daily hosts keep stock Firefox (`firefox-stock`); do not install Chrome there.
-Playwright Chromium on `xagt` is not Chrome. Shares: Desktop → Chrome guest; user-data → agent VM
-(overlay supplies the path).
+exists for the profile. `chrome-vm-launcher` is the pinned Chrome-VM opener. `chrome-vm-packages` is
+Google Chrome on `xchr` only, with unattended-upgrades for `origin=Google LLC`. Daily hosts keep
+stock Firefox (`firefox-stock`); do not install Chrome there. Playwright Chromium on `xagt` is not
+Chrome. Shares: Desktop → Chrome guest; user-data → agent VM (overlay supplies the path).
 `vm-snapshots` and `vm-disk-backup` stay separate (rollback vs disk copies; Chrome 3D guest is
 offline-only backup).
 
@@ -244,8 +243,8 @@ cursor-cli                   tool  -      gen    Y     Y    -    Y      kubuntu-
 pi                           tool  -      gen    Y     Y    -    Y      node-24
 agent-config                 cfg   -      gen    Y     Y    -    Y      claude-code codex-cli cursor-cli pi
 playwright-chromium          tool  -      gen    -     Y    -    N      node-24
-bb-server                    role  -      gen    Y     -    -    N      kubuntu-baseline
-bb-enroll-execution-machine  cfg   login  gen    Y     Y    -    N      bb-server agent-vm
+bb-appimage                  role  -      gen    Y     -    -    N      kubuntu-baseline
+bb-enroll-execution-machine  cfg   login  gen    Y     Y    -    N      bb-appimage agent-vm
 tailscale                    tool  -      infra  Y     Y    -    Y      kubuntu-desktop
 bb-client                    role  -      gen    -     -    -    Y      tailscale
 ```
@@ -255,15 +254,14 @@ Remote SSH: VS Code stays on the daily host (`xhost`, `bhost`). Remote clients i
 follow ticked CLIs). `vscode` includes `user-home/vscode` settings/keybindings. Four agent CLIs stay
 separate ticks (`claude-code`, `codex-cli`, `cursor-cli`, `pi`).
 
-No standalone BB npm fallback on the agent VM. Shared control plane is the host AppImage
-(`bb-server`). The VM is only an enrolled execution machine (`bb-enroll-execution-machine`). Spec §4
-fallback bullet dies with this module. `bb-server` includes the AppImage/FUSE compatibility check
-plus the KDE autostart entry, the application-menu entry and its icon; the AppImage download itself
-stays manual.
-`bb-client` depends on the Tailscale path; the remote `bb-server` must already be reachable from
-`infra`. `bb-server` / `bb-client` install unattended; human BB UI is `bb-enroll-execution-machine`.
-Remote BB is Tailscale Serve (`infra`), not BB Connect. `bb-connect` dropped. `tailscale` install is
-unattended; account is `tailscale-login`. Playwright Chromium stays `xagt` only.
+The host AppImage is the shared control plane (`bb-appimage`). The VM is only an enrolled execution
+machine (`bb-enroll-execution-machine`). `bb-appimage` includes the AppImage/FUSE compatibility
+check plus the KDE autostart entry, the application-menu entry and its icon; the AppImage download
+itself stays manual. `bb-client` depends on the Tailscale path; the remote `bb-appimage` must
+already be reachable from `infra`. `bb-appimage` / `bb-client` install unattended; human BB UI is
+`bb-enroll-execution-machine`. Remote BB is Tailscale Serve (`infra`), not BB Connect. `bb-connect`
+dropped. `tailscale` install is unattended; account is `tailscale-login`. Playwright Chromium stays
+`xagt` only.
 
 Section 5 closed.
 
@@ -312,7 +310,6 @@ Tailscale URLs, SSH from=   infra
 blade-14 Windows, VMware    dave.box-setup/windows-box/
 Steam                       Windows only for now (that box)
 AMD Ryzen AI notes          overlay extras/ (not a tick today)
-bb-vm-runtime               dropped; do not install the agent-VM npm fallback server
 ```
 
 ## Live vs catalog (install later)
@@ -326,7 +323,6 @@ module                       catalog                      live 2026-09-14
 yq                           xhost xagt bhost             missing on sampled boxes
 java-stack                   xagt only                    installed on host, not agent VM
 k8s-stack                    xagt only                    not installed
-bb-vm-runtime                absent                       npm fallback still on xagt
 ```
 
 ## Operator schedule
@@ -342,5 +338,5 @@ Unattended batches first. Not install then auth then next tool.
 6  iso    agent VM ISO + baseline when ticked; gcred incl. BB enroll only after clean-guest
 ```
 
-blade-14 Kubuntu skips step 6, `bb-server`, and `agent-vm`. It still needs `kvm` + `chrome-vm` at ~4
-GiB, then `bb-client` + `vscode-remote-ssh` toward xmg.
+blade-14 Kubuntu skips step 6, `bb-appimage`, and `agent-vm`. It still needs `kvm` + `chrome-vm` at
+~4 GiB, then `bb-client` + `vscode-remote-ssh` toward xmg.

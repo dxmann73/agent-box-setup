@@ -69,8 +69,8 @@ Record the resulting base URL in `~/.bash_secrets` so agents pick it up from one
 
 ## 3. BB reachability
 
-The host AppImage server is the shared control plane and must be reachable from authorized remote
-clients (specification §4, §11). The VM connects to it as an enrolled execution machine.
+The host BB control plane must be reachable from authorized remote clients (specification §4, §11).
+The VM connects to it as an enrolled execution machine.
 
 Keep every BB listener on loopback. Remote clients may reach the host origin over Tailscale; this
 box's URLs live in `~/projects/infra/tailscale/`. The VM connects back to the host origin through

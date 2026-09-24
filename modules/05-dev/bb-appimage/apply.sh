@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-trap 'printf "ERROR: bb-server apply failed at line %s\n" "$LINENO" >&2' ERR
+trap 'printf "ERROR: bb-appimage apply failed at line %s\n" "$LINENO" >&2' ERR
 
 readonly appimage="$HOME/Applications/bb.AppImage"
 readonly repo_desktop="$HOME/projects/agent-box-setup/user-home/applications/bb.desktop"
@@ -120,4 +120,4 @@ if command -v kbuildsycoca6 >/dev/null 2>&1; then
     kbuildsycoca6 >/dev/null 2>&1 || true
 fi
 
-printf '%s\n' 'bb-server applied.'
+printf '%s\n' 'bb-appimage applied.'

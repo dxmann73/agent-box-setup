@@ -3,7 +3,7 @@
 # Update the tooling that apt does not manage: global npm packages, Claude Code,
 # Codex, Cursor CLI, Pi, and SDKMAN candidates.
 #
-# The host BB AppImage updates itself. VM enrollment daemons are managed by BB.
+# The host BB AppImage manages its own updates.
 #
 # Symlinked to ~/update-tools.sh; run weekly by a systemd user timer.
 

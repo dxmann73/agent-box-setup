@@ -20,7 +20,7 @@ Kubuntu host                                  ← machines/host/
 ├── personal apps and data (browser placement from overlay, sync, documents)
 ├── local model runtime on the GPU            ← local-llm repo (separate)
 ├── development toolchain + coding agents     ← machines/common/ + agents/
-├── BB desktop AppImage + shared server       ← machines/host/04-dev-and-agents.md
+├── BB desktop AppImage                       ← machines/host/04-dev-and-agents.md
 └── KVM/libvirt                               ← machines/host/05-hypervisor.md
     └── agent VM (Kubuntu desktop)            ← machines/vm/
         ├── enrolled BB execution machine + many agents
@@ -185,10 +185,9 @@ Both machines patch themselves: `unattended-upgrades` for everything apt reaches
 Docker, Node and the other third-party repos), a weekly user timer for the npm-installed agent CLIs.
 Set up per machine in [machines/common/08-auto-updates.md](machines/common/08-auto-updates.md).
 
-Two things stay deliberate on purpose: **BB updates**, so running agent sessions are not
+Two things stay deliberate on purpose: **BB AppImage updates**, so running agent sessions are not
 interrupted, and **Ubuntu release upgrades**, because they move the GPU stack and libvirt. The host
-AppImage uses its built-in updater; the VM runtime lives in a dedicated npm prefix outside the
-weekly global package update.
+AppImage uses its built-in updater.
 
 ## Setup checklist
 

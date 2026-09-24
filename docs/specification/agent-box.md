@@ -23,7 +23,7 @@
    - The VM should be relatively easy to recreate.
 
 4. **BB**
-   - Use the Linux desktop AppImage server on the host as the shared BB control plane.
+   - Use the Linux desktop AppImage on the host as the shared BB control plane.
    - Enroll the VM into that server as a separate execution machine. Keep unrestricted execution
      inside the VM; host execution remains supervised.
    - Run many concurrent agents plus ordinary terminals/processes in the VM: dev servers, test
