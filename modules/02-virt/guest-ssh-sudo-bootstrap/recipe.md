@@ -8,9 +8,11 @@ bootstrap:
 - install approved public keys into the guest user's `authorized_keys`;
 - make the guest user passwordless for sudo;
 - harden sshd to public-key-only login.
+- when `GUEST_BOOTSTRAP_HOST_IPV4` is set, allow SSH in UFW from that exact
+  host bridge address.
 
-It does not install guest integration packages, stream the agent baseline, configure guest firewall
-rules, clone repositories, authenticate CLIs, join Tailscale, mount shares, or create snapshots.
+It does not install guest integration packages, stream the agent baseline, clone repositories,
+authenticate CLIs, join Tailscale, mount shares, or create snapshots.
 
 Public keys are not stored in this repo. Prepare a temporary file inside the guest with one
 `authorized_keys` line per approved key. Restrict the daily host's key to the exact libvirt bridge
@@ -36,6 +38,7 @@ From the guest console:
 
 ```bash
 cd ~/projects/agent-box-setup/modules/02-virt/guest-ssh-sudo-bootstrap
+export GUEST_BOOTSTRAP_HOST_IPV4=HOST_BRIDGE_IPV4
 ./apply.sh --authorized-keys ~/bootstrap-authorized-keys
 ```
 
@@ -53,6 +56,10 @@ the console clipboard, a temporary ISO, or another explicit operator-controlled 
   `visudo`;
 - installs the module's `90-key-only.conf` sshd drop-in;
 - validates sshd configuration, enables ssh, and reloads it.
+- when `GUEST_BOOTSTRAP_HOST_IPV4` is set, adds the exact source UFW rule for
+  SSH. It does not enable UFW; `ufw-firewall` owns the baseline.
+- uses interactive sudo from a console and non-interactive sudo over SSH, so
+  host-streamed reruns do not require a guest console TTY.
 
 ## Verify
 
@@ -73,7 +80,8 @@ export GUEST_BOOTSTRAP_HOST_IPV4=...
 `GUEST_BOOTSTRAP_HOSTNAME` checks the current hostname. If omitted, `verify.sh` also accepts
 `AGENT_BOX_VM_HOSTNAME` for compatibility with the agent VM overlay environment.
 `GUEST_BOOTSTRAP_HOST_IPV4` checks that at least one authorized key is restricted with
-`from="..."` for the host bridge address and has agent and X11 forwarding disabled.
+`from="..."` for the host bridge address, has agent and X11 forwarding disabled, and that UFW
+allows SSH from the same address.
 
 From the host, also prove the remote boundary before continuing:
 
@@ -93,8 +101,8 @@ virsh domifaddr VM_NAME --source lease
 For the agent VM, run the ticked guest modules only after this verify passes. For the browser guest,
 run the browser package module instead; do not apply agent-only modules.
 
-Guest firewall and host bridge exceptions are intentionally later networking/integration work. This
-module proves host-initiated SSH and sudo only.
+This module owns the SSH service exception. `ufw-firewall` owns UFW's baseline
+policy; other guest services own their own exceptions.
 
 ## Simplification Candidates
 

@@ -11,6 +11,10 @@ Use one target per run:
   passwordless sudo, host layout directories under `$HOME`
 - `guest`: passwordless guest sudo, SDDM autologin, screen lock and display blanking disabled
 
+All baseline boxes install unattended updates, restart affected services automatically, show a KDE
+dialog when `/var/run/reboot-required` appears, and reboot at 22:00 local time only when Ubuntu
+marks a reboot as required.
+
 ## Apply
 
 ```bash

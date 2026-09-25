@@ -355,6 +355,20 @@ guest_share_link_path() {
     fi
 }
 
+guest_path_is_covered_by_share_link() {
+    local guest_path="$1"
+    local link_path
+
+    while [[ "$guest_path" != /mnt/shares ]]; do
+        link_path="$HOME/shares/${guest_path#/mnt/shares/}"
+        if [[ -L "$link_path" ]] && [[ "$(readlink -- "$link_path")" == "$guest_path" ]]; then
+            return 0
+        fi
+        guest_path="$(dirname -- "$guest_path")"
+    done
+    return 1
+}
+
 apply_guest_share() {
     local -r tag="$1"
     local -r guest_path="$3"
@@ -362,7 +376,6 @@ apply_guest_share() {
     local tmp
     local link_path
 
-    mkdir -p "$guest_path"
     if ! mountpoint -q "$guest_path"; then
         sudo mount -t virtiofs -o "$access" "$tag" "$guest_path"
     fi
@@ -378,7 +391,7 @@ apply_guest_share() {
     fi
 
     link_path="$(guest_share_link_path "$guest_path")"
-    if [[ -n "$link_path" ]]; then
+    if [[ -n "$link_path" ]] && ! guest_path_is_covered_by_share_link "$guest_path"; then
         mkdir -p "$(dirname -- "$link_path")"
         ln -sfn "$guest_path" "$link_path"
     fi
@@ -410,6 +423,12 @@ apply_guest() {
     local guest_path
     local access
     local extra
+
+    while IFS= read -r line; do
+        IFS='|' read -r tag host_path guest_path access extra <<<"$line"
+        validate_share "$tag" "$host_path" "$guest_path" "$access" "${extra:-}"
+        sudo install -d -m 0755 "$guest_path"
+    done < <(share_lines)
 
     while IFS= read -r line; do
         IFS='|' read -r tag host_path guest_path access extra <<<"$line"

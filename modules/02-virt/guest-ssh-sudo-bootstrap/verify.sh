@@ -92,6 +92,14 @@ host_key_restricted_when_expected() {
     [[ "$key_line" == *no-X11-forwarding* ]]
 }
 
+ufw_allows_host_ssh_when_expected() {
+    local rules
+
+    [[ -z "${GUEST_BOOTSTRAP_HOST_IPV4:-}" ]] && return 0
+    rules="$(sudo -n ufw status)" || return 1
+    grep -F '22/tcp' <<<"$rules" | grep -Fq "$GUEST_BOOTSTRAP_HOST_IPV4"
+}
+
 sudo_non_interactive() {
     sudo -n true
 }
@@ -106,7 +114,7 @@ sudoers_rule_exact() {
 }
 
 sshd_effective_has() {
-    sudo -n sshd -T | grep -qx "$1"
+    sudo -n sshd -T | grep -Fx "$1" >/dev/null
 }
 
 check 'inside a virtualized guest' inside_guest
@@ -120,6 +128,8 @@ check 'authorized_keys contains public key material' authorized_keys_has_public_
 check 'authorized_keys does not contain a private key' authorized_keys_has_no_private_key
 check 'host key restriction matches expected bridge IPv4 when set' \
     host_key_restricted_when_expected
+check 'UFW allows SSH from expected bridge IPv4 when set' \
+    ufw_allows_host_ssh_when_expected
 check 'passwordless guest sudo works' sudo_non_interactive
 check 'agent-nopasswd sudoers rule is exact' sudoers_rule_exact
 check 'sshd active' systemctl is-active --quiet ssh

@@ -154,6 +154,48 @@ CONFIG
         --key BorderActivateClass ''
 }
 
+write_reboot_notification_units() {
+    write_file /etc/systemd/user/agent-box-reboot-required.service 0644 <<'UNIT'
+[Unit]
+Description=Show reboot-required notification
+PartOf=graphical-session.target
+After=graphical-session.target
+ConditionPathExists=/var/run/reboot-required
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/kdialog --title Reboot-required --msgbox A system update requires a reboot. The system will reboot at 22:00 local time.
+UNIT
+    write_file /etc/systemd/user/agent-box-reboot-required.path 0644 <<'UNIT'
+[Unit]
+Description=Watch for reboot-required marker
+
+[Path]
+PathExists=/var/run/reboot-required
+Unit=agent-box-reboot-required.service
+
+[Install]
+WantedBy=default.target
+UNIT
+    systemctl --global enable agent-box-reboot-required.path
+}
+
+migrate_guest_legacy_state() {
+    local legacy_sudo=/etc/sudoers.d/chrome-host-admin
+
+    # /etc/sddm.conf has higher precedence than conf.d.  This old VM used it only for
+    # autologin, so remove it after the canonical 99-autologin.conf is written.
+    if [[ "$(sudo sed -n '1,20p' /etc/sddm.conf 2>/dev/null || true)" == $'[Autologin]\nUser='"$setup_user"$'\nSession=plasma' ]]; then
+        remove_if_present /etc/sddm.conf
+    fi
+    if [[ "$(sudo sed -n '1,20p' /etc/sddm.conf.d/autologin.conf 2>/dev/null || true)" == $'[Autologin]\nUser='"$setup_user"$'\nSession=plasma' ]]; then
+        remove_if_present /etc/sddm.conf.d/autologin.conf
+    fi
+    if [[ -f "$legacy_sudo" ]] && [[ "$(sudo awk 'NF && $1 !~ /^#/' "$legacy_sudo")" == "$setup_user ALL=(ALL) NOPASSWD: ALL" ]]; then
+        remove_if_present "$legacy_sudo"
+    fi
+}
+
 export DEBIAN_FRONTEND=noninteractive
 readonly -a baseline_packages=(
     ca-certificates
@@ -198,7 +240,8 @@ Unattended-Upgrade::Allowed-Origins {
 
 Unattended-Upgrade::Remove-Unused-Kernel-Packages "true";
 Unattended-Upgrade::Remove-New-Unused-Dependencies "true";
-Unattended-Upgrade::Automatic-Reboot "false";
+Unattended-Upgrade::Automatic-Reboot "true";
+Unattended-Upgrade::Automatic-Reboot-Time "22:00";
 Unattended-Upgrade::Mail "";
 CONFIG
 
@@ -206,6 +249,8 @@ write_file /etc/needrestart/conf.d/50local.conf 0644 <<'CONFIG'
 $nrconf{restart} = 'a';
 $nrconf{kernelhints} = 0;
 CONFIG
+
+write_reboot_notification_units
 
 if [[ -f /etc/update-manager/release-upgrades ]] &&
     ! grep -qx 'Prompt=lts' /etc/update-manager/release-upgrades; then
@@ -227,6 +272,7 @@ else
     mkdir -p /etc/sddm.conf.d
     write_sudoers
     write_desktop_policy guest
+    migrate_guest_legacy_state
 fi
 
 if [[ $backup_created -eq 1 ]]; then

@@ -276,13 +276,18 @@ fstab_line_present() {
 }
 
 share_symlink_ready() {
-    local -r guest_path="$1"
+    local guest_path="$1"
     local link_path
 
     [[ "$guest_path" == /mnt/shares/* ]] || return 0
-    link_path="$HOME/shares/${guest_path#/mnt/shares/}"
-    [[ -L "$link_path" ]] || return 1
-    [[ "$(readlink -- "$link_path")" == "$guest_path" ]]
+    while [[ "$guest_path" != /mnt/shares ]]; do
+        link_path="$HOME/shares/${guest_path#/mnt/shares/}"
+        if [[ -L "$link_path" ]] && [[ "$(readlink -- "$link_path")" == "$guest_path" ]]; then
+            return 0
+        fi
+        guest_path="$(dirname -- "$guest_path")"
+    done
+    return 1
 }
 
 verify_host_share() {

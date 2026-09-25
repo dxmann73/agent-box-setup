@@ -7,6 +7,7 @@ trap 'printf "ERROR: guest-ssh-sudo-bootstrap apply failed at line %s\n" "$LINEN
 authorized_keys_source=
 module_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 tmp_authorized_keys=
+host_bridge_ipv4="${GUEST_BOOTSTRAP_HOST_IPV4:-}"
 
 usage() {
     cat <<'USAGE'
@@ -16,6 +17,9 @@ Run inside the Kubuntu guest console as the target guest user.
 
 Options:
   --authorized-keys FILE  File containing approved authorized_keys lines. Use - for stdin.
+
+Optional environment:
+  GUEST_BOOTSTRAP_HOST_IPV4  Exact host bridge IPv4 allowed to SSH through UFW.
   -h, --help              Show this help
 USAGE
 }
@@ -23,6 +27,14 @@ USAGE
 die() {
     printf '%s\n' "$@" >&2
     exit 1
+}
+
+run_sudo() {
+    if [[ -n "${SSH_CONNECTION:-}" ]]; then
+        sudo -n "$@"
+    else
+        sudo "$@"
+    fi
 }
 
 cleanup() {
@@ -68,6 +80,22 @@ for binary in awk grep install mktemp sudo systemctl visudo; do
     command -v "$binary" >/dev/null 2>&1 || die "Missing required command: ${binary}"
 done
 
+if [[ -n "$host_bridge_ipv4" ]]; then
+    command -v python3 >/dev/null 2>&1 || die 'Missing required command: python3'
+    command -v ufw >/dev/null 2>&1 || die 'Missing required command: ufw'
+    python3 - "$host_bridge_ipv4" <<'PY'
+import ipaddress
+import sys
+
+try:
+    address = ipaddress.ip_address(sys.argv[1])
+except ValueError:
+    raise SystemExit('GUEST_BOOTSTRAP_HOST_IPV4 must be a valid IPv4 address')
+if address.version != 4:
+    raise SystemExit('GUEST_BOOTSTRAP_HOST_IPV4 must be an IPv4 address')
+PY
+fi
+
 tmp_authorized_keys="$(mktemp)"
 if [[ "$authorized_keys_source" == - ]]; then
     cat >"$tmp_authorized_keys"
@@ -85,25 +113,28 @@ if grep -Eq 'BEGIN (OPENSSH|RSA|DSA|EC|PRIVATE) KEY' "$tmp_authorized_keys"; the
     die 'Authorized keys input appears to contain a private key. Refusing to install it.'
 fi
 
-sudo -v
-sudo env DEBIAN_FRONTEND=noninteractive apt-get -o DPkg::Lock::Timeout=300 update
-sudo env DEBIAN_FRONTEND=noninteractive apt-get -o DPkg::Lock::Timeout=300 install -y \
+run_sudo true || die 'Guest passwordless sudo is unavailable.'
+run_sudo env DEBIAN_FRONTEND=noninteractive apt-get -o DPkg::Lock::Timeout=300 update
+run_sudo env DEBIAN_FRONTEND=noninteractive apt-get -o DPkg::Lock::Timeout=300 install -y \
     openssh-server
 
 install -d -m 0700 "$HOME/.ssh"
 install -m 0600 "$tmp_authorized_keys" "$HOME/.ssh/authorized_keys"
 
-sudo install -d -m 0755 /etc/sudoers.d
-sudo install -m 0440 /dev/null /etc/sudoers.d/agent-nopasswd
+run_sudo install -d -m 0755 /etc/sudoers.d
 printf '%s ALL=(ALL) NOPASSWD: ALL\n' "$USER" |
-    sudo tee /etc/sudoers.d/agent-nopasswd >/dev/null
-sudo chmod 0440 /etc/sudoers.d/agent-nopasswd
-sudo visudo -cf /etc/sudoers.d/agent-nopasswd >/dev/null
+    run_sudo tee /etc/sudoers.d/agent-nopasswd >/dev/null
+run_sudo chmod 0440 /etc/sudoers.d/agent-nopasswd
+run_sudo visudo -cf /etc/sudoers.d/agent-nopasswd >/dev/null
 
-sudo install -d -m 0755 /etc/ssh/sshd_config.d
-sudo install -m 0644 "$module_dir/90-key-only.conf" /etc/ssh/sshd_config.d/90-key-only.conf
-sudo sshd -t
-sudo systemctl enable --now ssh
-sudo systemctl reload ssh
+run_sudo install -d -m 0755 /etc/ssh/sshd_config.d
+run_sudo install -m 0644 "$module_dir/90-key-only.conf" /etc/ssh/sshd_config.d/90-key-only.conf
+run_sudo sshd -t
+run_sudo systemctl enable --now ssh
+run_sudo systemctl reload ssh
+
+if [[ -n "$host_bridge_ipv4" ]]; then
+    run_sudo ufw allow from "$host_bridge_ipv4" to any port 22 proto tcp
+fi
 
 printf 'guest SSH and passwordless sudo bootstrap applied for user: %s\n' "$USER"
