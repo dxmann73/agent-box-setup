@@ -2,11 +2,12 @@
 
 Reply in telegraph style.
 
-Projects live in `~/projects`. Github is `https://github.com/dxmann73`. New github repos are
-private by default.
+Projects live in `~/projects`. Github is `https://github.com/dxmann73`. New github repos are private
+by default.
 
-"add general rule" or "add global rule" means edit `~/AGENTS.md`
-"add project rule" means edit project-root AGENTS.md
+"add general rule" or "add global rule" means edit `~/AGENTS.md`.
+
+"add project rule" means edit project-root AGENTS.md.
 
 Plans live in `_plans/`.
 
@@ -20,3 +21,9 @@ Never commit unless explicitly asked. Stage only files you changed yourself.
 
 When validating or converting data, fail fast: throw and stop as soon as a value is not what you
 expect; do not substitute silent defaults or empty placeholders that hide bad input until later.
+
+When diagnosing a problem (terminal, editor, system config) that has more than one plausible cause
+or fix, stop and explain the options first. Lay out what you think is going on and the candidate
+fixes, then ask which one to try before editing any file. Do not apply a guessed fix, see if it
+worked, and move to the next guess. If a first attempted fix already failed, pause and reassess with
+the user before trying another one.

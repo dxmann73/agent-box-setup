@@ -49,7 +49,7 @@ two sections are the index. The other three stages are not listed.
 
 ## Next
 
-(none)
+- [Remove CLAUDE.md because Claude Code reads AGENTS.md](next/remove-claude-md-for-agents-md.md)
 
 ## Open
 
