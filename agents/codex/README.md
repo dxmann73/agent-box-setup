@@ -1,7 +1,6 @@
 # Codex CLI
 
-Codex CLI is the terminal command named `codex`. It is installed from npm and is separate from the
-optional ChatGPT desktop APT package (`chatgpt`).
+Codex CLI is the terminal command named `codex`. It is installed from npm.
 
 Install Codex from the user-owned npm prefix:
 
@@ -20,8 +19,7 @@ ln -sfn ~/projects/agent-box-setup/agents/codex/hooks.json ~/.codex/hooks.json
 ```
 
 Do not replace this with a host-local config file. If Codex behavior needs to change, update the
-tracked config and verification together. The config must not depend on ChatGPT desktop package
-resources.
+tracked config and verification together.
 
 Verify:
 

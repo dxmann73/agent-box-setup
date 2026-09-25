@@ -10,13 +10,13 @@ in `06-cred/setup-agent-login`, `06-cred/github-auth`, and
 
 ## Trust map
 
-| Client               | Target             | Path                        | `from=` on target             |
-| -------------------- | ------------------ | --------------------------- | ----------------------------- |
-| `xhost`              | `xagt`             | libvirt bridge `virbr0`     | `from="192.168.122.1"`        |
-| `xhost`              | `xchr`             | libvirt bridge `virbr0`     | `from="192.168.122.1"`        |
-| `blade-14` (Windows) | `xhost`            | Tailscale MagicDNS          | `from="BLADE14_TS_IPV4"`      |
-| `blade-14` (Windows) | `xagt`             | Tailscale MagicDNS          | `from="BLADE14_TS_IPV4"`      |
-| `xhost`, `xagt`      | GitHub             | Internet                    | n/a                           |
+| Client               | Target  | Path                          | `from=` on target            |
+| -------------------- | ------- | ----------------------------- | ---------------------------- |
+| `xhost`              | `xagt`  | `isolated-agent-net` bridge   | `from="AGENT_NET_ADDRESS"`   |
+| `xhost`              | `xchr`  | `isolated-browser-net` bridge | `from="BROWSER_NET_ADDRESS"` |
+| `blade-14` (Windows) | `xhost` | Tailscale MagicDNS            | `from="BLADE14_TS_IPV4"`     |
+| `blade-14` (Windows) | `xagt`  | Tailscale MagicDNS            | `from="BLADE14_TS_IPV4"`     |
+| `xhost`, `xagt`      | GitHub  | Internet                      | n/a                          |
 
 `xchr` has no `ssh-client` and initiates no SSH. `xagt` initiates only to GitHub over Tailscale, not
 back to `xhost`. Live `from=` values live in the infrastructure checkout.

@@ -1,7 +1,6 @@
 # Claude Code
 
-Claude Code is the terminal CLI named `claude`. It is separate from the optional Claude Desktop APT
-package (`claude-desktop`).
+Claude Code is the terminal CLI named `claude`.
 
 ## Installation
 

@@ -43,5 +43,8 @@ Hardware, locale, personal applications, machine sizes, identities, and remote U
   work.
 - Check existing installation state. Ask before optional tools or unapproved data/security choices.
 - Never embed secrets in recipes. Diagnose failures before continuing.
+- Host-to-guest SSH uses the libvirt bridge, not Tailscale. The host key has a passphrase, so
+  `Permission denied (publickey)` with `-o BatchMode=yes` usually means an empty agent: check
+  `ssh-add -l`, then run `ssh-add </dev/null` so `ksshaskpass` and KWallet load the key.
 - Verify with `./modules/verify-box.sh BOX --bootstrap|--operational|--full`; use `--list` to
   preview the exact catalog-derived commands.

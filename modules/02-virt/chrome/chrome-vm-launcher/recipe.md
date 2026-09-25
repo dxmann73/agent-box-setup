@@ -25,6 +25,8 @@ CHROME_VM_LAUNCHER_HOST_BROWSER_DESKTOP=firefox_firefox.desktop ./apply.sh
 
 - Symlinks `show-chrome-vm.sh` into `~/.local/bin/`.
 - Symlinks `chrome-vm.desktop` into `~/.local/share/applications/`.
+- Symlinks the Chrome icon `google-chrome-vm.png` into `~/.local/share/icons/hicolor/256x256/apps/`.
+  It is Chrome's own `product_logo_256.png`; the host has no Chrome package to take it from.
 - Refreshes desktop caches when the KDE tools are present.
 - Optionally reasserts the host browser handlers when
   `CHROME_VM_LAUNCHER_HOST_BROWSER_DESKTOP` is set.
@@ -45,6 +47,6 @@ With an expected host browser:
 CHROME_VM_LAUNCHER_HOST_BROWSER_DESKTOP=firefox_firefox.desktop ./verify.sh
 ```
 
-Checks: launcher and desktop symlinks point at this module; the desktop entry validates when
-`desktop-file-validate` is installed; URL arguments are rejected; `chrome-vm.desktop` is not the
-default handler for host web URLs or HTML.
+Checks: launcher, desktop, and icon symlinks point at this module; the entry uses the Chrome
+icon; the desktop entry validates when `desktop-file-validate` is installed; URL arguments are
+rejected; `chrome-vm.desktop` is not the default handler for host web URLs or HTML.

@@ -58,8 +58,10 @@ bare_metal_host() {
 script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 readonly launcher_source="${script_dir}/show-chrome-vm.sh"
 readonly desktop_source="${script_dir}/chrome-vm.desktop"
+readonly icon_source="${script_dir}/google-chrome-vm.png"
 readonly installed_launcher="$HOME/.local/bin/show-chrome-vm.sh"
 readonly installed_desktop="$HOME/.local/share/applications/chrome-vm.desktop"
+readonly installed_icon="$HOME/.local/share/icons/hicolor/256x256/apps/google-chrome-vm.png"
 
 symlink_targets_source() {
     local -r link_path="$1"
@@ -77,7 +79,8 @@ launcher_installed() {
 desktop_installed() {
     symlink_targets_source "$installed_desktop" "$desktop_source" || return 1
     grep -qx 'Exec=show-chrome-vm.sh' "$installed_desktop" || return 1
-    grep -qx 'StartupWMClass=virt-viewer' "$installed_desktop"
+    grep -qx 'StartupWMClass=virt-viewer' "$installed_desktop" || return 1
+    grep -qx 'Icon=google-chrome-vm' "$installed_desktop"
 }
 
 desktop_file_valid() {
@@ -131,6 +134,7 @@ check 'show-chrome-vm.sh source executable' test -x "$launcher_source"
 check 'chrome-vm.desktop source present' test -r "$desktop_source"
 check 'launcher symlink installed' launcher_installed
 check 'desktop entry symlink installed' desktop_installed
+check 'Chrome icon symlink installed' symlink_targets_source "$installed_icon" "$icon_source"
 check 'desktop entry validates when validator is installed' desktop_file_valid
 check 'launcher rejects URL arguments' launcher_rejects_urls
 check 'chrome-vm.desktop is not the default URL/html handler' chrome_vm_not_default_handler

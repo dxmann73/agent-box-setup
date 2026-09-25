@@ -53,14 +53,18 @@ done
 script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 launcher_source="${script_dir}/show-chrome-vm.sh"
 desktop_source="${script_dir}/chrome-vm.desktop"
+icon_source="${script_dir}/google-chrome-vm.png"
+icon_dir="$HOME/.local/share/icons/hicolor/256x256/apps"
 
 [[ -x "$launcher_source" ]] || die "Missing executable launcher source: ${launcher_source}"
 [[ -r "$desktop_source" ]] || die "Missing desktop entry source: ${desktop_source}"
+[[ -r "$icon_source" ]] || die "Missing icon source: ${icon_source}"
 
-mkdir -p "$HOME/.local/bin" "$HOME/.local/share/applications"
+mkdir -p "$HOME/.local/bin" "$HOME/.local/share/applications" "$icon_dir"
 
 ln -sfn "$launcher_source" "$HOME/.local/bin/show-chrome-vm.sh"
 ln -sfn "$desktop_source" "$HOME/.local/share/applications/chrome-vm.desktop"
+ln -sfn "$icon_source" "${icon_dir}/google-chrome-vm.png"
 
 if [[ -n "${CHROME_VM_LAUNCHER_HOST_BROWSER_DESKTOP:-}" ]]; then
     command -v kwriteconfig6 >/dev/null 2>&1 ||
