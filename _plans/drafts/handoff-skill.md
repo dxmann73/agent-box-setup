@@ -2,7 +2,7 @@
 
 - created: 2026-09-24
 - priority: p2 (medium) — recurring lost context in daily `dave.macros` use, no deadline
-- source: BB thread `thr_rr8kvjjnp3` (clackworks.agents, agent-ambassador planning), 2026-09-24
+- source: BB thread `thr_rr8kvjjnp3` (clackworks.agent-coordinator, agent-ambassador planning), 2026-09-24
 - branch: main
 
 > I totally agree about the handoff skill; do add a plan for this.
@@ -23,7 +23,7 @@ false "as stated in X" claim.
 
 ## Related
 
-- `~/projects/clackworks.agents/_plans/next/agent-ambassador.md` — ambassador plan that found this
+- `~/projects/clackworks.agent-coordinator/_plans/discarded/agent-ambassador.md` — ambassador plan that found this
   failure and records the evidence; it decides clear vs compact vs handoff.
 - `~/projects/evals/_plans/drafts/conversation-failure-evals.md` — eval cases for the same failure.
 

@@ -49,7 +49,7 @@ instructions for the first time.
 6. Project workspace:
    - For a repository created under `~/projects`, update `~/projects/projects.code-workspace` so
      VS Code includes it.
-   - Keep the project table in `~/projects/clackworks.agents/project-manager/inventory.md` in sync
+   - Keep the project table in `~/projects/clackworks.agent-coordinator/project-manager/inventory.md` in sync
      with the project directories and VS Code workspace.
    - Preserve existing workspace folders and settings; add the new project once.
 
