@@ -40,18 +40,33 @@ terminal, so its terminal-scoped sudo ticket applies. Keep the ticket refreshed 
      --json
    ```
 
-1. Read initial output with `bb terminal output TERM_ID --tail-bytes 4096`.
-1. Tell the user its exact title and ID. For a newly created terminal, wait for the user to
-   confirm that they can see it and have entered their password. Terminal creation/output confirms
-   server state only; it does **not** prove that the BB client showed a side terminal. For a
-   reused terminal, the ticket-marker check below is the authentication proof.
+1. Read initial output with `bb terminal output TERM_ID --tail-bytes 4096`. Expect
+   `[sudo: authenticate] Password:`.
+1. Tell the user the exact title and ID, and ask them to enter their password there. Do not end
+   the turn to wait for a chat reply. Watch the terminal instead. The ready banner prints only
+   after `sudo -v` succeeds, because the command runs under `set -e`:
+
+   ```bash
+   bb terminal wait TERM_ID --contains 'sudo work terminal ready' --from-start --timeout 5m
+   ```
+
+   The banner is part of the create command, not sent input, so it cannot false-match. Keep the
+   `--timeout` below the agent tool's own command timeout.
+
+1. When the banner appears, continue with the ticket check below. No user confirmation needed.
+1. If the wait times out, run `bb terminal show TERM_ID --json`:
+   - Terminal `running`, still at the password prompt: ask the user whether the terminal is
+     visible. Terminal creation and output confirm server state only. They do **not** prove that
+     the BB client showed a side terminal.
+   - Terminal exited (for example, after three wrong passwords): report the exit and ask before
+     creating a new terminal.
 1. If the terminal is not visible, stop. Report its ID and `bb terminal show TERM_ID --json` state.
    Do not silently create extra terminals. The user must resolve the BB UI issue or direct a
    different terminal workflow.
 
 ## Verify and use it
 
-After the user confirms authentication, verify the ticket in that terminal:
+After the ready banner appears, or when reusing a terminal, verify the ticket in that terminal:
 
 ```bash
 bb terminal send TERM_ID \
@@ -71,6 +86,15 @@ bb terminal send TERM_ID \
 bb terminal wait TERM_ID --contains '__BB_STEP_DONE__:' --from-start --timeout 30m
 ```
 
+Give every step its own marker name (`__BB_STEP1_`, `__BB_STEP2_`, ...). `--from-start` scans the
+whole scrollback, so a reused marker matches an earlier step. After the marker matches, read the
+result with `bb terminal output TERM_ID --tail-bytes N` and check the status before the next step.
+Keep each `wait --timeout` below the agent tool's command timeout. For longer operations, repeat
+the `wait` call rather than setting one long timeout.
+
+Commands that need no root, for example `virsh -c qemu:///system` as a `libvirt` group member, may
+run from the agent shell.
+
 The terminal is interactive. The user may inspect output or stop work there. Keep it open until
 rootful work and verification finish. Close it with `bb terminal close TERM_ID` only after telling
 the user.
@@ -81,7 +105,8 @@ the user.
 - Never run a long rootful command in a password-only `keepalive.sh` terminal. It cannot execute
   agent work in the same sudo tty.
 - Do not treat a terminal prompt, asterisks, or a user chat message as successful authentication;
-  require `__BB_SUDO_READY__` from the terminal.
+  require the ready banner, then `__BB_SUDO_READY__`, from the terminal.
+- Do not ask the user to confirm the password in chat. Watch the terminal output.
 - Assemble each completion marker at runtime. `bb terminal send` echoes its input, so a literal
   marker in the sent command produces a false `wait` match.
 - The 45-second refresh loop prevents an active long operation from expiring the sudo timestamp.
