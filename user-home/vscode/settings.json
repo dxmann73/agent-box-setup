@@ -39,4 +39,5 @@
   "workbench.startupEditor": "none",
   "quarkus.tools.alwaysShowWelcomePage": false,
   "explorer.confirmDelete": false,
+  "extensions.ignoreRecommendations": true,
 }
