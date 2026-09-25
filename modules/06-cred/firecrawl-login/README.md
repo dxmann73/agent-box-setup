@@ -2,7 +2,7 @@
 
 What: Firecrawl credential setup.
 
-Does: Tracks writing the Firecrawl API credential into `~/.bash_secrets`.
+Does: Tracks a Firecrawl CLI login stored in the user's home directory.
 
 Catalog metadata: see [Modular machine catalog](../../README.md) for typ, sit, scp, requires, and
 ticks.

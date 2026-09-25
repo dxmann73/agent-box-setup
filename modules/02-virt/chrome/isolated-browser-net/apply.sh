@@ -239,7 +239,7 @@ ip = existing.find('ip')
 dhcp_range = existing.find('ip/dhcp/range')
 
 checks = [
-    existing.get('ipv6') == desired.get('ipv6'),
+    not any(ip.get("family") == "ipv6" for ip in existing.findall("./ip")),
     text('name') == desired.findtext('name'),
     bridge is not None and bridge.get('name') == desired.find('bridge').get('name'),
     forward is not None and forward.get('mode') == desired.find('forward').get('mode'),

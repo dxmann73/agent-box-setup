@@ -101,8 +101,10 @@ network_active() {
 }
 
 autostart_enabled() {
-    virsh -c qemu:///system dominfo "$AGENT_BOX_VM_HOSTNAME" |
-        grep -qx 'Autostart:      enable'
+    local info
+
+    info="$(virsh -c qemu:///system dominfo "$AGENT_BOX_VM_HOSTNAME")" || return 1
+    grep -Eq '^Autostart:[[:space:]]+enable$' <<<"$info"
 }
 
 domain_xml_matches() {

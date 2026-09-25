@@ -325,18 +325,9 @@ Steam                       Windows only for now (that box)
 AMD Ryzen AI notes          overlay extras/ (not a tick today)
 ```
 
-## Live vs catalog (install later)
+## Live vs catalog
 
-Catalog ticks above are the target. Live boxes still differ. After recipes exist, reconcile machines
-to this file.
-
-```text
-module                       catalog                      live 2026-09-14
----------------------------  ---------------------------  --------------------------------
-yq                           xhost xagt bhost             missing on sampled boxes
-java-stack                   xagt only                    installed on host, not agent VM
-k8s-stack                    xagt only                    not installed
-```
+No known live-vs-catalog drift remains. `bhost` is future hardware, not a live box.
 
 ## Operator schedule
 

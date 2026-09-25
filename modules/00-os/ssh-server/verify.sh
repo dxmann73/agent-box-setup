@@ -3,6 +3,7 @@ set -Eeuo pipefail
 
 require_active=0
 failures=0
+effective_config=''
 
 usage() {
     cat <<'USAGE'
@@ -70,12 +71,21 @@ effective_option_is() {
     local -r name="$1"
     local -r expected="$2"
 
-    sudo sshd -T | grep -qx "$name $expected"
+    grep -qx "$name $expected" <<<"$effective_config"
+}
+
+effective_config_readable() {
+    effective_config="$(sudo sshd -T)"
+}
+
+sshd_listener_active() {
+    systemctl is-active --quiet ssh || systemctl is-active --quiet ssh.socket
 }
 
 check 'openssh-server installed' command_available sshd
 check 'key-only drop-in present' drop_in_present
 check 'sshd configuration valid' sshd_config_valid
+check 'effective sshd configuration readable' effective_config_readable
 check 'requires public-key authentication' effective_option_is authenticationmethods publickey
 check 'password authentication disabled' effective_option_is passwordauthentication no
 check 'keyboard-interactive authentication disabled' \
@@ -85,7 +95,7 @@ check 'empty passwords disabled' effective_option_is permitemptypasswords no
 check 'pubkey authentication enabled' effective_option_is pubkeyauthentication yes
 
 if [[ $require_active -eq 1 ]]; then
-    check 'sshd active' systemctl is-active --quiet ssh
+    check 'sshd listener active' sshd_listener_active
 fi
 
 if ((failures > 0)); then

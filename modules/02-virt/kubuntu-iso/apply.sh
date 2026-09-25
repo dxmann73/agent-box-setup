@@ -109,6 +109,7 @@ actual_sha="$(sha256sum "$iso_name" | awk '{ print $1 }')"
         "Actual:   ${actual_sha}"
 
 sudo install -d -o root -g root -m 0755 "$dest_dir"
+sudo chmod 0755 "$dest_dir"
 sudo install -o root -g root -m 0644 "$iso_name" "${dest_dir}/${iso_name}"
 
 printf 'kubuntu-iso applied: %s\n' "${dest_dir}/${iso_name}"

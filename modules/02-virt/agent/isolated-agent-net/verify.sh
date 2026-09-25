@@ -133,7 +133,7 @@ checks = [
     dhcp_start in network,
     dhcp_end in network,
     int(dhcp_start) <= int(dhcp_end),
-    root.get("ipv6") == "no",
+    not any(ip.get("family") == "ipv6" for ip in root.findall("./ip")),
     root.findtext("name") == os.environ["AGENT_NET_NAME"],
     bridge is not None and bridge.get("name") == os.environ["AGENT_NET_BRIDGE"],
     forward is not None and forward.get("mode") == "nat",
@@ -156,14 +156,18 @@ nft_policy_loaded() {
 }
 
 nft_policy_mentions_bridge() {
-    sudo -n nft list table inet "$nft_table" | grep -Fq "iifname \"${AGENT_NET_BRIDGE}\""
+    local rules
+
+    rules="$(sudo -n nft list table inet "$nft_table")" || return 1
+    grep -Fq "iifname \"${AGENT_NET_BRIDGE}\"" <<<"$rules"
 }
 
 bridge_has_gateway() {
     ip -4 address show dev "$AGENT_NET_BRIDGE" | grep -Eq "[[:space:]]${AGENT_NET_ADDRESS}/"
 }
 
-readonly nft_table="${AGENT_NET_NFT_TABLE:-agent_box_${AGENT_NET_NAME:-agent_net}}"
+nft_table="${AGENT_NET_NFT_TABLE:-agent_box_${AGENT_NET_NAME:-agent_net}}"
+readonly nft_table="${nft_table//-/_}"
 
 required_environment_present ||
     die \

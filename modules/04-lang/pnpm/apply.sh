@@ -13,5 +13,7 @@ lang_npm_prefix_is_user_owned || {
     printf '%s\n' 'npm global prefix is not under $HOME. Apply node-24 first.' >&2
     exit 1
 }
-npm install -g pnpm
+# Corepack may leave pnpm/pnpx shims behind without a globally registered pnpm package.
+# Replace those exact npm-prefix shims so this module owns the executable and package record.
+npm install -g --force pnpm
 printf 'pnpm applied for %s.\n' "$lang_target"

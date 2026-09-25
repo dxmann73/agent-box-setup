@@ -98,7 +98,7 @@ for binary in python3 virsh nft systemctl; do
 done
 
 script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
-repo_dir="$(cd -- "$script_dir/../../../../.." && pwd)"
+repo_dir="$(cd -- "$script_dir/../../../.." && pwd)"
 hook_source="${repo_dir}/modules/02-virt/network-guard-hook.sh"
 [[ -r "$hook_source" ]] || die "Missing network guard hook source: ${hook_source}"
 
@@ -228,7 +228,7 @@ ip = existing.find('ip')
 dhcp_range = existing.find('ip/dhcp/range')
 
 checks = [
-    existing.get('ipv6') == desired.get('ipv6'),
+    not any(ip.get("family") == "ipv6" for ip in existing.findall("./ip")),
     text('name') == desired.findtext('name'),
     bridge is not None and bridge.get('name') == desired.find('bridge').get('name'),
     forward is not None and forward.get('mode') == desired.find('forward').get('mode'),

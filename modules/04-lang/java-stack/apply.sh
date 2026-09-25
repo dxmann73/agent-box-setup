@@ -26,19 +26,22 @@ if [[ ! -s "$HOME/.sdkman/bin/sdkman-init.sh" ]]; then
     curl -fsSL https://get.sdkman.io | bash
 fi
 
+# SDKMAN functions read unset variables internally, so strict mode cannot cover this block.
 # shellcheck disable=SC1091
+set +ue
 source "$HOME/.sdkman/bin/sdkman-init.sh"
 sed -i 's/^sdkman_auto_env=.*/sdkman_auto_env=true/' "$HOME/.sdkman/etc/config"
 
 if ! sdk current java | grep -Fq "$java_candidate"; then
-    sdk install java "$java_candidate"
+    sdk install java "$java_candidate" || exit $?
 fi
 if ! sdk current quarkus | grep -q '^Using:'; then
-    sdk install quarkus
+    sdk install quarkus || exit $?
 fi
 if ! sdk current maven | grep -q '^Using:'; then
-    sdk install maven
+    sdk install maven || exit $?
 fi
+set -ue
 
 install -d -m 0755 "$HOME/.redhat"
 printf '%s\n' '{"disabled":false}' >"$HOME/.redhat/io.quarkus.analytics.localconfig"

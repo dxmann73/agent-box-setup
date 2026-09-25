@@ -150,10 +150,32 @@ source of truth.
 **Done:** `machines/` bundles gone; the root verifier is a thin catalog-runner entry point; per-box
 verification follows catalog ticks.
 
-## 3. Reconcile live boxes
+## 3. Reconcile live boxes [x]
 
 Last. After phase 3, apply the catalog’s current live-vs-catalog table. Do not use this phase to
 change ticks.
 
-**Done when:** the live-vs-catalog table is empty; each drifted tick’s verify matches the catalog
-on the live boxes.
+**Done 2026-09-24:** the live-vs-catalog table is empty; each drifted tick’s verify matches the
+catalog on the live boxes.
+
+## Things that still need to be fixed
+
+`verify-box xhost --full` on 2026-09-24 found remaining live/configuration work. Keep catalog
+values in the deployment overlay; this list records only failed verification and required repair.
+
+- [x] Fix the remaining `ssh-server` verifier false negatives, then verify the key-only effective
+  configuration from the sudo work terminal.
+- [x] Add missing non-secret Chrome VM and virtiofs-share verification context to the deployment
+  overlay; rerun `chrome-vm`, `virtiofs-desktop-share`, and `virtiofs-user-data-shares` verifies.
+- [ ] Create a new verified Chrome VM backup set. The selected old set lacks its `backup-info`
+  manifest. Deferred by the user until after restoring the `clean` snapshot and completing the
+  Chrome login sequence.
+- [x] Reconcile WezTerm apt source/unattended-upgrades configuration.
+- [x] Reinstall or reconcile global `pnpm` ownership/state.
+- [x] Install/reconcile `pngquant`, `optipng`, and `libimage-exiftool-perl` for `imaging`.
+- [x] Reconcile the VS Code apt source and rerun VS Code/extension verification.
+- [x] Configure Git to use the GitHub CLI credential helper.
+- [x] Complete Firecrawl login with a real API key. Home-stored Firecrawl CLI credentials authenticate
+  successfully; do not store the key in this repository.
+- [ ] Rerun catalog-derived full verification for `xhost`, `xagt`, and `xchr` with deployment
+  context after every repair passes. Defer the Chrome run until the `clean` restore/login sequence.

@@ -103,8 +103,10 @@ network_active() {
 }
 
 autostart_disabled() {
-    virsh -c qemu:///system dominfo "$CHROME_VM_DOMAIN" |
-        grep -qx 'Autostart:      disable'
+    local info
+
+    info="$(virsh -c qemu:///system dominfo "$CHROME_VM_DOMAIN")" || return 1
+    grep -Eq '^Autostart:[[:space:]]+disable$' <<<"$info"
 }
 
 render_group_ready() {
@@ -212,9 +214,15 @@ disk_size_matches() {
 
     expected_bytes=$((CHROME_VM_DISK_GIB * 1024 * 1024 * 1024))
     capacity="$(
-        virsh -c qemu:///system domblkinfo --bytes "$CHROME_VM_DOMAIN" "$target" |
+        virsh -c qemu:///system domblkinfo --bytes "$CHROME_VM_DOMAIN" "$target" 2>/dev/null |
             awk -F: '$1 == "Capacity" { gsub(/[^0-9]/, "", $2); print $2; exit }'
     )"
+    if [[ -z "$capacity" ]]; then
+        capacity="$(
+            virsh -c qemu:///system domblkinfo "$CHROME_VM_DOMAIN" "$target" |
+                awk -F: '$1 == "Capacity" { gsub(/[^0-9]/, "", $2); print $2; exit }'
+        )"
+    fi
     [[ "$capacity" == "$expected_bytes" ]]
 }
 
