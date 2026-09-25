@@ -11,9 +11,9 @@ Use one target per run:
   passwordless sudo, host layout directories under `$HOME`
 - `guest`: passwordless guest sudo, SDDM autologin, screen lock and display blanking disabled
 
-All baseline boxes install unattended updates, restart affected services automatically, show a KDE
-dialog when `/var/run/reboot-required` appears, and reboot at 22:00 local time only when Ubuntu
-marks a reboot as required.
+All baseline boxes install unattended updates, restart affected services automatically, and show a
+KDE dialog when `/var/run/reboot-required` appears. They never reboot automatically: a reboot can
+kill running agent work. The operator reboots when no agent work is running.
 
 ## Apply
 

@@ -164,7 +164,7 @@ ConditionPathExists=/var/run/reboot-required
 
 [Service]
 Type=oneshot
-ExecStart=/usr/bin/kdialog --title Reboot-required --msgbox A system update requires a reboot. The system will reboot at 22:00 local time.
+ExecStart=/usr/bin/kdialog --title Reboot-required --msgbox A system update requires a reboot. Reboot when no agent work is running.
 UNIT
     write_file /etc/systemd/user/agent-box-reboot-required.path 0644 <<'UNIT'
 [Unit]
@@ -240,8 +240,7 @@ Unattended-Upgrade::Allowed-Origins {
 
 Unattended-Upgrade::Remove-Unused-Kernel-Packages "true";
 Unattended-Upgrade::Remove-New-Unused-Dependencies "true";
-Unattended-Upgrade::Automatic-Reboot "true";
-Unattended-Upgrade::Automatic-Reboot-Time "22:00";
+Unattended-Upgrade::Automatic-Reboot "false";
 Unattended-Upgrade::Mail "";
 CONFIG
 

@@ -167,9 +167,9 @@ values in the deployment overlay; this list records only failed verification and
   configuration from the sudo work terminal.
 - [x] Add missing non-secret Chrome VM and virtiofs-share verification context to the deployment
   overlay; rerun `chrome-vm`, `virtiofs-desktop-share`, and `virtiofs-user-data-shares` verifies.
-- [ ] Create a new verified Chrome VM backup set. The selected old set lacks its `backup-info`
-  manifest. Deferred by the user until after restoring the `clean` snapshot and completing the
-  Chrome login sequence.
+- [x] Create a new verified Chrome VM backup set. The selected old set lacks its `backup-info`
+  manifest. Done 2026-09-25: offline set `2026-09-25T145936Z-clean` passes `vm-disk-backup` with
+  the `clean` snapshot.
 - [x] Reconcile WezTerm apt source/unattended-upgrades configuration.
 - [x] Reinstall or reconcile global `pnpm` ownership/state.
 - [x] Install/reconcile `pngquant`, `optipng`, and `libimage-exiftool-perl` for `imaging`.
@@ -177,5 +177,21 @@ values in the deployment overlay; this list records only failed verification and
 - [x] Configure Git to use the GitHub CLI credential helper.
 - [x] Complete Firecrawl login with a real API key. Home-stored Firecrawl CLI credentials authenticate
   successfully; do not store the key in this repository.
-- [ ] Rerun catalog-derived full verification for `xhost`, `xagt`, and `xchr` with deployment
+- [x] Rerun catalog-derived full verification for `xhost`, `xagt`, and `xchr` with deployment
   context after every repair passes. Defer the Chrome run until the `clean` restore/login sequence.
+  2026-09-25: `xhost --full` passed from the sudo work terminal with overlay `box.env` (now incl.
+  `BROWSER_NET_*`), Vibe Typer overlay, and `chrome-vm` `clean` snapshot/backup context.
+  `xchr --full` passed in the guest from a temporary host-streamed `git archive` (removed after).
+  `personal-browser-logins` and `bitwarden-chrome` no longer have verifiers; `verify-box` skips
+  them as manual operator steps.
+- [x] Replace the agent VM backup set that lacked `backup-info`. Fixed `vm-disk-backup/apply.sh`
+  (relative `SHA256SUMS` paths; no false exit 1 without `--prune-weekly`). Live set
+  `2026-09-25T170522Z-current-credentialed` passes verify; the 2026-09-13 set is deleted.
+- [x] `xagt --full` passed 2026-09-25 in the guest checkout (fast-forwarded to `9163b47`) with
+  overlay `AGENT_VM_DOMAIN`/`USER_DATA_SHARES` exported, after rerunning `agent-config` apply
+  (removed `~/CLAUDE.md` shim; no `CLAUDE.md` left under guest `~/projects`) and `kubuntu-baseline`
+  guest apply from `be91e56`. Host-side `vm-snapshots` (`credentialed`, live) also passes.
+- [x] Drop the fixed 22:00 automatic reboot from `kubuntu-baseline` on every box (a reboot can kill
+  running agent work); keep the reboot-required dialog. Applied and verified on `xhost`, `xagt`,
+  and `xchr` 2026-09-25. Coordinated reboots are drafted in `dave.agent-coordinator`
+  (`_plans/drafts/coordinated-agent-vm-reboot.md`).

@@ -91,6 +91,7 @@ include_module() {
 
     case "$target:$module" in
         daily-host:bb-enroll-execution-machine|\
+        *:personal-browser-logins|*:bitwarden-chrome|\
         agent-vm:agent-vm|agent-vm:chrome-vm|agent-vm:vm-snapshots|agent-vm:vm-disk-backup|\
         chrome-vm:agent-vm|chrome-vm:chrome-vm|chrome-vm:vm-snapshots|chrome-vm:vm-disk-backup)
             return 1
@@ -109,6 +110,9 @@ skip_reason() {
     case "$target:$module" in
         daily-host:bb-enroll-execution-machine)
             printf '%s' 'guest-local enrollment check'
+            ;;
+        *:personal-browser-logins|*:bitwarden-chrome)
+            printf '%s' 'manual operator step; no verifier'
             ;;
         agent-vm:agent-vm|agent-vm:chrome-vm|agent-vm:vm-snapshots|agent-vm:vm-disk-backup|\
         chrome-vm:agent-vm|chrome-vm:chrome-vm|chrome-vm:vm-snapshots|chrome-vm:vm-disk-backup)
@@ -157,9 +161,6 @@ verify_args() {
             ;;
         vscode-settings-sync)
             args_ref+=(--target daily-host --confirmed)
-            ;;
-        bitwarden-chrome|personal-browser-logins)
-            args_ref+=(--target chrome-vm --confirmed)
             ;;
         virtiofs-desktop-share|virtiofs-user-data-shares)
             if [[ "$target" == daily-host ]]; then args_ref+=(--host); else args_ref+=(--guest); fi

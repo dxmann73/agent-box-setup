@@ -226,14 +226,13 @@ fi
 run_sudo qemu-img check "$backup_disk"
 run_sudo chown "$USER":libvirt-qemu "$backup_disk"
 run_sudo chmod 0640 "$backup_disk"
-if [[ "$mode" == live ]]; then
-    sha256sum "$domain_xml" "$backup_info" "$backup_xml" "$backup_disk" > "$work_dir/SHA256SUMS"
-else
-    sha256sum "$domain_xml" "$backup_info" "$backup_disk" > "$work_dir/SHA256SUMS"
-fi
+# Relative names keep the checksums valid after the rename below.
+checksum_files=(domain.xml backup-info disk-vda.qcow2)
+if [[ "$mode" == live ]]; then checksum_files+=(backup.xml); fi
+(cd -- "$work_dir" && sha256sum -- "${checksum_files[@]}" > SHA256SUMS)
 sync
 mv -- "$work_dir" "$backup_dir"
 trap - ERR INT TERM
 printf 'Created %s backup: %s\n' "$mode" "$backup_dir"
 
-[[ -n "$prune_weekly" ]] && prune_sets
+if [[ -n "$prune_weekly" ]]; then prune_sets; fi

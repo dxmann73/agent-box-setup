@@ -9,4 +9,4 @@ ticks.
 
 Recipe: [recipe.md](recipe.md)
 
-Verify: `./verify.sh --target chrome-vm --confirmed`
+Verify: none. Manual operator step; `verify-box` skips it.

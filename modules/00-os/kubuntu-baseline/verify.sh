@@ -84,8 +84,8 @@ needrestart_auto() {
 }
 
 automatic_reboot_policy() {
-    grep -q '^Unattended-Upgrade::Automatic-Reboot "true";' /etc/apt/apt.conf.d/52unattended-upgrades-local &&
-        grep -q '^Unattended-Upgrade::Automatic-Reboot-Time "22:00";' /etc/apt/apt.conf.d/52unattended-upgrades-local
+    grep -q '^Unattended-Upgrade::Automatic-Reboot "false";' /etc/apt/apt.conf.d/52unattended-upgrades-local &&
+        ! grep -q '^Unattended-Upgrade::Automatic-Reboot-Time' /etc/apt/apt.conf.d/52unattended-upgrades-local
 }
 
 reboot_notification_path_enabled() {
@@ -138,7 +138,7 @@ check 'unattended upgrades periodic config enabled' auto_upgrades_enabled
 check 'apt daily timers enabled' systemctl is-enabled --quiet apt-daily.timer
 check 'apt daily upgrade timer enabled' systemctl is-enabled --quiet apt-daily-upgrade.timer
 check 'needrestart restarts services automatically' needrestart_auto
-check 'reboot-required policy reboots at 22:00' automatic_reboot_policy
+check 'automatic reboot disabled' automatic_reboot_policy
 check 'reboot-required notification watcher enabled' reboot_notification_path_enabled
 check 'release upgrades prompt for LTS' release_prompt_lts
 check '~/system-info directory exists' system_info_dir_exists
