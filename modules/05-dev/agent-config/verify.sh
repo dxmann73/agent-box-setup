@@ -7,7 +7,7 @@ dev_require_user
 repo=$(dev_repo_root)
 check() { [[ -L $1 && $(readlink -f "$1") == "$2" ]]; }
 check "$HOME/AGENTS.md" "$repo/agents/AGENTS.md"
-check "$HOME/CLAUDE.md" "$repo/agents/AGENTS.md"
+[[ ! -e $HOME/CLAUDE.md && ! -L $HOME/CLAUDE.md ]]
 check "$HOME/.agents" "$repo/agents"
 check "$HOME/.claude/skills" "$repo/agents/skills"
 check "$HOME/.pi/agent/AGENTS.md" "$repo/agents/AGENTS.md"

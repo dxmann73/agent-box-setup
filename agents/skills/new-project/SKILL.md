@@ -14,7 +14,7 @@ instructions for the first time.
 
 1. Instruction files:
    - Create a repo-root `AGENTS.md` with project-specific guidance (stack, commands, conventions).
-   - Add `CLAUDE.md` as a symlink to `AGENTS.md`: `ln -s AGENTS.md CLAUDE.md`.
+   - Do not add `CLAUDE.md`. Claude Code reads `AGENTS.md` when no `CLAUDE.md` is present.
    - Keep global preferences out of it; those live in `~/AGENTS.md`.
 
 2. Scaffolding files:

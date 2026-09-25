@@ -11,8 +11,8 @@ These are CLI installs, not desktop application packages:
 - Codex and Pi are installed from the user-owned npm prefix under `~/.npm-global/`.
 - Cursor CLI is installed by Cursor's user installer under `~/.local/`.
 
-The tracked files in this repo are the source of truth for agent
-configuration; do not introduce host-local replacements.
+The tracked files in this repo are the source of truth for agent configuration; do not introduce
+host-local replacements.
 
 ## Order
 
@@ -26,9 +26,11 @@ configuration; do not introduce host-local replacements.
 
 ## Global rule file
 
+Global rules live in `~/AGENTS.md`. Claude Code reads that file directly. `~/CLAUDE.md` and
+`~/.claude/CLAUDE.md` must be absent. Codex and Pi keep their own links to the same rules.
+
 ```bash
 ln -sfn ~/projects/agent-box-setup/agents/AGENTS.md ~/AGENTS.md
-ln -sfn ~/AGENTS.md ~/CLAUDE.md
 ```
 
 ## Skills
@@ -117,7 +119,7 @@ cd ~/projects/agent-box-setup
 - [ ] repo-managed YOLO settings are applied on both targets
 - [ ] host agents are authenticated for the host completion gate
 - [ ] guest agents are authenticated only after `clean-guest`, when explicitly wanted
-- [ ] global instructions are linked for Claude Code, Codex, and Pi
+- [ ] global rules are `~/AGENTS.md`; `~/CLAUDE.md` and `~/.claude/CLAUDE.md` are absent
 - [ ] shared skills resolve through `~/.agents/skills`, with Claude Code compatibility links
 - [ ] Codex and Cursor Caveman hooks are linked
 - [ ] the target's profiled verification command completes

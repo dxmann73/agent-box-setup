@@ -17,7 +17,9 @@ It touches repo-level files only.
    - Note anything referenced but missing, or present but no longer documented.
 
 2. Verify linked skills and instruction files:
-   - Repo-root `AGENTS.md` exists, `CLAUDE.md` is a symlink to it.
+   - Repo-root `AGENTS.md` exists.
+   - If `CLAUDE.md` is a symlink to `AGENTS.md`, remove that symlink.
+   - If `CLAUDE.md` exists and is not that symlink, report it and do not delete it.
    - Skills referenced by `AGENTS.md` exist in `agents/skills/` on the box.
    - Determine the current tool stack and keep the referenced skills aligned with it.
 
@@ -30,6 +32,7 @@ It touches repo-level files only.
 
 ## Boundaries
 
-- Synchronize repo-level files only (`AGENTS.md`, `CLAUDE.md`, project docs, local conventions).
+- Synchronize repo-level files only (`AGENTS.md`, project docs, local conventions). A `CLAUDE.md`
+  symlink to `AGENTS.md` is removed; any other `CLAUDE.md` is reported and left in place.
 - Preserve existing project structure and preferences; no destructive overwrites.
 - If sync inputs conflict, ask for direction before changing policy-level files.

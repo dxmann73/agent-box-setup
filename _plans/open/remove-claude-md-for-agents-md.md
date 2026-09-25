@@ -2,7 +2,7 @@
 
 - source: `_plans/drafts/remove-claude-md-for-agents-md.md`
 - priority: p2 — user marked this p2 after an earlier p1 note
-- status: next
+- status: open
 - written: 2026-09-25
 
 ## Goal

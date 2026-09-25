@@ -49,11 +49,10 @@ two sections are the index. The other three stages are not listed.
 
 ## Next
 
-- [Remove CLAUDE.md because Claude Code reads AGENTS.md](next/remove-claude-md-for-agents-md.md)
-
 ## Open
 
 - [Modular box setup — implementation plan](open/2026-09-15-modular-box-setup.md)
+- [Remove CLAUDE.md because Claude Code reads AGENTS.md](open/remove-claude-md-for-agents-md.md)
 
 ## Repository rules
 

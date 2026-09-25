@@ -8,7 +8,13 @@ dev_require_commands claude codex agent pi jq
 repo=$(dev_repo_root)
 link() { local target="$1" path="$2"; install -d "$(dirname "$path")"; [[ ! -e $path || -L $path ]] || { echo "Refusing to replace $path" >&2; exit 1; }; ln -sfn "$target" "$path"; }
 link "$repo/agents/AGENTS.md" "$HOME/AGENTS.md"
-link "$HOME/AGENTS.md" "$HOME/CLAUDE.md"
+claude_home="$HOME/CLAUDE.md"
+if [[ -L $claude_home ]] && [[ $(readlink -f -- "$claude_home") == "$(readlink -f -- "$HOME/AGENTS.md")" ]]; then
+    rm -- "$claude_home"
+elif [[ -e $claude_home || -L $claude_home ]]; then
+    printf 'Refusing to remove %s\n' "$claude_home" >&2
+    exit 1
+fi
 link "$repo/agents" "$HOME/.agents"
 link "$repo/agents/skills" "$HOME/.claude/skills"
 link "$repo/agents/AGENTS.md" "$HOME/.pi/agent/AGENTS.md"
