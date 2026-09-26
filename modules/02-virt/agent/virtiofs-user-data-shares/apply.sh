@@ -393,7 +393,7 @@ apply_guest_share() {
     link_path="$(guest_share_link_path "$guest_path")"
     if [[ -n "$link_path" ]] && ! guest_path_is_covered_by_share_link "$guest_path"; then
         mkdir -p "$(dirname -- "$link_path")"
-        ln -sfn "$guest_path" "$link_path"
+        ln -sfnT "$guest_path" "$link_path"
     fi
 
     printf 'virtiofs share %s mounted at %s\n' "$tag" "$guest_path"
