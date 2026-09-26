@@ -23,8 +23,17 @@ Hardware, locale, personal applications, machine sizes, identities, and remote U
   stay empty:
 
   ```bash
-  grep -rilE 'xmg-evo|890M|HX 370|tailb67542|dxmann73@gmail|clackworks\.agents|/Dropbox/Docs/Geld|de_DE|plasma-localerc|VibeTyper|vibe-typer' \
+  grep -rilE 'xmg-evo|890M|HX 370|tailb67542|clackworks\.agents|/Dropbox/Docs/Geld|de_DE|plasma-localerc|VibeTyper|vibe-typer' \
     agents user-home START-HERE.md docs verify-setup.sh --exclude-dir=skills
+  ```
+
+- Never commit credentials. This check over tracked and untracked files must stay empty:
+
+  ```bash
+  git grep --untracked -nIE -e 'BEGIN [A-Z ]*PRIVATE KEY' -e 'gh[pousr]_[A-Za-z0-9]{36}' \
+    -e 'github_pat_[A-Za-z0-9_]{50,}' -e 'hf_[A-Za-z0-9]{30,}' -e 'AKIA[0-9A-Z]{16}' \
+    -e 'xox[abprs]-[A-Za-z0-9-]{10,}' -e 'sk-(ant-|proj-)?[A-Za-z0-9_-]{32,}' \
+    -e 'AIza[0-9A-Za-z_-]{35}' -e 'fc-[0-9a-f]{32}' -e 'tskey-[a-z]+-[A-Za-z0-9-]{20,}'
   ```
 
 - Box-level work lives in `modules/`, `agents/`, and `user-home/`. Project-level skills and

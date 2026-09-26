@@ -49,9 +49,9 @@ two sections are the index. The other three stages are not listed.
 
 ## Next
 
-- [Move BB projects from the host OS onto the agent VM](next/move-bb-projects-to-agent-vm.md) — p1
-
 ## Open
+
+- [Move BB projects from the host OS onto the agent VM](open/move-bb-projects-to-agent-vm.md) — p1
 
 ## Repository rules
 
