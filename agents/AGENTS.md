@@ -25,5 +25,7 @@ expect; do not substitute silent defaults or empty placeholders that hide bad in
 When diagnosing a problem (terminal, editor, system config) that has more than one plausible cause
 or fix, stop and explain the options first. Lay out what you think is going on and the candidate
 fixes, then ask which one to try before editing any file. Do not apply a guessed fix, see if it
-worked, and move to the next guess. If a first attempted fix already failed, pause and reassess with
-the user before trying another one.
+worked, and move to the next guess.
+
+During plan refinement, consolidate unresolved questions in a batch-answer section in the plan and
+request batch replies; ask serial questions only when Dave explicitly wants that format.
