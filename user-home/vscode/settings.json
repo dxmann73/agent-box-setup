@@ -34,6 +34,12 @@
   "terminal.integrated.profiles.linux": {
     "bash": { "path": "/bin/bash", "icon": "terminal-bash" },
   },
+  // Only a VS Code terminal has `code` on PATH. GIT_EDITOR wins over core.editor,
+  // so `git commit` opens a VS Code tab here and nano everywhere else.
+  "terminal.integrated.env.linux": {
+    "GIT_EDITOR": "code --wait",
+    "EDITOR": "code --wait",
+  },
 
   // --- Startup ---
   "workbench.startupEditor": "none",

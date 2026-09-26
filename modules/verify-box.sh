@@ -148,7 +148,7 @@ verify_args() {
         kubuntu-baseline)
             if [[ "$target" == daily-host ]]; then args_ref+=(--target daily-host); else args_ref+=(--target guest); fi
             ;;
-        build-essential|fd-find|github-cli|jq|ripgrep|wezterm|yq|firecrawl-cli|node-24|pnpm|typescript|\
+        build-essential|fd-find|git-identity|github-cli|jq|ripgrep|wezterm|yq|firecrawl-cli|node-24|pnpm|typescript|\
         claude-code|codex-cli|cursor-cli|pi|agent-config|tailscale|claude-login|codex-login|cursor-login|\
         firecrawl-login|github-auth|pi-login|tailscale-login)
             args_ref+=(--target "$target")

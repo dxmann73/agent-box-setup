@@ -2,9 +2,10 @@
 
 - source: `_plans/drafts/move-bb-projects-to-agent-vm.md`
 - priority: p1 (high). The user named this the next thing to do on 2026-09-25.
-- status: open
+- status: open (executed 2026-09-26; two projects held back, see Execution status)
 - written: 2026-09-25
 - refined: 2026-09-26 (clean-slate precondition, BB column, editor decided)
+- executed: 2026-09-26
 
 ## Goal
 
@@ -165,6 +166,63 @@ Collected 2026-09-25/26:
    - Create the VM's `~/projects/projects.code-workspace`.
    - Trim the host workspace to the host-only projects.
    - Open the VM workspace over VS Code Remote SSH once, as a check.
+
+## Execution status (2026-09-26)
+
+Done:
+
+- **`git-identity` module.** `modules/00-os/git-identity/` with `README.md`, `recipe.md`, `apply.sh`,
+  `verify.sh`. Catalog row in `modules/README.md` §0 (`cfg`, `sit -`, `scp gen`, `Y` on `xhost`,
+  `xagt`, `bhost`; requires `kubuntu-baseline github-cli`) and a `--target "$target"` entry in
+  `modules/verify-box.sh`. `apply.sh` takes `--source PATH` (required, no default) so the public
+  repository carries no overlay path, and `--vm-host HOST` for `--target agent-vm`.
+  Applied on both boxes; `verify.sh` passes on `daily-host` and `agent-vm`. The VM's dangling
+  `~/.gitconfig` symlink and the untracked `user-home/.gitconfig` in its checkout are gone.
+  `home-dotfiles` README, recipe, and apply usage now name `git-identity` as the owner.
+- **Editor.** `core.editor = nano` in the overlay `.gitconfig`, `EDITOR=nano` in
+  `user-home/.bashrc`, and `terminal.integrated.env.linux` with `GIT_EDITOR`/`EDITOR` =
+  `code --wait` in `user-home/vscode/settings.json`.
+- **Project manager.** `inventory.md` has the "Runs on" and "BB project" columns for all 19
+  projects, plus the column definitions and the `agent-box-setup` exception. `README.md` gained the
+  "Keep BB in sync" duty (now §3) and a per-machine "Populate a fresh machine" duty.
+  `maintenance.md` checks placement and BB sync.
+- **Pilot and rollout.** 10 of 12 `vm` BB projects switched: `nomap` (pilot), `clackworks.dev`,
+  `clackworks.evals`, `clackworks.website`, `dave.agent-coordinator`, `dave.financial-advisor`,
+  `dave.macros`, `dave.tax-advisor`, `dave.website`, `social-linkedin`. Each one: VM source added
+  with `--clone --target-path /home/dave/projects/<name> --default`, a new thread confirmed
+  `hostname` = `xmg-evo-agent-vm` and the expected `pwd`, host source deleted, host checkout deleted
+  after re-checking clean tree, no unpushed commits, and identical HEAD on both machines.
+- **Clone-only.** `scm-tidy`, `spcsim`, `website-old` cloned onto the VM with `gh repo clone`; host
+  checkouts deleted. They have no BB project.
+- **Workspaces.** The VM has its own `~/projects/projects.code-workspace` with its 14 folders. The
+  host workspace is trimmed to its 6 remaining folders.
+
+Held back:
+
+- **`clackworks.agent-coordinator`** — this migration's own edits to `project-manager/` are
+  uncommitted in the host checkout. Switch it after those changes are committed and pushed.
+- **`clackworks.ai`** — thread `thr_7ruddakxmx` ("- grok 4.7") is still unarchived. The clean-slate
+  precondition says the user archives threads; archive it, then switch.
+
+Both are still `HOST` sources and are listed in the host workspace until they move. Everything else
+in the Acceptance Criteria holds.
+
+Notes:
+
+- `bb project source add --clone` defaults to
+  `~/.bb-machines/<server>/checkouts/<name>`, not `~/projects/<name>`. `--target-path` is required
+  to land in `~/projects`. The pilot's first source was re-added for this reason.
+- The VM's `claude-code` OAuth session is expired ("Failed to authenticate: OAuth session expired
+  and could not be refreshed"); `codex` works. Two check threads had to be respawned with
+  `--provider codex`. This belongs to `claude-login`, not to this plan.
+- BB's `proj_personal` (5 archived threads) is not in the inventory. Reported, not deleted.
+- `terminal.integrated.env.linux` could not be checked in a live Remote SSH terminal from here. The
+  VM has no `~/.vscode-server/data/Machine/settings.json`, so nothing on the guest overrides the
+  user setting, but the check itself needs an interactive VS Code window.
+- The VM's `agent-box-setup` checkout still predates the `git-identity` module, so the
+  `ssh xmg-evo-agent-vm '.../git-identity/verify.sh'` form in Verification works only after this
+  repository's changes are committed, pushed, and pulled on the VM. The verifier was run by
+  streaming the script over SSH instead.
 
 ## Acceptance Criteria
 

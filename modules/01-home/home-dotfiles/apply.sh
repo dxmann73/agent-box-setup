@@ -14,7 +14,7 @@ before the symlink is created. Existing symlinks are refreshed (ln -sfn).
 Does not touch:
   - ~/.bash_secrets                (login stage)
   - ~/projects/.markdownlint.json  (markdownlint module)
-  - ~/.gitconfig                   (dave.box-setup overlay)
+  - ~/.gitconfig                   (git-identity module)
   - wezterm/vscode/systemd/pi-launch/klipper payloads (own modules)
 
 Options:

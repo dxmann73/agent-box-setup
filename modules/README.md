@@ -127,6 +127,7 @@ hardware-review              cfg   -      both   Y     -    -    Y      kubuntu-
 ssh-client                   cfg   -      gen    Y     Y    -    Y      kubuntu-baseline
 ssh-server                   tool  -      gen    Y     Y    Y    Y      kubuntu-baseline
 ufw-firewall                 cfg   -      gen    Y     Y    -    Y      kubuntu-baseline
+git-identity                 cfg   -      gen    Y     Y    -    Y      kubuntu-baseline github-cli
 ```
 
 `kubuntu-desktop` is the installer (hostname, dave user, login password, disk). `kubuntu-baseline`
@@ -135,6 +136,12 @@ daily hosts protected), autologin on guests / off hosts. `ssh-client` is the one
 config, not the package. `ssh-server` is sshd key-only on all four (guests: host-streamed setup;
 daily hosts: Tailscale/admin). Chrome has no `ssh-client` and no guest UFW (isolation is host nft in
 §2). Agent-VM guest→host allowlist is §2.
+
+`git-identity` owns the one real `~/.gitconfig` per box. The content is the deployment overlay's
+file, passed in with `--source`; the module keeps no identity of its own. It requires `github-cli`
+because it verifies the `gh` credential helper, so it runs after §3 even though it sits in this
+cluster. On the agent VM the host streams the file over the libvirt bridge; the overlay is not
+cloned onto the guest. `home-dotfiles` excludes `.gitconfig`.
 
 ### 1. Repos and home
 

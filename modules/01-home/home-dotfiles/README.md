@@ -17,5 +17,5 @@ Apply: `./apply.sh`
 Verify: `./verify.sh`
 
 Scope excludes `.bash_secrets` (login stage), `.markdownlint.json` (`markdownlint`
-module), `.gitconfig` (Dave overlay), and the wezterm/vscode/systemd/pi/klipper
+module), `.gitconfig` (`git-identity` module), and the wezterm/vscode/systemd/pi/klipper
 payloads (each their own module).

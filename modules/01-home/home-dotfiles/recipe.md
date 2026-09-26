@@ -36,7 +36,8 @@ Every link points into `~/projects/agent-box-setup/user-home/`:
 
 - `~/.bash_secrets` — populated in the login stage (`firecrawl-login`, etc.).
 - `~/projects/.markdownlint.json` — owned by the `markdownlint` module.
-- `~/.gitconfig` — Dave overlay in `dave.box-setup/agent-box/user-home/.gitconfig`.
+- `~/.gitconfig` — owned by [`git-identity`](../../00-os/git-identity/recipe.md), which installs
+  it as a real file from the deployment overlay.
 - `wezterm/`, `vscode/`, `systemd/`, `pi-launch.sh`, `klipper-clipboard-sync.sh`
   — payloads owned by `wezterm`, `vscode`, `update-tools-timer`,
   `cursor-agent-launcher` / `pi`, and `guest-integration` respectively.

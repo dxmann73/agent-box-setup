@@ -155,7 +155,7 @@ export NVM_DIR="$HOME/.nvm"
 export LIBVIRT_DEFAULT_URI="qemu:///system"
 
 # Editor
-export EDITOR="code --wait"
+export EDITOR=nano
 export VISUAL="code --wait"
 
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
