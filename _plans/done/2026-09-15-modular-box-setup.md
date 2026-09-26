@@ -1,6 +1,6 @@
 # Modular box setup — implementation plan
 
-Status: open
+Status: done
 
 The target state lives in the catalog:
 

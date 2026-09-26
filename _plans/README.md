@@ -49,10 +49,9 @@ two sections are the index. The other three stages are not listed.
 
 ## Next
 
-## Open
+- [Move BB projects from the host OS onto the agent VM](next/move-bb-projects-to-agent-vm.md) — p1
 
-- [Modular box setup — implementation plan](open/2026-09-15-modular-box-setup.md)
-- [Remove CLAUDE.md because Claude Code reads AGENTS.md](open/remove-claude-md-for-agents-md.md)
+## Open
 
 ## Repository rules
 
